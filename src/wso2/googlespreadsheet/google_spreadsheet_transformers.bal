@@ -67,17 +67,6 @@ transformer <json jsonSheet, Sheet sheet> convertToSheet(string spreadsheetId) {
     sheet.spreadsheetId = spreadsheetId;
     sheet.properties = jsonSheet.properties != null ?
                        <SheetProperties, convertToSheetProperties()>jsonSheet.properties : {};
-    sheet.data = jsonSheet.data != null ? convertToData(jsonSheet.data) : [];
-}
-
-function convertToData (json jsonData) (GridData[]) {
-    int i = 0;
-    GridData[] gridData = [];
-    foreach data in jsonData {
-        gridData[i] = <GridData, convertToGridData()> data;
-        i = i +1;
-    }
-    return gridData;
 }
 
 transformer <json jsonSheetProperties, SheetProperties sheetProperties> convertToSheetProperties() {
@@ -102,11 +91,6 @@ transformer <json jsonProps, GridProperties gridProperties> convertToGridPropert
                                        <int, convertToInt()>jsonProps.frozenColumnCount : 0;
     gridProperties.hideGridlines = jsonProps.hideGridlines != null ?
                                    <boolean, convertToBoolean()>jsonProps.hideGridlines : false;
-}
-
-transformer <json jsonData, GridData gridData> convertToGridData() {
-    gridData.startRow = jsonData.startRow != null ? <int, convertToInt()>jsonData.startRow : 0;
-    gridData.startColumn = jsonData.startColumn != null ? <int, convertToInt()>jsonData.startColumn : 0;
 }
 
 transformer <json jsonRange, Range range> convertToRange() {

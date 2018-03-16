@@ -19,46 +19,59 @@ import ballerina.io;
 
 function main (string[] args) {
     endpoint<googlespreadsheet:GoogleSpreadsheetClientConnector> googlespreadsheetEP {
+        create googlespreadsheet:GoogleSpreadsheetClientConnector(args[1], args[2], args[3], args[4]);
     }
-    googlespreadsheet:GoogleSpreadsheetClientConnector googlespreadsheetConnector =
-    create googlespreadsheet:GoogleSpreadsheetClientConnector(args[1], args[2], args[3], args[4]);
-    bind googlespreadsheetConnector with googlespreadsheetEP;
     googlespreadsheet:SpreadsheetError spreadsheetError = {};
     googlespreadsheet:Spreadsheet spreadsheet = {};
     googlespreadsheet:Sheet sheet = {};
     googlespreadsheet:Range range = {};
     string[] values = [];
-    string sheetName = "RainFallValues";
+    string sheetName = args[6];
+    //googlespreadsheetEP.init(args[1], args[2], args[3], args[4]);
+    googlespreadsheetEP.init();
+
+    //Create spreadsheet by name
+    //spreadsheet, spreadsheetError = googlespreadsheetEP.createSpreadsheet(args[5]);
+    //io:println(spreadsheet);
+
+    //Get sheets
+    //googlespreadsheet:Sheet[] sheets = spreadsheet.getSheets();
+    //io:println(sheets);
 
     //Open th spreadsheet by id
-    spreadsheet, spreadsheetError = googlespreadsheetEP.openById(args[5]);
+    spreadsheet, spreadsheetError = googlespreadsheetEP.openSpreadsheetById(args[5]);
 
     //Get the sheet
     sheet, spreadsheetError = spreadsheet.getSheetByName(sheetName);
+    io:println(sheet);
 
     //Get row data
-    values, spreadsheetError = sheet.getRowData(googlespreadsheetConnector,"1");
+    values, spreadsheetError = sheet.getRowData("1");
     io:println(values);
 
     //Get cell data
-    string val="";
-    val, spreadsheetError = sheet.getCellData(googlespreadsheetConnector,"1","C");
-    io:println(val);
+    string cellVal="";
+    cellVal, spreadsheetError = sheet.getCellData("1","C");
+    io:println("Cell value is : " + cellVal);
 
     //Get column data
-    values, spreadsheetError = sheet.getColumnData(googlespreadsheetConnector, "B");
+    values, spreadsheetError = sheet.getColumnData("B");
+    io:println(values);
     int i = 0;
-    foreach val  in values {
-        int score = 0;
-        score, _ = <int> val;
-        googlespreadsheet:Range cellRange = {};
-        googlespreadsheet:Range cellRangeResponse = {};
-        string a1Notation = sheetName + "!C" + (i + 1);
-        cellRange = sheet.getRange(a1Notation);
-        if (score > 75) {
-            //Update the cell value
-            cellRangeResponse, spreadsheetError = cellRange.setValue(googlespreadsheetConnector, "Exceptional");
+    if (values!= null) {
+        foreach val  in values {
+            int score = 0;
+            score, _ = <int> val;
+            googlespreadsheet:Range cellRange = {};
+            googlespreadsheet:Range cellRangeResponse = {};
+            string topLeft = "C" + (i + 1);
+            cellRange, spreadsheetError = sheet.getRange(topLeft, "");
+            if (score > 75) {
+                //Update the cell value
+                cellRangeResponse, spreadsheetError = cellRange.setValue("Exceptional");
+            }
+            i = i + 1;
         }
-        i = i + 1;
     }
+    io:println("Update completed");
 }

@@ -19,6 +19,10 @@ package src.wso2.googlespreadsheet;
 import ballerina.net.http;
 import org.wso2.ballerina.connectors.oauth2;
 
+GoogleSpreadsheetClientConnector googleSpreadsheetClientConnector;
+boolean isConnectorInitialized = false;
+string access;
+
 @Description {value : "Google Spreadsheet client connector"}
 @Param {value : "accessToken: The accessToken of the Google Spreadsheet account to access the Google Spreadsheet REST API"}
 @Param {value : "refreshToken: The refreshToken of the Google Spreadsheet App to access the Google Spreadsheet REST API"}
@@ -30,11 +34,49 @@ public connector GoogleSpreadsheetClientConnector (string accessToken, string re
         create oauth2:ClientConnector("https://sheets.googleapis.com", accessToken, clientId, clientSecret,
                                       refreshToken, "https://www.googleapis.com", "/oauth2/v3/token");
     }
+    //string access = accessToken;
+
+    action init(){
+        googleSpreadsheetClientConnector = create GoogleSpreadsheetClientConnector(accessToken, refreshToken,
+                                                                             clientId, clientSecret);
+        isConnectorInitialized = true;
+    }
+
+    @Description{ value : "Create a new spreadsheet"}
+    @Param{ value : "spreadsheetName: Name of the spreadsheet"}
+    @Return{ value : "Spreadsheet object"}
+    action createSpreadsheet(string spreadsheetName) (Spreadsheet, SpreadsheetError)   {
+        http:OutRequest request = {};
+        http:InResponse response = {};
+        http:HttpConnectorError connectorError;
+        SpreadsheetError spreadsheetError = {};
+        json spreadsheetJSONPayload = {"properties": {"title": spreadsheetName}};
+        Spreadsheet spreadsheetResponse = {};
+        string createSpreadsheetPath = "/v4/spreadsheets";
+
+        request.setJsonPayload(spreadsheetJSONPayload);
+        response, connectorError = googleSpreadsheetEP.post(createSpreadsheetPath, request);
+
+        if (connectorError != null) {
+            spreadsheetError.errorMessage = connectorError.message;
+            spreadsheetError.statusCode = connectorError.statusCode;
+            return null, spreadsheetError;
+        }
+        int statusCode = response.statusCode;
+        json spreadsheetJSONResponse = response.getJsonPayload();
+        if (statusCode == 200) {
+            spreadsheetResponse = <Spreadsheet, convertToSpreadsheet()> spreadsheetJSONResponse;
+        } else {
+            spreadsheetError.errorMessage = spreadsheetJSONResponse.error.message.toString();
+            spreadsheetError.statusCode = statusCode;
+        }
+        return spreadsheetResponse, spreadsheetError;
+    }
 
     @Description {value : "Get a spreadsheet by ID"}
     @Param {value : "spreadsheetId: Id of the spreadsheet"}
     @Return{ value : "spreadsheet: Spreadsheet object"}
-    action openById(string spreadsheetId) (Spreadsheet, SpreadsheetError) {
+    action openSpreadsheetById(string spreadsheetId) (Spreadsheet, SpreadsheetError) {
         http:OutRequest request = {};
         http:InResponse response = {};
         Spreadsheet spreadsheetResponse = {};
@@ -48,15 +90,15 @@ public connector GoogleSpreadsheetClientConnector (string accessToken, string re
         if (connectorError != null) {
             spreadsheetError.errorMessage = connectorError.message;
             spreadsheetError.statusCode = connectorError.statusCode;
+            return null, spreadsheetError;
+        }
+        int statusCode = response.statusCode;
+        json spreadsheetJSONResponse = response.getJsonPayload();
+        if (statusCode == 200) {
+            spreadsheetResponse = <Spreadsheet, convertToSpreadsheet()> spreadsheetJSONResponse;
         } else {
-            int statusCode = response.statusCode;
-            json spreadsheetJSONResponse = response.getJsonPayload();
-            if (statusCode == 200) {
-                spreadsheetResponse = <Spreadsheet, convertToSpreadsheet()>spreadsheetJSONResponse;
-            } else {
-                spreadsheetError.errorMessage = spreadsheetJSONResponse.error.message.toString();
-                spreadsheetError.statusCode = statusCode;
-            }
+            spreadsheetError.errorMessage = spreadsheetJSONResponse.error.message.toString();
+            spreadsheetError.statusCode = statusCode;
         }
         return spreadsheetResponse, spreadsheetError;
     }
@@ -78,27 +120,27 @@ public connector GoogleSpreadsheetClientConnector (string accessToken, string re
         if (connectorError != null) {
             spreadsheetError.errorMessage = connectorError.message;
             spreadsheetError.statusCode = connectorError.statusCode;
-        } else {
-            int statusCode = response.statusCode;
-            json spreadsheetJSONResponse = response.getJsonPayload();
-            if (statusCode == 200) {
-                if (spreadsheetJSONResponse.values != null) {
-                    int i = 0;
-                    foreach value in spreadsheetJSONResponse.values {
-                        int j = 0;
-                        string[] val = [];
-                        foreach v in value {
-                            val[j] = v.toString();
-                            j = j + 1;
-                        }
-                        values[i] = val;
-                        i = i + 1;
+            return null, spreadsheetError;
+        }
+        int statusCode = response.statusCode;
+        json spreadsheetJSONResponse = response.getJsonPayload();
+        if (statusCode == 200) {
+            if (spreadsheetJSONResponse.values != null) {
+                int i = 0;
+                foreach value in spreadsheetJSONResponse.values {
+                    int j = 0;
+                    string[] val = [];
+                    foreach v in value {
+                        val[j] = v.toString();
+                        j = j + 1;
                     }
+                    values[i] = val;
+                    i = i + 1;
                 }
-            }  else {
-                spreadsheetError.errorMessage = spreadsheetJSONResponse.error.message.toString();
-                spreadsheetError.statusCode = statusCode;
             }
+        }  else {
+            spreadsheetError.errorMessage = spreadsheetJSONResponse.error.message.toString();
+            spreadsheetError.statusCode = statusCode;
         }
         return values, spreadsheetError;
     }
@@ -120,25 +162,25 @@ public connector GoogleSpreadsheetClientConnector (string accessToken, string re
         if (connectorError != null) {
             spreadsheetError.errorMessage = connectorError.message;
             spreadsheetError.statusCode = connectorError.statusCode;
-        } else {
-            int statusCode = response.statusCode;
-            json spreadsheetJSONResponse = response.getJsonPayload();
-            if (statusCode == 200) {
-                if (spreadsheetJSONResponse.values != null) {
-                    int i = 0;
-                    foreach value in spreadsheetJSONResponse.values {
-                        if(lengthof value > 0){
-                            values[i] = value[0].toString();
-                        } else {
-                            values[i] = "";
-                        }
-                        i = i + 1;
+            return null, spreadsheetError;
+        }
+        int statusCode = response.statusCode;
+        json spreadsheetJSONResponse = response.getJsonPayload();
+        if (statusCode == 200) {
+            if (spreadsheetJSONResponse.values != null) {
+                int i = 0;
+                foreach value in spreadsheetJSONResponse.values {
+                    if (lengthof value > 0){
+                        values[i] = value[0].toString();
+                    } else {
+                        values[i] = "";
                     }
+                    i = i + 1;
                 }
-            }  else {
-                spreadsheetError.errorMessage = spreadsheetJSONResponse.error.message.toString();
-                spreadsheetError.statusCode = statusCode;
             }
+        }  else {
+            spreadsheetError.errorMessage = spreadsheetJSONResponse.error.message.toString();
+            spreadsheetError.statusCode = statusCode;
         }
         return values, spreadsheetError;
     }
@@ -160,21 +202,21 @@ public connector GoogleSpreadsheetClientConnector (string accessToken, string re
         if (connectorError != null) {
             spreadsheetError.errorMessage = connectorError.message;
             spreadsheetError.statusCode = connectorError.statusCode;
-        } else {
-            int statusCode = response.statusCode;
-            json spreadsheetJSONResponse = response.getJsonPayload();
-            if (statusCode == 200) {
-                if (spreadsheetJSONResponse.values != null) {
-                    int i = 0;
-                    foreach value in spreadsheetJSONResponse.values[0] {
-                        values[i] = value.toString();
-                        i = i + 1;
-                    }
+            return null, spreadsheetError;
+        }
+        int statusCode = response.statusCode;
+        json spreadsheetJSONResponse = response.getJsonPayload();
+        if (statusCode == 200) {
+            if (spreadsheetJSONResponse.values != null) {
+                int i = 0;
+                foreach value in spreadsheetJSONResponse.values[0] {
+                    values[i] = value.toString();
+                    i = i + 1;
                 }
-            }  else {
-                spreadsheetError.errorMessage = spreadsheetJSONResponse.error.message.toString();
-                spreadsheetError.statusCode = statusCode;
             }
+        }  else {
+            spreadsheetError.errorMessage = spreadsheetJSONResponse.error.message.toString();
+            spreadsheetError.statusCode = statusCode;
         }
         return values, spreadsheetError;
     }
@@ -196,17 +238,17 @@ public connector GoogleSpreadsheetClientConnector (string accessToken, string re
         if (connectorError != null) {
             spreadsheetError.errorMessage = connectorError.message;
             spreadsheetError.statusCode = connectorError.statusCode;
-        } else {
-            int statusCode = response.statusCode;
-            json spreadsheetJSONResponse = response.getJsonPayload();
-            if (statusCode == 200) {
-                if (spreadsheetJSONResponse.values != null) {
-                    value = spreadsheetJSONResponse.values[0][0].toString();
-                }
-            }  else {
-                spreadsheetError.errorMessage = spreadsheetJSONResponse.error.message.toString();
-                spreadsheetError.statusCode = statusCode;
+            return null, spreadsheetError;
+        }
+        int statusCode = response.statusCode;
+        json spreadsheetJSONResponse = response.getJsonPayload();
+        if (statusCode == 200) {
+            if (spreadsheetJSONResponse.values != null) {
+                value = spreadsheetJSONResponse.values[0][0].toString();
             }
+        }  else {
+            spreadsheetError.errorMessage = spreadsheetJSONResponse.error.message.toString();
+            spreadsheetError.statusCode = statusCode;
         }
         return value, spreadsheetError;
     }
@@ -231,17 +273,17 @@ public connector GoogleSpreadsheetClientConnector (string accessToken, string re
         if (connectorError != null) {
             spreadsheetError.errorMessage = connectorError.message;
             spreadsheetError.statusCode = connectorError.statusCode;
-        } else {
-            int statusCode = response.statusCode;
-            json spreadsheetJSONResponse = response.getJsonPayload();
-            if (statusCode == 200) {
-                if (spreadsheetJSONResponse.values != null) {
-                    rangeResponse = <Range, convertToRange()>spreadsheetJSONResponse;
-                }
-            } else {
-                spreadsheetError.errorMessage = spreadsheetJSONResponse.error.message.toString();
-                spreadsheetError.statusCode = statusCode;
+            return null, spreadsheetError;
+        }
+        int statusCode = response.statusCode;
+        json spreadsheetJSONResponse = response.getJsonPayload();
+        if (statusCode == 200) {
+            if (spreadsheetJSONResponse.values != null) {
+                rangeResponse = <Range, convertToRange()> spreadsheetJSONResponse;
             }
+        } else {
+            spreadsheetError.errorMessage = spreadsheetJSONResponse.error.message.toString();
+            spreadsheetError.statusCode = statusCode;
         }
         return rangeResponse, spreadsheetError;
     }
