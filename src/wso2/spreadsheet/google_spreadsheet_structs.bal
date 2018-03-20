@@ -1,4 +1,20 @@
-package src.wso2.googlespreadsheet;
+// Copyright (c) 2018 WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+//
+// WSO2 Inc. licenses this file to you under the Apache License,
+// Version 2.0 (the "License"); you may not use this file except
+// in compliance with the License.
+// You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
+
+package src.wso2.spreadsheet;
 
 @Description {value: "Struct to define the spreadsheet."}
 public struct Spreadsheet {
@@ -163,9 +179,6 @@ public function <Sheet sheet> getRange(string topLeftCell, string bottomRightCel
 @Param {value: "column: The column to retrieve the values"}
 @Return {value : "Column data"}
 public function <Sheet sheet> getColumnData(string column) (string[], SpreadsheetError){
-    endpoint<GoogleSpreadsheetClientConnector> googleSpreadsheetEP {
-        googleSpreadsheetClientConnector;
-    }
     SpreadsheetError spreadsheetError = {};
     if (!isConnectorInitialized) {
         spreadsheetError.errorMessage = "Connector is not initalized. Invoke init method first.";
@@ -176,7 +189,7 @@ public function <Sheet sheet> getColumnData(string column) (string[], Spreadshee
         return null, spreadsheetError;
     }
     string a1Notation = sheet.properties.title + "!" + column + ":" + column;
-    return googleSpreadsheetEP.getColumnData(sheet.spreadsheetId, a1Notation);
+    return gsClientGlobal.getColumnData(sheet.spreadsheetId, a1Notation);
 }
 
 @Description {value : "Get row data"}
@@ -184,9 +197,6 @@ public function <Sheet sheet> getColumnData(string column) (string[], Spreadshee
 @Param {value: "row: The row to retrieve the values"}
 @Return {value : "Row data"}
 public function <Sheet sheet> getRowData(string row) (string[], SpreadsheetError){
-    endpoint<GoogleSpreadsheetClientConnector> googleSpreadsheetEP {
-        googleSpreadsheetClientConnector;
-    }
     SpreadsheetError spreadsheetError = {};
     if (!isConnectorInitialized) {
         spreadsheetError.errorMessage = "Connector is not initalized. Invoke init method first.";
@@ -197,7 +207,7 @@ public function <Sheet sheet> getRowData(string row) (string[], SpreadsheetError
         return null, spreadsheetError;
     }
     string a1Notation = sheet.properties.title + "!" + row + ":" + row;
-    return googleSpreadsheetEP.getRowData(sheet.spreadsheetId, a1Notation);
+    return gsClientGlobal.getRowData(sheet.spreadsheetId, a1Notation);
 }
 
 @Description {value : "Get cell data"}
@@ -205,10 +215,7 @@ public function <Sheet sheet> getRowData(string row) (string[], SpreadsheetError
 @Param {value: "row: The row of the cell to retrieve the value"}
 @Param {value: "column: The column of the cell to retrieve the value"}
 @Return {value : "Cell data"}
-public function <Sheet sheet> getCellData(string row, string column) (string, SpreadsheetError){
-    endpoint<GoogleSpreadsheetClientConnector> googleSpreadsheetEP {
-        googleSpreadsheetClientConnector;
-    }
+public function <Sheet sheet> getCellData(string column, string row) (string, SpreadsheetError){
     SpreadsheetError spreadsheetError = {};
     if (!isConnectorInitialized) {
         spreadsheetError.errorMessage = "Connector is not initalized. Invoke init method first.";
@@ -219,7 +226,7 @@ public function <Sheet sheet> getCellData(string row, string column) (string, Sp
         return null, spreadsheetError;
     }
     string a1Notation = sheet.properties.title + "!" + column + row;
-    return googleSpreadsheetEP.getCellData(sheet.spreadsheetId, a1Notation);
+    return gsClientGlobal.getCellData(sheet.spreadsheetId, a1Notation);
 }
 
 @Description {value : "Set cell data"}
@@ -227,10 +234,7 @@ public function <Sheet sheet> getCellData(string row, string column) (string, Sp
 @Param {value: "row: The row of the cell to retrieve the value"}
 @Param {value: "column: The column of the cell to retrieve the value"}
 @Return {value : "Cell data"}
-public function <Sheet sheet> setCellData(string row, string column, string value) (Range, SpreadsheetError){
-    endpoint<GoogleSpreadsheetClientConnector> googleSpreadsheetEP {
-        googleSpreadsheetClientConnector;
-    }
+public function <Sheet sheet> setCellData(string column, string row, string value) (Range, SpreadsheetError){
     SpreadsheetError spreadsheetError = {};
     if (!isConnectorInitialized) {
         spreadsheetError.errorMessage = "Connector is not initalized. Invoke init method first.";
@@ -241,7 +245,7 @@ public function <Sheet sheet> setCellData(string row, string column, string valu
         return null, spreadsheetError;
     }
     string a1Notation = sheet.properties.title + "!" + column + row;
-    return googleSpreadsheetEP.setValue(sheet.spreadsheetId, a1Notation, value);
+    return gsClientGlobal.setValue(sheet.spreadsheetId, a1Notation, value);
 }
 
 //Functions binded to Range struct
@@ -249,15 +253,12 @@ public function <Sheet sheet> setCellData(string row, string column, string valu
 @Param {value: "googleSpreadsheetClientConnector: Google Spreadsheet Connector instance"}
 @Return {value : "Sheet values"}
 public function <Range range> getSheetValues() (string[][], SpreadsheetError) {
-    endpoint<GoogleSpreadsheetClientConnector> googleSpreadsheetEP {
-        googleSpreadsheetClientConnector;
-    }
     SpreadsheetError spreadsheetError = {};
     if (!isConnectorInitialized) {
         spreadsheetError.errorMessage = "Connector is not initalized. Invoke init method first.";
         return null, spreadsheetError;
     }
-    return googleSpreadsheetEP.getSheetValues(range.spreadsheetId, range.a1Notation);
+    return gsClientGlobal.getSheetValues(range.spreadsheetId, range.a1Notation);
 }
 
 @Description {value : "Set cell data"}
@@ -265,13 +266,10 @@ public function <Range range> getSheetValues() (string[][], SpreadsheetError) {
 @Param {value: "value: The value to set"}
 @Return {value : "Updated range"}
 public function <Range range> setValue(string value) (Range, SpreadsheetError) {
-    endpoint<GoogleSpreadsheetClientConnector> googleSpreadsheetEP {
-        googleSpreadsheetClientConnector;
-    }
     SpreadsheetError spreadsheetError = {};
     if (!isConnectorInitialized) {
         spreadsheetError.errorMessage = "Connector is not initalized. Invoke init method first.";
         return null, spreadsheetError;
     }
-    return googleSpreadsheetEP.setValue(range.spreadsheetId, range.a1Notation, value);
+    return gsClientGlobal.setValue(range.spreadsheetId, range.a1Notation, value);
 }
