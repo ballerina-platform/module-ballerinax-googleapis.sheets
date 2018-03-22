@@ -20,51 +20,63 @@ import ballerina.io;
 import src.wso2.spreadsheet;
 
 public function main (string[] args) {
-    io:println("Hello, World!");
     spreadsheet:GoogleSpreadsheetClientConnector gs = {};
-    spreadsheet:Spreadsheet spreadsheet;
+    spreadsheet:Spreadsheet spreadsheet = {};
     spreadsheet:SpreadsheetError spreadsheetError = {};
-    spreadsheet:Sheet sheet;
+    spreadsheet:Sheet sheet = {};
     string[] values = [];
     gs.init(args[0], args[1], args[2], args[3]);
-    spreadsheet, spreadsheetError = gs.openSpreadsheetById(args[4]);
+    var spreadsheetRes = gs.createSpreadsheet("testBalFile");
+    io:println(spreadsheetRes);
+
+    spreadsheetRes = gs.openSpreadsheetById(args[4]);
+    match spreadsheetRes {
+        spreadsheet:Spreadsheet s => spreadsheet = s;
+        spreadsheet:SpreadsheetError e => io:println(e);
+    }
     io:println("--------RESPONSE IS-----------");
     io:println(spreadsheet);
-    sheet, spreadsheetError = spreadsheet.getSheetByName(args[5]);
+    var sheetRes = spreadsheet.getSheetByName(args[5]);
     io:println("---------getSheetByName--------");
+    match sheetRes {
+        spreadsheet:Sheet s => sheet = s;
+        spreadsheet:SpreadsheetError e => io:println(e);
+    }
     io:println(sheet);
+    //Get data range
+    var dataRange = sheet.getDataRange();
+    io:println("-----------getDataRange------");
+    io:println(dataRange);
     //Get row data
-    values, spreadsheetError = sheet.getRowData("1");
+    var rowData = sheet.getRowData("1");
     io:println("---------getRowData--------");
-    io:println(values);
+    io:println(rowData);
 
     //Get cell data
-    string cellVal="";
-    cellVal, spreadsheetError = sheet.getCellData("C","1");
+    var cellVal = sheet.getCellData("C","1");
     io:println("---------getCellData--------");
-    io:println("Cell value is : " + cellVal);
-    values, _ = sheet.getColumnData("B");
+    io:println(cellVal);
+
+    var colData = sheet.getColumnData("B");
     io:println("---------getColumnData--------");
+    match colData {
+        string[] v => values = v;
+        spreadsheet:SpreadsheetError e => io:println(e);
+    }
     io:println(values);
     int i = 0;
     if (values!= null) {
         foreach val  in values {
-            int score = 0;
-            score, _ = <int> val;
+            var score, _ = <int> val;
             spreadsheet:Range cellRange = {};
-            spreadsheet:Range cellRangeResponse = {};
+            //spreadsheet:Range cellRangeResponse = {};
             int row = i + 1;
             if (score > 75) {
-                cellRangeResponse, spreadsheetError = sheet.setCellData("C", <string>row, "Exceptional");
+                var cellRangeResponse = sheet.setCellData("C", <string>row, "Exceptional");
             }
-            //string topLeft = "C" + (i + 1);
-            //cellRange, spreadsheetError = sheet.getRange(topLeft, "");
-            //if (score > 75) {
-            //    //Update the cell value
-            //    cellRangeResponse, spreadsheetError = cellRange.setValue("Exceptional");
-            //}
             i = i + 1;
         }
     }
+
     io:println("Update completed");
 }

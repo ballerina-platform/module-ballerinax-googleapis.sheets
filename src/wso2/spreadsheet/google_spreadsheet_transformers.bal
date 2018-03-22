@@ -27,7 +27,7 @@ transformer <json jsonSpreadsheet, Spreadsheet spreadsheet> convertToSpreadsheet
                               convertToNamedRanges(jsonSpreadsheet.namedRanges) : [];
 }
 
-function convertToSheets (json jsonSheets, string spreadsheetId) (Sheet[]) {
+function convertToSheets (json jsonSheets, string spreadsheetId) returns Sheet[] {
     int i = 0;
     Sheet[] sheets = [];
     foreach jsonSheet in jsonSheets {
@@ -37,7 +37,7 @@ function convertToSheets (json jsonSheets, string spreadsheetId) (Sheet[]) {
     return sheets;
 }
 
-function convertToNamedRanges(json jsonNamedRanges) (NamedRange[]) {
+function convertToNamedRanges(json jsonNamedRanges) returns NamedRange[] {
     int i = 0;
     NamedRange[] namedRanges = [];
     foreach jsonNamedRange in jsonNamedRanges {
@@ -68,15 +68,18 @@ transformer <json jsonProperties, SpreadsheetProperties spreadsheetProperties> c
 }
 
 transformer <json jsonVal, int intVal> convertToInt() {
-    intVal, _ = (int) jsonVal;
+    var value, conversionErr = (int) jsonVal;
+    intVal = conversionErr == null ? value : 0;
 }
 
 transformer <json jsonVal, float floatVal> convertToFloat() {
-    floatVal, _ = (float) jsonVal;
+    var value, conversionErr = (float) jsonVal;
+    floatVal = conversionErr == null ? value : 0;
 }
 
 transformer <json jsonVal, boolean booleanVal> convertToBoolean() {
-    booleanVal, _ = (boolean) jsonVal;
+    var value, conversionErr = (boolean) jsonVal;
+    booleanVal = conversionErr == null ? value : false;
 }
 
 transformer <json jsonSheet, Sheet sheet> convertToSheet(string spreadsheetId) {
@@ -87,8 +90,8 @@ transformer <json jsonSheet, Sheet sheet> convertToSheet(string spreadsheetId) {
 
 transformer <json jsonSheetProperties, SheetProperties sheetProperties> convertToSheetProperties() {
     sheetProperties.title = jsonSheetProperties.title.toString();
-    sheetProperties.sheetId, _ = (int) jsonSheetProperties.sheetId;
-    sheetProperties.index, _ = (int) jsonSheetProperties.index;
+    sheetProperties.sheetId = <int, convertToInt()> jsonSheetProperties.sheetId;
+    sheetProperties.index = <int, convertToInt()> jsonSheetProperties.index;
     sheetProperties.sheetType = jsonSheetProperties.sheetType.toString();
     sheetProperties.hidden = jsonSheetProperties.hidden != null ?
                              <boolean, convertToBoolean()>jsonSheetProperties.hidden : false;

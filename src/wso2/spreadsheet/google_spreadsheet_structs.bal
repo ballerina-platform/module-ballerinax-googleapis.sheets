@@ -94,40 +94,41 @@ public struct SpreadsheetError {
 @Description {value : "Get the name of the spreadsheet"}
 @Param {value : "spreadsheet: Spreadsheet object"}
 @Return {value : "Name of the spreadsheet"}
-public function <Spreadsheet spreadsheet> getSpreadsheetName() (string, SpreadsheetError) {
+public function <Spreadsheet spreadsheet> getSpreadsheetName() returns (string) | SpreadsheetError {
     SpreadsheetError spreadsheetError = {};
     string title = "";
     if (spreadsheet.properties == null) {
         spreadsheetError.errorMessage = "Spreadsheet properties cannot be null";
+        return spreadsheetError;
     } else {
-        title = spreadsheet.properties.title;
+        return spreadsheet.properties.title;
     }
-    return title, spreadsheetError;
 }
 
 @Description {value : "Get the name of the spreadsheet"}
 @Param {value : "spreadsheet: Spreadsheet object"}
 @Return {value : "Id of the spreadsheet"}
-public function <Spreadsheet spreadsheet> getSpreadsheetId() (string) {
+public function <Spreadsheet spreadsheet> getSpreadsheetId() returns (string) {
     return spreadsheet.spreadsheetId;
 }
 
 @Description {value : "Get sheets of the spreadsheet"}
 @Param {value : "spreadsheet: Spreadsheet object"}
 @Return {value : "Sheet objects"}
-public function <Spreadsheet spreadsheet> getSheets() (Sheet[]) {
+public function <Spreadsheet spreadsheet> getSheets() returns Sheet[] {
     return spreadsheet.sheets;
 }
 
 @Description {value : "Get sheet by name"}
 @Param {value : "sheetName: Name of the sheet"}
 @Return {value : "sheet: Sheet object"}
-public function <Spreadsheet spreadsheet> getSheetByName(string sheetName) (Sheet, SpreadsheetError){
+public function <Spreadsheet spreadsheet> getSheetByName(string sheetName) returns Sheet | SpreadsheetError {
     Sheet[] sheets = spreadsheet.sheets;
     Sheet sheetResponse = {};
     SpreadsheetError spreadsheetError = {};
     if (sheets == null) {
         spreadsheetError.errorMessage = "No sheet found";
+        return spreadsheetError;
     } else {
         foreach sheet in sheets {
             if (sheet.properties != null) {
@@ -138,32 +139,58 @@ public function <Spreadsheet spreadsheet> getSheetByName(string sheetName) (Shee
             }
         }
         sheetResponse.spreadsheetId = spreadsheet.spreadsheetId;
+        return sheetResponse;
     }
-    return sheetResponse, spreadsheetError;
 }
 
 //Functions binded to Sheet struct
 
 @Description {value : "Get data range of a sheet"}
 @Return {value : "range: Range object"}
-public function <Sheet sheet> getDataRange() (Range) {
+public function <Sheet sheet> getDataRange() returns Range | SpreadsheetError {
     Range range = {};
     range.sheet = sheet;
-    range.a1Notation = sheet.properties.title;
     range.spreadsheetId = sheet.spreadsheetId;
+    SpreadsheetError spreadsheetError = {};
+    range.sheet = sheet;
+    int numberOfRows = 0;
+    int numberOfColumns = 0;
+    string a1Notation = "A1";
+    if (sheet.properties == null || sheet.properties.title == "") {
+        spreadsheetError.errorMessage = "Sheet title cannot be null";
+        return spreadsheetError;
+    }
+    string sheetName = sheet.properties.title;
+    // Get number of rows
+    var response = gsClientGlobal.getNumberOfRowsOrColumns(sheet.spreadsheetId, sheetName, "ROWS");
+    match response {
+        SpreadsheetError err => return err;
+        int val => numberOfRows = val;
+    }
+    //Get number of columns
+    var colResponse = gsClientGlobal.getNumberOfRowsOrColumns(sheet.spreadsheetId, sheetName, "COLUMNS");
+    match colResponse {
+        SpreadsheetError err => return err;
+        int val => numberOfColumns = val;
+    }
+    if (numberOfColumns > 1) {
+        string columnName = findColumn(numberOfColumns);
+        a1Notation = a1Notation + ":" + columnName + numberOfRows;
+    }
+    range.a1Notation = a1Notation;
     return range;
 }
 
 @Description {value : "Get range of a sheet"}
 @Param {value: "a1Notation: The A1 notation of the range"}
 @Return {value : "range: Range object"}
-public function <Sheet sheet> getRange(string topLeftCell, string bottomRightCell) (Range, SpreadsheetError){
+public function <Sheet sheet> getRange(string topLeftCell, string bottomRightCell) returns Range | SpreadsheetError {
     Range range = {};
     SpreadsheetError spreadsheetError = {};
     range.sheet = sheet;
     if (sheet.properties == null || sheet.properties.title == "") {
         spreadsheetError.errorMessage = "Sheet title cannot be null";
-        return null, spreadsheetError;
+        return spreadsheetError;
     }
     string a1Notation = sheet.properties.title + "!" + topLeftCell;
     if (bottomRightCell != "" && bottomRightCell != null) {
@@ -171,22 +198,22 @@ public function <Sheet sheet> getRange(string topLeftCell, string bottomRightCel
     }
     range.a1Notation = a1Notation;
     range.spreadsheetId = sheet.spreadsheetId;
-    return range, spreadsheetError;
+    return range;
 }
 
 @Description {value : "Get column data"}
 @Param {value: "googleSpreadsheetClientConnector: Google Spreadsheet Connector instance"}
 @Param {value: "column: The column to retrieve the values"}
 @Return {value : "Column data"}
-public function <Sheet sheet> getColumnData(string column) (string[], SpreadsheetError){
+public function <Sheet sheet> getColumnData(string column) returns (string[]) | SpreadsheetError {
     SpreadsheetError spreadsheetError = {};
     if (!isConnectorInitialized) {
         spreadsheetError.errorMessage = "Connector is not initalized. Invoke init method first.";
-        return null, spreadsheetError;
+        return spreadsheetError;
     }
     if (sheet.spreadsheetId =="" || sheet.properties == null || sheet.properties.title == "") {
         spreadsheetError.errorMessage = "Spreadsheet Id or sheet title cannot be null";
-        return null, spreadsheetError;
+        return spreadsheetError;
     }
     string a1Notation = sheet.properties.title + "!" + column + ":" + column;
     return gsClientGlobal.getColumnData(sheet.spreadsheetId, a1Notation);
@@ -196,15 +223,15 @@ public function <Sheet sheet> getColumnData(string column) (string[], Spreadshee
 @Param {value: "googleSpreadsheetClientConnector: Google Spreadsheet Connector instance"}
 @Param {value: "row: The row to retrieve the values"}
 @Return {value : "Row data"}
-public function <Sheet sheet> getRowData(string row) (string[], SpreadsheetError){
+public function <Sheet sheet> getRowData(string row) returns (string[]) | SpreadsheetError {
     SpreadsheetError spreadsheetError = {};
     if (!isConnectorInitialized) {
         spreadsheetError.errorMessage = "Connector is not initalized. Invoke init method first.";
-        return null, spreadsheetError;
+        return spreadsheetError;
     }
     if (sheet.spreadsheetId =="" || sheet.properties == null || sheet.properties.title == "") {
         spreadsheetError.errorMessage = "Spreadsheet Id or sheet title cannot be null";
-        return null, spreadsheetError;
+        return spreadsheetError;
     }
     string a1Notation = sheet.properties.title + "!" + row + ":" + row;
     return gsClientGlobal.getRowData(sheet.spreadsheetId, a1Notation);
@@ -215,15 +242,15 @@ public function <Sheet sheet> getRowData(string row) (string[], SpreadsheetError
 @Param {value: "row: The row of the cell to retrieve the value"}
 @Param {value: "column: The column of the cell to retrieve the value"}
 @Return {value : "Cell data"}
-public function <Sheet sheet> getCellData(string column, string row) (string, SpreadsheetError){
+public function <Sheet sheet> getCellData(string column, string row) returns (string) | SpreadsheetError {
     SpreadsheetError spreadsheetError = {};
     if (!isConnectorInitialized) {
         spreadsheetError.errorMessage = "Connector is not initalized. Invoke init method first.";
-        return null, spreadsheetError;
+        return spreadsheetError;
     }
     if (sheet.spreadsheetId =="" || sheet.properties == null || sheet.properties.title == "") {
         spreadsheetError.errorMessage = "Spreadsheet Id or sheet title cannot be null";
-        return null, spreadsheetError;
+        return spreadsheetError;
     }
     string a1Notation = sheet.properties.title + "!" + column + row;
     return gsClientGlobal.getCellData(sheet.spreadsheetId, a1Notation);
@@ -234,15 +261,15 @@ public function <Sheet sheet> getCellData(string column, string row) (string, Sp
 @Param {value: "row: The row of the cell to retrieve the value"}
 @Param {value: "column: The column of the cell to retrieve the value"}
 @Return {value : "Cell data"}
-public function <Sheet sheet> setCellData(string column, string row, string value) (Range, SpreadsheetError){
+public function <Sheet sheet> setCellData(string column, string row, string value) returns Range | SpreadsheetError {
     SpreadsheetError spreadsheetError = {};
     if (!isConnectorInitialized) {
         spreadsheetError.errorMessage = "Connector is not initalized. Invoke init method first.";
-        return null, spreadsheetError;
+        return spreadsheetError;
     }
     if (sheet.spreadsheetId =="" || sheet.properties == null || sheet.properties.title == "") {
         spreadsheetError.errorMessage = "Spreadsheet Id or sheet title cannot be null";
-        return null, spreadsheetError;
+        return spreadsheetError;
     }
     string a1Notation = sheet.properties.title + "!" + column + row;
     return gsClientGlobal.setValue(sheet.spreadsheetId, a1Notation, value);
@@ -252,11 +279,11 @@ public function <Sheet sheet> setCellData(string column, string row, string valu
 @Description {value : "Get sheet values"}
 @Param {value: "googleSpreadsheetClientConnector: Google Spreadsheet Connector instance"}
 @Return {value : "Sheet values"}
-public function <Range range> getSheetValues() (string[][], SpreadsheetError) {
+public function <Range range> getSheetValues() returns (string[][]) | SpreadsheetError {
     SpreadsheetError spreadsheetError = {};
     if (!isConnectorInitialized) {
         spreadsheetError.errorMessage = "Connector is not initalized. Invoke init method first.";
-        return null, spreadsheetError;
+        return spreadsheetError;
     }
     return gsClientGlobal.getSheetValues(range.spreadsheetId, range.a1Notation);
 }
@@ -265,11 +292,11 @@ public function <Range range> getSheetValues() (string[][], SpreadsheetError) {
 @Param {value: "googleSpreadsheetClientConnector: Google Spreadsheet Connector instance"}
 @Param {value: "value: The value to set"}
 @Return {value : "Updated range"}
-public function <Range range> setValue(string value) (Range, SpreadsheetError) {
+public function <Range range> setValue(string value) returns Range | SpreadsheetError {
     SpreadsheetError spreadsheetError = {};
     if (!isConnectorInitialized) {
         spreadsheetError.errorMessage = "Connector is not initalized. Invoke init method first.";
-        return null, spreadsheetError;
+        return spreadsheetError;
     }
     return gsClientGlobal.setValue(range.spreadsheetId, range.a1Notation, value);
 }
