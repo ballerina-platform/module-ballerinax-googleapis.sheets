@@ -14,9 +14,9 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package src.wso2.spreadsheet;
+package googlespreadsheet;
 
-import ballerina.io;
+import ballerina/io;
 
 public function findColumn (int columnNumber) returns (string) {
     string[] columnNames = ["A", "B","C","D","E","F","G", "H","I", "J","K","L","M","N","O",

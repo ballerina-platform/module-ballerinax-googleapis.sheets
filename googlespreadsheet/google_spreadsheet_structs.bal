@@ -14,7 +14,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package src.wso2.spreadsheet;
+package googlespreadsheet;
 
 @Description {value: "Struct to define the spreadsheet."}
 public struct Spreadsheet {

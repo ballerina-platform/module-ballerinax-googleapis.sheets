@@ -14,7 +14,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package src.wso2.spreadsheet;
+package googlespreadsheet;
 
 transformer <json jsonSpreadsheet, Spreadsheet spreadsheet> convertToSpreadsheet() {
     spreadsheet.spreadsheetId = jsonSpreadsheet.spreadsheetId.toString();
@@ -68,18 +68,11 @@ transformer <json jsonProperties, SpreadsheetProperties spreadsheetProperties> c
 }
 
 transformer <json jsonVal, int intVal> convertToInt() {
-    var value, conversionErr = (int) jsonVal;
-    intVal = conversionErr == null ? value : 0;
-}
-
-transformer <json jsonVal, float floatVal> convertToFloat() {
-    var value, conversionErr = (float) jsonVal;
-    floatVal = conversionErr == null ? value : 0;
+    intVal =? <int> jsonVal.toString();
 }
 
 transformer <json jsonVal, boolean booleanVal> convertToBoolean() {
-    var value, conversionErr = (boolean) jsonVal;
-    booleanVal = conversionErr == null ? value : false;
+    booleanVal =? <boolean> jsonVal;
 }
 
 transformer <json jsonSheet, Sheet sheet> convertToSheet(string spreadsheetId) {
@@ -96,9 +89,9 @@ transformer <json jsonSheetProperties, SheetProperties sheetProperties> convertT
     sheetProperties.hidden = jsonSheetProperties.hidden != null ?
                              <boolean, convertToBoolean()>jsonSheetProperties.hidden : false;
     sheetProperties.rightToLeft = jsonSheetProperties.rightToLeft != null ?
-                                  <boolean, convertToBoolean()>jsonSheetProperties.rightToLeft : false;
+                             <boolean, convertToBoolean()>jsonSheetProperties.rightToLeft : false;
     sheetProperties.gridProperties = jsonSheetProperties.gridProperties != null ?
-                                     <GridProperties, convertToGridProperties()>jsonSheetProperties.gridProperties : {};
+                             <GridProperties, convertToGridProperties()>jsonSheetProperties.gridProperties : {};
 }
 
 transformer <json jsonProps, GridProperties gridProperties> convertToGridProperties() {

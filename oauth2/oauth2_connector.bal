@@ -14,11 +14,11 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package src.wso2.oauth2;
+package oauth2;
 
-import ballerina.io;
-import ballerina.net.http;
-import ballerina.mime;
+import ballerina/io;
+import ballerina/net.http;
+import ballerina/mime;
 
 public struct OAuth2Client {
     http:ClientEndpoint httpClient;
@@ -267,6 +267,7 @@ function getAccessTokenFromRefreshToken (http:Request request, string accessToke
     http:Request refreshTokenRequest = {};
     http:Response httpRefreshTokenResponse = {};
     json accessTokenFromRefreshTokenJSONResponse;
+    http:HttpConnectorError connectorError = {};
 
     string accessTokenFromRefreshTokenReq = refreshTokenPath + "?refresh_token=" + refreshToken
                                     + "&grant_type=refresh_token&client_secret=" + clientSecret
@@ -281,8 +282,12 @@ function getAccessTokenFromRefreshToken (http:Request request, string accessToke
         json jsonVal => accessTokenFromRefreshTokenJSONResponse = jsonVal;
         mime:EntityError err => io:println(err);
     }
-
-    accessToken, _ = (string)accessTokenFromRefreshTokenJSONResponse.access_token;
+    if (httpRefreshTokenResponse.statusCode == 200) {
+        accessToken = accessTokenFromRefreshTokenJSONResponse.access_token.toString();
+    } else {
+        connectorError.message = accessTokenFromRefreshTokenJSONResponse.toString();
+        return connectorError;
+    }
     request.setHeader("Authorization", "Bearer " + accessToken);
 
     return accessToken;

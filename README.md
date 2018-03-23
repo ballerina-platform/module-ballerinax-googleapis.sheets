@@ -14,7 +14,7 @@ The following sections provide you with information on how to use the Ballerina 
 
 | Language Version | Connector Version | API Version |
 |-------|:------------:|:------------:|
-| 0.963.0 | V1 | V4 |
+| 0.970.0-alpha0 | V1 | V4 |
 
 
 ## Getting started

@@ -14,12 +14,12 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package src.wso2.spreadsheet;
+package googlespreadsheet;
 
-import ballerina.io;
-import ballerina.mime;
-import ballerina.net.http;
-import src.wso2.oauth2;
+import ballerina/io;
+import ballerina/mime;
+import ballerina/net.http;
+import oauth2;
 
 public struct GoogleSpreadsheetClientConnector {
     oauth2:OAuth2Client oAuth2Client;
