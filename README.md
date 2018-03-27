@@ -8,21 +8,24 @@ The following sections provide you with information on how to use the Ballerina 
 - [Getting started](#getting-started)
 - [Running Samples](#running-samples)
 - [Quick Testing](#quick-testing)
-- [Working with Google Spreadsheet connector actions](#working-with-ethereum-connector-actions)
+- [Working with Google Spreadsheet connector actions](#working-with-google-spreadsheet-connector-actions)
 
 ### Compatibility
 
 | Language Version | Connector Version | API Version |
 |-------|:------------:|:------------:|
-| 0.970.0-alpha0 | V1 | V4 |
+| ballerina-0.970-alpha-1-SNAPSHOT | 0.2 | V4 |
 
 
 ## Getting started
 1. Clone package-googlespreadsheet from [https://github.com/wso2-ballerina/package-googlespreadsheet](https://github.com/wso2-ballerina/package-googlespreadsheet).
-2. Navigate to package-googlespreadsheet and use 'ballerina build src/wso2/googlespreadsheet/' command to build the connector.
+2. Import the package to your ballerina project.
 
 ##### Prerequisites
-1. Create a project and create an app for this project by visiting [Google Spreadsheet](https://console.developers.google.com/_
+Download the ballerina [distribution](https://ballerinalang.org/downloads/).
+
+##### Prerequisites
+1. Create a project and create an app for this project by visiting [Google Spreadsheet](https://console.developers.google.com/)
 
 2. Obtain the following parameters
 
@@ -34,4 +37,3 @@ The following sections provide you with information on how to use the Ballerina 
 
 **IMPORTANT** This access token and refresh token can be used to make API requests on your own
 account's behalf. Do not share your access token, client  secret with anyone.
-
