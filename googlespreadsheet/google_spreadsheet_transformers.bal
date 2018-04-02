@@ -16,96 +16,111 @@
 
 package googlespreadsheet;
 
-transformer <json jsonSpreadsheet, Spreadsheet spreadsheet> convertToSpreadsheet() {
+function convertToSpreadsheet(json jsonSpreadsheet) returns Spreadsheet {
+    Spreadsheet spreadsheet = {};
     spreadsheet.spreadsheetId = jsonSpreadsheet.spreadsheetId.toString();
     spreadsheet.properties = jsonSpreadsheet.properties != null ?
-                             <SpreadsheetProperties, convertToSpreadsheetProperties()>jsonSpreadsheet.properties : {};
+                             convertToSpreadsheetProperties(jsonSpreadsheet.properties) : {};
     spreadsheet.spreadsheetUrl = jsonSpreadsheet.spreadsheetUrl.toString();
     spreadsheet.sheets = jsonSpreadsheet.sheets != null ?
                          convertToSheets(jsonSpreadsheet.sheets, jsonSpreadsheet.spreadsheetId.toString()):[];
     spreadsheet.namedRanges = jsonSpreadsheet.namedRanges != null ?
                               convertToNamedRanges(jsonSpreadsheet.namedRanges) : [];
+
+    return spreadsheet;
 }
 
 function convertToSheets (json jsonSheets, string spreadsheetId) returns Sheet[] {
     int i = 0;
     Sheet[] sheets = [];
     foreach jsonSheet in jsonSheets {
-        sheets[i] = <Sheet, convertToSheet(spreadsheetId)> jsonSheet;
+        sheets[i] = convertToSheet(jsonSheet, spreadsheetId);
         i = i +1;
     }
     return sheets;
+}
+
+function convertToSheet(json jsonSheet, string spreadsheetId) returns Sheet {
+    Sheet sheet = {};
+    sheet.spreadsheetId = spreadsheetId;
+    sheet.properties = jsonSheet.properties != null ? convertToSheetProperties(jsonSheet.properties) : {};
+    return sheet;
 }
 
 function convertToNamedRanges(json jsonNamedRanges) returns NamedRange[] {
     int i = 0;
     NamedRange[] namedRanges = [];
     foreach jsonNamedRange in jsonNamedRanges {
-        namedRanges[i] = <NamedRange, convertToNamedRange()>jsonNamedRange;
+        namedRanges[i] = convertToNamedRange(jsonNamedRange);
         i = i + 1;
     }
     return namedRanges;
 }
 
-transformer <json jsonRange, NamedRange namedRange> convertToNamedRange() {
+function convertToNamedRange(json jsonRange) returns NamedRange {
+    NamedRange namedRange = {};
     namedRange.name = jsonRange.namedRange.toString();
     namedRange.namedRangeId = jsonRange.namedRangeId.toString();
-    namedRange.range = jsonRange.range != null ? <GridRange, convertToGridRange()>jsonRange.range : {};
+    namedRange.range = jsonRange.range != null ? convertToGridRange(jsonRange.range) : {};
+    return namedRange;
 }
 
-transformer <json jsonGridRange, GridRange range> convertToGridRange() {
-    range.sheetId = <int, convertToInt()>jsonGridRange.sheetId;
-    range.startRowIndex = <int, convertToInt()>jsonGridRange.startRowIndex;
-    range.startColumnIndex = <int, convertToInt()>jsonGridRange.startColumnIndex;
-    range.endRowIndex = <int, convertToInt()>jsonGridRange.endRowIndex;
-    range.endColumnIndex = <int, convertToInt()>jsonGridRange.endColumnIndex;
+function convertToGridRange(json jsonGridRange) returns GridRange {
+    GridRange range = {};
+    range.sheetId = convertToInt(jsonGridRange.sheetId);
+    range.startRowIndex = convertToInt(jsonGridRange.startRowIndex);
+    range.startColumnIndex = convertToInt(jsonGridRange.startColumnIndex);
+    range.endRowIndex = convertToInt(jsonGridRange.endRowIndex);
+    range.endColumnIndex = convertToInt(jsonGridRange.endColumnIndex);
+    return range;
 }
 
-transformer <json jsonProperties, SpreadsheetProperties spreadsheetProperties> convertToSpreadsheetProperties() {
+function convertToSpreadsheetProperties(json jsonProperties) returns SpreadsheetProperties {
+    SpreadsheetProperties spreadsheetProperties = {};
     spreadsheetProperties.title = jsonProperties.title.toString();
     spreadsheetProperties.locale = jsonProperties.locale.toString();
     spreadsheetProperties.timeZone = jsonProperties.timeZone.toString();
+    return spreadsheetProperties;
 }
 
-transformer <json jsonVal, int intVal> convertToInt() {
-    intVal =? <int> jsonVal.toString();
+function convertToInt(json jsonVal) returns int {
+    int intVal =? <int> jsonVal.toString();
+    return intVal;
 }
 
-transformer <json jsonVal, boolean booleanVal> convertToBoolean() {
-    booleanVal =? <boolean> jsonVal;
+function convertToBoolean(json jsonVal) returns boolean {
+    boolean booleanVal =? <boolean> jsonVal;
+    return booleanVal;
 }
 
-transformer <json jsonSheet, Sheet sheet> convertToSheet(string spreadsheetId) {
-    sheet.spreadsheetId = spreadsheetId;
-    sheet.properties = jsonSheet.properties != null ?
-                       <SheetProperties, convertToSheetProperties()>jsonSheet.properties : {};
-}
-
-transformer <json jsonSheetProperties, SheetProperties sheetProperties> convertToSheetProperties() {
+function convertToSheetProperties(json jsonSheetProperties) returns SheetProperties {
+    SheetProperties sheetProperties = {};
     sheetProperties.title = jsonSheetProperties.title.toString();
-    sheetProperties.sheetId = <int, convertToInt()> jsonSheetProperties.sheetId;
-    sheetProperties.index = <int, convertToInt()> jsonSheetProperties.index;
+    sheetProperties.sheetId = convertToInt(jsonSheetProperties.sheetId);
+    sheetProperties.index = convertToInt(jsonSheetProperties.index);
     sheetProperties.sheetType = jsonSheetProperties.sheetType.toString();
-    sheetProperties.hidden = jsonSheetProperties.hidden != null ?
-                             <boolean, convertToBoolean()>jsonSheetProperties.hidden : false;
+    sheetProperties.hidden = jsonSheetProperties.hidden != null ? convertToBoolean(jsonSheetProperties.hidden) : false;
     sheetProperties.rightToLeft = jsonSheetProperties.rightToLeft != null ?
-                             <boolean, convertToBoolean()>jsonSheetProperties.rightToLeft : false;
+                                     convertToBoolean(jsonSheetProperties.rightToLeft) : false;
     sheetProperties.gridProperties = jsonSheetProperties.gridProperties != null ?
-                             <GridProperties, convertToGridProperties()>jsonSheetProperties.gridProperties : {};
+                                     convertToGridProperties(jsonSheetProperties.gridProperties) : {};
+    return sheetProperties;
 }
 
-transformer <json jsonProps, GridProperties gridProperties> convertToGridProperties() {
-    gridProperties.rowCount = jsonProps.rowCount != null ? <int, convertToInt()>jsonProps.rowCount : 0;
-    gridProperties.columnCount = jsonProps.columnCount != null ? <int, convertToInt()>jsonProps.columnCount : 0;
-    gridProperties.frozenRowCount = jsonProps.frozenRowCount != null ?
-                                    <int, convertToInt()>jsonProps.frozenRowCount : 0;
+function convertToGridProperties(json jsonProps) returns GridProperties {
+    GridProperties gridProperties = {};
+    gridProperties.rowCount = jsonProps.rowCount != null ? convertToInt(jsonProps.rowCount) : 0;
+    gridProperties.columnCount = jsonProps.columnCount != null ? convertToInt(jsonProps.columnCount) : 0;
+    gridProperties.frozenRowCount = jsonProps.frozenRowCount != null ? convertToInt(jsonProps.frozenRowCount) : 0;
     gridProperties.frozenColumnCount = jsonProps.frozenColumnCount != null ?
-                                       <int, convertToInt()>jsonProps.frozenColumnCount : 0;
-    gridProperties.hideGridlines = jsonProps.hideGridlines != null ?
-                                   <boolean, convertToBoolean()>jsonProps.hideGridlines : false;
+                                       convertToInt(jsonProps.frozenColumnCount) : 0;
+    gridProperties.hideGridlines = jsonProps.hideGridlines != null ? convertToBoolean(jsonProps.hideGridlines) : false;
+    return gridProperties;
 }
 
-transformer <json jsonRange, Range range> convertToRange() {
+function convertToRange(json jsonRange) returns  Range {
+    Range range = {};
     range.spreadsheetId = jsonRange.spreadsheetId.toString();
     range.a1Notation = jsonRange.updatedRange.toString();
+    return range;
 }
