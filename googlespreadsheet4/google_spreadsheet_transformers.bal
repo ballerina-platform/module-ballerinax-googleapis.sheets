@@ -14,7 +14,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package googlespreadsheet;
+package googlespreadsheet4;
 
 function convertToSpreadsheet(json jsonSpreadsheet) returns Spreadsheet {
     Spreadsheet spreadsheet = {};

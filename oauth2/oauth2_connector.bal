@@ -16,9 +16,9 @@
 
 package oauth2;
 
-import ballerina/io;
 import ballerina/net.http;
 import ballerina/mime;
+import ballerina/util;
 
 @Description {value:"Struct to initialize the connection."}
 public struct OAuth2Connector {
@@ -30,6 +30,7 @@ public struct OAuth2Connector {
     string refreshTokenEP;
     string refreshTokenPath;
     boolean useUriParams = false;
+    boolean setCredentialsInHeader = false;
     http:HttpClient httpClient;
     http:ClientEndpointConfiguration clientConfig;
 }
@@ -197,7 +198,8 @@ returns http:Response | http:HttpConnectorError {
 function <OAuth2Connector oAuth2Connector> canProcess (http:Request request)
 returns (boolean) | http:HttpConnectorError {
     if (oAuth2Connector.accessToken == "") {
-        if (oAuth2Connector.refreshToken != "") {
+        if (oAuth2Connector.refreshToken != "" && oAuth2Connector.clientId != ""
+            && oAuth2Connector.clientSecret != "") {
             var  accessTokenValueResponse = oAuth2Connector.getAccessTokenFromRefreshToken(request);
             match accessTokenValueResponse {
                 string accessTokenString => request.setHeader("Authorization", "Bearer " + accessTokenString);
@@ -215,7 +217,8 @@ returns (boolean) | http:HttpConnectorError {
 
 function <OAuth2Connector oAuth2Connector> checkAndRefreshToken (http:Request request)
 returns (boolean) | http:HttpConnectorError {
-    if ((response.statusCode == 401) && oAuth2Connector.refreshToken != "") {
+    if ((response.statusCode == 401) && oAuth2Connector.refreshToken != "" && oAuth2Connector.clientId != ""
+        && oAuth2Connector.clientSecret != "") {
         var accessTokenValueResponse = oAuth2Connector.getAccessTokenFromRefreshToken(request);
         match accessTokenValueResponse {
             string accessTokenString => request.setHeader("Authorization", "Bearer " + accessTokenString);
@@ -227,18 +230,25 @@ returns (boolean) | http:HttpConnectorError {
 }
 
 function <OAuth2Connector oAuth2Connector> getAccessTokenFromRefreshToken (http:Request request)
-                                                        returns (string) | http:HttpConnectorError {
+returns (string) | http:HttpConnectorError {
     http:HttpClient refreshTokenClient = http:createHttpClient(oAuth2Connector.refreshTokenEP,
                                                                oAuth2Connector.clientConfig);
     http:Request refreshTokenRequest = {};
     http:Response httpRefreshTokenResponse = {};
     http:HttpConnectorError connectorError = {};
     boolean useUriParams = oAuth2Connector.useUriParams;
+    boolean setCredentialsInHeader = oAuth2Connector.setCredentialsInHeader;
     string accessTokenFromRefreshTokenReq = oAuth2Connector.refreshTokenPath;
     string requestParams = "refresh_token=" + oAuth2Connector.refreshToken
-                                            + "&grant_type=refresh_token&client_secret=" + oAuth2Connector.clientSecret
-                                            + "&client_id=" + oAuth2Connector.clientId;
-    if(useUriParams) {
+                           + "&grant_type=refresh_token&client_secret=" + oAuth2Connector.clientSecret
+                           + "&client_id=" + oAuth2Connector.clientId;
+    if(setCredentialsInHeader) {
+        string clientIdSecret = oAuth2Connector.clientId + ":" + oAuth2Connector.clientSecret;
+        string base64ClientIdSecret = util:base64Encode(clientIdSecret);
+        refreshTokenRequest.addHeader("Content-Type", "application/x-www-form-urlencoded");
+        refreshTokenRequest.addHeader("Authorization", "Basic " + base64ClientIdSecret);
+        refreshTokenRequest.setStringPayload("grant_type=refresh_token&refresh_token=" + oAuth2Connector.refreshToken);
+    } else if(useUriParams) {
         refreshTokenRequest.addHeader("Content-Type", "application/x-www-form-urlencoded");
         refreshTokenRequest.setStringPayload(requestParams);
     } else {

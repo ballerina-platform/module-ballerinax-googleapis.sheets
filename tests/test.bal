@@ -14,77 +14,190 @@
 // specific language governing permissions and limitations
 // under the License.
 
+import ballerina/config;
 import ballerina/io;
-import googlespreadsheet;
+import ballerina/test;
+import googlespreadsheet4;
 
-public function main (string[] args) {
-    endpoint googlespreadsheet:SpreadsheetEndpoint sp {
-        oauthClientConfig: {
-           accessToken:args[0],
-           clientConfig:{},
-           refreshToken:args[1],
-           clientId:args[2],
-           clientSecret:args[3],
-           useUriParams:true
-        }
-    };
-    googlespreadsheet:SpreadsheetConnector gs = {};
-    googlespreadsheet:Spreadsheet spreadsheet = {};
-    googlespreadsheet:SpreadsheetError spreadsheetError = {};
-    googlespreadsheet:Sheet sheet = {};
-    string spreadsheetId = args[4];
-    string sheetName = args[5];
-    var spreadsheetRes = sp -> createSpreadsheet("testBalFile");
-    io:println(spreadsheetRes);
+string accessToken = setConfParams(config:getAsString("ACCESS_TOKEN"));
+string clientId = setConfParams(config:getAsString("CLIENT_ID"));
+string clientSecret = setConfParams(config:getAsString("CLIENT_SECRET"));
+string refreshToken = setConfParams(config:getAsString("REFRESH_TOKEN"));
 
-    spreadsheetRes = sp -> openSpreadsheetById(spreadsheetId);
+endpoint googlespreadsheet4:SpreadsheetEndpoint sp {
+    oauthClientConfig: {
+       accessToken:accessToken,
+       clientConfig:{},
+       refreshToken:refreshToken,
+       clientId:clientId,
+       clientSecret:clientSecret,
+       useUriParams:true
+    }
+};
+
+googlespreadsheet4:Spreadsheet spreadsheet = {};
+googlespreadsheet4:Sheet sheet = {};
+string spreadsheetName = "testBalFile";
+string sheetName;
+
+@test:Config
+function testCreateSpreadsheet () {
+    io:println("-----------------Test case for createSpreadsheet method------------------");
+    var spreadsheetRes = sp -> createSpreadsheet(spreadsheetName);
     match spreadsheetRes {
-        googlespreadsheet:Spreadsheet s => spreadsheet = s;
-        googlespreadsheet:SpreadsheetError e => io:println(e);
+        googlespreadsheet4:Spreadsheet s => spreadsheet = s;
+        googlespreadsheet4:SpreadsheetError e => test:assertFail(msg = e.errorMessage);
     }
-    io:println("--------openSpreadsheetById response is-----------");
-    io:println(spreadsheet);
+    test:assertNotEquals(spreadsheet.spreadsheetId, null, msg = "Failed to create spreadsheet");
+}
+
+@test:Config{
+    dependsOn:["testCreateSpreadsheet"]
+}
+function testGetSpreadsheetName () {
+    io:println("-----------------Test case for getSpreadsheetName method------------------");
+
+    test:assertEquals(spreadsheet.getSpreadsheetName(), spreadsheetName, msg = "getSpreadsheetName() method failed");
+}
+
+@test:Config{
+    dependsOn:["testCreateSpreadsheet"]
+}
+function testGetSpreadsheetId () {
+    io:println("-----------------Test case for getSpreadsheetId method------------------");
+
+    test:assertEquals(spreadsheet.getSpreadsheetId(), spreadsheet.spreadsheetId,
+                      msg = "getSpreadsheetId() method failed");
+}
+
+@test:Config{
+    dependsOn:["testCreateSpreadsheet"]
+}
+function testGetSheets () {
+    io:println("-----------------Test case for getSheets method------------------");
+    googlespreadsheet4:Sheet[] sheets = [];
+    sheets = spreadsheet.getSheets();
+    sheetName = sheets[0].properties.title;
+    test:assertEquals(lengthof sheets, 1, msg = "getSheets() method failed");
+}
+
+@test:Config{
+    dependsOn:["testGetSheets"]
+}
+function testGetSheetByName () {
+    io:println("-----------------Test case for getSheetByName method------------------");
     var sheetRes = spreadsheet.getSheetByName(sheetName);
-    io:println("---------getSheetByName--------");
     match sheetRes {
-        googlespreadsheet:Sheet s => sheet = s;
-        googlespreadsheet:SpreadsheetError e => io:println(e);
+        googlespreadsheet4:Sheet s => sheet = s;
+        googlespreadsheet4:SpreadsheetError e => test:assertFail(msg = e.errorMessage);
     }
-    //Get row data
-    var rowData = sp -> getRowData(spreadsheetId, sheetName, 1);
-    io:println("---------getRowData--------");
-    io:println(rowData);
+    test:assertEquals(sheet.properties.title, sheetName, msg = "getSheetByName() method failed");
+}
 
-    //Get cell data
-    var cellVal = sp -> getCellData(spreadsheetId, sheetName, "C",1);
-    io:println("---------getCellData--------");
-    io:println(cellVal);
-
-    var colData = sp -> getColumnData(spreadsheetId, sheetName, "B");
-    string[] values = [];
-    io:println("---------getColumnData--------");
-    match colData {
-        string[] v => values = v;
-        googlespreadsheet:SpreadsheetError e => io:println(e);
+@test:Config{
+    dependsOn:["testCreateSpreadsheet"]
+}
+function testOpenSpreadsheetById () {
+    io:println("-----------------Test case for openSpreadsheetById method------------------");
+    var spreadsheetRes = sp -> openSpreadsheetById(spreadsheet.spreadsheetId);
+    match spreadsheetRes {
+        googlespreadsheet4:Spreadsheet s => spreadsheet = s;
+        googlespreadsheet4:SpreadsheetError e => test:assertFail(msg = e.errorMessage);
     }
-    io:println(values);
-    int i = 0;
-    if (values!= null) {
-        foreach val  in values {
-            var score = <int> val;
-            int row = i + 1;
-            match score {
-                int intScore => {
-                    if (intScore > 75) {
-                        var cellRangeResponse = sp -> setCellData(spreadsheetId, sheetName, "C", row, "Exceptional");
-                    }
-                }
-                error e => io:println(e);
-            }
+    test:assertNotEquals(spreadsheet.spreadsheetId, null, msg = "Failed to open the spreadsheet");
 
-            i = i + 1;
+}
+
+@test:Config{
+    dependsOn:["testOpenSpreadsheetById", "testGetSheets"]
+}
+function testSetSheetValues () {
+    io:println("-----------------Test case for setSheetValues method------------------");
+    string[][] values = [["Name", "Score", "Performance"], ["Keetz", "12"], ["Niro", "78"],
+                         ["Nisha", "98"], ["Kana", "86"]];
+    var spreadsheetRes = sp -> setSheetValues(spreadsheet.spreadsheetId, sheetName, "A1", "C5", values);
+    string a1Notation = sheetName + "!A1:C5";
+    match spreadsheetRes {
+        googlespreadsheet4:Range r => test:assertEquals(r.a1Notation, a1Notation, msg = "Failed to update the values!");
+        googlespreadsheet4:SpreadsheetError e => test:assertFail(msg = e.errorMessage);
+    }
+}
+
+@test:Config{
+    dependsOn:["testSetSheetValues", "testGetSheets"]
+}
+function testGetSheetValues () {
+    io:println("-----------------Test case for getSheetValues method------------------");
+    string[][] values = [["Name", "Score", "Performance"], ["Keetz", "12"], ["Niro", "78"],
+                         ["Nisha", "98"], ["Kana", "86"]];
+    var spreadsheetRes = sp -> getSheetValues(spreadsheet.spreadsheetId, sheetName, "A1", "C5");
+    match spreadsheetRes {
+        string[][] vals => test:assertEquals(vals, values, msg = "Failed to get the values!");
+        googlespreadsheet4:SpreadsheetError e => test:assertFail(msg = e.errorMessage);
+    }
+}
+
+@test:Config{
+dependsOn:["testGetSheetValues", "testGetSheets"]
+}
+function testGetColumnData () {
+    io:println("-----------------Test case for getColumnData method------------------");
+    string[] values = ["Name", "Keetz", "Niro", "Nisha", "Kana"];
+    var spreadsheetRes = sp -> getColumnData(spreadsheet.spreadsheetId, sheetName, "A");
+    match spreadsheetRes {
+        string[] vals => test:assertEquals(vals, values, msg = "Failed to get the values!");
+        googlespreadsheet4:SpreadsheetError e => test:assertFail(msg = e.errorMessage);
+    }
+}
+
+@test:Config{
+    dependsOn:["testGetSheetValues", "testGetSheets"]
+}
+function testGetRowData () {
+    io:println("-----------------Test case for getRowData method------------------");
+    string[] values = ["Name", "Score", "Performance"];
+    var spreadsheetRes = sp -> getRowData(spreadsheet.spreadsheetId, sheetName, 1);
+    match spreadsheetRes {
+        string[] vals => test:assertEquals(vals, values, msg = "Failed to get the values!");
+        googlespreadsheet4:SpreadsheetError e => test:assertFail(msg = e.errorMessage);
+    }
+}
+
+@test:Config{
+    dependsOn:["testGetSheetValues", "testGetSheets"]
+}
+function testSetCellData () {
+    io:println("-----------------Test case for setCellData method------------------");
+    string value = "90";
+    var spreadsheetRes = sp -> setCellData(spreadsheet.spreadsheetId, sheetName, "B", 5, "90");
+    string a1Notation = sheetName + "!B5";
+    match spreadsheetRes {
+        googlespreadsheet4:Range r => test:assertEquals(r.a1Notation, a1Notation, msg = "Failed to update the value!");
+        googlespreadsheet4:SpreadsheetError e => test:assertFail(msg = e.errorMessage);
+    }
+}
+
+@test:Config{
+    dependsOn:["testSetCellData", "testGetSheets"]
+}
+function testGetCellData () {
+    io:println("-----------------Test case for getCellData method------------------");
+    string value = "90";
+    var spreadsheetRes = sp -> getCellData(spreadsheet.spreadsheetId, sheetName, "B", 5);
+    match spreadsheetRes {
+        string val => test:assertEquals(val, value, msg = "Failed to get the value!");
+        googlespreadsheet4:SpreadsheetError e => test:assertFail(msg = e.errorMessage);
+    }
+}
+
+function setConfParams (string|null confParam) returns string {
+    match confParam {
+        string param => {
+            return param;
+        }
+        null => {
+            io:println("Empty value!");
+            return "";
         }
     }
-
-    io:println("Update completed");
 }

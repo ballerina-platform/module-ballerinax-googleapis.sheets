@@ -14,30 +14,9 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package googlespreadsheet;
+package googlespreadsheet4;
 
 import ballerina/io;
-
-
-@Description {value:"Struct to define the Google Spreadsheet configuration."}
-public struct SpreadsheetConfiguration {
-    oauth2:OAuth2Configuration oauthClientConfig;
-    //string accessToken;
-    //string baseUrl;
-    //string clientId;
-    //string clientSecret;
-    //string refreshToken;
-    //string refreshTokenEP;
-    //string refreshTokenPath;
-    //boolean useUriParams = false;
-    //http:ClientEndpointConfiguration clientConfig;
-}
-
-@Description {value:"Google Spreadsheet Endpoint struct."}
-public struct SpreadsheetEndpoint {
-    SpreadsheetConfiguration spreadsheetConfig;
-    SpreadsheetConnector spreadsheetConnector;
-}
 
 public function <SpreadsheetEndpoint spreadsheetEP> init (SpreadsheetConfiguration spreadsheetConfig) {
     endpoint oauth2:OAuth2Endpoint oauth2Endpoint {
