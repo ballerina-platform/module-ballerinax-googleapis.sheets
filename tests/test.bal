@@ -56,8 +56,13 @@ function testCreateSpreadsheet () {
 }
 function testGetSpreadsheetName () {
     io:println("-----------------Test case for getSpreadsheetName method------------------");
-
-    test:assertEquals(spreadsheet.getSpreadsheetName(), spreadsheetName, msg = "getSpreadsheetName() method failed");
+    string name = "";
+    var res = spreadsheet.getSpreadsheetName();
+    match res {
+        string s => name = s;
+        googlespreadsheet4:SpreadsheetError e => test:assertFail(msg = e.errorMessage);
+    }
+    test:assertEquals(name, spreadsheetName, msg = "getSpreadsheetName() method failed");
 }
 
 @test:Config{
@@ -65,8 +70,13 @@ function testGetSpreadsheetName () {
 }
 function testGetSpreadsheetId () {
     io:println("-----------------Test case for getSpreadsheetId method------------------");
-
-    test:assertEquals(spreadsheet.getSpreadsheetId(), spreadsheet.spreadsheetId,
+    string spreadsheetId = "";
+    var res = spreadsheet.getSpreadsheetId();
+    match res {
+        string s => spreadsheetId = s;
+        googlespreadsheet4:SpreadsheetError e => test:assertFail(msg = e.errorMessage);
+    }
+    test:assertEquals(spreadsheetId, spreadsheet.spreadsheetId,
                       msg = "getSpreadsheetId() method failed");
 }
 
@@ -76,7 +86,11 @@ function testGetSpreadsheetId () {
 function testGetSheets () {
     io:println("-----------------Test case for getSheets method------------------");
     googlespreadsheet4:Sheet[] sheets = [];
-    sheets = spreadsheet.getSheets();
+    var sheetRes = spreadsheet.getSheets();
+    match sheetRes {
+        googlespreadsheet4:Sheet[] s => sheets = s;
+        googlespreadsheet4:SpreadsheetError e => test:assertFail(msg = e.errorMessage);
+    }
     sheetName = sheets[0].properties.title;
     test:assertEquals(lengthof sheets, 1, msg = "getSheets() method failed");
 }
