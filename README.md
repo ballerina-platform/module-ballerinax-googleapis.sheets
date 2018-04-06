@@ -6,9 +6,7 @@ spreadsheets and simultaneously work with other people. The Google Spreadsheet c
 The following sections provide you with information on how to use the Ballerina Google Spreadsheet connector.
 - [Compatibility](#compatibility)
 - [Getting started](#getting-started)
-- [Running Samples](#running-samples)
-- [Quick Testing](#quick-testing)
-- [Working with Google Spreadsheet connector actions](#working-with-google-spreadsheet-connector-actions)
+
 
 ### Compatibility
 

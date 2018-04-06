@@ -125,14 +125,26 @@ public function <Spreadsheet spreadsheet> getSpreadsheetName() returns (string) 
 @Description {value : "Get the name of the spreadsheet"}
 @Param {value : "spreadsheet: Spreadsheet object"}
 @Return {value : "Id of the spreadsheet"}
-public function <Spreadsheet spreadsheet> getSpreadsheetId() returns (string) {
+public function <Spreadsheet spreadsheet> getSpreadsheetId() returns (string) | SpreadsheetError {
+    SpreadsheetError spreadsheetError = {};
+    string spreadsheetId = "";
+    if (spreadsheet.spreadsheetId == null) {
+        spreadsheetError.errorMessage = "Unable to find the spreadsheet id";
+        return spreadsheetError;
+    }
     return spreadsheet.spreadsheetId;
 }
 
 @Description {value : "Get sheets of the spreadsheet"}
 @Param {value : "spreadsheet: Spreadsheet object"}
 @Return {value : "Sheet objects"}
-public function <Spreadsheet spreadsheet> getSheets() returns Sheet[] {
+public function <Spreadsheet spreadsheet> getSheets() returns Sheet[] | SpreadsheetError {
+    Sheet[] sheets = [];
+    SpreadsheetError spreadsheetError = {};
+    if (spreadsheet.sheets == null) {
+        spreadsheetError.errorMessage = "No sheets found";
+        return spreadsheetError;
+    }
     return spreadsheet.sheets;
 }
 

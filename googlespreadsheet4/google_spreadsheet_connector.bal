@@ -311,7 +311,7 @@ public function <SpreadsheetConnector gsClient> setCellData (string spreadsheetI
 @Description {value : "Set sheet values"}
 @Param {value : "spreadsheetId: Id of the spreadsheet"}
 @Param {value : "sheetName: Name of the sheet"}
-@Param {value : "topLeftCell: Top right cell"}
+@Param {value : "topLeftCell: Top left cell"}
 @Param {value : "bottomRightCell: Bottom right cell"}
 @Param {value : "values: Values to be updated"}
 @Return{ value : "Updated range"}
