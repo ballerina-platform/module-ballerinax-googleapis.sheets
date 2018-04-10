@@ -13,7 +13,6 @@
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
-import ballerina/io;
 
 function convertToSpreadsheet(json jsonSpreadsheet) returns Spreadsheet {
     Spreadsheet spreadsheet = new;
@@ -85,11 +84,4 @@ function convertToGridProperties(json jsonProps) returns GridProperties {
                                        convertToInt(jsonProps.frozenColumnCount) : 0;
     gridProperties.hideGridlines = jsonProps.hideGridlines != null ? convertToBoolean(jsonProps.hideGridlines) : false;
     return gridProperties;
-}
-
-function convertToRange(json jsonRange) returns  Range {
-    Range range = {};
-    range.spreadsheetId = jsonRange.spreadsheetId.toString() ?: "";
-    range.a1Notation = jsonRange.updatedRange.toString() ?: "";
-    return range;
 }
