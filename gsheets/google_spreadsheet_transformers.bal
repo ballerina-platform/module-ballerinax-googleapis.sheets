@@ -13,19 +13,16 @@
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
-
-package googlespreadsheet4;
+import ballerina/io;
 
 function convertToSpreadsheet(json jsonSpreadsheet) returns Spreadsheet {
-    Spreadsheet spreadsheet = {};
-    spreadsheet.spreadsheetId = jsonSpreadsheet.spreadsheetId.toString();
+    Spreadsheet spreadsheet = new;
+    spreadsheet.spreadsheetId = jsonSpreadsheet.spreadsheetId.toString() ?: "";
     spreadsheet.properties = jsonSpreadsheet.properties != null ?
                              convertToSpreadsheetProperties(jsonSpreadsheet.properties) : {};
-    spreadsheet.spreadsheetUrl = jsonSpreadsheet.spreadsheetUrl.toString();
+    spreadsheet.spreadsheetUrl = jsonSpreadsheet.spreadsheetUrl.toString() ?: "";
     spreadsheet.sheets = jsonSpreadsheet.sheets != null ?
-                         convertToSheets(jsonSpreadsheet.sheets, jsonSpreadsheet.spreadsheetId.toString()):[];
-    spreadsheet.namedRanges = jsonSpreadsheet.namedRanges != null ?
-                              convertToNamedRanges(jsonSpreadsheet.namedRanges) : [];
+                         convertToSheets(jsonSpreadsheet.sheets, jsonSpreadsheet.spreadsheetId.toString() ?: ""):[];
 
     return spreadsheet;
 }
@@ -47,58 +44,30 @@ function convertToSheet(json jsonSheet, string spreadsheetId) returns Sheet {
     return sheet;
 }
 
-function convertToNamedRanges(json jsonNamedRanges) returns NamedRange[] {
-    int i = 0;
-    NamedRange[] namedRanges = [];
-    foreach jsonNamedRange in jsonNamedRanges {
-        namedRanges[i] = convertToNamedRange(jsonNamedRange);
-        i = i + 1;
-    }
-    return namedRanges;
-}
-
-function convertToNamedRange(json jsonRange) returns NamedRange {
-    NamedRange namedRange = {};
-    namedRange.name = jsonRange.namedRange.toString();
-    namedRange.namedRangeId = jsonRange.namedRangeId.toString();
-    namedRange.range = jsonRange.range != null ? convertToGridRange(jsonRange.range) : {};
-    return namedRange;
-}
-
-function convertToGridRange(json jsonGridRange) returns GridRange {
-    GridRange range = {};
-    range.sheetId = convertToInt(jsonGridRange.sheetId);
-    range.startRowIndex = convertToInt(jsonGridRange.startRowIndex);
-    range.startColumnIndex = convertToInt(jsonGridRange.startColumnIndex);
-    range.endRowIndex = convertToInt(jsonGridRange.endRowIndex);
-    range.endColumnIndex = convertToInt(jsonGridRange.endColumnIndex);
-    return range;
-}
-
 function convertToSpreadsheetProperties(json jsonProperties) returns SpreadsheetProperties {
     SpreadsheetProperties spreadsheetProperties = {};
-    spreadsheetProperties.title = jsonProperties.title.toString();
-    spreadsheetProperties.locale = jsonProperties.locale.toString();
-    spreadsheetProperties.timeZone = jsonProperties.timeZone.toString();
+    spreadsheetProperties.title = jsonProperties.title.toString() ?: "";
+    spreadsheetProperties.locale = jsonProperties.locale.toString() ?: "";
+    spreadsheetProperties.timeZone = jsonProperties.timeZone.toString() ?: "";
     return spreadsheetProperties;
 }
 
-function convertToInt(json jsonVal) returns int {
-    int intVal =? <int> jsonVal.toString();
-    return intVal;
+function convertToInt(json jsonVal) returns (int){
+    string stringVal = jsonVal.toString() ?: "";
+    return check <int> stringVal;
 }
 
-function convertToBoolean(json jsonVal) returns boolean {
-    boolean booleanVal =? <boolean> jsonVal;
-    return booleanVal;
+function convertToBoolean(json jsonVal) returns (boolean){
+    string stringVal = jsonVal.toString() ?: "";
+    return <boolean> stringVal;
 }
 
 function convertToSheetProperties(json jsonSheetProperties) returns SheetProperties {
     SheetProperties sheetProperties = {};
-    sheetProperties.title = jsonSheetProperties.title.toString();
+    sheetProperties.title = jsonSheetProperties.title.toString() ?: "";
     sheetProperties.sheetId = convertToInt(jsonSheetProperties.sheetId);
     sheetProperties.index = convertToInt(jsonSheetProperties.index);
-    sheetProperties.sheetType = jsonSheetProperties.sheetType.toString();
+    sheetProperties.sheetType = jsonSheetProperties.sheetType.toString() ?: "";
     sheetProperties.hidden = jsonSheetProperties.hidden != null ? convertToBoolean(jsonSheetProperties.hidden) : false;
     sheetProperties.rightToLeft = jsonSheetProperties.rightToLeft != null ?
                                      convertToBoolean(jsonSheetProperties.rightToLeft) : false;
@@ -120,7 +89,7 @@ function convertToGridProperties(json jsonProps) returns GridProperties {
 
 function convertToRange(json jsonRange) returns  Range {
     Range range = {};
-    range.spreadsheetId = jsonRange.spreadsheetId.toString();
-    range.a1Notation = jsonRange.updatedRange.toString();
+    range.spreadsheetId = jsonRange.spreadsheetId.toString() ?: "";
+    range.a1Notation = jsonRange.updatedRange.toString() ?: "";
     return range;
 }

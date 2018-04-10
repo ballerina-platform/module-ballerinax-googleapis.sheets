@@ -13,7 +13,6 @@ The following sections provide you with information on how to use the Ballerina 
 
 - [Getting started](#getting-started)
 - [Quick Testing](#quick-testing)
-- [Running Samples](#running-samples)
 
 ## Getting started
 
@@ -195,10 +194,3 @@ This section provides information on how to create a Spreadsheet endpoint to inv
         googlespreadsheet4:SpreadsheetError err => io:println(err);
     }
 ```
-
-## Running Samples
-You can use the `tests.bal` file to test all the connector actions by following the below steps:
-1. Obtain the client Id, client secret, access token and refresh token as mentioned in [Getting started](#getting-started) section and update the ballerina.conf file found in package-googlespreadsheet with relevant values.
-2. Navigate to the folder `package-googlespreadsheet`.
-3. Run the following commands to execute the tests.
-    ```$ ballerina test tests```
