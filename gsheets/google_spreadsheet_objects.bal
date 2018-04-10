@@ -14,9 +14,14 @@
 // specific language governing permissions and limitations
 // under the License.
 
-@Description {value: "Struct to define the spreadsheet."}
+documentation {
+    F{{spreadsheetId}} Id of the spreadsheet
+    F{{properties}} Properties of a spreadsheet
+    F{{sheets}} The sheets that are part of a spreadsheet
+    F{{spreadsheetUrl}} The url of the spreadsheet
+}
 public type Spreadsheet object {
-    private {
+    public {
         string spreadsheetId;
         SpreadsheetProperties properties;
         Sheet[] sheets;
@@ -24,11 +29,9 @@ public type Spreadsheet object {
     }
 
     //Functions binded to Spreadsheet struct
-
-    @Description {value : "Get the name of the spreadsheet"}
-    @Param {value : "spreadsheet: Spreadsheet object"}
-    @Return {value : "Name of the spreadsheet"}
-    @Return{ value : "SpreadsheetError: Spreadsheet error"}
+    documentation {Get the name of the spreadsheet
+        returns Name of the spreadsheet object on success and SpreadsheetError on failure
+    }
     public function getSpreadsheetName() returns (string) | SpreadsheetError {
         SpreadsheetError spreadsheetError = {};
         string title = "";
@@ -40,9 +43,9 @@ public type Spreadsheet object {
         }
     }
 
-    @Description {value : "Get the name of the spreadsheet"}
-    @Param {value : "spreadsheet: Spreadsheet object"}
-    @Return {value : "Id of the spreadsheet"}
+    documentation {Get the Id of the spreadsheet
+        returns Id of the spreadsheet object on success and SpreadsheetError on failure
+    }
     public function getSpreadsheetId() returns (string) | SpreadsheetError {
         SpreadsheetError spreadsheetError = {};
         string spreadsheetId = "";
@@ -53,9 +56,9 @@ public type Spreadsheet object {
         return self.spreadsheetId;
     }
 
-    @Description {value : "Get sheets of the spreadsheet"}
-    @Param {value : "spreadsheet: Spreadsheet object"}
-    @Return {value : "Sheet objects"}
+    documentation {Get sheets of the spreadsheet
+        returns Sheet array on success and SpreadsheetError on failure
+    }
     public function getSheets() returns Sheet[] | SpreadsheetError {
         SpreadsheetError spreadsheetError = {};
         if (self.sheets == null) {
@@ -65,10 +68,10 @@ public type Spreadsheet object {
         return self.sheets;
     }
 
-    @Description {value : "Get sheet by name"}
-    @Param {value : "sheetName: Name of the sheet"}
-    @Return {value : "sheet: Sheet object"}
-    @Return{ value : "SpreadsheetError: Spreadsheet error"}
+    documentation {Get sheets of the spreadsheet
+        P{{sheetName}} Name of the sheet to retrieve
+        returns Sheet object on success and SpreadsheetError on failure
+    }
     public function getSheetByName(string sheetName) returns Sheet | SpreadsheetError {
         Sheet[] sheets = self.sheets;
         Sheet sheetResponse = {};
@@ -91,7 +94,12 @@ public type Spreadsheet object {
     }
 };
 
-@Description {value: "Struct to define the spreadsheet properties."}
+documentation {Spreadsheet properties
+    F{{title}} The title of the spreadsheet
+    F{{locale}} The locale of the spreadsheet
+    F{{autoRecalc}} The amount of time to wait before volatile functions are recalculated
+    F{{timeZone}} The time zone of the spreadsheet
+}
 public type SpreadsheetProperties {
     string title;
     string locale;
@@ -99,13 +107,24 @@ public type SpreadsheetProperties {
     string timeZone;
 };
 
-@Description {value: "Struct to define the sheet."}
+documentation {Sheet object
+    F{{spreadsheetId}} The Id of the parent spreadsheet
+    F{{properties}} The properties of the sheet
+}
 public type Sheet {
     string spreadsheetId;
     SheetProperties properties;
 };
 
-@Description {value: "Struct to define the sheet properties."}
+documentation {Sheet properties
+    F{{sheetId}} The ID of the sheet
+    F{{title}} The name of the sheet
+    F{{index}} The index of the sheet within the spreadsheet
+    F{{sheetType}} The type of sheet
+    F{{gridProperties}} Additional properties of the sheet if this sheet is a grid
+    F{{hidden}} True if the sheet is hidden in the UI, false if it is visible
+    F{{rightToLeft}} True if the sheet is an RTL sheet instead of an LTR sheet
+}
 public type SheetProperties {
     int sheetId;
     string title;
@@ -116,7 +135,13 @@ public type SheetProperties {
     boolean rightToLeft;
 };
 
-@Description {value: "Struct to define the grid properties."}
+documentation {Grid properties
+    F{{rowCount}} The number of rows in the grid
+    F{{columnCount}} The number of columns in the grid
+    F{{frozenRowCount}} The number of rows that are frozen in the grid
+    F{{frozenColumnCount}} The number of columns that are frozen in the grid
+    F{{hideGridlines}} True if the grid is not showing gridlines in the UI
+}
 public type GridProperties {
     int rowCount;
     int columnCount;
@@ -125,15 +150,10 @@ public type GridProperties {
     boolean hideGridlines;
 };
 
-@Description {value: "Struct to define the range."}
-public type Range {
-    Sheet sheet;
-    string spreadsheetId;
-    string a1Notation;
-    int sheetId;
-};
-
-@Description {value: "Struct to define the error."}
+documentation {Spreadsheet error
+    F{{statusCode}} The status code
+    F{{errorMessage}} Error message
+}
 public type SpreadsheetError {
     int statusCode;
     string errorMessage;

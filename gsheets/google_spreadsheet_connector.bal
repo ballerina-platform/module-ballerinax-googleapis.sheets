@@ -18,18 +18,20 @@ import ballerina/mime;
 import ballerina/http;
 import wso2/oauth2;
 
-@Description {value:"Spreadsheet client connector"}
+documentation {Spreadsheet client connector
+    F{{oauth2Client}} OAuth2 client endpoint
+}
 public type SpreadsheetConnector object {
     public {
-        oauth2:Client oauth2EP;
+        oauth2:APIClient oauth2Client;
     }
 
-    @Description {value : "Create a new spreadsheet"}
-    @Param {value : "spreadsheetName: Name of the spreadsheet"}
-    @Return{ value : "Spreadsheet: Spreadsheet object"}
-    @Return{ value : "SpreadsheetError: Spreadsheet error"}
+    documentation {Create a new spreadsheet
+        P{{spreadsheetName}} Name of the spreadsheet
+        returns Spreadsheet object on success and SpreadsheetError on failure
+    }
     public function createSpreadsheet (string spreadsheetName) returns Spreadsheet | SpreadsheetError {
-        endpoint oauth2:Client oauth2EP = self.oauth2EP;
+        endpoint oauth2:APIClient oauth2EP = self.oauth2Client;
         http:Request request = new;
         Spreadsheet spreadsheetResponse = new;
         SpreadsheetError spreadsheetError = {};
@@ -60,12 +62,12 @@ public type SpreadsheetConnector object {
         return spreadsheetResponse;
     }
 
-    @Description {value : "Get a spreadsheet by ID"}
-    @Param {value : "spreadsheetId: Id of the spreadsheet"}
-    @Return{ value : "Spreadsheet: Spreadsheet object"}
-    @Return{ value : "SpreadsheetError: Spreadsheet error"}
+    documentation {Get a spreadsheet by ID
+        P{{spreadsheetId}} Id of the spreadsheet
+        returns Spreadsheet object on success and SpreadsheetError on failure
+    }
     public function openSpreadsheetById (string spreadsheetId) returns Spreadsheet | SpreadsheetError {
-        endpoint oauth2:Client oauth2EP = self.oauth2EP;
+        endpoint oauth2:APIClient oauth2EP = self.oauth2Client;
         http:Request request = new;
         Spreadsheet spreadsheetResponse = new;
         SpreadsheetError spreadsheetError = {};
@@ -94,16 +96,16 @@ public type SpreadsheetConnector object {
         return spreadsheetResponse;
     }
 
-    @Description {value : "Get spreadsheet values"}
-    @Param {value : "spreadsheetId: Id of the spreadsheet"}
-    @Param {value : "sheetName: Name of the sheet"}
-    @Param {value : "topLeftCell: Top right cell"}
-    @Param {value : "bottomRightCell: Bottom right cell"}
-    @Return{ value : "Sheet values"}
-    @Return{ value : "SpreadsheetError: Spreadsheet error"}
+    documentation {Get spreadsheet values
+        P{{spreadsheetId}} Id of the spreadsheet
+        P{{sheetName}} Name of the sheet
+        P{{topLeftCell}} Top left cell
+        P{{bottomRightCell}} Bottom right cell
+        returns Sheet values as a two dimensional array on success and SpreadsheetError on failure
+    }
     public function getSheetValues (string spreadsheetId, string sheetName, string topLeftCell, string bottomRightCell)
                     returns (string[][]) | SpreadsheetError {
-        endpoint oauth2:Client oauth2EP = self.oauth2EP;
+        endpoint oauth2:APIClient oauth2EP = self.oauth2Client;
         http:Request request = new;
         string[][] values = [];
         SpreadsheetError spreadsheetError = {};
@@ -148,15 +150,15 @@ public type SpreadsheetConnector object {
         return values;
     }
 
-    @Description {value : "Get column data"}
-    @Param {value : "spreadsheetId: Id of the spreadsheet"}
-    @Param {value : "sheetName: Name of the sheet"}
-    @Param {value : "column: Column name to retrieve the data"}
-    @Return{ value : "Column data"}
-    @Return{ value : "SpreadsheetError: Spreadsheet error"}
+    documentation {Get column data
+        P{{spreadsheetId}} Id of the spreadsheet
+        P{{sheetName}} Name of the sheet
+        P{{column}} Column name to retrieve the data
+        returns Column data as an array on success and SpreadsheetError on failure
+    }
     public function getColumnData (string spreadsheetId, string sheetName, string column)
                     returns (string[]) | SpreadsheetError {
-        endpoint oauth2:Client oauth2EP = self.oauth2EP;
+        endpoint oauth2:APIClient oauth2EP = self.oauth2Client;
         http:Request request = new;
         string[] values = [];
         SpreadsheetError spreadsheetError = {};
@@ -197,15 +199,15 @@ public type SpreadsheetConnector object {
         return values;
     }
 
-    @Description {value : "Get row data"}
-    @Param {value : "spreadsheetId: Id of the spreadsheet"}
-    @Param {value : "sheetName: Name of the sheet"}
-    @Param {value : "row: Row to retrieve the data"}
-    @Return{ value : "Row data"}
-    @Return{ value : "SpreadsheetError: Spreadsheet error"}
+    documentation {Get row data
+        P{{spreadsheetId}} Id of the spreadsheet
+        P{{sheetName}} Name of the sheet
+        P{{row}} Row name to retrieve the data
+        returns Row data as an array on success and SpreadsheetError on failure
+    }
     public function getRowData (string spreadsheetId, string sheetName, int row)
                     returns (string[]) | SpreadsheetError {
-        endpoint oauth2:Client oauth2EP = self.oauth2EP;
+        endpoint oauth2:APIClient oauth2EP = self.oauth2Client;
         http:Request request = new;
         string[] values = [];
         SpreadsheetError spreadsheetError = {};
@@ -242,16 +244,16 @@ public type SpreadsheetConnector object {
         return values;
     }
 
-    @Description {value : "Get cell data"}
-    @Param {value : "spreadsheetId: Id of the spreadsheet"}
-    @Param {value : "sheetName: Name of the sheet"}
-    @Param {value : "column: Column name to retrieve the data"}
-    @Param {value : "row: Row to retrieve the data"}
-    @Return{ value : "Cell data"}
-    @Return{ value : "SpreadsheetError: Spreadsheet error"}
+    documentation {Get cell data
+        P{{spreadsheetId}} Id of the spreadsheet
+        P{{sheetName}} Name of the sheet
+        P{{column}} Column name to retrieve the data
+        P{{row}} Row name to retrieve the data
+        returns Cell data on success and SpreadsheetError on failure
+    }
     public function getCellData (string spreadsheetId, string sheetName, string column, int row)
                     returns (string) | SpreadsheetError {
-        endpoint oauth2:Client oauth2EP = self.oauth2EP;
+        endpoint oauth2:APIClient oauth2EP = self.oauth2Client;
         http:Request request = new;
         string value = "";
         SpreadsheetError spreadsheetError = {};
@@ -284,19 +286,18 @@ public type SpreadsheetConnector object {
         return value;
     }
 
-    @Description {value : "Set cell data"}
-    @Param {value : "spreadsheetId: Id of the spreadsheet"}
-    @Param {value : "sheetName: Name of the sheet"}
-    @Param {value : "column: Column name to retrieve the data"}
-    @Param {value : "row: Row to retrieve the data"}
-    @Param {value : "value: The value to be updated"}
-    @Return{ value : "Updated range"}
-    @Return{ value : "SpreadsheetError: Spreadsheet error"}
+    documentation {Set cell data
+        P{{spreadsheetId}} Id of the spreadsheet
+        P{{sheetName}} Name of the sheet
+        P{{column}} Column name to set the data
+        P{{row}} Row name to set the data
+        P{{value}} The value to be updated
+        returns True on success and SpreadsheetError on failure
+    }
     public function setCellData (string spreadsheetId, string sheetName, string column, int row, string value)
-                    returns Range | SpreadsheetError {
-        endpoint oauth2:Client oauth2EP = self.oauth2EP;
+                    returns (boolean) | SpreadsheetError {
+        endpoint oauth2:APIClient oauth2EP = self.oauth2Client;
         http:Request request = new;
-        Range rangeResponse = {};
         SpreadsheetError spreadsheetError = {};
         json jsonPayload = {"values" : [[value]]};
         string a1Notation = sheetName + "!" + column + row;
@@ -309,7 +310,7 @@ public type SpreadsheetConnector object {
             var jsonRes = response.getJsonPayload();
             json spreadsheetJSONResponse = check jsonRes;
             if (statusCode == 200) {
-                rangeResponse = convertToRange(spreadsheetJSONResponse);
+                return true;
             } else {
                 spreadsheetError.errorMessage = spreadsheetJSONResponse.error.message.toString() ?: "";
                 spreadsheetError.statusCode = statusCode;
@@ -323,23 +324,21 @@ public type SpreadsheetConnector object {
             spreadsheetError. errorMessage = err.message;
             return spreadsheetError;
         }
-        return rangeResponse;
     }
 
-    @Description {value : "Set sheet values"}
-    @Param {value : "spreadsheetId: Id of the spreadsheet"}
-    @Param {value : "sheetName: Name of the sheet"}
-    @Param {value : "topLeftCell: Top left cell"}
-    @Param {value : "bottomRightCell: Bottom right cell"}
-    @Param {value : "values: Values to be updated"}
-    @Return{ value : "Updated range"}
-    @Return{ value : "SpreadsheetError: Spreadsheet error"}
+    documentation {Set spreadsheet values
+        P{{spreadsheetId}} Id of the spreadsheet
+        P{{sheetName}} Name of the sheet
+        P{{topLeftCell}} Top left cell
+        P{{bottomRightCell}} Bottom right cell
+        P{{values}} Values to be updated
+        returns True on success and SpreadsheetError on failure
+    }
     public function setSheetValues (string spreadsheetId, string sheetName, string topLeftCell, string bottomRightCell,
-                                    string[][] values) returns Range | SpreadsheetError {
-        endpoint oauth2:Client oauth2EP = self.oauth2EP;
+                                    string[][] values) returns (boolean) | SpreadsheetError {
+        endpoint oauth2:APIClient oauth2EP = self.oauth2Client;
         http:Request request = new;
         SpreadsheetError spreadsheetError = {};
-        Range rangeResponse = {};
         string a1Notation = sheetName + "!" + topLeftCell + ":" + bottomRightCell;
         string setValuePath = "/v4/spreadsheets/" + spreadsheetId + "/values/" + a1Notation + "?valueInputOption=RAW";
         json[][] jsonValues = [];
@@ -363,8 +362,7 @@ public type SpreadsheetConnector object {
             var jsonRes = response.getJsonPayload();
             json spreadsheetJSONResponse = check jsonRes;
             if (statusCode == 200) {
-                rangeResponse = convertToRange(spreadsheetJSONResponse);
-
+                return true;
             } else {
                 spreadsheetError.errorMessage = spreadsheetJSONResponse.error.message.toString() ?: "";
                 spreadsheetError.statusCode = statusCode;
@@ -378,7 +376,6 @@ public type SpreadsheetConnector object {
             spreadsheetError. errorMessage = err.message;
             return spreadsheetError;
         }
-        return rangeResponse;
     }
 };
 
