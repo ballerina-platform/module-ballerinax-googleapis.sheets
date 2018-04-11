@@ -44,7 +44,7 @@ public type SpreadsheetConnector object {
             int statusCode = response.statusCode;
             var jsonRes = response.getJsonPayload();
             json spreadsheetJSONResponse = check jsonRes;
-            if (statusCode == 200) {
+            if (statusCode == http:OK_200) {
                 spreadsheetResponse = convertToSpreadsheet(spreadsheetJSONResponse);
             } else {
                 spreadsheetError.errorMessage = spreadsheetJSONResponse.error.message.toString() ?: "";
@@ -78,7 +78,7 @@ public type SpreadsheetConnector object {
             int statusCode = response.statusCode;
             var jsonRes = response.getJsonPayload();
             json spreadsheetJSONResponse = check jsonRes;
-            if (statusCode == 200) {
+            if (statusCode == http:OK_200) {
                 spreadsheetResponse = convertToSpreadsheet(spreadsheetJSONResponse);
             } else {
                 spreadsheetError.errorMessage = spreadsheetJSONResponse.error.message.toString() ?: "";
@@ -120,7 +120,7 @@ public type SpreadsheetConnector object {
             int statusCode = response.statusCode;
             var jsonRes = response.getJsonPayload();
             json spreadsheetJSONResponse = check jsonRes;
-            if (statusCode == 200) {
+            if (statusCode == http:OK_200) {
                 if (spreadsheetJSONResponse.values != null) {
                     int i = 0;
                     foreach value in spreadsheetJSONResponse.values {
@@ -170,7 +170,7 @@ public type SpreadsheetConnector object {
             int statusCode = response.statusCode;
             var jsonRes = response.getJsonPayload();
             json spreadsheetJSONResponse = check jsonRes;
-            if (statusCode == 200) {
+            if (statusCode == http:OK_200) {
                 if (spreadsheetJSONResponse.values != null) {
                     int i = 0;
                     json[][] jsonVals = check <json[][]> spreadsheetJSONResponse.values;
@@ -219,7 +219,7 @@ public type SpreadsheetConnector object {
             int statusCode = response.statusCode;
             var jsonRes = response.getJsonPayload();
             json spreadsheetJSONResponse = check jsonRes;
-            if (statusCode == 200) {
+            if (statusCode == http:OK_200) {
                 if (spreadsheetJSONResponse.values != null) {
                     int i = 0;
                     json[][] jsonVals = check <json[][]>spreadsheetJSONResponse.values;
@@ -265,7 +265,7 @@ public type SpreadsheetConnector object {
             int statusCode = response.statusCode;
             var jsonRes = response.getJsonPayload();
             json spreadsheetJSONResponse = check jsonRes;
-            if (statusCode == 200) {
+            if (statusCode == http:OK_200) {
                 if (spreadsheetJSONResponse.values != null) {
                     json[][] jsonVals = check <json[][]>spreadsheetJSONResponse.values;
                     value = jsonVals[0][0].toString() ?: "";
@@ -309,7 +309,7 @@ public type SpreadsheetConnector object {
             int statusCode = response.statusCode;
             var jsonRes = response.getJsonPayload();
             json spreadsheetJSONResponse = check jsonRes;
-            if (statusCode == 200) {
+            if (statusCode == http:OK_200) {
                 return true;
             } else {
                 spreadsheetError.errorMessage = spreadsheetJSONResponse.error.message.toString() ?: "";
@@ -361,7 +361,7 @@ public type SpreadsheetConnector object {
             int statusCode = response.statusCode;
             var jsonRes = response.getJsonPayload();
             json spreadsheetJSONResponse = check jsonRes;
-            if (statusCode == 200) {
+            if (statusCode == http:OK_200) {
                 return true;
             } else {
                 spreadsheetError.errorMessage = spreadsheetJSONResponse.error.message.toString() ?: "";

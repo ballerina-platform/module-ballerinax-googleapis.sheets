@@ -7,7 +7,7 @@ spreadsheets and simultaneously work with other people. The Google Spreadsheet c
 ## Compatibility
 | Language Version        | Connector Version          | API Versions  |
 | ------------- |:-------------:| -----:|
-| ballerina-0.970-alpha-1-SNAPSHOT    | 0.8 | V4  |
+| ballerina-0.970-alpha-4    | 0.8 | V4  |
 
 The following sections provide you with information on how to use the Ballerina Google Spreadsheet connector.
 
@@ -130,12 +130,12 @@ This section provides information on how to create a Spreadsheet endpoint to inv
 8. Sets the value of the range.
 
 ```ballerina
-    googlespreadsheet4:Range updatedRange = {};
+    boolean updatedStatus;
     string[][] values = [["Name", "Score", "Performance"], ["Keetz", "12"], ["Niro", "78"],
                              ["Nisha", "98"], ["Kana", "86"]];
     var response = sp -> setSheetValues("abc1234567", "Sheet1", "A1", "C5", values);
     match response {
-        googlespreadsheet4:Range range => updatedRange = range;
+        boolean b => updatedStatus = b;
         googlespreadsheet4:SpreadsheetError err => io:println(err);
     }
 ```
@@ -176,10 +176,10 @@ This section provides information on how to create a Spreadsheet endpoint to inv
 12. Set data for a cell.
 
 ```ballerina
-    googlespreadsheet4:Range updatedRange = {};
+    boolean updatedStatus;
     var response = sp -> setCellData("abc1234567", "Sheet1", "B", 5, "90");
     match response {
-        googlespreadsheet4:Range range => updatedRange = range;
+        boolean b => updatedStatus = b;
         googlespreadsheet4:SpreadsheetError err => io:println(err);
     }
 ```

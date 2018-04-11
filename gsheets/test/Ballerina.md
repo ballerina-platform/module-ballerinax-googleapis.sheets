@@ -2,7 +2,7 @@
 
 | Ballerina Version         | Connector Version         | API Version |
 | ------------------------- | ------------------------- | ------------|
-|  0.970.0-alpha1-SNAPSHOT  |           0.8.0           |   V4     |
+|  ballerina-0.970-alpha-4   |           0.8.0           |   V4     |
 
 ### Prerequisites
 
