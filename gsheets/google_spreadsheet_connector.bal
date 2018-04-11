@@ -109,7 +109,10 @@ public type SpreadsheetConnector object {
         http:Request request = new;
         string[][] values = [];
         SpreadsheetError spreadsheetError = {};
-        string a1Notation = sheetName + "!" + topLeftCell;
+        string a1Notation = sheetName;
+        if (topLeftCell != "" && topLeftCell != null) {
+            a1Notation = a1Notation + "!" + topLeftCell;
+        }
         if (bottomRightCell != "" && bottomRightCell != null) {
             a1Notation = a1Notation + ":" + bottomRightCell;
         }
@@ -378,4 +381,3 @@ public type SpreadsheetConnector object {
         }
     }
 };
-
