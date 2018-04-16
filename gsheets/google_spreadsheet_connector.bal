@@ -16,14 +16,13 @@
 
 import ballerina/mime;
 import ballerina/http;
-import wso2/oauth2;
 
 documentation {Spreadsheet client connector
-    F{{oauth2Client}} OAuth2 client endpoint
+    F{{httpClient}} The HTTP Client
 }
 public type SpreadsheetConnector object {
     public {
-        oauth2:APIClient oauth2Client;
+        http:Client httpClient;
     }
 
     documentation {Create a new spreadsheet
@@ -31,7 +30,7 @@ public type SpreadsheetConnector object {
         returns Spreadsheet object on success and SpreadsheetError on failure
     }
     public function createSpreadsheet (string spreadsheetName) returns Spreadsheet | SpreadsheetError {
-        endpoint oauth2:APIClient oauth2EP = self.oauth2Client;
+        endpoint http:Client httpClient = self.httpClient;
         http:Request request = new;
         Spreadsheet spreadsheetResponse = new;
         SpreadsheetError spreadsheetError = {};
@@ -39,7 +38,7 @@ public type SpreadsheetConnector object {
         json spreadsheetJSONPayload = {"properties": {"title": spreadsheetName}};
         request.setJsonPayload(spreadsheetJSONPayload);
         try {
-            var httpResponse = oauth2EP -> post(createSpreadsheetPath, request);
+            var httpResponse = httpClient -> post(createSpreadsheetPath, request);
             http:Response response = check httpResponse;
             int statusCode = response.statusCode;
             var jsonRes = response.getJsonPayload();
@@ -47,16 +46,18 @@ public type SpreadsheetConnector object {
             if (statusCode == http:OK_200) {
                 spreadsheetResponse = convertToSpreadsheet(spreadsheetJSONResponse);
             } else {
-                spreadsheetError.errorMessage = spreadsheetJSONResponse.error.message.toString() ?: "";
+                spreadsheetError.message = spreadsheetJSONResponse.error.message.toString() but { () => "" };
                 spreadsheetError.statusCode = statusCode;
                 return spreadsheetError;
             }
         } catch (http:HttpConnectorError err) {
-            spreadsheetError.errorMessage = err.message;
+            spreadsheetError.message = err.message;
+            spreadsheetError.cause = err.cause;
             spreadsheetError.statusCode = err.statusCode;
             return spreadsheetError;
-        } catch (mime:EntityError err) {
-            spreadsheetError.errorMessage = err.message;
+        } catch (http:PayloadError err) {
+            spreadsheetError.message = "Error occured while receiving Json Payload";
+            spreadsheetError.cause = err.cause;
             return spreadsheetError;
         }
         return spreadsheetResponse;
@@ -67,13 +68,13 @@ public type SpreadsheetConnector object {
         returns Spreadsheet object on success and SpreadsheetError on failure
     }
     public function openSpreadsheetById (string spreadsheetId) returns Spreadsheet | SpreadsheetError {
-        endpoint oauth2:APIClient oauth2EP = self.oauth2Client;
+        endpoint http:Client httpClient = self.httpClient;
         http:Request request = new;
         Spreadsheet spreadsheetResponse = new;
         SpreadsheetError spreadsheetError = {};
         string getSpreadsheetPath = "/v4/spreadsheets/" + spreadsheetId;
         try {
-            var httpResponse = oauth2EP -> get(getSpreadsheetPath, request);
+            var httpResponse = httpClient -> get(getSpreadsheetPath, request);
             http:Response response = check httpResponse;
             int statusCode = response.statusCode;
             var jsonRes = response.getJsonPayload();
@@ -81,16 +82,18 @@ public type SpreadsheetConnector object {
             if (statusCode == http:OK_200) {
                 spreadsheetResponse = convertToSpreadsheet(spreadsheetJSONResponse);
             } else {
-                spreadsheetError.errorMessage = spreadsheetJSONResponse.error.message.toString() ?: "";
+                spreadsheetError.message = spreadsheetJSONResponse.error.message.toString() but { () => "" };
                 spreadsheetError.statusCode = statusCode;
                 return spreadsheetError;
             }
         } catch (http:HttpConnectorError err) {
-            spreadsheetError.errorMessage = err.message;
+            spreadsheetError.message = err.message;
+            spreadsheetError.cause = err.cause;
             spreadsheetError.statusCode = err.statusCode;
             return spreadsheetError;
-        } catch (mime:EntityError err) {
-            spreadsheetError.errorMessage = err.message;
+        } catch (http:PayloadError err) {
+            spreadsheetError.message = err.message;
+            spreadsheetError.cause = err.cause;
             return spreadsheetError;
         }
         return spreadsheetResponse;
@@ -105,7 +108,7 @@ public type SpreadsheetConnector object {
     }
     public function getSheetValues (string spreadsheetId, string sheetName, string topLeftCell, string bottomRightCell)
                     returns (string[][]) | SpreadsheetError {
-        endpoint oauth2:APIClient oauth2EP = self.oauth2Client;
+        endpoint http:Client httpClient = self.httpClient;
         http:Request request = new;
         string[][] values = [];
         SpreadsheetError spreadsheetError = {};
@@ -118,7 +121,7 @@ public type SpreadsheetConnector object {
         }
         string getSheetValuesPath = "/v4/spreadsheets/" + spreadsheetId + "/values/" + a1Notation;
         try {
-            var httpResponse = oauth2EP -> get(getSheetValuesPath, request);
+            var httpResponse = httpClient -> get(getSheetValuesPath, request);
             http:Response response = check httpResponse;
             int statusCode = response.statusCode;
             var jsonRes = response.getJsonPayload();
@@ -138,16 +141,18 @@ public type SpreadsheetConnector object {
                     }
                 }
             } else {
-                spreadsheetError.errorMessage = spreadsheetJSONResponse.error.message.toString() ?: "";
+                spreadsheetError.message = spreadsheetJSONResponse.error.message.toString() but { () => "" };
                 spreadsheetError.statusCode = statusCode;
                 return spreadsheetError;
             }
         } catch (http:HttpConnectorError err) {
-            spreadsheetError.errorMessage = err.message;
+            spreadsheetError.message = err.message;
+            spreadsheetError.cause = err.cause;
             spreadsheetError.statusCode = err.statusCode;
             return spreadsheetError;
-        } catch (mime:EntityError err) {
-            spreadsheetError.errorMessage = err.message;
+        } catch (http:PayloadError err) {
+            spreadsheetError.message = err.message;
+            spreadsheetError.cause = err.cause;
             return spreadsheetError;
         }
         return values;
@@ -161,14 +166,14 @@ public type SpreadsheetConnector object {
     }
     public function getColumnData (string spreadsheetId, string sheetName, string column)
                     returns (string[]) | SpreadsheetError {
-        endpoint oauth2:APIClient oauth2EP = self.oauth2Client;
+        endpoint http:Client httpClient = self.httpClient;
         http:Request request = new;
         string[] values = [];
         SpreadsheetError spreadsheetError = {};
         string a1Notation = sheetName + "!" + column + ":" + column;
         string getSheetValuesPath = "/v4/spreadsheets/" + spreadsheetId + "/values/" + a1Notation;
         try {
-            var httpResponse = oauth2EP -> get(getSheetValuesPath, request);
+            var httpResponse = httpClient -> get(getSheetValuesPath, request);
             http:Response response = check httpResponse;
             int statusCode = response.statusCode;
             var jsonRes = response.getJsonPayload();
@@ -187,16 +192,18 @@ public type SpreadsheetConnector object {
                     }
                 }
             } else {
-                spreadsheetError.errorMessage = spreadsheetJSONResponse.error.message.toString() ?: "";
+                spreadsheetError.message = spreadsheetJSONResponse.error.message.toString() but { () => "" };
                 spreadsheetError.statusCode = statusCode;
                 return spreadsheetError;
             }
         } catch (http:HttpConnectorError err) {
-            spreadsheetError.errorMessage = err.message;
+            spreadsheetError.message = err.message;
+            spreadsheetError.cause = err.cause;
             spreadsheetError.statusCode = err.statusCode;
             return spreadsheetError;
-        } catch (mime:EntityError err) {
-            spreadsheetError.errorMessage = err.message;
+        } catch (http:PayloadError err) {
+            spreadsheetError.message = err.message;
+            spreadsheetError.cause = err.cause;
             return spreadsheetError;
         }
         return values;
@@ -210,14 +217,14 @@ public type SpreadsheetConnector object {
     }
     public function getRowData (string spreadsheetId, string sheetName, int row)
                     returns (string[]) | SpreadsheetError {
-        endpoint oauth2:APIClient oauth2EP = self.oauth2Client;
+        endpoint http:Client httpClient = self.httpClient;
         http:Request request = new;
         string[] values = [];
         SpreadsheetError spreadsheetError = {};
         string a1Notation = sheetName + "!" + row + ":" + row;
         string getSheetValuesPath = "/v4/spreadsheets/" + spreadsheetId + "/values/" + a1Notation;
         try {
-            var httpResponse = oauth2EP -> get(getSheetValuesPath, request);
+            var httpResponse = httpClient -> get(getSheetValuesPath, request);
             http:Response response = check httpResponse;
             int statusCode = response.statusCode;
             var jsonRes = response.getJsonPayload();
@@ -232,16 +239,18 @@ public type SpreadsheetConnector object {
                     }
                 }
             } else {
-                spreadsheetError.errorMessage = spreadsheetJSONResponse.error.message.toString() ?: "";
+                spreadsheetError.message = spreadsheetJSONResponse.error.message.toString() but { () => "" };
                 spreadsheetError.statusCode = statusCode;
                 return spreadsheetError;
             }
         } catch (http:HttpConnectorError err) {
-            spreadsheetError.errorMessage = err.message;
+            spreadsheetError.message = err.message;
+            spreadsheetError.cause = err.cause;
             spreadsheetError.statusCode = err.statusCode;
             return spreadsheetError;
-        } catch (mime:EntityError err) {
-            spreadsheetError.errorMessage = err.message;
+        } catch (http:PayloadError err) {
+            spreadsheetError.message = err.message;
+            spreadsheetError.cause = err.cause;
             return spreadsheetError;
         }
         return values;
@@ -256,14 +265,14 @@ public type SpreadsheetConnector object {
     }
     public function getCellData (string spreadsheetId, string sheetName, string column, int row)
                     returns (string) | SpreadsheetError {
-        endpoint oauth2:APIClient oauth2EP = self.oauth2Client;
+        endpoint http:Client httpClient = self.httpClient;
         http:Request request = new;
         string value = "";
         SpreadsheetError spreadsheetError = {};
         string a1Notation = sheetName + "!" + column + row;
         string getSheetValuesPath = "/v4/spreadsheets/" + spreadsheetId + "/values/" + a1Notation;
         try {
-            var httpResponse = oauth2EP -> get(getSheetValuesPath, request);
+            var httpResponse = httpClient -> get(getSheetValuesPath, request);
             http:Response response = check httpResponse;
             int statusCode = response.statusCode;
             var jsonRes = response.getJsonPayload();
@@ -274,16 +283,18 @@ public type SpreadsheetConnector object {
                     value = jsonVals[0][0].toString() ?: "";
                 }
             } else {
-                spreadsheetError.errorMessage = spreadsheetJSONResponse.error.message.toString() ?: "";
+                spreadsheetError.message = spreadsheetJSONResponse.error.message.toString() but { () => "" };
                 spreadsheetError.statusCode = statusCode;
                 return spreadsheetError;
             }
         } catch (http:HttpConnectorError err) {
-            spreadsheetError.errorMessage = err.message;
+            spreadsheetError.message = err.message;
+            spreadsheetError.cause = err.cause;
             spreadsheetError.statusCode = err.statusCode;
             return spreadsheetError;
-        } catch (mime:EntityError err) {
-            spreadsheetError.errorMessage = err.message;
+        } catch (http:PayloadError err) {
+            spreadsheetError.message = err.message;
+            spreadsheetError.cause = err.cause;
             return spreadsheetError;
         }
         return value;
@@ -299,7 +310,7 @@ public type SpreadsheetConnector object {
     }
     public function setCellData (string spreadsheetId, string sheetName, string column, int row, string value)
                     returns (boolean) | SpreadsheetError {
-        endpoint oauth2:APIClient oauth2EP = self.oauth2Client;
+        endpoint http:Client httpClient = self.httpClient;
         http:Request request = new;
         SpreadsheetError spreadsheetError = {};
         json jsonPayload = {"values" : [[value]]};
@@ -307,7 +318,7 @@ public type SpreadsheetConnector object {
         string setValuePath = "/v4/spreadsheets/" + spreadsheetId + "/values/" + a1Notation + "?valueInputOption=RAW";
         request.setJsonPayload(jsonPayload);
         try {
-            var httpResponse = oauth2EP -> put(setValuePath, request);
+            var httpResponse = httpClient -> put(setValuePath, request);
             http:Response response = check httpResponse;
             int statusCode = response.statusCode;
             var jsonRes = response.getJsonPayload();
@@ -315,16 +326,18 @@ public type SpreadsheetConnector object {
             if (statusCode == http:OK_200) {
                 return true;
             } else {
-                spreadsheetError.errorMessage = spreadsheetJSONResponse.error.message.toString() ?: "";
+                spreadsheetError.message = spreadsheetJSONResponse.error.message.toString() but { () => "" };
                 spreadsheetError.statusCode = statusCode;
                 return spreadsheetError;
             }
         } catch (http:HttpConnectorError err) {
-            spreadsheetError.errorMessage = err.message;
+            spreadsheetError.message = err.message;
+            spreadsheetError.cause = err.cause;
             spreadsheetError.statusCode = err.statusCode;
             return spreadsheetError;
-        } catch (mime:EntityError err) {
-            spreadsheetError. errorMessage = err.message;
+        } catch (http:PayloadError err) {
+            spreadsheetError.message = err.message;
+            spreadsheetError.cause = err.cause;
             return spreadsheetError;
         }
     }
@@ -339,7 +352,7 @@ public type SpreadsheetConnector object {
     }
     public function setSheetValues (string spreadsheetId, string sheetName, string topLeftCell, string bottomRightCell,
                                     string[][] values) returns (boolean) | SpreadsheetError {
-        endpoint oauth2:APIClient oauth2EP = self.oauth2Client;
+        endpoint http:Client httpClient = self.httpClient;
         http:Request request = new;
         SpreadsheetError spreadsheetError = {};
         string a1Notation = sheetName + "!" + topLeftCell + ":" + bottomRightCell;
@@ -359,7 +372,7 @@ public type SpreadsheetConnector object {
         json jsonPayload = {"values" : jsonValues};
         request.setJsonPayload(jsonPayload);
         try {
-            var httpResponse = oauth2EP -> put(setValuePath, request);
+            var httpResponse = httpClient -> put(setValuePath, request);
             http:Response response = check httpResponse;
             int statusCode = response.statusCode;
             var jsonRes = response.getJsonPayload();
@@ -367,16 +380,18 @@ public type SpreadsheetConnector object {
             if (statusCode == http:OK_200) {
                 return true;
             } else {
-                spreadsheetError.errorMessage = spreadsheetJSONResponse.error.message.toString() ?: "";
+                spreadsheetError.message = spreadsheetJSONResponse.error.message.toString() but { () => "" };
                 spreadsheetError.statusCode = statusCode;
                 return spreadsheetError;
             }
         } catch (http:HttpConnectorError err) {
-            spreadsheetError.errorMessage = err.message;
+            spreadsheetError.message = err.message;
+            spreadsheetError.cause = err.cause;
             spreadsheetError.statusCode = err.statusCode;
             return spreadsheetError;
-        } catch (mime:EntityError err) {
-            spreadsheetError. errorMessage = err.message;
+        } catch (http:PayloadError err) {
+            spreadsheetError.message = err.message;
+            spreadsheetError.cause = err.cause;
             return spreadsheetError;
         }
     }

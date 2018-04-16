@@ -7,7 +7,7 @@ spreadsheets and simultaneously work with other people. The Google Spreadsheet c
 ## Compatibility
 | Language Version        | Connector Version          | API Versions  |
 | ------------- |:-------------:| -----:|
-| ballerina-0.970-alpha-4    | 0.8 | V4  |
+| ballerina-platform-0.970.0-beta0    | 0.8.4 | V4  |
 
 The following sections provide you with information on how to use the Ballerina Google Spreadsheet connector.
 
@@ -40,14 +40,14 @@ This section provides information on how to create a Spreadsheet endpoint to inv
 1. Create a Google Spreadsheet endpoint.
 
 ```ballerina
-   endpoint googlespreadsheet4:SpreadsheetEndpoint sp {
-       oauthClientConfig: {
-          accessToken:"your_access_token",
-          clientConfig:{},
-          refreshToken:"your_refresh_token",
-          clientId:"your_clientId",
-          clientSecret:"your_clientSecret",
-          useUriParams:true
+   endpoint Client spreadsheetClient {
+       clientConfig:{
+           auth:{
+               accessToken:accessToken,
+               refreshToken:refreshToken,
+               clientId:clientId,
+               clientSecret:clientSecret
+           }
        }
    };
 ```
@@ -55,142 +55,77 @@ This section provides information on how to create a Spreadsheet endpoint to inv
 2. Create a new spreadsheet with the given name.
 
 ```ballerina
-    googlespreadsheet4:Spreadsheet spreadsheet = {};
-    var response = sp -> createSpreadsheet("Finances");
-    match response {
-        googlespreadsheet4:Spreadsheet spreadsheetResponse => spreadsheet = spreadsheetResponse;
-        googlespreadsheet4:SpreadsheetError err => io:println(err);
-    }
+    Spreadsheet spreadsheet =  check spreadsheetClient -> createSpreadsheet("Finances");
 ```
 
 3. Open the spreadsheet with the given ID
 
 ```ballerina
-    googlespreadsheet4:Spreadsheet spreadsheet = {};
-    var response = sp -> openSpreadsheetById("abc1234567");
-    match response {
-        googlespreadsheet4:Spreadsheet spreadsheetResponse => spreadsheet = spreadsheetResponse;
-        googlespreadsheet4:SpreadsheetError err => io:println(err);
-    }
+    Spreadsheet spreadsheet = check spreadsheetClient -> openSpreadsheetById("abc1234567");
 ```
 
 4. Get the name of the spreadsheet.
 
 ```ballerina
-    googlespreadsheet4:Spreadsheet spreadsheet = {};
-    var response = sp -> openSpreadsheetById("abc1234567");
-    match response {
-        googlespreadsheet4:Spreadsheet spreadsheetResponse => spreadsheet = spreadsheetResponse;
-        googlespreadsheet4:SpreadsheetError err => io:println(err);
-    }
-    string spreadsheetName = spreadsheet.getSpreadsheetName();
+    Spreadsheet spreadsheet = check spreadsheetClient -> openSpreadsheetById("abc1234567");
+    string spreadsheetName = check spreadsheet.getSpreadsheetName();
 ```
 
 5. Get the id of the spreadsheet.
 
 ```ballerina
-    googlespreadsheet4:Spreadsheet spreadsheet = {};
-    var response = sp -> createSpreadsheet("Finances");
-    match response {
-        googlespreadsheet4:Spreadsheet spreadsheetResponse => spreadsheet = spreadsheetResponse;
-        googlespreadsheet4:SpreadsheetError err => io:println(err);
-    }
-    string spreadsheetId = spreadsheet.getSpreadsheetId();
+    Spreadsheet spreadsheet = check spreadsheetClient -> createSpreadsheet("Finances");
+    string spreadsheetId = check spreadsheet.getSpreadsheetId();
 ```
 
 6. Get all the sheets in a spreadsheet.
 
 ```ballerina
-    googlespreadsheet4:Spreadsheet spreadsheet = {};
-    var response = sp -> openSpreadsheetById("abc1234567");
-    match response {
-        googlespreadsheet4:Spreadsheet spreadsheetResponse => spreadsheet = spreadsheetResponse;
-        googlespreadsheet4:SpreadsheetError err => io:println(err);
-    }
-    googlespreadsheet4:Sheet[] sheets = spreadsheet.getSheets();
+    Spreadsheet spreadsheet = check spreadsheetClient -> openSpreadsheetById("abc1234567");
+    Sheet[] sheets = check spreadsheet.getSheets();
 ```
 
 7. Retrieve a sheet with the given name.
 
 ```ballerina
-    googlespreadsheet4:Spreadsheet spreadsheet = {};
-    googlespreadsheet4:Sheet sheet = {};
-    var response = sp -> openSpreadsheetById("abc1234567");
-    match response {
-        googlespreadsheet4:Spreadsheet spreadsheetResponse => spreadsheet = spreadsheetResponse;
-        googlespreadsheet4:SpreadsheetError err => io:println(err);
-    }
-    var sheetRes = spreadsheet.getSheetByName(sheetName);
-    match sheetRes {
-        googlespreadsheet4:Sheet s => sheet = s;
-        googlespreadsheet4:SpreadsheetError e => test:assertFail(msg = e.errorMessage);
-    }
+    Spreadsheet spreadsheet = check spreadsheetClient -> openSpreadsheetById("abc1234567");
+    Sheet sheet = check spreadsheet.getSheetByName(sheetName);
 ```
 
 8. Sets the value of the range.
 
 ```ballerina
-    boolean updatedStatus;
     string[][] values = [["Name", "Score", "Performance"], ["Keetz", "12"], ["Niro", "78"],
                              ["Nisha", "98"], ["Kana", "86"]];
-    var response = sp -> setSheetValues("abc1234567", "Sheet1", "A1", "C5", values);
-    match response {
-        boolean b => updatedStatus = b;
-        googlespreadsheet4:SpreadsheetError err => io:println(err);
-    }
+    boolean isUpadated = check spreadsheetClient -> setSheetValues("abc1234567", "Sheet1", "A1", "C5", values);
 ```
 
 9. Retrieve sheet values for a given range.
 
 ```ballerina
-    string[][] values = [];
-    var response = sp -> getSheetValues("abc1234567", "Sheet1", "A1", "C5");
-    match response {
-        string[][] vals => values = vals;
-        googlespreadsheet4:SpreadsheetError err => io:println(err);
-    }
+    string[][] values = check spreadsheetClient -> getSheetValues("abc1234567", "Sheet1", "A1", "C5");
 ```
 
 10. Retrieve a column data.
 
 ```ballerina
-    string[] values = [];
-    var response = sp -> getColumnData("abc1234567", "Sheet1", "A");
-    match response {
-        string[] vals => values = vals;
-        googlespreadsheet4:SpreadsheetError err => io:println(err);
-    }
+    string[] values = check spreadsheetClient -> getColumnData("abc1234567", "Sheet1", "A");
 ```
 
 11. Retrieve a row data.
 
 ```ballerina
-    string[] values = [];
-    var response = sp -> getColumnData("abc1234567", "Sheet1", 1);
-    match response {
-        string[] vals => values = vals;
-        googlespreadsheet4:SpreadsheetError err => io:println(err);
-    }
+    string[] values = check spreadsheetClient -> getColumnData("abc1234567", "Sheet1", 1);
 ```
 
 12. Set data for a cell.
 
 ```ballerina
-    boolean updatedStatus;
-    var response = sp -> setCellData("abc1234567", "Sheet1", "B", 5, "90");
-    match response {
-        boolean b => updatedStatus = b;
-        googlespreadsheet4:SpreadsheetError err => io:println(err);
-    }
+    boolean isUpadated = check spreadsheetClient -> setCellData("abc1234567", "Sheet1", "B", 5, "90");
 ```
 
 13. Get data of a cell.
 
 ```ballerina
-    string value = "";
-    var response = sp -> getCellData("abc1234567", "Sheet1", "B", 5);
-    match response {
-        string val => value = val;
-        googlespreadsheet4:SpreadsheetError err => io:println(err);
-    }
+    string value = check spreadsheetClient -> getCellData("abc1234567", "Sheet1", "B", 5);
 ```
