@@ -46,17 +46,17 @@ public type SpreadsheetConnector object {
             if (statusCode == http:OK_200) {
                 spreadsheetResponse = convertToSpreadsheet(spreadsheetJSONResponse);
             } else {
-                spreadsheetError.errorMessage = spreadsheetJSONResponse.error.message.toString() but { () => "" };
+                spreadsheetError.message = spreadsheetJSONResponse.error.message.toString() but { () => "" };
                 spreadsheetError.statusCode = statusCode;
                 return spreadsheetError;
             }
         } catch (http:HttpConnectorError err) {
-            spreadsheetError.errorMessage = err.message;
+            spreadsheetError.message = err.message;
             spreadsheetError.cause = err.cause;
             spreadsheetError.statusCode = err.statusCode;
             return spreadsheetError;
         } catch (http:PayloadError err) {
-            spreadsheetError.errorMessage = "Error occured while receiving Json Payload";
+            spreadsheetError.message = "Error occured while receiving Json Payload";
             spreadsheetError.cause = err.cause;
             return spreadsheetError;
         }
@@ -82,17 +82,17 @@ public type SpreadsheetConnector object {
             if (statusCode == http:OK_200) {
                 spreadsheetResponse = convertToSpreadsheet(spreadsheetJSONResponse);
             } else {
-                spreadsheetError.errorMessage = spreadsheetJSONResponse.error.message.toString() but { () => "" };
+                spreadsheetError.message = spreadsheetJSONResponse.error.message.toString() but { () => "" };
                 spreadsheetError.statusCode = statusCode;
                 return spreadsheetError;
             }
         } catch (http:HttpConnectorError err) {
-            spreadsheetError.errorMessage = err.message;
+            spreadsheetError.message = err.message;
             spreadsheetError.cause = err.cause;
             spreadsheetError.statusCode = err.statusCode;
             return spreadsheetError;
         } catch (http:PayloadError err) {
-            spreadsheetError.errorMessage = err.message;
+            spreadsheetError.message = err.message;
             spreadsheetError.cause = err.cause;
             return spreadsheetError;
         }
@@ -141,17 +141,17 @@ public type SpreadsheetConnector object {
                     }
                 }
             } else {
-                spreadsheetError.errorMessage = spreadsheetJSONResponse.error.message.toString() but { () => "" };
+                spreadsheetError.message = spreadsheetJSONResponse.error.message.toString() but { () => "" };
                 spreadsheetError.statusCode = statusCode;
                 return spreadsheetError;
             }
         } catch (http:HttpConnectorError err) {
-            spreadsheetError.errorMessage = err.message;
+            spreadsheetError.message = err.message;
             spreadsheetError.cause = err.cause;
             spreadsheetError.statusCode = err.statusCode;
             return spreadsheetError;
         } catch (http:PayloadError err) {
-            spreadsheetError.errorMessage = err.message;
+            spreadsheetError.message = err.message;
             spreadsheetError.cause = err.cause;
             return spreadsheetError;
         }
@@ -192,17 +192,17 @@ public type SpreadsheetConnector object {
                     }
                 }
             } else {
-                spreadsheetError.errorMessage = spreadsheetJSONResponse.error.message.toString() but { () => "" };
+                spreadsheetError.message = spreadsheetJSONResponse.error.message.toString() but { () => "" };
                 spreadsheetError.statusCode = statusCode;
                 return spreadsheetError;
             }
         } catch (http:HttpConnectorError err) {
-            spreadsheetError.errorMessage = err.message;
+            spreadsheetError.message = err.message;
             spreadsheetError.cause = err.cause;
             spreadsheetError.statusCode = err.statusCode;
             return spreadsheetError;
         } catch (http:PayloadError err) {
-            spreadsheetError.errorMessage = err.message;
+            spreadsheetError.message = err.message;
             spreadsheetError.cause = err.cause;
             return spreadsheetError;
         }
@@ -239,17 +239,17 @@ public type SpreadsheetConnector object {
                     }
                 }
             } else {
-                spreadsheetError.errorMessage = spreadsheetJSONResponse.error.message.toString() but { () => "" };
+                spreadsheetError.message = spreadsheetJSONResponse.error.message.toString() but { () => "" };
                 spreadsheetError.statusCode = statusCode;
                 return spreadsheetError;
             }
         } catch (http:HttpConnectorError err) {
-            spreadsheetError.errorMessage = err.message;
+            spreadsheetError.message = err.message;
             spreadsheetError.cause = err.cause;
             spreadsheetError.statusCode = err.statusCode;
             return spreadsheetError;
         } catch (http:PayloadError err) {
-            spreadsheetError.errorMessage = err.message;
+            spreadsheetError.message = err.message;
             spreadsheetError.cause = err.cause;
             return spreadsheetError;
         }
@@ -283,17 +283,17 @@ public type SpreadsheetConnector object {
                     value = jsonVals[0][0].toString() ?: "";
                 }
             } else {
-                spreadsheetError.errorMessage = spreadsheetJSONResponse.error.message.toString() but { () => "" };
+                spreadsheetError.message = spreadsheetJSONResponse.error.message.toString() but { () => "" };
                 spreadsheetError.statusCode = statusCode;
                 return spreadsheetError;
             }
         } catch (http:HttpConnectorError err) {
-            spreadsheetError.errorMessage = err.message;
+            spreadsheetError.message = err.message;
             spreadsheetError.cause = err.cause;
             spreadsheetError.statusCode = err.statusCode;
             return spreadsheetError;
         } catch (http:PayloadError err) {
-            spreadsheetError.errorMessage = err.message;
+            spreadsheetError.message = err.message;
             spreadsheetError.cause = err.cause;
             return spreadsheetError;
         }
@@ -326,17 +326,17 @@ public type SpreadsheetConnector object {
             if (statusCode == http:OK_200) {
                 return true;
             } else {
-                spreadsheetError.errorMessage = spreadsheetJSONResponse.error.message.toString() but { () => "" };
+                spreadsheetError.message = spreadsheetJSONResponse.error.message.toString() but { () => "" };
                 spreadsheetError.statusCode = statusCode;
                 return spreadsheetError;
             }
         } catch (http:HttpConnectorError err) {
-            spreadsheetError.errorMessage = err.message;
+            spreadsheetError.message = err.message;
             spreadsheetError.cause = err.cause;
             spreadsheetError.statusCode = err.statusCode;
             return spreadsheetError;
         } catch (http:PayloadError err) {
-            spreadsheetError. errorMessage = err.message;
+            spreadsheetError.message = err.message;
             spreadsheetError.cause = err.cause;
             return spreadsheetError;
         }
@@ -380,17 +380,17 @@ public type SpreadsheetConnector object {
             if (statusCode == http:OK_200) {
                 return true;
             } else {
-                spreadsheetError.errorMessage = spreadsheetJSONResponse.error.message.toString() but { () => "" };
+                spreadsheetError.message = spreadsheetJSONResponse.error.message.toString() but { () => "" };
                 spreadsheetError.statusCode = statusCode;
                 return spreadsheetError;
             }
         } catch (http:HttpConnectorError err) {
-            spreadsheetError.errorMessage = err.message;
+            spreadsheetError.message = err.message;
             spreadsheetError.cause = err.cause;
             spreadsheetError.statusCode = err.statusCode;
             return spreadsheetError;
         } catch (http:PayloadError err) {
-            spreadsheetError. errorMessage = err.message;
+            spreadsheetError.message = err.message;
             spreadsheetError.cause = err.cause;
             return spreadsheetError;
         }

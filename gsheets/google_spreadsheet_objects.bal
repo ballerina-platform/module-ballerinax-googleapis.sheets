@@ -36,7 +36,7 @@ public type Spreadsheet object {
         SpreadsheetError spreadsheetError = {};
         string title = "";
         if (self.properties == null) {
-            spreadsheetError.errorMessage = "Spreadsheet properties cannot be null";
+            spreadsheetError.message = "Spreadsheet properties cannot be null";
             return spreadsheetError;
         } else {
             return self.properties.title;
@@ -50,7 +50,7 @@ public type Spreadsheet object {
         SpreadsheetError spreadsheetError = {};
         string spreadsheetId = "";
         if (self.spreadsheetId == null) {
-            spreadsheetError.errorMessage = "Unable to find the spreadsheet id";
+            spreadsheetError.message = "Unable to find the spreadsheet id";
             return spreadsheetError;
         }
         return self.spreadsheetId;
@@ -62,7 +62,7 @@ public type Spreadsheet object {
     public function getSheets() returns Sheet[] | SpreadsheetError {
         SpreadsheetError spreadsheetError = {};
         if (self.sheets == null) {
-            spreadsheetError.errorMessage = "No sheets found";
+            spreadsheetError.message = "No sheets found";
             return spreadsheetError;
         }
         return self.sheets;
@@ -77,7 +77,7 @@ public type Spreadsheet object {
         Sheet sheetResponse = {};
         SpreadsheetError spreadsheetError = {};
         if (sheets == null) {
-            spreadsheetError.errorMessage = "No sheet found";
+            spreadsheetError.message = "No sheet found";
             return spreadsheetError;
         } else {
             foreach sheet in sheets {
@@ -151,11 +151,12 @@ public type GridProperties {
 };
 
 documentation {Spreadsheet error
+    F{{message}} Error message
+    F{{cause}} The error which caused the GMail error
     F{{statusCode}} The status code
-    F{{errorMessage}} Error message
 }
 public type SpreadsheetError {
-    int statusCode;
-    string errorMessage;
+    string message;
     error? cause;
+    int statusCode;
 };
