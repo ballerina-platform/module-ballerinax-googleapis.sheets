@@ -1,0 +1,85 @@
+// Copyright (c) 2018 WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+//
+// WSO2 Inc. licenses this file to you under the Apache License,
+// Version 2.0 (the "License"); you may not use this file except
+// in compliance with the License.
+// You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
+
+import ballerina/http;
+
+documentation {SpreadsheetConfiguration is used to set up the Google Spreadsheet configuration. In order to use
+this connector, you need to provide the oauth2 credentials.
+    F{{clientConfig}} - The HTTP client congiguration
+}
+public type SpreadsheetConfiguration {
+    http:ClientEndpointConfig clientConfig = {};
+};
+
+documentation {Google Spreadsheet Endpoint object.
+    F{{spreadsheetConfig}} - Spreadsheet connector configurations
+    F{{spreadsheetConnector}} - Spreadsheet connector object
+}
+public type Client object {
+    public {
+        SpreadsheetConfiguration spreadsheetConfig = {};
+        SpreadsheetConnector spreadsheetConnector = new;
+    }
+    new () {}
+
+    documentation {Spreadsheet connector endpoint initialization function
+        P{{spreadsheetConfig}} - Spreadsheet connector configuration
+    }
+    public function init (SpreadsheetConfiguration spreadsheetConfig);
+
+    documentation {Register Spreadsheet connector endpoint
+        P{{serviceType}} - Accepts types of data (int, float, string, boolean, etc)
+    }
+    public function register (typedesc serviceType);
+
+    documentation {Start Spreadsheet connector client
+    }
+    public function start ();
+
+    documentation {Get Spreadsheet connector client
+        R{{}} - Spreadsheet connector client
+    }
+    public function getClient () returns SpreadsheetConnector;
+
+    documentation {Stop Spreadsheet connector client}
+    public function stop ();
+
+};
+
+public function Client::init (SpreadsheetConfiguration spreadsheetConfig) {
+    spreadsheetConfig.clientConfig.targets = [{url:"https://sheets.googleapis.com"}];
+    match spreadsheetConfig.clientConfig.auth {
+        () => {}
+        http:AuthConfig authConfig => {
+            authConfig.refreshUrl = "https://www.googleapis.com/oauth2/v3/token";
+            authConfig.scheme = "oauth";
+        }
+    }
+    self.spreadsheetConnector.httpClient.init(spreadsheetConfig.clientConfig);
+}
+
+public function Client::register (typedesc serviceType) {
+}
+
+public function Client::start () {
+}
+
+public function Client::getClient () returns SpreadsheetConnector {
+    return self.spreadsheetConnector;
+}
+
+public function Client::stop () {
+}

@@ -2,7 +2,7 @@
 
 | Ballerina Version                     | Connector Version         | API Version |
 | ------------------------------------- | ------------------------- | ------------|
-|  ballerina-platform-0.970.0-beta0     |           0.8.4           |   V4        |
+|  ballerina-platform-0.970.0-beta0     |           0.8.5           |   V4        |
 
 ### Prerequisites
 
@@ -31,4 +31,7 @@ You can use the `tests.bal` file to test all the connector actions by following 
     ```
 3. Navigate to the folder `package-googlespreadsheet`.
 4. Run the following commands to execute the tests.
-    ```$ ballerina test gsheets```
+    ```
+    ballerina init
+    ballerina test gsheets4
+    ```
