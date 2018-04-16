@@ -12,7 +12,7 @@ The following sections provide you with information on how to use the Ballerina 
 
 | Language Version | Connector Version | API Version |
 |-------|:------------:|:------------:|
-| ballerina-0.970-alpha-4  | 0.8.0  | V4 |
+| ballerina-platform-0.970.0-beta0   | 0.8.1  | V4 |
 
 
 ## Getting started

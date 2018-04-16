@@ -14,24 +14,20 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import wso2/oauth2;
-
 documentation {SpreadsheetConfiguration is used to set up the Google Spreadsheet configuration. In order to use
-this connector, you to provide the oauth2 credentials.
-    F{{oAuth2ClientConfig}} OAuth2 congiguration
+this connector, you need to provide the oauth2 credentials.
+    F{{clientConfig}} The HTTP client congiguration
 }
 public type SpreadsheetConfiguration {
-    oauth2:OAuth2ClientEndpointConfiguration oAuth2ClientConfig;
+    http:ClientEndpointConfig clientConfig;
 };
 
 documentation {Google Spreadsheet Endpoint object.
-    F{{oauth2Client}} OAuth2 client
     F{{spreadsheetConfig}} Spreadsheet connector configurations
     F{{spreadsheetConnector}} Spreadsheet connector object
 }
 public type Client object {
     public {
-        oauth2:APIClient oauth2Client;
         SpreadsheetConfiguration spreadsheetConfig;
         SpreadsheetConnector spreadsheetConnector;
     }
@@ -41,11 +37,15 @@ public type Client object {
         P{{spreadsheetConfig}} Spreadsheet connector configuration
     }
     public function init (SpreadsheetConfiguration spreadsheetConfig) {
-        spreadsheetConfig.oAuth2ClientConfig.baseUrl = "https://sheets.googleapis.com";
-        spreadsheetConfig.oAuth2ClientConfig.refreshTokenEP = "https://www.googleapis.com";
-        spreadsheetConfig.oAuth2ClientConfig.refreshTokenPath = "/oauth2/v3/token";
-        oauth2Client.init(spreadsheetConfig.oAuth2ClientConfig);
-        spreadsheetConnector.oauth2Client = oauth2Client;
+        spreadsheetConfig.clientConfig.targets = [{url:"https://sheets.googleapis.com"}];
+        match spreadsheetConfig.clientConfig.auth {
+            () => {}
+            http:AuthConfig authConfig => {
+                authConfig.refreshUrl = "https://www.googleapis.com/oauth2/v3/token";
+                authConfig.scheme = "oauth";
+            }
+        }
+        self.spreadsheetConnector.httpClient.init(spreadsheetConfig.clientConfig);
     }
 
     documentation {Register Spreadsheet connector endpoint

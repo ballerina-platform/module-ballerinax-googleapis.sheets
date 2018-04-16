@@ -18,19 +18,19 @@ import ballerina/config;
 import ballerina/io;
 import ballerina/test;
 
-string clientId = config:getAsString("CLIENT_ID") but { () => "" };
-string clientSecret = config:getAsString("CLIENT_SECRET") but { () => "" };
-string accessToken = config:getAsString("ACCESS_TOKEN") but { () => "" };
-string refreshToken = config:getAsString("REFRESH_TOKEN") but { () => "" };
+string accessToken = config:getAsString("ACCESS_TOKEN");
+string clientId = config:getAsString("CLIENT_ID");
+string clientSecret = config:getAsString("CLIENT_SECRET");
+string refreshToken = config:getAsString("REFRESH_TOKEN");
 
 endpoint Client spreadsheetClient {
-    oAuth2ClientConfig: {
-        accessToken:accessToken,
-        clientConfig:{},
-        refreshToken:refreshToken,
-        clientId:clientId,
-        clientSecret:clientSecret,
-        useUriParams:true
+    clientConfig:{
+        auth:{
+            accessToken:accessToken,
+            refreshToken:refreshToken,
+            clientId:clientId,
+            clientSecret:clientSecret
+        }
     }
 };
 

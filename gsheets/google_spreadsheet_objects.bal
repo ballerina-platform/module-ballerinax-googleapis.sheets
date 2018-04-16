@@ -157,4 +157,5 @@ documentation {Spreadsheet error
 public type SpreadsheetError {
     int statusCode;
     string errorMessage;
+    error? cause;
 };
