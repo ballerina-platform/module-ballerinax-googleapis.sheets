@@ -7,7 +7,7 @@ spreadsheets and simultaneously work with other people. The Google Spreadsheet c
 ## Compatibility
 | Language Version        | Connector Version          | API Versions  |
 | ------------- |:-------------:| -----:|
-| ballerina-platform-0.970.0-beta0    | 0.8.4 | V4  |
+| ballerina-platform-0.970.0-beta0    | 0.8.5 | V4  |
 
 The following sections provide you with information on how to use the Ballerina Google Spreadsheet connector.
 

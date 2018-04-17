@@ -1,8 +1,12 @@
 # Compiled class file
 *.class
-
+*.balx
+*.toml
 # Log file
 *.log
+
+#conf file
+ballerina.conf
 
 # BlueJ files
 *.ctxt
@@ -30,3 +34,9 @@ target
 *.iws
 *.ipr
 .idea
+.m2
+.vscode/
+# Ignore ballerina files
+accessToken.bal
+temp.bal.ballerina/
+target/
