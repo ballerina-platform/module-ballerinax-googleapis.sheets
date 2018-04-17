@@ -1,15 +1,15 @@
-# Ballerina Google Spreadsheet Connector
+# Ballerina Google Spreadsheet Endpoint
 
 Google Sheets is an online spreadsheet that lets users create and format
-spreadsheets and simultaneously work with other people. The Google Spreadsheet connector allows you to access the Google Spreadsheet API Version v4 through Ballerina.
+spreadsheets and simultaneously work with other people. The Google Spreadsheet endpoint allows you to access the Google Spreadsheet API Version v4 through Ballerina.
 
 
 ## Compatibility
-| Language Version        | Connector Version          | API Versions  |
+| Language Version        | Endpoint Version          | API Versions  |
 | ------------- |:-------------:| -----:|
 | ballerina-platform-0.970.0-beta0    | 0.8.5 | V4  |
 
-The following sections provide you with information on how to use the Ballerina Google Spreadsheet connector.
+The following sections provide you with information on how to use the Ballerina Google Spreadsheet endpoint.
 
 - [Getting started](#getting-started)
 - [Quick Testing](#quick-testing)
@@ -35,61 +35,63 @@ The following sections provide you with information on how to use the Ballerina 
 
 
 ## Quick Testing
-This section provides information on how to create a Spreadsheet endpoint to invoke the actions and sample requests for eaach action.
+This section provides information on how to create a Spreadsheet endpoint to invoke the actions and sample requests for each action.
 
 1. Create a Google Spreadsheet endpoint.
 
 ```ballerina
-   endpoint Client spreadsheetClient {
-       clientConfig:{
-           auth:{
-               accessToken:accessToken,
-               refreshToken:refreshToken,
-               clientId:clientId,
-               clientSecret:clientSecret
-           }
-       }
-   };
+    import wso2/gsheets4;
+
+    endpoint gsheets4:Client spreadsheetClientEP {
+        clientConfig:{
+            auth:{
+                accessToken:accessToken,
+                refreshToken:refreshToken,
+                clientId:clientId,
+                clientSecret:clientSecret
+            }
+        }
+    };
 ```
 
 2. Create a new spreadsheet with the given name.
 
 ```ballerina
-    Spreadsheet spreadsheet =  check spreadsheetClient -> createSpreadsheet("Finances");
+    gsheets4:Spreadsheet spreadsheet =  check spreadsheetClient -> createSpreadsheet("Finances");
 ```
 
 3. Open the spreadsheet with the given ID
 
 ```ballerina
-    Spreadsheet spreadsheet = check spreadsheetClient -> openSpreadsheetById("abc1234567");
+    gsheets4:Spreadsheet spreadsheet = check spreadsheetClient -> openSpreadsheetById("abc1234567");
 ```
 
 4. Get the name of the spreadsheet.
 
 ```ballerina
-    Spreadsheet spreadsheet = check spreadsheetClient -> openSpreadsheetById("abc1234567");
+    gsheets4:Spreadsheet spreadsheet = check spreadsheetClient -> openSpreadsheetById("abc1234567");
     string spreadsheetName = check spreadsheet.getSpreadsheetName();
 ```
 
 5. Get the id of the spreadsheet.
 
 ```ballerina
-    Spreadsheet spreadsheet = check spreadsheetClient -> createSpreadsheet("Finances");
+    gsheets4:Spreadsheet spreadsheet = check spreadsheetClient -> createSpreadsheet("Finances");
     string spreadsheetId = check spreadsheet.getSpreadsheetId();
 ```
 
 6. Get all the sheets in a spreadsheet.
 
 ```ballerina
-    Spreadsheet spreadsheet = check spreadsheetClient -> openSpreadsheetById("abc1234567");
-    Sheet[] sheets = check spreadsheet.getSheets();
+    gsheets4:Spreadsheet spreadsheet = check spreadsheetClient -> openSpreadsheetById("abc1234567");
+    gsheets4:Sheet[] sheets = check spreadsheet.getSheets();
 ```
 
 7. Retrieve a sheet with the given name.
 
 ```ballerina
-    Spreadsheet spreadsheet = check spreadsheetClient -> openSpreadsheetById("abc1234567");
-    Sheet sheet = check spreadsheet.getSheetByName(sheetName);
+    gsheets4:Spreadsheet spreadsheet = check spreadsheetClient -> openSpreadsheetById("abc1234567");
+    gsheets4:Sheet sheet = check spreadsheet.getSheetByName(sheetName);
 ```
 
 8. Sets the value of the range.

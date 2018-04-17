@@ -1,16 +1,16 @@
-# Ballerina Google Spreadsheet Connector
+# Ballerina Google Spreadsheet Endpoint
 
 Google Sheets is an online spreadsheet that lets users create and format
-spreadsheets and simultaneously work with other people. The Google Spreadsheet connector allows you to access the Google Spreadsheet API Version v4 through Ballerina.
+spreadsheets and simultaneously work with other people. The Google Spreadsheet endpoint allows you to access the Google Spreadsheet API Version v4 through Ballerina.
 
-The following sections provide you with information on how to use the Ballerina Google Spreadsheet connector.
+The following sections provide you with information on how to use the Ballerina Google Spreadsheet endpoint.
 - [Compatibility](#compatibility)
 - [Getting started](#getting-started)
 
 
 ### Compatibility
 
-| Language Version | Connector Version | API Version |
+| Language Version | Endpoint Version | API Version |
 |-------|:------------:|:------------:|
 | ballerina-platform-0.970.0-beta0   | 0.8.5  | V4 |
 
