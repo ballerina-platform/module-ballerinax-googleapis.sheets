@@ -106,30 +106,36 @@ public function SpreadsheetConnector::createSpreadsheet (string spreadsheetName)
     string createSpreadsheetPath = "/v4/spreadsheets";
     json spreadsheetJSONPayload = {"properties": {"title": spreadsheetName}};
     request.setJsonPayload(spreadsheetJSONPayload);
-    try {
-        var httpResponse = httpClient -> post(createSpreadsheetPath, request);
-        http:Response response = check httpResponse;
-        int statusCode = response.statusCode;
-        var jsonRes = response.getJsonPayload();
-        json spreadsheetJSONResponse = check jsonRes;
-        if (statusCode == http:OK_200) {
-            spreadsheetResponse = convertToSpreadsheet(spreadsheetJSONResponse);
-        } else {
-            spreadsheetError.message = spreadsheetJSONResponse.error.message.toString() but { () => "" };
-            spreadsheetError.statusCode = statusCode;
+    var httpResponse = httpClient -> post(createSpreadsheetPath, request);
+    match httpResponse {
+        http:HttpConnectorError err => {
+            spreadsheetError.message = err.message;
+            spreadsheetError.cause = err.cause;
+            spreadsheetError.statusCode = err.statusCode;
             return spreadsheetError;
         }
-    } catch (http:HttpConnectorError err) {
-        spreadsheetError.message = err.message;
-        spreadsheetError.cause = err.cause;
-        spreadsheetError.statusCode = err.statusCode;
-        return spreadsheetError;
-    } catch (http:PayloadError err) {
-        spreadsheetError.message = "Error occured while receiving Json Payload";
-        spreadsheetError.cause = err.cause;
-        return spreadsheetError;
+        http:Response response => {
+            int statusCode = response.statusCode;
+            var spreadsheetJSONResponse = response.getJsonPayload();
+            match spreadsheetJSONResponse {
+                http:PayloadError err => {
+                    spreadsheetError.message = "Error occured while receiving Json Payload";
+                    spreadsheetError.cause = err.cause;
+                    return spreadsheetError;
+                }
+                json jsonResponse => {
+                    if (statusCode == http:OK_200) {
+                        spreadsheetResponse = convertToSpreadsheet(jsonResponse);
+                        return spreadsheetResponse;
+                    } else {
+                        spreadsheetError.message = jsonResponse.error.message.toString();
+                        spreadsheetError.statusCode = statusCode;
+                        return spreadsheetError;
+                    }
+                }
+            }
+        }
     }
-    return spreadsheetResponse;
 }
 
 public function SpreadsheetConnector::openSpreadsheetById (string spreadsheetId) returns Spreadsheet | SpreadsheetError {
@@ -138,30 +144,36 @@ public function SpreadsheetConnector::openSpreadsheetById (string spreadsheetId)
     Spreadsheet spreadsheetResponse = new;
     SpreadsheetError spreadsheetError = {};
     string getSpreadsheetPath = "/v4/spreadsheets/" + spreadsheetId;
-    try {
-        var httpResponse = httpClient -> get(getSpreadsheetPath, request);
-        http:Response response = check httpResponse;
-        int statusCode = response.statusCode;
-        var jsonRes = response.getJsonPayload();
-        json spreadsheetJSONResponse = check jsonRes;
-        if (statusCode == http:OK_200) {
-            spreadsheetResponse = convertToSpreadsheet(spreadsheetJSONResponse);
-        } else {
-            spreadsheetError.message = spreadsheetJSONResponse.error.message.toString() but { () => "" };
-            spreadsheetError.statusCode = statusCode;
+    var httpResponse = httpClient -> get(getSpreadsheetPath, request);
+    match httpResponse {
+        http:HttpConnectorError err => {
+            spreadsheetError.message = err.message;
+            spreadsheetError.cause = err.cause;
+            spreadsheetError.statusCode = err.statusCode;
             return spreadsheetError;
         }
-    } catch (http:HttpConnectorError err) {
-        spreadsheetError.message = err.message;
-        spreadsheetError.cause = err.cause;
-        spreadsheetError.statusCode = err.statusCode;
-        return spreadsheetError;
-    } catch (http:PayloadError err) {
-        spreadsheetError.message = err.message;
-        spreadsheetError.cause = err.cause;
-        return spreadsheetError;
+        http:Response response => {
+            int statusCode = response.statusCode;
+            var spreadsheetJSONResponse = response.getJsonPayload();
+            match spreadsheetJSONResponse {
+                http:PayloadError err => {
+                    spreadsheetError.message = "Error occured while receiving Json Payload";
+                    spreadsheetError.cause = err.cause;
+                    return spreadsheetError;
+                }
+                json jsonResponse => {
+                    if (statusCode == http:OK_200) {
+                        spreadsheetResponse = convertToSpreadsheet(jsonResponse);
+                        return spreadsheetResponse;
+                    } else {
+                        spreadsheetError.message = jsonResponse.error.message.toString();
+                        spreadsheetError.statusCode = statusCode;
+                        return spreadsheetError;
+                    }
+                }
+            }
+        }
     }
-    return spreadsheetResponse;
 }
 
 public function SpreadsheetConnector::getSheetValues (string spreadsheetId, string sheetName, string topLeftCell, string bottomRightCell)
@@ -178,42 +190,48 @@ public function SpreadsheetConnector::getSheetValues (string spreadsheetId, stri
         a1Notation = a1Notation + ":" + bottomRightCell;
     }
     string getSheetValuesPath = "/v4/spreadsheets/" + spreadsheetId + "/values/" + a1Notation;
-    try {
-        var httpResponse = httpClient -> get(getSheetValuesPath, request);
-        http:Response response = check httpResponse;
-        int statusCode = response.statusCode;
-        var jsonRes = response.getJsonPayload();
-        json spreadsheetJSONResponse = check jsonRes;
-        if (statusCode == http:OK_200) {
-            if (spreadsheetJSONResponse.values != null) {
-                int i = 0;
-                foreach value in spreadsheetJSONResponse.values {
-                    int j = 0;
-                    string[] val = [];
-                    foreach v in value {
-                        val[j] = v.toString() ?: "";
-                        j = j + 1;
-                    }
-                    values[i] = val;
-                    i = i + 1;
-                }
-            }
-        } else {
-            spreadsheetError.message = spreadsheetJSONResponse.error.message.toString() but { () => "" };
-            spreadsheetError.statusCode = statusCode;
+    var httpResponse = httpClient -> get(getSheetValuesPath, request);
+    match httpResponse {
+        http:HttpConnectorError err => {
+            spreadsheetError.message = err.message;
+            spreadsheetError.cause = err.cause;
+            spreadsheetError.statusCode = err.statusCode;
             return spreadsheetError;
         }
-    } catch (http:HttpConnectorError err) {
-        spreadsheetError.message = err.message;
-        spreadsheetError.cause = err.cause;
-        spreadsheetError.statusCode = err.statusCode;
-        return spreadsheetError;
-    } catch (http:PayloadError err) {
-        spreadsheetError.message = err.message;
-        spreadsheetError.cause = err.cause;
-        return spreadsheetError;
+        http:Response response => {
+            int statusCode = response.statusCode;
+            var spreadsheetJSONResponse = response.getJsonPayload();
+            match spreadsheetJSONResponse {
+                http:PayloadError err => {
+                    spreadsheetError.message = "Error occured while receiving Json Payload";
+                    spreadsheetError.cause = err.cause;
+                    return spreadsheetError;
+                }
+                json jsonResponse => {
+                    if (statusCode == http:OK_200) {
+                        if (jsonResponse.values != null) {
+                            int i = 0;
+                            foreach value in jsonResponse.values {
+                                int j = 0;
+                                string[] val = [];
+                                foreach v in value {
+                                    val[j] = v.toString();
+                                    j = j + 1;
+                                }
+                                values[i] = val;
+                                i = i + 1;
+                            }
+                        }
+                        return values;
+                    } else {
+                        spreadsheetError.message = jsonResponse.error.message.toString();
+                        spreadsheetError.statusCode = statusCode;
+                        return spreadsheetError;
+                    }
+                }
+            }
+        }
     }
-    return values;
 }
 
 public function SpreadsheetConnector::getColumnData (string spreadsheetId, string sheetName, string column)
@@ -224,41 +242,46 @@ public function SpreadsheetConnector::getColumnData (string spreadsheetId, strin
     SpreadsheetError spreadsheetError = {};
     string a1Notation = sheetName + "!" + column + ":" + column;
     string getSheetValuesPath = "/v4/spreadsheets/" + spreadsheetId + "/values/" + a1Notation;
-    try {
-        var httpResponse = httpClient -> get(getSheetValuesPath, request);
-        http:Response response = check httpResponse;
-        int statusCode = response.statusCode;
-        var jsonRes = response.getJsonPayload();
-        json spreadsheetJSONResponse = check jsonRes;
-        if (statusCode == http:OK_200) {
-            if (spreadsheetJSONResponse.values != null) {
-                int i = 0;
-                json[][] jsonVals = check <json[][]> spreadsheetJSONResponse.values;
-                foreach value in jsonVals {
-                    if (lengthof value > 0) {
-                        values[i] = value[0].toString() ?: "";
-                    } else {
-                        values[i] = "";
-                    }
-                    i = i + 1;
-                }
-            }
-        } else {
-            spreadsheetError.message = spreadsheetJSONResponse.error.message.toString() but { () => "" };
-            spreadsheetError.statusCode = statusCode;
+    var httpResponse = httpClient -> get(getSheetValuesPath, request);
+    match httpResponse {
+        http:HttpConnectorError err => {
+            spreadsheetError.message = err.message;
+            spreadsheetError.cause = err.cause;
+            spreadsheetError.statusCode = err.statusCode;
             return spreadsheetError;
         }
-    } catch (http:HttpConnectorError err) {
-        spreadsheetError.message = err.message;
-        spreadsheetError.cause = err.cause;
-        spreadsheetError.statusCode = err.statusCode;
-        return spreadsheetError;
-    } catch (http:PayloadError err) {
-        spreadsheetError.message = err.message;
-        spreadsheetError.cause = err.cause;
-        return spreadsheetError;
+        http:Response response => {
+            int statusCode = response.statusCode;
+            var spreadsheetJSONResponse = response.getJsonPayload();
+            match spreadsheetJSONResponse {
+                http:PayloadError err => {
+                    spreadsheetError.message = "Error occured while receiving Json Payload";
+                    spreadsheetError.cause = err.cause;
+                    return spreadsheetError;
+                }
+                json jsonResponse => {
+                    if (statusCode == http:OK_200) {
+                        if (jsonResponse.values != null) {
+                            int i = 0;
+                            foreach value in jsonResponse.values {
+                                if (lengthof value > 0) {
+                                    values[i] = value[0].toString();
+                                } else {
+                                values[i] = "";
+                                }
+                                i = i + 1;
+                            }
+                        }
+                        return values;
+                    } else {
+                        spreadsheetError.message = jsonResponse.error.message.toString();
+                        spreadsheetError.statusCode = statusCode;
+                        return spreadsheetError;
+                    }
+                }
+            }
+        }
     }
-    return values;
 }
 
 public function SpreadsheetConnector::getRowData (string spreadsheetId, string sheetName, int row)
@@ -269,37 +292,42 @@ public function SpreadsheetConnector::getRowData (string spreadsheetId, string s
     SpreadsheetError spreadsheetError = {};
     string a1Notation = sheetName + "!" + row + ":" + row;
     string getSheetValuesPath = "/v4/spreadsheets/" + spreadsheetId + "/values/" + a1Notation;
-    try {
-        var httpResponse = httpClient -> get(getSheetValuesPath, request);
-        http:Response response = check httpResponse;
-        int statusCode = response.statusCode;
-        var jsonRes = response.getJsonPayload();
-        json spreadsheetJSONResponse = check jsonRes;
-        if (statusCode == http:OK_200) {
-            if (spreadsheetJSONResponse.values != null) {
-                int i = 0;
-                json[][] jsonVals = check <json[][]>spreadsheetJSONResponse.values;
-                foreach value in jsonVals[0] {
-                    values[i] = value.toString() ?: "";
-                    i = i + 1;
-                }
-            }
-        } else {
-            spreadsheetError.message = spreadsheetJSONResponse.error.message.toString() but { () => "" };
-            spreadsheetError.statusCode = statusCode;
+    var httpResponse = httpClient -> get(getSheetValuesPath, request);
+    match httpResponse {
+        http:HttpConnectorError err => {
+            spreadsheetError.message = err.message;
+            spreadsheetError.cause = err.cause;
+            spreadsheetError.statusCode = err.statusCode;
             return spreadsheetError;
         }
-    } catch (http:HttpConnectorError err) {
-        spreadsheetError.message = err.message;
-        spreadsheetError.cause = err.cause;
-        spreadsheetError.statusCode = err.statusCode;
-        return spreadsheetError;
-    } catch (http:PayloadError err) {
-        spreadsheetError.message = err.message;
-        spreadsheetError.cause = err.cause;
-        return spreadsheetError;
+        http:Response response => {
+            int statusCode = response.statusCode;
+            var spreadsheetJSONResponse = response.getJsonPayload();
+            match spreadsheetJSONResponse {
+                http:PayloadError err => {
+                    spreadsheetError.message = "Error occured while receiving Json Payload";
+                    spreadsheetError.cause = err.cause;
+                    return spreadsheetError;
+                }
+                json jsonResponse => {
+                    if (statusCode == http:OK_200) {
+                    if (jsonResponse.values != null) {
+                        int i = 0;
+                        foreach value in jsonResponse.values[0] {
+                            values[i] = value.toString();
+                            i = i + 1;
+                        }
+                    }
+                        return values;
+                    } else {
+                        spreadsheetError.message = jsonResponse.error.message.toString();
+                        spreadsheetError.statusCode = statusCode;
+                        return spreadsheetError;
+                    }
+                }
+            }
+        }
     }
-    return values;
 }
 
 public function SpreadsheetConnector::getCellData (string spreadsheetId, string sheetName, string column, int row)
@@ -310,33 +338,38 @@ public function SpreadsheetConnector::getCellData (string spreadsheetId, string 
     SpreadsheetError spreadsheetError = {};
     string a1Notation = sheetName + "!" + column + row;
     string getSheetValuesPath = "/v4/spreadsheets/" + spreadsheetId + "/values/" + a1Notation;
-    try {
-        var httpResponse = httpClient -> get(getSheetValuesPath, request);
-        http:Response response = check httpResponse;
-        int statusCode = response.statusCode;
-        var jsonRes = response.getJsonPayload();
-        json spreadsheetJSONResponse = check jsonRes;
-        if (statusCode == http:OK_200) {
-            if (spreadsheetJSONResponse.values != null) {
-                json[][] jsonVals = check <json[][]>spreadsheetJSONResponse.values;
-                value = jsonVals[0][0].toString() ?: "";
-            }
-        } else {
-            spreadsheetError.message = spreadsheetJSONResponse.error.message.toString() but { () => "" };
-            spreadsheetError.statusCode = statusCode;
+    var httpResponse = httpClient -> get(getSheetValuesPath, request);
+    match httpResponse {
+        http:HttpConnectorError err => {
+            spreadsheetError.message = err.message;
+            spreadsheetError.cause = err.cause;
+            spreadsheetError.statusCode = err.statusCode;
             return spreadsheetError;
         }
-    } catch (http:HttpConnectorError err) {
-        spreadsheetError.message = err.message;
-        spreadsheetError.cause = err.cause;
-        spreadsheetError.statusCode = err.statusCode;
-        return spreadsheetError;
-    } catch (http:PayloadError err) {
-        spreadsheetError.message = err.message;
-        spreadsheetError.cause = err.cause;
-        return spreadsheetError;
+        http:Response response => {
+            int statusCode = response.statusCode;
+            var spreadsheetJSONResponse = response.getJsonPayload();
+            match spreadsheetJSONResponse {
+                http:PayloadError err => {
+                    spreadsheetError.message = "Error occured while receiving Json Payload";
+                    spreadsheetError.cause = err.cause;
+                    return spreadsheetError;
+                }
+                json jsonResponse => {
+                    if (statusCode == http:OK_200) {
+                        if (jsonResponse.values != null) {
+                            value = jsonResponse.values[0][0].toString();
+                        }
+                        return value;
+                    } else {
+                        spreadsheetError.message = jsonResponse.error.message.toString();
+                        spreadsheetError.statusCode = statusCode;
+                        return spreadsheetError;
+                    }
+                }
+            }
+        }
     }
-    return value;
 }
 
 public function SpreadsheetConnector::setCellData (string spreadsheetId, string sheetName, string column, int row, string value)
@@ -348,30 +381,35 @@ public function SpreadsheetConnector::setCellData (string spreadsheetId, string 
     string a1Notation = sheetName + "!" + column + row;
     string setValuePath = "/v4/spreadsheets/" + spreadsheetId + "/values/" + a1Notation + "?valueInputOption=RAW";
     request.setJsonPayload(jsonPayload);
-    try {
-        var httpResponse = httpClient -> put(setValuePath, request);
-        http:Response response = check httpResponse;
-        int statusCode = response.statusCode;
-        var jsonRes = response.getJsonPayload();
-        json spreadsheetJSONResponse = check jsonRes;
-        if (statusCode == http:OK_200) {
-            return true;
-        } else {
-            spreadsheetError.message = spreadsheetJSONResponse.error.message.toString() but { () => "" };
-            spreadsheetError.statusCode = statusCode;
+    var httpResponse = httpClient -> put(setValuePath, request);
+    match httpResponse {
+        http:HttpConnectorError err => {
+            spreadsheetError.message = err.message;
+            spreadsheetError.cause = err.cause;
+            spreadsheetError.statusCode = err.statusCode;
             return spreadsheetError;
         }
-    } catch (http:HttpConnectorError err) {
-        spreadsheetError.message = err.message;
-        spreadsheetError.cause = err.cause;
-        spreadsheetError.statusCode = err.statusCode;
-        return spreadsheetError;
-    } catch (http:PayloadError err) {
-        spreadsheetError.message = err.message;
-        spreadsheetError.cause = err.cause;
-        return spreadsheetError;
+        http:Response response => {
+            int statusCode = response.statusCode;
+            var spreadsheetJSONResponse = response.getJsonPayload();
+            match spreadsheetJSONResponse {
+                http:PayloadError err => {
+                    spreadsheetError.message = "Error occured while receiving Json Payload";
+                    spreadsheetError.cause = err.cause;
+                    return spreadsheetError;
+                }
+                json jsonResponse => {
+                    if (statusCode == http:OK_200) {
+                        return true;
+                    } else {
+                        spreadsheetError.message = jsonResponse.error.message.toString();
+                        spreadsheetError.statusCode = statusCode;
+                        return spreadsheetError;
+                    }
+                }
+            }
+        }
     }
-    return true;
 }
 
 public function SpreadsheetConnector::setSheetValues (string spreadsheetId, string sheetName, string topLeftCell, string bottomRightCell,
@@ -395,28 +433,33 @@ public function SpreadsheetConnector::setSheetValues (string spreadsheetId, stri
     }
     json jsonPayload = {"values" : jsonValues};
     request.setJsonPayload(jsonPayload);
-    try {
-        var httpResponse = httpClient -> put(setValuePath, request);
-        http:Response response = check httpResponse;
-        int statusCode = response.statusCode;
-        var jsonRes = response.getJsonPayload();
-        json spreadsheetJSONResponse = check jsonRes;
-        if (statusCode == http:OK_200) {
-            return true;
-        } else {
-            spreadsheetError.message = spreadsheetJSONResponse.error.message.toString() but { () => "" };
-            spreadsheetError.statusCode = statusCode;
+    var httpResponse = httpClient -> put(setValuePath, request);
+    match httpResponse {
+        http:HttpConnectorError err => {
+            spreadsheetError.message = err.message;
+            spreadsheetError.cause = err.cause;
+            spreadsheetError.statusCode = err.statusCode;
             return spreadsheetError;
         }
-    } catch (http:HttpConnectorError err) {
-        spreadsheetError.message = err.message;
-        spreadsheetError.cause = err.cause;
-        spreadsheetError.statusCode = err.statusCode;
-        return spreadsheetError;
-    } catch (http:PayloadError err) {
-        spreadsheetError.message = err.message;
-        spreadsheetError.cause = err.cause;
-        return spreadsheetError;
+        http:Response response => {
+            int statusCode = response.statusCode;
+            var spreadsheetJSONResponse = response.getJsonPayload();
+            match spreadsheetJSONResponse {
+                http:PayloadError err => {
+                    spreadsheetError.message = "Error occured while receiving Json Payload";
+                    spreadsheetError.cause = err.cause;
+                    return spreadsheetError;
+                }
+                json jsonResponse => {
+                    if (statusCode == http:OK_200) {
+                        return true;
+                    } else {
+                        spreadsheetError.message = jsonResponse.error.message.toString();
+                        spreadsheetError.statusCode = statusCode;
+                        return spreadsheetError;
+                    }
+                }
+            }
+        }
     }
-    return true;
 }

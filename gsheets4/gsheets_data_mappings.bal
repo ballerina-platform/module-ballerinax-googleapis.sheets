@@ -16,12 +16,12 @@
 
 function convertToSpreadsheet(json jsonSpreadsheet) returns Spreadsheet {
     Spreadsheet spreadsheet = new;
-    spreadsheet.spreadsheetId = jsonSpreadsheet.spreadsheetId.toString() ?: "";
+    spreadsheet.spreadsheetId = jsonSpreadsheet.spreadsheetId.toString();
     spreadsheet.properties = jsonSpreadsheet.properties != null ?
                              convertToSpreadsheetProperties(jsonSpreadsheet.properties) : {};
-    spreadsheet.spreadsheetUrl = jsonSpreadsheet.spreadsheetUrl.toString() ?: "";
+    spreadsheet.spreadsheetUrl = jsonSpreadsheet.spreadsheetUrl.toString();
     spreadsheet.sheets = jsonSpreadsheet.sheets != null ?
-                         convertToSheets(jsonSpreadsheet.sheets, jsonSpreadsheet.spreadsheetId.toString() ?: ""):[];
+                         convertToSheets(jsonSpreadsheet.sheets, jsonSpreadsheet.spreadsheetId.toString()) : [];
 
     return spreadsheet;
 }
@@ -45,28 +45,28 @@ function convertToSheet(json jsonSheet, string spreadsheetId) returns Sheet {
 
 function convertToSpreadsheetProperties(json jsonProperties) returns SpreadsheetProperties {
     SpreadsheetProperties spreadsheetProperties = {};
-    spreadsheetProperties.title = jsonProperties.title.toString() ?: "";
-    spreadsheetProperties.locale = jsonProperties.locale.toString() ?: "";
-    spreadsheetProperties.timeZone = jsonProperties.timeZone.toString() ?: "";
+    spreadsheetProperties.title = jsonProperties.title.toString();
+    spreadsheetProperties.locale = jsonProperties.locale.toString();
+    spreadsheetProperties.timeZone = jsonProperties.timeZone.toString();
     return spreadsheetProperties;
 }
 
 function convertToInt(json jsonVal) returns (int){
-    string stringVal = jsonVal.toString() ?: "";
+    string stringVal = jsonVal.toString();
     return check <int> stringVal;
 }
 
 function convertToBoolean(json jsonVal) returns (boolean){
-    string stringVal = jsonVal.toString() ?: "";
+    string stringVal = jsonVal.toString();
     return <boolean> stringVal;
 }
 
 function convertToSheetProperties(json jsonSheetProperties) returns SheetProperties {
     SheetProperties sheetProperties = {};
-    sheetProperties.title = jsonSheetProperties.title.toString() ?: "";
+    sheetProperties.title = jsonSheetProperties.title.toString();
     sheetProperties.sheetId = convertToInt(jsonSheetProperties.sheetId);
     sheetProperties.index = convertToInt(jsonSheetProperties.index);
-    sheetProperties.sheetType = jsonSheetProperties.sheetType.toString() ?: "";
+    sheetProperties.sheetType = jsonSheetProperties.sheetType.toString();
     sheetProperties.hidden = jsonSheetProperties.hidden != null ? convertToBoolean(jsonSheetProperties.hidden) : false;
     sheetProperties.rightToLeft = jsonSheetProperties.rightToLeft != null ?
                                      convertToBoolean(jsonSheetProperties.rightToLeft) : false;

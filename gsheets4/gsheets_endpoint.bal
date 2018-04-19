@@ -25,7 +25,7 @@ public type SpreadsheetConfiguration {
 };
 
 documentation {Google Spreadsheet Endpoint object.
-    F{{spreadsheetConfig}} - Spreadsheet connector configurations
+    F{{spreadsheetConfig}} - Spreadsheet client endpoint configuration object
     F{{spreadsheetConnector}} - Spreadsheet connector object
 }
 public type Client object {
@@ -35,28 +35,15 @@ public type Client object {
     }
     new () {}
 
-    documentation {Spreadsheet connector endpoint initialization function
-        P{{spreadsheetConfig}} - Spreadsheet connector configuration
+    documentation {Spreadsheet endpoint initialization function
+        P{{spreadsheetConfig}} - Spreadsheet client endpoint configuration object
     }
     public function init (SpreadsheetConfiguration spreadsheetConfig);
-
-    documentation {Register Spreadsheet connector endpoint
-        P{{serviceType}} - Accepts types of data (int, float, string, boolean, etc)
-    }
-    public function register (typedesc serviceType);
-
-    documentation {Start Spreadsheet connector client
-    }
-    public function start ();
 
     documentation {Get Spreadsheet connector client
         R{{}} - Spreadsheet connector client
     }
     public function getClient () returns SpreadsheetConnector;
-
-    documentation {Stop Spreadsheet connector client}
-    public function stop ();
-
 };
 
 public function Client::init (SpreadsheetConfiguration spreadsheetConfig) {
@@ -71,15 +58,6 @@ public function Client::init (SpreadsheetConfiguration spreadsheetConfig) {
     self.spreadsheetConnector.httpClient.init(spreadsheetConfig.clientConfig);
 }
 
-public function Client::register (typedesc serviceType) {
-}
-
-public function Client::start () {
-}
-
 public function Client::getClient () returns SpreadsheetConnector {
     return self.spreadsheetConnector;
-}
-
-public function Client::stop () {
 }
