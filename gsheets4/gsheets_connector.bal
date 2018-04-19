@@ -128,7 +128,7 @@ public function SpreadsheetConnector::createSpreadsheet (string spreadsheetName)
                         spreadsheetResponse = convertToSpreadsheet(jsonResponse);
                         return spreadsheetResponse;
                     } else {
-                        spreadsheetError.message = jsonResponse.error.message.toString() but { () => "" };
+                        spreadsheetError.message = jsonResponse.error.message.toString();
                         spreadsheetError.statusCode = statusCode;
                         return spreadsheetError;
                     }
@@ -166,7 +166,7 @@ public function SpreadsheetConnector::openSpreadsheetById (string spreadsheetId)
                         spreadsheetResponse = convertToSpreadsheet(jsonResponse);
                         return spreadsheetResponse;
                     } else {
-                        spreadsheetError.message = jsonResponse.error.message.toString() but { () => "" };
+                        spreadsheetError.message = jsonResponse.error.message.toString();
                         spreadsheetError.statusCode = statusCode;
                         return spreadsheetError;
                     }
@@ -215,7 +215,7 @@ public function SpreadsheetConnector::getSheetValues (string spreadsheetId, stri
                                 int j = 0;
                                 string[] val = [];
                                 foreach v in value {
-                                    val[j] = v.toString() ?: "";
+                                    val[j] = v.toString();
                                     j = j + 1;
                                 }
                                 values[i] = val;
@@ -224,7 +224,7 @@ public function SpreadsheetConnector::getSheetValues (string spreadsheetId, stri
                         }
                         return values;
                     } else {
-                        spreadsheetError.message = jsonResponse.error.message.toString() but { () => "" };
+                        spreadsheetError.message = jsonResponse.error.message.toString();
                         spreadsheetError.statusCode = statusCode;
                         return spreadsheetError;
                     }
@@ -263,10 +263,9 @@ public function SpreadsheetConnector::getColumnData (string spreadsheetId, strin
                     if (statusCode == http:OK_200) {
                         if (jsonResponse.values != null) {
                             int i = 0;
-                            //json[][] jsonVals = check <json[][]> jsonResponse.values;
                             foreach value in jsonResponse.values {
                                 if (lengthof value > 0) {
-                                    values[i] = value[0].toString() ?: "";
+                                    values[i] = value[0].toString();
                                 } else {
                                 values[i] = "";
                                 }
@@ -275,7 +274,7 @@ public function SpreadsheetConnector::getColumnData (string spreadsheetId, strin
                         }
                         return values;
                     } else {
-                        spreadsheetError.message = jsonResponse.error.message.toString() but { () => "" };
+                        spreadsheetError.message = jsonResponse.error.message.toString();
                         spreadsheetError.statusCode = statusCode;
                         return spreadsheetError;
                     }
@@ -314,15 +313,14 @@ public function SpreadsheetConnector::getRowData (string spreadsheetId, string s
                     if (statusCode == http:OK_200) {
                     if (jsonResponse.values != null) {
                         int i = 0;
-                        //json[][] jsonVals = check <json[][]>jsonResponse.values;
                         foreach value in jsonResponse.values[0] {
-                            values[i] = value.toString() ?: "";
+                            values[i] = value.toString();
                             i = i + 1;
                         }
                     }
                         return values;
                     } else {
-                        spreadsheetError.message = jsonResponse.error.message.toString() but { () => "" };
+                        spreadsheetError.message = jsonResponse.error.message.toString();
                         spreadsheetError.statusCode = statusCode;
                         return spreadsheetError;
                     }
@@ -360,12 +358,11 @@ public function SpreadsheetConnector::getCellData (string spreadsheetId, string 
                 json jsonResponse => {
                     if (statusCode == http:OK_200) {
                         if (jsonResponse.values != null) {
-                            //json[][] jsonVals = check <json[][]>jsonResponse.values;
-                            value = jsonResponse.values[0][0].toString() ?: "";
+                            value = jsonResponse.values[0][0].toString();
                         }
                         return value;
                     } else {
-                        spreadsheetError.message = jsonResponse.error.message.toString() but { () => "" };
+                        spreadsheetError.message = jsonResponse.error.message.toString();
                         spreadsheetError.statusCode = statusCode;
                         return spreadsheetError;
                     }
@@ -405,7 +402,7 @@ public function SpreadsheetConnector::setCellData (string spreadsheetId, string 
                     if (statusCode == http:OK_200) {
                         return true;
                     } else {
-                        spreadsheetError.message = jsonResponse.error.message.toString() but { () => "" };
+                        spreadsheetError.message = jsonResponse.error.message.toString();
                         spreadsheetError.statusCode = statusCode;
                         return spreadsheetError;
                     }
@@ -457,7 +454,7 @@ public function SpreadsheetConnector::setSheetValues (string spreadsheetId, stri
                     if (statusCode == http:OK_200) {
                         return true;
                     } else {
-                        spreadsheetError.message = jsonResponse.error.message.toString() but { () => "" };
+                        spreadsheetError.message = jsonResponse.error.message.toString();
                         spreadsheetError.statusCode = statusCode;
                         return spreadsheetError;
                     }

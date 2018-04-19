@@ -2,7 +2,7 @@
 
 | Ballerina Version                     | Connector Version         | API Version |
 | ------------------------------------- | ------------------------- | ------------|
-|  ballerina-platform-0.970.0-beta0     |           0.8.5           |   V4        |
+|  ballerina-platform-0.970.0-beta1     |           0.8.6           |   V4        |
 
 ### Prerequisites
 

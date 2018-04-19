@@ -118,7 +118,7 @@ public type SpreadsheetError {
 };
 
 //Functions binded to Spreadsheet struct
-public function Spreadsheet::getSpreadsheetName() returns (string) | SpreadsheetError {
+public function Spreadsheet::getSpreadsheetName() returns (string)|SpreadsheetError {
     SpreadsheetError spreadsheetError = {};
     string title = "";
     if (self.properties == null) {
@@ -129,7 +129,7 @@ public function Spreadsheet::getSpreadsheetName() returns (string) | Spreadsheet
     }
 }
 
-public function Spreadsheet::getSpreadsheetId() returns (string) | SpreadsheetError {
+public function Spreadsheet::getSpreadsheetId() returns (string)|SpreadsheetError {
     SpreadsheetError spreadsheetError = {};
     string spreadsheetId = "";
     if (self.spreadsheetId == null) {
@@ -148,7 +148,7 @@ public function Spreadsheet::getSheets() returns Sheet[] | SpreadsheetError {
     return self.sheets;
 }
 
-public function Spreadsheet::getSheetByName(string sheetName) returns Sheet | SpreadsheetError {
+public function Spreadsheet::getSheetByName(string sheetName) returns Sheet|SpreadsheetError {
     Sheet[] sheets = self.sheets;
     Sheet sheetResponse = {};
     SpreadsheetError spreadsheetError = {};
