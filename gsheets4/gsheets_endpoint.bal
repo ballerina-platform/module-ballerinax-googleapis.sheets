@@ -25,6 +25,7 @@ public type SpreadsheetConfiguration {
 };
 
 documentation {Google Spreadsheet Endpoint object.
+    E{{}}
     F{{spreadsheetConfig}} - Spreadsheet client endpoint configuration object
     F{{spreadsheetConnector}} - Spreadsheet connector object
 }
@@ -43,21 +44,21 @@ public type Client object {
     documentation {Get Spreadsheet connector client
         R{{}} - Spreadsheet connector client
     }
-    public function getClient () returns SpreadsheetConnector;
+    public function getCallerActions () returns SpreadsheetConnector;
 };
 
 public function Client::init (SpreadsheetConfiguration spreadsheetConfig) {
-    spreadsheetConfig.clientConfig.targets = [{url:"https://sheets.googleapis.com"}];
+    spreadsheetConfig.clientConfig.url = BASE_URL;
     match spreadsheetConfig.clientConfig.auth {
         () => {}
         http:AuthConfig authConfig => {
-            authConfig.refreshUrl = "https://www.googleapis.com/oauth2/v3/token";
-            authConfig.scheme = "oauth";
+            authConfig.refreshUrl = REFRESH_URL;
+            authConfig.scheme = SCHEME;
         }
     }
     self.spreadsheetConnector.httpClient.init(spreadsheetConfig.clientConfig);
 }
 
-public function Client::getClient () returns SpreadsheetConnector {
+public function Client::getCallerActions () returns SpreadsheetConnector {
     return self.spreadsheetConnector;
 }
