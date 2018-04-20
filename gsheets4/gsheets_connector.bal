@@ -16,6 +16,7 @@
 
 import ballerina/mime;
 import ballerina/http;
+import ballerina/io;
 
 documentation {Spreadsheet client connector
     F{{httpClient}} - The HTTP Client
@@ -103,10 +104,9 @@ public function SpreadsheetConnector::createSpreadsheet (string spreadsheetName)
     http:Request request = new;
     Spreadsheet spreadsheetResponse = new;
     SpreadsheetError spreadsheetError = {};
-    string createSpreadsheetPath = "/v4/spreadsheets";
     json spreadsheetJSONPayload = {"properties": {"title": spreadsheetName}};
     request.setJsonPayload(spreadsheetJSONPayload);
-    var httpResponse = httpClient -> post(createSpreadsheetPath, request);
+    var httpResponse = httpClient -> post(SPREADSHEET_PATH, request);
     match httpResponse {
         http:HttpConnectorError err => {
             spreadsheetError.message = err.message;
@@ -143,7 +143,7 @@ public function SpreadsheetConnector::openSpreadsheetById (string spreadsheetId)
     http:Request request = new;
     Spreadsheet spreadsheetResponse = new;
     SpreadsheetError spreadsheetError = {};
-    string getSpreadsheetPath = "/v4/spreadsheets/" + spreadsheetId;
+    string getSpreadsheetPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId;
     var httpResponse = httpClient -> get(getSpreadsheetPath, request);
     match httpResponse {
         http:HttpConnectorError err => {
@@ -154,6 +154,9 @@ public function SpreadsheetConnector::openSpreadsheetById (string spreadsheetId)
         }
         http:Response response => {
             int statusCode = response.statusCode;
+            io:println("**********************************");
+            io:println(response);
+            io:println("**********************************");
             var spreadsheetJSONResponse = response.getJsonPayload();
             match spreadsheetJSONResponse {
                 http:PayloadError err => {
@@ -189,7 +192,7 @@ public function SpreadsheetConnector::getSheetValues (string spreadsheetId, stri
     if (bottomRightCell != "" && bottomRightCell != null) {
         a1Notation = a1Notation + ":" + bottomRightCell;
     }
-    string getSheetValuesPath = "/v4/spreadsheets/" + spreadsheetId + "/values/" + a1Notation;
+    string getSheetValuesPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + a1Notation;
     var httpResponse = httpClient -> get(getSheetValuesPath, request);
     match httpResponse {
         http:HttpConnectorError err => {
@@ -241,8 +244,8 @@ public function SpreadsheetConnector::getColumnData (string spreadsheetId, strin
     string[] values = [];
     SpreadsheetError spreadsheetError = {};
     string a1Notation = sheetName + "!" + column + ":" + column;
-    string getSheetValuesPath = "/v4/spreadsheets/" + spreadsheetId + "/values/" + a1Notation;
-    var httpResponse = httpClient -> get(getSheetValuesPath, request);
+    string getColumnDataPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + a1Notation;
+    var httpResponse = httpClient -> get(getColumnDataPath, request);
     match httpResponse {
         http:HttpConnectorError err => {
             spreadsheetError.message = err.message;
@@ -291,8 +294,8 @@ public function SpreadsheetConnector::getRowData (string spreadsheetId, string s
     string[] values = [];
     SpreadsheetError spreadsheetError = {};
     string a1Notation = sheetName + "!" + row + ":" + row;
-    string getSheetValuesPath = "/v4/spreadsheets/" + spreadsheetId + "/values/" + a1Notation;
-    var httpResponse = httpClient -> get(getSheetValuesPath, request);
+    string getRowDataPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + a1Notation;
+    var httpResponse = httpClient -> get(getRowDataPath, request);
     match httpResponse {
         http:HttpConnectorError err => {
             spreadsheetError.message = err.message;
@@ -337,8 +340,8 @@ public function SpreadsheetConnector::getCellData (string spreadsheetId, string 
     string value = "";
     SpreadsheetError spreadsheetError = {};
     string a1Notation = sheetName + "!" + column + row;
-    string getSheetValuesPath = "/v4/spreadsheets/" + spreadsheetId + "/values/" + a1Notation;
-    var httpResponse = httpClient -> get(getSheetValuesPath, request);
+    string getCellDataPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + a1Notation;
+    var httpResponse = httpClient -> get(getCellDataPath, request);
     match httpResponse {
         http:HttpConnectorError err => {
             spreadsheetError.message = err.message;
@@ -379,9 +382,10 @@ public function SpreadsheetConnector::setCellData (string spreadsheetId, string 
     SpreadsheetError spreadsheetError = {};
     json jsonPayload = {"values" : [[value]]};
     string a1Notation = sheetName + "!" + column + row;
-    string setValuePath = "/v4/spreadsheets/" + spreadsheetId + "/values/" + a1Notation + "?valueInputOption=RAW";
+    string setCellDataPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + a1Notation + QUESTION_MARK
+                            + VALUE_INPUT_OPTION;
     request.setJsonPayload(jsonPayload);
-    var httpResponse = httpClient -> put(setValuePath, request);
+    var httpResponse = httpClient -> put(setCellDataPath, request);
     match httpResponse {
         http:HttpConnectorError err => {
             spreadsheetError.message = err.message;
@@ -417,8 +421,15 @@ public function SpreadsheetConnector::setSheetValues (string spreadsheetId, stri
     endpoint http:Client httpClient = self.httpClient;
     http:Request request = new;
     SpreadsheetError spreadsheetError = {};
-    string a1Notation = sheetName + "!" + topLeftCell + ":" + bottomRightCell;
-    string setValuePath = "/v4/spreadsheets/" + spreadsheetId + "/values/" + a1Notation + "?valueInputOption=RAW";
+    string a1Notation = sheetName;
+    if (topLeftCell != "" && topLeftCell != null) {
+        a1Notation = a1Notation + "!" + topLeftCell;
+    }
+    if (bottomRightCell != "" && bottomRightCell != null) {
+        a1Notation = a1Notation + ":" + bottomRightCell;
+    }
+    string setValuePath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + a1Notation + QUESTION_MARK
+                                + VALUE_INPUT_OPTION;
     json[][] jsonValues = [];
     int i = 0;
     foreach value in values {

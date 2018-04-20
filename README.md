@@ -10,9 +10,9 @@ The following sections provide you with information on how to use the Ballerina 
 
 ### Compatibility
 
-| Language Version | Endpoint Version | API Version |
-|-------|:------------:|:------------:|
-| ballerina-platform-0.970.0-beta1   | 0.8.6  | V4 |
+| Ballerina Language Version  | Google Spreadsheet API Version |
+| ----------------------------| -------------------------------|
+|  0.970.0-beta3              |   V4                           |
 
 ##### Prerequisites
 Download the ballerina [distribution](https://ballerinalang.org/downloads/).
@@ -32,10 +32,10 @@ endpoint.
         endpoint gsheets4:Client spreadsheetClientEP {
             clientConfig:{
                 auth:{
-                    accessToken:accessToken,
-                    refreshToken:refreshToken,
-                    clientId:clientId,
-                    clientSecret:clientSecret
+                    accessToken:"<your_accessToken>",
+                    refreshToken:"<your_refreshToken>",
+                    clientId:"<your_clientId>",
+                    clientSecret:"<your_clientSecret>"
                 }
             }
         };

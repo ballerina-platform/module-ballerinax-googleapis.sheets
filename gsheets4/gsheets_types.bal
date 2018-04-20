@@ -139,7 +139,7 @@ public function Spreadsheet::getSpreadsheetId() returns (string)|SpreadsheetErro
     return self.spreadsheetId;
 }
 
-public function Spreadsheet::getSheets() returns Sheet[] | SpreadsheetError {
+public function Spreadsheet::getSheets() returns Sheet[]|SpreadsheetError {
     SpreadsheetError spreadsheetError = {};
     if (self.sheets == null) {
         spreadsheetError.message = "No sheets found";

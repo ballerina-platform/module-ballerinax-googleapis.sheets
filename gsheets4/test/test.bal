@@ -74,9 +74,6 @@ function testGetSpreadsheetId () {
         string s => spreadsheetId = s;
         SpreadsheetError e => test:assertFail(msg = e.message);
     }
-    io:println("**************");
-    io:println(spreadsheetId);
-    io:println("**************");
     test:assertEquals(spreadsheetId, spreadsheet.spreadsheetId,
         msg = "getSpreadsheetId() method failed");
 }
