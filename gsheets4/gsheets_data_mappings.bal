@@ -17,21 +17,21 @@
 function convertToSpreadsheet(json jsonSpreadsheet) returns Spreadsheet {
     Spreadsheet spreadsheet = new;
     spreadsheet.spreadsheetId = jsonSpreadsheet.spreadsheetId.toString();
-    spreadsheet.properties = jsonSpreadsheet.properties != null ?
-                             convertToSpreadsheetProperties(jsonSpreadsheet.properties) : {};
+    spreadsheet.properties = jsonSpreadsheet.properties != null
+                            ? convertToSpreadsheetProperties(jsonSpreadsheet.properties) : {};
     spreadsheet.spreadsheetUrl = jsonSpreadsheet.spreadsheetUrl.toString();
-    spreadsheet.sheets = jsonSpreadsheet.sheets != null ?
-                         convertToSheets(jsonSpreadsheet.sheets, jsonSpreadsheet.spreadsheetId.toString()) : [];
+    spreadsheet.sheets = jsonSpreadsheet.sheets != null
+                            ? convertToSheets(jsonSpreadsheet.sheets, jsonSpreadsheet.spreadsheetId.toString()) : [];
 
     return spreadsheet;
 }
 
-function convertToSheets (json jsonSheets, string spreadsheetId) returns Sheet[] {
+function convertToSheets(json jsonSheets, string spreadsheetId) returns Sheet[] {
     int i = 0;
     Sheet[] sheets = [];
     foreach jsonSheet in jsonSheets {
         sheets[i] = convertToSheet(jsonSheet, spreadsheetId);
-        i = i +1;
+        i = i + 1;
     }
     return sheets;
 }
@@ -51,14 +51,14 @@ function convertToSpreadsheetProperties(json jsonProperties) returns Spreadsheet
     return spreadsheetProperties;
 }
 
-function convertToInt(json jsonVal) returns (int){
+function convertToInt(json jsonVal) returns (int) {
     string stringVal = jsonVal.toString();
-    return check <int> stringVal;
+    return check <int>stringVal;
 }
 
-function convertToBoolean(json jsonVal) returns (boolean){
+function convertToBoolean(json jsonVal) returns (boolean) {
     string stringVal = jsonVal.toString();
-    return <boolean> stringVal;
+    return <boolean>stringVal;
 }
 
 function convertToSheetProperties(json jsonSheetProperties) returns SheetProperties {
@@ -68,10 +68,10 @@ function convertToSheetProperties(json jsonSheetProperties) returns SheetPropert
     sheetProperties.index = convertToInt(jsonSheetProperties.index);
     sheetProperties.sheetType = jsonSheetProperties.sheetType.toString();
     sheetProperties.hidden = jsonSheetProperties.hidden != null ? convertToBoolean(jsonSheetProperties.hidden) : false;
-    sheetProperties.rightToLeft = jsonSheetProperties.rightToLeft != null ?
-                                     convertToBoolean(jsonSheetProperties.rightToLeft) : false;
-    sheetProperties.gridProperties = jsonSheetProperties.gridProperties != null ?
-                                     convertToGridProperties(jsonSheetProperties.gridProperties) : {};
+    sheetProperties.rightToLeft = jsonSheetProperties.rightToLeft != null
+                            ? convertToBoolean(jsonSheetProperties.rightToLeft) : false;
+    sheetProperties.gridProperties = jsonSheetProperties.gridProperties != null
+                            ? convertToGridProperties(jsonSheetProperties.gridProperties) : {};
     return sheetProperties;
 }
 
@@ -80,8 +80,8 @@ function convertToGridProperties(json jsonProps) returns GridProperties {
     gridProperties.rowCount = jsonProps.rowCount != null ? convertToInt(jsonProps.rowCount) : 0;
     gridProperties.columnCount = jsonProps.columnCount != null ? convertToInt(jsonProps.columnCount) : 0;
     gridProperties.frozenRowCount = jsonProps.frozenRowCount != null ? convertToInt(jsonProps.frozenRowCount) : 0;
-    gridProperties.frozenColumnCount = jsonProps.frozenColumnCount != null ?
-                                       convertToInt(jsonProps.frozenColumnCount) : 0;
+    gridProperties.frozenColumnCount = jsonProps.frozenColumnCount != null
+                            ? convertToInt(jsonProps.frozenColumnCount) : 0;
     gridProperties.hideGridlines = jsonProps.hideGridlines != null ? convertToBoolean(jsonProps.hideGridlines) : false;
     return gridProperties;
 }
