@@ -6,22 +6,22 @@ This package provides a Ballerina API for the Google Spreadsheet REST API. It pr
 
 **Spreadsheet Operations**
 
-The wso2/gsheets4 package contains operations that create or retrieve a spreadsheet and retrieve spreadsheet properties such as spreadsheet name, spreadsheet ID, and sheets of a spreadsheet. It also allows you to retrieve a sheet with the given name.
+The `wso2/gsheets4` package contains operations that create or retrieve a spreadsheet and retrieve spreadsheet properties such as spreadsheet name, spreadsheet ID, and sheets of a spreadsheet. It also allows you to retrieve a sheet with the given name.
 
 **Sheet Operations**
 
-The wso2/gsheets4 package contains operations to set and get the sheet values of a range or a cell. It can also get row or column data.
+The `wso2/gsheets4` package contains operations to set and get the sheet values of a range or a cell. It can also get row or column data.
 
 ## Compatibility
 
 |                                 |       Version                  |
-| :-----------------------------: | :-----------------------------:|
+| ------------------------------- | -------------------------------|
 |  Ballerina Language Version     |   0.970.0-beta12               |
 |  Google Spreadsheet API Version |   V4                           |
 
 ## Sample
 
-The Google Spreadsheet connector can be used to create or read a spreadsheet and set the sheet values. First, import the `wso2/gsheets4` package into the Ballerina project.
+First, import the `wso2/gsheets4` package into the Ballerina project.
 
 ```ballerina
     import wso2/gsheets4;
@@ -50,7 +50,7 @@ You can now enter the credentials in the HTTP client config:
     };
 ```
 
-The `openSpreadsheetById` function retrieves the spreadsheet whose ID is specified in spreadsheetId.
+The `openSpreadsheetById` function retrieves the spreadsheet whose ID is specified in `spreadsheetId`.
 ```ballerina
     //Open a spreadsheet.
     var response = spreadsheetEP->openSpreadsheetById(spreadsheetId);
@@ -66,7 +66,7 @@ The response from `openSpreadsheetById` is a `Spreadsheet` object if the request
     }
 ```
 
-The `getSheetByName` function retrieves a sheet with the given name from a `Spreadsheet` object. The sheetName represents the name of the sheet to be retrieved. It returns the `Sheet` object on success and `SpreadsheetError` on failure.
+The `getSheetByName` function retrieves a sheet with the given name from a `Spreadsheet` object. The `sheetName` represents the name of the sheet to be retrieved. It returns the `Sheet` object on success and `SpreadsheetError` on failure.
 ```ballerina
     var sheetRes = spreadsheet.getSheetByName(sheetName);
     match sheetRes {
