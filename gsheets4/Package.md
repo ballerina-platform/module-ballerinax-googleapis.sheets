@@ -24,7 +24,7 @@ The `wso2/gsheets4` package contains operations to set and get the sheet values 
 First, import the `wso2/gsheets4` package into the Ballerina project.
 
 ```ballerina
-    import wso2/gsheets4;
+import wso2/gsheets4;
 ```
 
 Instantiate the connector by giving authentication details in the HTTP client config. The HTTP client config has built-in support for BasicAuth and OAuth 2.0. Google Spreadsheet uses OAuth 2.0 to authenticate and authorize requests. The Google Spreadsheet connector can be minimally instantiated in the HTTP client config using the access token or the client ID, client secret, and refresh token.
@@ -38,48 +38,48 @@ Instantiate the connector by giving authentication details in the HTTP client co
 
 You can now enter the credentials in the HTTP client config:
 ```ballerina
-    endpoint gmail:Client spreadsheetEP {
-        clientConfig:{
-            auth:{
-                accessToken:accessToken,
-                clientId:clientId,
-                clientSecret:clientSecret,
-                refreshToken:refreshToken
-            }
+endpoint gmail:Client spreadsheetEP {
+    clientConfig:{
+        auth:{
+            accessToken:accessToken,
+            clientId:clientId,
+            clientSecret:clientSecret,
+            refreshToken:refreshToken
         }
-    };
+    }
+};
 ```
 
 The `openSpreadsheetById` function retrieves the spreadsheet whose ID is specified in `spreadsheetId`.
 ```ballerina
-    //Open a spreadsheet.
-    var response = spreadsheetEP->openSpreadsheetById(spreadsheetId);
+//Open a spreadsheet.
+var response = spreadsheetEP->openSpreadsheetById(spreadsheetId);
 ```
 
 The response from `openSpreadsheetById` is a `Spreadsheet` object if the request was successful or a `SpreadsheetError` on failure. The `match` operation can be used to handle the response if an error occurs.
 ```ballerina
-    match response {
-       //If successful, returns the Spreadsheet object.
-       gsheets4:Spreadsheet spreadsheetRes => io:println(spreadsheetRes);
-       //Unsuccessful attempts return a SpreadsheetError.
-       gsheets4:SpreadsheetError err => io:println(err);
-    }
+match response {
+   //If successful, returns the Spreadsheet object.
+   gsheets4:Spreadsheet spreadsheetRes => io:println(spreadsheetRes);
+   //Unsuccessful attempts return a SpreadsheetError.
+   gsheets4:SpreadsheetError err => io:println(err);
+}
 ```
 
 The `getSheetByName` function retrieves a sheet with the given name from a `Spreadsheet` object. The `sheetName` represents the name of the sheet to be retrieved. It returns the `Sheet` object on success and `SpreadsheetError` on failure.
 ```ballerina
-    var sheetRes = spreadsheet.getSheetByName(sheetName);
-    match sheetRes {
-        gsheets4:Sheet s => io:println(s);
-        SpreadsheetError e => io:println(e);
-    }
+var sheetRes = spreadsheet.getSheetByName(sheetName);
+match sheetRes {
+    gsheets4:Sheet s => io:println(s);
+    SpreadsheetError e => io:println(e);
+}
 ```
 
 The `setSheetValues` function sets the values for a range of cells. It returns `true` on success or `SpreadsheetError` on failure.
 ```ballerina
-    var spreadsheetRes = spreadsheetEP->setSheetValues(spreadsheetId, sheetName, topLeftCell, bottomRightCell, values);
-    match spreadsheetRes {
-        boolean isUpdated => io:println(isUpdated);
-        gsheets4:SpreadsheetError e => io:println(e);
-    }
+var spreadsheetRes = spreadsheetEP->setSheetValues(spreadsheetId, sheetName, topLeftCell, bottomRightCell, values);
+match spreadsheetRes {
+    boolean isUpdated => io:println(isUpdated);
+    gsheets4:SpreadsheetError e => io:println(e);
+}
 ```
