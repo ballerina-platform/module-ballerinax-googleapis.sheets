@@ -107,17 +107,16 @@ public function SpreadsheetConnector::createSpreadsheet(string spreadsheetName) 
     request.setJsonPayload(spreadsheetJSONPayload);
     var httpResponse = httpClient->post(SPREADSHEET_PATH, request = request);
     match httpResponse {
-        http:HttpConnectorError err => {
+        error err => {
             spreadsheetError.message = err.message;
             spreadsheetError.cause = err.cause;
-            spreadsheetError.statusCode = err.statusCode;
             return spreadsheetError;
         }
         http:Response response => {
             int statusCode = response.statusCode;
             var spreadsheetJSONResponse = response.getJsonPayload();
             match spreadsheetJSONResponse {
-                http:PayloadError err => {
+                error err => {
                     spreadsheetError.message = "Error occured while receiving Json Payload";
                     spreadsheetError.cause = err.cause;
                     return spreadsheetError;
@@ -145,17 +144,16 @@ public function SpreadsheetConnector::openSpreadsheetById(string spreadsheetId) 
     string getSpreadsheetPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId;
     var httpResponse = httpClient->get(getSpreadsheetPath, request = request);
     match httpResponse {
-        http:HttpConnectorError err => {
+        error err => {
             spreadsheetError.message = err.message;
             spreadsheetError.cause = err.cause;
-            spreadsheetError.statusCode = err.statusCode;
             return spreadsheetError;
         }
         http:Response response => {
             int statusCode = response.statusCode;
             var spreadsheetJSONResponse = response.getJsonPayload();
             match spreadsheetJSONResponse {
-                http:PayloadError err => {
+                error err => {
                     spreadsheetError.message = "Error occured while receiving Json Payload";
                     spreadsheetError.cause = err.cause;
                     return spreadsheetError;
@@ -191,17 +189,16 @@ public function SpreadsheetConnector::getSheetValues(string spreadsheetId, strin
     string getSheetValuesPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + a1Notation;
     var httpResponse = httpClient->get(getSheetValuesPath, request = request);
     match httpResponse {
-        http:HttpConnectorError err => {
+        error err => {
             spreadsheetError.message = err.message;
             spreadsheetError.cause = err.cause;
-            spreadsheetError.statusCode = err.statusCode;
             return spreadsheetError;
         }
         http:Response response => {
             int statusCode = response.statusCode;
             var spreadsheetJSONResponse = response.getJsonPayload();
             match spreadsheetJSONResponse {
-                http:PayloadError err => {
+                error err => {
                     spreadsheetError.message = "Error occured while receiving Json Payload";
                     spreadsheetError.cause = err.cause;
                     return spreadsheetError;
@@ -243,17 +240,16 @@ public function SpreadsheetConnector::getColumnData(string spreadsheetId, string
     string getColumnDataPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + a1Notation;
     var httpResponse = httpClient->get(getColumnDataPath, request = request);
     match httpResponse {
-        http:HttpConnectorError err => {
+        error err => {
             spreadsheetError.message = err.message;
             spreadsheetError.cause = err.cause;
-            spreadsheetError.statusCode = err.statusCode;
             return spreadsheetError;
         }
         http:Response response => {
             int statusCode = response.statusCode;
             var spreadsheetJSONResponse = response.getJsonPayload();
             match spreadsheetJSONResponse {
-                http:PayloadError err => {
+                error err => {
                     spreadsheetError.message = "Error occured while receiving Json Payload";
                     spreadsheetError.cause = err.cause;
                     return spreadsheetError;
@@ -293,17 +289,16 @@ public function SpreadsheetConnector::getRowData(string spreadsheetId, string sh
     string getRowDataPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + a1Notation;
     var httpResponse = httpClient->get(getRowDataPath, request = request);
     match httpResponse {
-        http:HttpConnectorError err => {
+        error err => {
             spreadsheetError.message = err.message;
             spreadsheetError.cause = err.cause;
-            spreadsheetError.statusCode = err.statusCode;
             return spreadsheetError;
         }
         http:Response response => {
             int statusCode = response.statusCode;
             var spreadsheetJSONResponse = response.getJsonPayload();
             match spreadsheetJSONResponse {
-                http:PayloadError err => {
+                error err => {
                     spreadsheetError.message = "Error occured while receiving Json Payload";
                     spreadsheetError.cause = err.cause;
                     return spreadsheetError;
@@ -339,17 +334,16 @@ public function SpreadsheetConnector::getCellData(string spreadsheetId, string s
     string getCellDataPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + a1Notation;
     var httpResponse = httpClient->get(getCellDataPath, request = request);
     match httpResponse {
-        http:HttpConnectorError err => {
+        error err => {
             spreadsheetError.message = err.message;
             spreadsheetError.cause = err.cause;
-            spreadsheetError.statusCode = err.statusCode;
             return spreadsheetError;
         }
         http:Response response => {
             int statusCode = response.statusCode;
             var spreadsheetJSONResponse = response.getJsonPayload();
             match spreadsheetJSONResponse {
-                http:PayloadError err => {
+                error err => {
                     spreadsheetError.message = "Error occured while receiving Json Payload";
                     spreadsheetError.cause = err.cause;
                     return spreadsheetError;
@@ -383,17 +377,16 @@ public function SpreadsheetConnector::setCellData(string spreadsheetId, string s
     request.setJsonPayload(jsonPayload);
     var httpResponse = httpClient->put(setCellDataPath, request = request);
     match httpResponse {
-        http:HttpConnectorError err => {
+        error err => {
             spreadsheetError.message = err.message;
             spreadsheetError.cause = err.cause;
-            spreadsheetError.statusCode = err.statusCode;
             return spreadsheetError;
         }
         http:Response response => {
             int statusCode = response.statusCode;
             var spreadsheetJSONResponse = response.getJsonPayload();
             match spreadsheetJSONResponse {
-                http:PayloadError err => {
+                error err => {
                     spreadsheetError.message = "Error occured while receiving Json Payload";
                     spreadsheetError.cause = err.cause;
                     return spreadsheetError;
@@ -443,17 +436,16 @@ public function SpreadsheetConnector::setSheetValues(string spreadsheetId, strin
     request.setJsonPayload(jsonPayload);
     var httpResponse = httpClient->put(setValuePath, request = request);
     match httpResponse {
-        http:HttpConnectorError err => {
+        error err => {
             spreadsheetError.message = err.message;
             spreadsheetError.cause = err.cause;
-            spreadsheetError.statusCode = err.statusCode;
             return spreadsheetError;
         }
         http:Response response => {
             int statusCode = response.statusCode;
             var spreadsheetJSONResponse = response.getJsonPayload();
             match spreadsheetJSONResponse {
-                http:PayloadError err => {
+                error err => {
                     spreadsheetError.message = "Error occured while receiving Json Payload";
                     spreadsheetError.cause = err.cause;
                     return spreadsheetError;
