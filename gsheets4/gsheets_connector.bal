@@ -37,7 +37,7 @@ public type SpreadsheetConnector object {
     }
     public function openSpreadsheetById(string spreadsheetId) returns Spreadsheet|SpreadsheetError;
 
-    documentation {Create a new worksheet
+    documentation {Add a new worksheet
         P{{spreadsheetId}} - Id of the spreadsheet
         P{{sheetName}} - The name of the sheet. It is an optional parameter. If the title is empty, then sheet will be created with the default name.
         R{{}} - Sheet object on success and SpreadsheetError on failure
