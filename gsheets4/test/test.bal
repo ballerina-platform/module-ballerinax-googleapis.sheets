@@ -35,8 +35,10 @@ endpoint Client spreadsheetClient {
 };
 
 Spreadsheet spreadsheet = new;
+Sheet newSheet = {};
 string spreadsheetName = "testBalFile";
-string sheetName;
+string sheetName = "testSheet";
+int sheetId;
 
 @test:Config
 function testCreateSpreadsheet() {
@@ -52,6 +54,34 @@ function testCreateSpreadsheet() {
 @test:Config {
     dependsOn:["testCreateSpreadsheet"]
 }
+function testAddNewSheet() {
+    io:println("-----------------Test case for addNewSheet method------------------");
+    var spreadsheetRes = spreadsheetClient->addNewSheet(spreadsheet.spreadsheetId, sheetName);
+    match spreadsheetRes {
+        Sheet s => newSheet = s;
+        SpreadsheetError e => io:println(e.message);
+    }
+    sheetId = newSheet.properties.sheetId;
+    test:assertNotEquals(newSheet.properties.sheetId, null, msg = "Failed to add sheet");
+}
+
+@test:Config {
+    dependsOn:["testCreateSpreadsheet", "testAddNewSheet"]
+}
+function testOpenSpreadsheetById() {
+    io:println("-----------------Test case for openSpreadsheetById method------------------");
+    var spreadsheetRes = spreadsheetClient->openSpreadsheetById(spreadsheet.spreadsheetId);
+    match spreadsheetRes {
+        Spreadsheet s => spreadsheet = s;
+        SpreadsheetError e => test:assertFail(msg = e.message);
+    }
+    test:assertNotEquals(spreadsheet.spreadsheetId, null, msg = "Failed to open the spreadsheet");
+
+}
+
+@test:Config {
+    dependsOn:["testOpenSpreadsheetById"]
+}
 function testGetSpreadsheetName() {
     io:println("-----------------Test case for getSpreadsheetName method------------------");
     string name = "";
@@ -64,7 +94,7 @@ function testGetSpreadsheetName() {
 }
 
 @test:Config {
-    dependsOn:["testCreateSpreadsheet"]
+    dependsOn:["testOpenSpreadsheetById"]
 }
 function testGetSpreadsheetId() {
     io:println("-----------------Test case for getSpreadsheetId method------------------");
@@ -79,7 +109,7 @@ function testGetSpreadsheetId() {
 }
 
 @test:Config {
-    dependsOn:["testCreateSpreadsheet"]
+    dependsOn:["testOpenSpreadsheetById"]
 }
 function testGetSheets() {
     io:println("-----------------Test case for getSheets method------------------");
@@ -89,12 +119,11 @@ function testGetSheets() {
         Sheet[] s => sheets = s;
         SpreadsheetError e => test:assertFail(msg = e.message);
     }
-    sheetName = sheets[0].properties.title;
-    test:assertEquals(lengthof sheets, 1, msg = "getSheets() method failed");
+    test:assertEquals(lengthof sheets, 2, msg = "getSheets() method failed");
 }
 
 @test:Config {
-    dependsOn:["testGetSheets"]
+    dependsOn:["testGetSheets", "testAddNewSheet"]
 }
 function testGetSheetByName() {
     io:println("-----------------Test case for getSheetByName method------------------");
@@ -105,20 +134,6 @@ function testGetSheetByName() {
         SpreadsheetError e => test:assertFail(msg = e.message);
     }
     test:assertEquals(sheet.properties.title, sheetName, msg = "getSheetByName() method failed");
-}
-
-@test:Config {
-    dependsOn:["testCreateSpreadsheet"]
-}
-function testOpenSpreadsheetById() {
-    io:println("-----------------Test case for openSpreadsheetById method------------------");
-    var spreadsheetRes = spreadsheetClient->openSpreadsheetById(spreadsheet.spreadsheetId);
-    match spreadsheetRes {
-        Spreadsheet s => spreadsheet = s;
-        SpreadsheetError e => test:assertFail(msg = e.message);
-    }
-    test:assertNotEquals(spreadsheet.spreadsheetId, null, msg = "Failed to open the spreadsheet");
-
 }
 
 @test:Config {
@@ -197,6 +212,19 @@ function testGetCellData() {
     var spreadsheetRes = spreadsheetClient->getCellData(spreadsheet.spreadsheetId, sheetName, "B", 5);
     match spreadsheetRes {
         string val => test:assertEquals(val, value, msg = "Failed to get the value!");
+        SpreadsheetError e => test:assertFail(msg = e.message);
+    }
+}
+
+@test:Config {
+    dependsOn:["testGetCellData", "testGetRowData", "testGetColumnData"]
+}
+function testDeleteSheet() {
+    io:println("-----------------Test case for deleteSheet method------------------");
+    string value = "90";
+    var spreadsheetRes = spreadsheetClient->deleteSheet(spreadsheet.spreadsheetId, sheetId);
+    match spreadsheetRes {
+        boolean val => test:assertTrue(val, msg = "Failed to delete the sheet!");
         SpreadsheetError e => test:assertFail(msg = e.message);
     }
 }

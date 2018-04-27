@@ -20,6 +20,7 @@
 @final string SPREADSHEET_PATH = "/v4/spreadsheets";
 @final string VALUES_PATH = "/values/";
 @final string VALUE_INPUT_OPTION = "valueInputOption=RAW";
+@final string BATCH_UPDATE_REQUEST = ":batchUpdate";
 
 //Secure client configs
 @final string SCHEME = "oauth";
@@ -27,3 +28,4 @@
 //Symbols
 @final string QUESTION_MARK = "?";
 @final string PATH_SEPARATOR = "/";
+@final string EMPTY_STRING = "";

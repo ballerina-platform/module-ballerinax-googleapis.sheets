@@ -21,24 +21,23 @@ function convertToSpreadsheet(json jsonSpreadsheet) returns Spreadsheet {
                             ? convertToSpreadsheetProperties(jsonSpreadsheet.properties) : {};
     spreadsheet.spreadsheetUrl = jsonSpreadsheet.spreadsheetUrl.toString();
     spreadsheet.sheets = jsonSpreadsheet.sheets != null
-                            ? convertToSheets(jsonSpreadsheet.sheets, jsonSpreadsheet.spreadsheetId.toString()) : [];
+                            ? convertToSheets(jsonSpreadsheet.sheets) : [];
 
     return spreadsheet;
 }
 
-function convertToSheets(json jsonSheets, string spreadsheetId) returns Sheet[] {
+function convertToSheets(json jsonSheets) returns Sheet[] {
     int i = 0;
     Sheet[] sheets = [];
     foreach jsonSheet in jsonSheets {
-        sheets[i] = convertToSheet(jsonSheet, spreadsheetId);
+        sheets[i] = convertToSheet(jsonSheet);
         i = i + 1;
     }
     return sheets;
 }
 
-function convertToSheet(json jsonSheet, string spreadsheetId) returns Sheet {
+function convertToSheet(json jsonSheet) returns Sheet {
     Sheet sheet = {};
-    sheet.spreadsheetId = spreadsheetId;
     sheet.properties = jsonSheet.properties != null ? convertToSheetProperties(jsonSheet.properties) : {};
     return sheet;
 }
