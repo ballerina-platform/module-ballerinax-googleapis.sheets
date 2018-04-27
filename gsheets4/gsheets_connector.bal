@@ -37,6 +37,21 @@ public type SpreadsheetConnector object {
     }
     public function openSpreadsheetById(string spreadsheetId) returns Spreadsheet|SpreadsheetError;
 
+    documentation {Add a new worksheet
+        P{{spreadsheetId}} - Id of the spreadsheet
+        P{{sheetName}} - The name of the sheet. It is an optional parameter. If the title is empty, then sheet will be created with the default name.
+        R{{}} - Sheet object on success and SpreadsheetError on failure
+    }
+    public function addNewSheet(string spreadsheetId, string sheetName)
+                                                     returns Sheet|SpreadsheetError;
+
+    documentation {Delete specified worksheet
+        P{{spreadsheetId}} - Id of the spreadsheet
+        P{{sheetId}} - The ID of the sheet to delete
+        R{{}} - Sheet object on success and SpreadsheetError on failure
+    }
+    public function deleteSheet(string spreadsheetId, int sheetId) returns boolean|SpreadsheetError;
+
     documentation {Get spreadsheet values
         P{{spreadsheetId}} - Id of the spreadsheet
         P{{sheetName}} - Name of the sheet
@@ -117,7 +132,7 @@ public function SpreadsheetConnector::createSpreadsheet(string spreadsheetName) 
             var spreadsheetJSONResponse = response.getJsonPayload();
             match spreadsheetJSONResponse {
                 error err => {
-                    spreadsheetError.message = "Error occured while receiving Json Payload";
+                    spreadsheetError.message = "Error occured while extracting Json Payload";
                     spreadsheetError.cause = err.cause;
                     return spreadsheetError;
                 }
@@ -154,7 +169,7 @@ public function SpreadsheetConnector::openSpreadsheetById(string spreadsheetId) 
             var spreadsheetJSONResponse = response.getJsonPayload();
             match spreadsheetJSONResponse {
                 error err => {
-                    spreadsheetError.message = "Error occured while receiving Json Payload";
+                    spreadsheetError.message = "Error occured while extracting Json Payload";
                     spreadsheetError.cause = err.cause;
                     return spreadsheetError;
                 }
@@ -173,6 +188,90 @@ public function SpreadsheetConnector::openSpreadsheetById(string spreadsheetId) 
     }
 }
 
+public function SpreadsheetConnector::addNewSheet(string spreadsheetId, string sheetName)
+                                                     returns Sheet|SpreadsheetError {
+    endpoint http:Client httpClient = self.httpClient;
+    http:Request request = new;
+    Sheet newSheet = {};
+    SpreadsheetError spreadsheetError = {};
+    json sheetJSONPayload = {"requests" : [{"addSheet":{"properties":{}}}]};
+    json jsonSheetProperties = {};
+    if (sheetName != EMPTY_STRING) {
+        jsonSheetProperties.title = sheetName;
+    }
+    sheetJSONPayload.requests[0].addSheet.properties = jsonSheetProperties;
+    request.setJsonPayload(sheetJSONPayload);
+    string addSheetPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + BATCH_UPDATE_REQUEST;
+    var httpResponse = httpClient->post(addSheetPath, request = request);
+    match httpResponse {
+        error err => {
+            spreadsheetError.message = err.message;
+            spreadsheetError.cause = err.cause;
+            return spreadsheetError;
+        }
+        http:Response response => {
+            int statusCode = response.statusCode;
+            var sheetJSONResponse = response.getJsonPayload();
+            match sheetJSONResponse {
+                error err => {
+                    spreadsheetError.message = "Error occured while extracting Json Payload";
+                    spreadsheetError.cause = err.cause;
+                    return spreadsheetError;
+                }
+                json jsonResponse => {
+                    if (statusCode == http:OK_200) {
+                        newSheet = convertToSheet(jsonResponse.replies[0].addSheet);
+                        return newSheet;
+                    } else {
+                        spreadsheetError.message = jsonResponse.error.message.toString();
+                        spreadsheetError.statusCode = statusCode;
+                        return spreadsheetError;
+                    }
+                }
+            }
+        }
+    }
+}
+
+public function SpreadsheetConnector::deleteSheet(string spreadsheetId, int sheetId)
+                                                     returns boolean|SpreadsheetError {
+    endpoint http:Client httpClient = self.httpClient;
+    http:Request request = new;
+    Sheet newSheet = {};
+    SpreadsheetError spreadsheetError = {};
+    json sheetJSONPayload = {"requests" : [{"deleteSheet":{"sheetId":sheetId}}]};
+    request.setJsonPayload(sheetJSONPayload);
+    string addSheetPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + BATCH_UPDATE_REQUEST;
+    var httpResponse = httpClient->post(addSheetPath, request = request);
+    match httpResponse {
+        error err => {
+            spreadsheetError.message = err.message;
+            spreadsheetError.cause = err.cause;
+            return spreadsheetError;
+        }
+        http:Response response => {
+            int statusCode = response.statusCode;
+            var sheetJSONResponse = response.getJsonPayload();
+            match sheetJSONResponse {
+                error err => {
+                    spreadsheetError.message = "Error occured while extracting Json Payload";
+                    spreadsheetError.cause = err.cause;
+                    return spreadsheetError;
+                }
+                json jsonResponse => {
+                    if (statusCode == http:OK_200) {
+                        return true;
+                    } else {
+                        spreadsheetError.message = jsonResponse.error.message.toString();
+                        spreadsheetError.statusCode = statusCode;
+                        return spreadsheetError;
+                    }
+                }
+            }
+        }
+    }
+}
+
 public function SpreadsheetConnector::getSheetValues(string spreadsheetId, string sheetName, string topLeftCell,
                                                      string bottomRightCell) returns (string[][])|SpreadsheetError {
     endpoint http:Client httpClient = self.httpClient;
@@ -180,10 +279,10 @@ public function SpreadsheetConnector::getSheetValues(string spreadsheetId, strin
     string[][] values = [];
     SpreadsheetError spreadsheetError = {};
     string a1Notation = sheetName;
-    if (topLeftCell != "" && topLeftCell != null) {
+    if (topLeftCell != EMPTY_STRING && topLeftCell != null) {
         a1Notation = a1Notation + "!" + topLeftCell;
     }
-    if (bottomRightCell != "" && bottomRightCell != null) {
+    if (bottomRightCell != EMPTY_STRING && bottomRightCell != null) {
         a1Notation = a1Notation + ":" + bottomRightCell;
     }
     string getSheetValuesPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + a1Notation;
@@ -199,7 +298,7 @@ public function SpreadsheetConnector::getSheetValues(string spreadsheetId, strin
             var spreadsheetJSONResponse = response.getJsonPayload();
             match spreadsheetJSONResponse {
                 error err => {
-                    spreadsheetError.message = "Error occured while receiving Json Payload";
+                    spreadsheetError.message = "Error occured while extracting Json Payload";
                     spreadsheetError.cause = err.cause;
                     return spreadsheetError;
                 }
@@ -250,7 +349,7 @@ public function SpreadsheetConnector::getColumnData(string spreadsheetId, string
             var spreadsheetJSONResponse = response.getJsonPayload();
             match spreadsheetJSONResponse {
                 error err => {
-                    spreadsheetError.message = "Error occured while receiving Json Payload";
+                    spreadsheetError.message = "Error occured while extracting Json Payload";
                     spreadsheetError.cause = err.cause;
                     return spreadsheetError;
                 }
@@ -262,7 +361,7 @@ public function SpreadsheetConnector::getColumnData(string spreadsheetId, string
                                 if (lengthof value > 0) {
                                     values[i] = value[0].toString();
                                 } else {
-                                    values[i] = "";
+                                    values[i] = EMPTY_STRING;
                                 }
                                 i = i + 1;
                             }
@@ -299,7 +398,7 @@ public function SpreadsheetConnector::getRowData(string spreadsheetId, string sh
             var spreadsheetJSONResponse = response.getJsonPayload();
             match spreadsheetJSONResponse {
                 error err => {
-                    spreadsheetError.message = "Error occured while receiving Json Payload";
+                    spreadsheetError.message = "Error occured while extracting Json Payload";
                     spreadsheetError.cause = err.cause;
                     return spreadsheetError;
                 }
@@ -328,7 +427,7 @@ public function SpreadsheetConnector::getCellData(string spreadsheetId, string s
                                                      returns (string)|SpreadsheetError {
     endpoint http:Client httpClient = self.httpClient;
     http:Request request = new;
-    string value = "";
+    string value = EMPTY_STRING;
     SpreadsheetError spreadsheetError = {};
     string a1Notation = sheetName + "!" + column + row;
     string getCellDataPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + a1Notation;
@@ -344,7 +443,7 @@ public function SpreadsheetConnector::getCellData(string spreadsheetId, string s
             var spreadsheetJSONResponse = response.getJsonPayload();
             match spreadsheetJSONResponse {
                 error err => {
-                    spreadsheetError.message = "Error occured while receiving Json Payload";
+                    spreadsheetError.message = "Error occured while extracting Json Payload";
                     spreadsheetError.cause = err.cause;
                     return spreadsheetError;
                 }
@@ -387,7 +486,7 @@ public function SpreadsheetConnector::setCellData(string spreadsheetId, string s
             var spreadsheetJSONResponse = response.getJsonPayload();
             match spreadsheetJSONResponse {
                 error err => {
-                    spreadsheetError.message = "Error occured while receiving Json Payload";
+                    spreadsheetError.message = "Error occured while extracting Json Payload";
                     spreadsheetError.cause = err.cause;
                     return spreadsheetError;
                 }
@@ -412,10 +511,10 @@ public function SpreadsheetConnector::setSheetValues(string spreadsheetId, strin
     http:Request request = new;
     SpreadsheetError spreadsheetError = {};
     string a1Notation = sheetName;
-    if (topLeftCell != "" && topLeftCell != null) {
+    if (topLeftCell != EMPTY_STRING && topLeftCell != null) {
         a1Notation = a1Notation + "!" + topLeftCell;
     }
-    if (bottomRightCell != "" && bottomRightCell != null) {
+    if (bottomRightCell != EMPTY_STRING && bottomRightCell != null) {
         a1Notation = a1Notation + ":" + bottomRightCell;
     }
     string setValuePath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + a1Notation + QUESTION_MARK
@@ -446,7 +545,7 @@ public function SpreadsheetConnector::setSheetValues(string spreadsheetId, strin
             var spreadsheetJSONResponse = response.getJsonPayload();
             match spreadsheetJSONResponse {
                 error err => {
-                    spreadsheetError.message = "Error occured while receiving Json Payload";
+                    spreadsheetError.message = "Error occured while extracting Json Payload";
                     spreadsheetError.cause = err.cause;
                     return spreadsheetError;
                 }

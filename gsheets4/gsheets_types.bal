@@ -64,11 +64,9 @@ public type SpreadsheetProperties {
 };
 
 documentation {Sheet object
-    F{{spreadsheetId}} - The Id of the parent spreadsheet
     F{{properties}} - The properties of the sheet
 }
 public type Sheet {
-    string spreadsheetId;
     SheetProperties properties;
 };
 
@@ -164,7 +162,6 @@ public function Spreadsheet::getSheetByName(string sheetName) returns Sheet|Spre
                 }
             }
         }
-        sheetResponse.spreadsheetId = self.spreadsheetId;
         return sheetResponse;
     }
 }
