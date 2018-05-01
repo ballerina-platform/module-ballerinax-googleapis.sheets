@@ -2,7 +2,7 @@ Connects to Google Spreadsheets from Ballerina.
 
 # Package Overview
 
-The Google Spreadsheet connector allows you to create and access Google Spreadsheet docs through Google Spreadsheet REST API with OAuth 2.0 authentication. And also it provides the facility to create, access, modify and delete worksheets.
+The Google Spreadsheet connector allows you to create and access Google Spreadsheet docs through the Google Spreadsheet REST API. It also allows you to create, access, modify, and delete worksheets. It handles OAuth 2.0 authentication.
 
 **Spreadsheet Operations**
 
@@ -16,7 +16,7 @@ The `wso2/gsheets4` package contains operations to set and get the sheet values 
 
 |                                 |       Version                  |
 |  :---------------------------:  |  :---------------------------: |
-|  Ballerina Language             |   0.970.0-rc1                  |
+|  Ballerina Language             |   0.970.0                      |
 |  Google Spreadsheet API         |   V4                           |
 
 ## Sample

@@ -106,7 +106,7 @@ public type GridProperties {
 
 documentation {Spreadsheet error
     F{{message}} - Error message
-    F{{cause}} - The error which caused the GMail error
+    F{{cause}} - The error which caused the Spreadsheet error
     F{{statusCode}} - The status code
 }
 public type SpreadsheetError {
