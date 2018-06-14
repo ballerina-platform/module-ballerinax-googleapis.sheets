@@ -120,7 +120,7 @@ public function SpreadsheetConnector::createSpreadsheet(string spreadsheetName) 
     SpreadsheetError spreadsheetError = {};
     json spreadsheetJSONPayload = {"properties":{"title":spreadsheetName}};
     request.setJsonPayload(spreadsheetJSONPayload);
-    var httpResponse = httpClient->post(SPREADSHEET_PATH, request = request);
+    var httpResponse = httpClient->post(SPREADSHEET_PATH, request);
     match httpResponse {
         error err => {
             spreadsheetError.message = err.message;
@@ -157,7 +157,7 @@ public function SpreadsheetConnector::openSpreadsheetById(string spreadsheetId) 
     Spreadsheet spreadsheetResponse = new;
     SpreadsheetError spreadsheetError = {};
     string getSpreadsheetPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId;
-    var httpResponse = httpClient->get(getSpreadsheetPath, request = request);
+    var httpResponse = httpClient->get(getSpreadsheetPath);
     match httpResponse {
         error err => {
             spreadsheetError.message = err.message;
@@ -202,7 +202,7 @@ public function SpreadsheetConnector::addNewSheet(string spreadsheetId, string s
     sheetJSONPayload.requests[0].addSheet.properties = jsonSheetProperties;
     request.setJsonPayload(sheetJSONPayload);
     string addSheetPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + BATCH_UPDATE_REQUEST;
-    var httpResponse = httpClient->post(addSheetPath, request = request);
+    var httpResponse = httpClient->post(addSheetPath, request);
     match httpResponse {
         error err => {
             spreadsheetError.message = err.message;
@@ -242,7 +242,7 @@ public function SpreadsheetConnector::deleteSheet(string spreadsheetId, int shee
     json sheetJSONPayload = {"requests" : [{"deleteSheet":{"sheetId":sheetId}}]};
     request.setJsonPayload(sheetJSONPayload);
     string addSheetPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + BATCH_UPDATE_REQUEST;
-    var httpResponse = httpClient->post(addSheetPath, request = request);
+    var httpResponse = httpClient->post(addSheetPath, request);
     match httpResponse {
         error err => {
             spreadsheetError.message = err.message;
@@ -286,7 +286,7 @@ public function SpreadsheetConnector::getSheetValues(string spreadsheetId, strin
         a1Notation = a1Notation + ":" + bottomRightCell;
     }
     string getSheetValuesPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + a1Notation;
-    var httpResponse = httpClient->get(getSheetValuesPath, request = request);
+    var httpResponse = httpClient->get(getSheetValuesPath);
     match httpResponse {
         error err => {
             spreadsheetError.message = err.message;
@@ -337,7 +337,7 @@ public function SpreadsheetConnector::getColumnData(string spreadsheetId, string
     SpreadsheetError spreadsheetError = {};
     string a1Notation = sheetName + "!" + column + ":" + column;
     string getColumnDataPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + a1Notation;
-    var httpResponse = httpClient->get(getColumnDataPath, request = request);
+    var httpResponse = httpClient->get(getColumnDataPath);
     match httpResponse {
         error err => {
             spreadsheetError.message = err.message;
@@ -386,7 +386,7 @@ public function SpreadsheetConnector::getRowData(string spreadsheetId, string sh
     SpreadsheetError spreadsheetError = {};
     string a1Notation = sheetName + "!" + row + ":" + row;
     string getRowDataPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + a1Notation;
-    var httpResponse = httpClient->get(getRowDataPath, request = request);
+    var httpResponse = httpClient->get(getRowDataPath);
     match httpResponse {
         error err => {
             spreadsheetError.message = err.message;
@@ -431,7 +431,7 @@ public function SpreadsheetConnector::getCellData(string spreadsheetId, string s
     SpreadsheetError spreadsheetError = {};
     string a1Notation = sheetName + "!" + column + row;
     string getCellDataPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + a1Notation;
-    var httpResponse = httpClient->get(getCellDataPath, request = request);
+    var httpResponse = httpClient->get(getCellDataPath);
     match httpResponse {
         error err => {
             spreadsheetError.message = err.message;
@@ -474,7 +474,7 @@ public function SpreadsheetConnector::setCellData(string spreadsheetId, string s
     string setCellDataPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + a1Notation
         + QUESTION_MARK + VALUE_INPUT_OPTION;
     request.setJsonPayload(jsonPayload);
-    var httpResponse = httpClient->put(setCellDataPath, request = request);
+    var httpResponse = httpClient->put(setCellDataPath, request);
     match httpResponse {
         error err => {
             spreadsheetError.message = err.message;
@@ -533,7 +533,7 @@ public function SpreadsheetConnector::setSheetValues(string spreadsheetId, strin
     }
     json jsonPayload = {"values":jsonValues};
     request.setJsonPayload(jsonPayload);
-    var httpResponse = httpClient->put(setValuePath, request = request);
+    var httpResponse = httpClient->put(setValuePath, request);
     match httpResponse {
         error err => {
             spreadsheetError.message = err.message;
