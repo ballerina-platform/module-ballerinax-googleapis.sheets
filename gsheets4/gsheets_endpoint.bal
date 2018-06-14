@@ -52,7 +52,7 @@ public function Client::init(SpreadsheetConfiguration spreadsheetConfig) {
         () => {}
         http:AuthConfig authConfig => {
             authConfig.refreshUrl = REFRESH_URL;
-            authConfig.scheme = SCHEME;
+            authConfig.scheme = http:OAUTH2;
         }
     }
     self.spreadsheetConnector.httpClient.init(spreadsheetConfig.clientConfig);
