@@ -36,9 +36,9 @@ public type Client object {
     }
 
     documentation {Spreadsheet endpoint initialization function
-        P{{spreadsheetConfig}} - Spreadsheet client endpoint configuration object
+        P{{config}} - Spreadsheet client endpoint configuration object
     }
-    public function init(SpreadsheetConfiguration spreadsheetConfig);
+    public function init(SpreadsheetConfiguration config);
 
     documentation {Get Spreadsheet connector client
         R{{}} - Spreadsheet connector client
@@ -46,16 +46,16 @@ public type Client object {
     public function getCallerActions() returns SpreadsheetConnector;
 };
 
-public function Client::init(SpreadsheetConfiguration spreadsheetConfig) {
-    spreadsheetConfig.clientConfig.url = BASE_URL;
-    match spreadsheetConfig.clientConfig.auth {
+public function Client::init(SpreadsheetConfiguration config) {
+    config.clientConfig.url = BASE_URL;
+    match config.clientConfig.auth {
         () => {}
         http:AuthConfig authConfig => {
             authConfig.refreshUrl = REFRESH_URL;
             authConfig.scheme = http:OAUTH2;
         }
     }
-    self.spreadsheetConnector.httpClient.init(spreadsheetConfig.clientConfig);
+    self.spreadsheetConnector.httpClient.init(config.clientConfig);
 }
 
 public function Client::getCallerActions() returns SpreadsheetConnector {
