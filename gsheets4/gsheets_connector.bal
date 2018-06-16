@@ -43,7 +43,7 @@ public type SpreadsheetConnector object {
         R{{}} - Sheet object on success and SpreadsheetError on failure
     }
     public function addNewSheet(string spreadsheetId, string sheetName)
-                                                     returns Sheet|SpreadsheetError;
+                        returns Sheet|SpreadsheetError;
 
     documentation {Delete specified worksheet
         P{{spreadsheetId}} - Id of the spreadsheet
@@ -60,7 +60,7 @@ public type SpreadsheetConnector object {
         R{{}} - Sheet values as a two dimensional array on success and SpreadsheetError on failure
     }
     public function getSheetValues(string spreadsheetId, string sheetName, string topLeftCell, string bottomRightCell)
-                                                     returns (string[][])|SpreadsheetError;
+                        returns (string[][])|SpreadsheetError;
 
     documentation {Get column data
         P{{spreadsheetId}} - Id of the spreadsheet
@@ -69,7 +69,7 @@ public type SpreadsheetConnector object {
         R{{}} - Column data as an array on success and SpreadsheetError on failure
     }
     public function getColumnData(string spreadsheetId, string sheetName, string column)
-                                                     returns (string[])|SpreadsheetError;
+                        returns (string[])|SpreadsheetError;
 
     documentation {Get row data
         P{{spreadsheetId}} - Id of the spreadsheet
@@ -78,7 +78,7 @@ public type SpreadsheetConnector object {
         R{{}} - Row data as an array on success and SpreadsheetError on failure
     }
     public function getRowData(string spreadsheetId, string sheetName, int row)
-                                                     returns (string[])|SpreadsheetError;
+                        returns (string[])|SpreadsheetError;
 
     documentation {Get cell data
         P{{spreadsheetId}} - Id of the spreadsheet
@@ -88,7 +88,7 @@ public type SpreadsheetConnector object {
         R{{}} - Cell data on success and SpreadsheetError on failure
     }
     public function getCellData(string spreadsheetId, string sheetName, string column, int row)
-                                                     returns (string)|SpreadsheetError;
+                        returns (string)|SpreadsheetError;
 
     documentation {Set cell data
         P{{spreadsheetId}} - Id of the spreadsheet
@@ -99,7 +99,7 @@ public type SpreadsheetConnector object {
         R{{}} - True on success and SpreadsheetError on failure
     }
     public function setCellData(string spreadsheetId, string sheetName, string column, int row, string value)
-                                                     returns (boolean)|SpreadsheetError;
+                        returns (boolean)|SpreadsheetError;
 
     documentation {Set spreadsheet values
         P{{spreadsheetId}} - Id of the spreadsheet
@@ -110,7 +110,7 @@ public type SpreadsheetConnector object {
         R{{}} - True on success and SpreadsheetError on failure
     }
     public function setSheetValues(string spreadsheetId, string sheetName, string topLeftCell, string bottomRightCell,
-                                                     string[][] values) returns (boolean)|SpreadsheetError;
+                                   string[][] values) returns (boolean)|SpreadsheetError;
 };
 
 public function SpreadsheetConnector::createSpreadsheet(string spreadsheetName) returns Spreadsheet|SpreadsheetError {
@@ -118,7 +118,7 @@ public function SpreadsheetConnector::createSpreadsheet(string spreadsheetName) 
     http:Request request = new;
     Spreadsheet spreadsheetResponse = new;
     SpreadsheetError spreadsheetError = {};
-    json spreadsheetJSONPayload = {"properties":{"title":spreadsheetName}};
+    json spreadsheetJSONPayload = { "properties": { "title": spreadsheetName } };
     request.setJsonPayload(spreadsheetJSONPayload);
     var httpResponse = httpClient->post(SPREADSHEET_PATH, request);
     match httpResponse {
@@ -189,12 +189,12 @@ public function SpreadsheetConnector::openSpreadsheetById(string spreadsheetId) 
 }
 
 public function SpreadsheetConnector::addNewSheet(string spreadsheetId, string sheetName)
-                                                     returns Sheet|SpreadsheetError {
+                                          returns Sheet|SpreadsheetError {
     endpoint http:Client httpClient = self.httpClient;
     http:Request request = new;
     Sheet newSheet = {};
     SpreadsheetError spreadsheetError = {};
-    json sheetJSONPayload = {"requests" : [{"addSheet":{"properties":{}}}]};
+    json sheetJSONPayload = { "requests": [{ "addSheet": { "properties": {} } }] };
     json jsonSheetProperties = {};
     if (sheetName != EMPTY_STRING) {
         jsonSheetProperties.title = sheetName;
@@ -234,12 +234,12 @@ public function SpreadsheetConnector::addNewSheet(string spreadsheetId, string s
 }
 
 public function SpreadsheetConnector::deleteSheet(string spreadsheetId, int sheetId)
-                                                     returns boolean|SpreadsheetError {
+                                          returns boolean|SpreadsheetError {
     endpoint http:Client httpClient = self.httpClient;
     http:Request request = new;
     Sheet newSheet = {};
     SpreadsheetError spreadsheetError = {};
-    json sheetJSONPayload = {"requests" : [{"deleteSheet":{"sheetId":sheetId}}]};
+    json sheetJSONPayload = { "requests": [{ "deleteSheet": { "sheetId": sheetId } }] };
     request.setJsonPayload(sheetJSONPayload);
     string addSheetPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + BATCH_UPDATE_REQUEST;
     var httpResponse = httpClient->post(addSheetPath, request);
@@ -330,7 +330,7 @@ public function SpreadsheetConnector::getSheetValues(string spreadsheetId, strin
 }
 
 public function SpreadsheetConnector::getColumnData(string spreadsheetId, string sheetName, string column)
-                                                     returns (string[])|SpreadsheetError {
+                                          returns (string[])|SpreadsheetError {
     endpoint http:Client httpClient = self.httpClient;
     http:Request request = new;
     string[] values = [];
@@ -379,7 +379,7 @@ public function SpreadsheetConnector::getColumnData(string spreadsheetId, string
 }
 
 public function SpreadsheetConnector::getRowData(string spreadsheetId, string sheetName, int row)
-                                                     returns (string[])|SpreadsheetError {
+                                          returns (string[])|SpreadsheetError {
     endpoint http:Client httpClient = self.httpClient;
     http:Request request = new;
     string[] values = [];
@@ -424,7 +424,7 @@ public function SpreadsheetConnector::getRowData(string spreadsheetId, string sh
 }
 
 public function SpreadsheetConnector::getCellData(string spreadsheetId, string sheetName, string column, int row)
-                                                     returns (string)|SpreadsheetError {
+                                          returns (string)|SpreadsheetError {
     endpoint http:Client httpClient = self.httpClient;
     http:Request request = new;
     string value = EMPTY_STRING;
@@ -469,7 +469,7 @@ public function SpreadsheetConnector::setCellData(string spreadsheetId, string s
     endpoint http:Client httpClient = self.httpClient;
     http:Request request = new;
     SpreadsheetError spreadsheetError = {};
-    json jsonPayload = {"values":[[value]]};
+    json jsonPayload = { "values": [[value]] };
     string a1Notation = sheetName + "!" + column + row;
     string setCellDataPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + a1Notation
         + QUESTION_MARK + VALUE_INPUT_OPTION;
@@ -506,7 +506,7 @@ public function SpreadsheetConnector::setCellData(string spreadsheetId, string s
 
 public function SpreadsheetConnector::setSheetValues(string spreadsheetId, string sheetName, string topLeftCell,
                                                      string bottomRightCell, string[][] values)
-                                                     returns (boolean)|SpreadsheetError {
+                                          returns (boolean)|SpreadsheetError {
     endpoint http:Client httpClient = self.httpClient;
     http:Request request = new;
     SpreadsheetError spreadsheetError = {};
@@ -531,7 +531,7 @@ public function SpreadsheetConnector::setSheetValues(string spreadsheetId, strin
         jsonValues[i] = val;
         i = i + 1;
     }
-    json jsonPayload = {"values":jsonValues};
+    json jsonPayload = { "values": jsonValues };
     request.setJsonPayload(jsonPayload);
     var httpResponse = httpClient->put(setValuePath, request);
     match httpResponse {

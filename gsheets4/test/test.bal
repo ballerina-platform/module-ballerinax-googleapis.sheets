@@ -24,12 +24,12 @@ string clientSecret = config:getAsString("CLIENT_SECRET");
 string refreshToken = config:getAsString("REFRESH_TOKEN");
 
 endpoint Client spreadsheetClient {
-    clientConfig:{
-        auth:{
-            accessToken:accessToken,
-            refreshToken:refreshToken,
-            clientId:clientId,
-            clientSecret:clientSecret
+    clientConfig: {
+        auth: {
+            accessToken: accessToken,
+            refreshToken: refreshToken,
+            clientId: clientId,
+            clientSecret: clientSecret
         }
     }
 };
@@ -52,7 +52,7 @@ function testCreateSpreadsheet() {
 }
 
 @test:Config {
-    dependsOn:["testCreateSpreadsheet"]
+    dependsOn: ["testCreateSpreadsheet"]
 }
 function testAddNewSheet() {
     io:println("-----------------Test case for addNewSheet method------------------");
@@ -66,7 +66,7 @@ function testAddNewSheet() {
 }
 
 @test:Config {
-    dependsOn:["testCreateSpreadsheet", "testAddNewSheet"]
+    dependsOn: ["testCreateSpreadsheet", "testAddNewSheet"]
 }
 function testOpenSpreadsheetById() {
     io:println("-----------------Test case for openSpreadsheetById method------------------");
@@ -80,7 +80,7 @@ function testOpenSpreadsheetById() {
 }
 
 @test:Config {
-    dependsOn:["testOpenSpreadsheetById"]
+    dependsOn: ["testOpenSpreadsheetById"]
 }
 function testGetSpreadsheetName() {
     io:println("-----------------Test case for getSpreadsheetName method------------------");
@@ -94,7 +94,7 @@ function testGetSpreadsheetName() {
 }
 
 @test:Config {
-    dependsOn:["testOpenSpreadsheetById"]
+    dependsOn: ["testOpenSpreadsheetById"]
 }
 function testGetSpreadsheetId() {
     io:println("-----------------Test case for getSpreadsheetId method------------------");
@@ -109,7 +109,7 @@ function testGetSpreadsheetId() {
 }
 
 @test:Config {
-    dependsOn:["testOpenSpreadsheetById"]
+    dependsOn: ["testOpenSpreadsheetById"]
 }
 function testGetSheets() {
     io:println("-----------------Test case for getSheets method------------------");
@@ -123,7 +123,7 @@ function testGetSheets() {
 }
 
 @test:Config {
-    dependsOn:["testGetSheets", "testAddNewSheet"]
+    dependsOn: ["testGetSheets", "testAddNewSheet"]
 }
 function testGetSheetByName() {
     io:println("-----------------Test case for getSheetByName method------------------");
@@ -137,13 +137,14 @@ function testGetSheetByName() {
 }
 
 @test:Config {
-    dependsOn:["testOpenSpreadsheetById", "testGetSheets"]
+    dependsOn: ["testOpenSpreadsheetById", "testGetSheets"]
 }
 function testSetSheetValues() {
     io:println("-----------------Test case for setSheetValues method------------------");
     string[][] values = [["Name", "Score", "Performance"], ["Keetz", "12"], ["Niro", "78"],
     ["Nisha", "98"], ["Kana", "86"]];
-    var spreadsheetRes = spreadsheetClient->setSheetValues(testSpreadsheet.spreadsheetId, testSheetName, "A1", "C5", values);
+    var spreadsheetRes = spreadsheetClient->setSheetValues(testSpreadsheet.spreadsheetId, testSheetName, "A1", "C5",
+        values);
     match spreadsheetRes {
         boolean isUpdated => test:assertTrue(isUpdated, msg = "Failed to update the values!");
         SpreadsheetError e => test:assertFail(msg = e.message);
@@ -151,7 +152,7 @@ function testSetSheetValues() {
 }
 
 @test:Config {
-    dependsOn:["testSetSheetValues", "testGetSheets"]
+    dependsOn: ["testSetSheetValues", "testGetSheets"]
 }
 function testGetSheetValues() {
     io:println("-----------------Test case for getSheetValues method------------------");
@@ -165,7 +166,7 @@ function testGetSheetValues() {
 }
 
 @test:Config {
-    dependsOn:["testGetSheetValues", "testGetSheets"]
+    dependsOn: ["testGetSheetValues", "testGetSheets"]
 }
 function testGetColumnData() {
     io:println("-----------------Test case for getColumnData method------------------");
@@ -178,7 +179,7 @@ function testGetColumnData() {
 }
 
 @test:Config {
-    dependsOn:["testGetSheetValues", "testGetSheets"]
+    dependsOn: ["testGetSheetValues", "testGetSheets"]
 }
 function testGetRowData() {
     io:println("-----------------Test case for getRowData method------------------");
@@ -191,7 +192,7 @@ function testGetRowData() {
 }
 
 @test:Config {
-    dependsOn:["testGetSheetValues", "testGetSheets"]
+    dependsOn: ["testGetSheetValues", "testGetSheets"]
 }
 function testSetCellData() {
     io:println("-----------------Test case for setCellData method------------------");
@@ -204,7 +205,7 @@ function testSetCellData() {
 }
 
 @test:Config {
-    dependsOn:["testSetCellData", "testGetSheets"]
+    dependsOn: ["testSetCellData", "testGetSheets"]
 }
 function testGetCellData() {
     io:println("-----------------Test case for getCellData method------------------");
@@ -217,7 +218,7 @@ function testGetCellData() {
 }
 
 @test:Config {
-    dependsOn:["testGetCellData", "testGetRowData", "testGetColumnData"]
+    dependsOn: ["testGetCellData", "testGetRowData", "testGetColumnData"]
 }
 function testDeleteSheet() {
     io:println("-----------------Test case for deleteSheet method------------------");
