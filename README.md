@@ -19,57 +19,60 @@ Download the ballerina [distribution](https://ballerinalang.org/downloads/).
 
 ##### Contribute To Develop
 Clone the repository by running the following command
-    `git clone https://github.com/wso2-ballerina/package-googlespreadsheet.git`
+`git clone https://github.com/wso2-ballerina/package-googlespreadsheet.git`
 
 ## Working with GSheets Endpoint actions
-All the actions return valid response or SpreadsheetError. If the action is a success, then the requested resource will be returned. Else SpreadsheetError object will be returned.
+All the actions return valid response or SpreadsheetError. If the action is a success, then the requested resource will
+be returned. Else SpreadsheetError object will be returned.
 
-In order for you to use the GSheets Endpoint, first you need to create a GSheets Client
-endpoint.
+In order for you to use the GSheets Endpoint, first you need to create a GSheets Client endpoint.
+
 ```ballerina
-    import wso2/gsheets4;
+import wso2/gsheets4;
 
-        endpoint gsheets4:Client spreadsheetClientEP {
-            clientConfig:{
-                auth:{
-                    accessToken:"<your_accessToken>",
-                    refreshToken:"<your_refreshToken>",
-                    clientId:"<your_clientId>",
-                    clientSecret:"<your_clientSecret>"
-                }
-            }
-        };
+endpoint gsheets4:Client spreadsheetClientEP {
+    clientConfig:{
+        auth:{
+            accessToken:"<your_accessToken>",
+            refreshToken:"<your_refreshToken>",
+            clientId:"<your_clientId>",
+            clientSecret:"<your_clientSecret>"
+        }
+    }
+};
 ```
 
 Then the endpoint actions can be invoked as `var response = spreadsheetClientEP -> actionName(arguments)`.
 
 #### Sample
 ```ballerina
-    import wso2/gsheets4;
+import ballerina/config;
+import ballerina/io;
+import wso2/gsheets4;
 
-    public function main (string[] args) {
-        endpoint gsheets4:Client spreadsheetClientEP {
-            clientConfig:{
-                auth:{
-                    accessToken:config:getAsString("ACCESS_TOKEN"),
-                    refreshToken:config:getAsString("REFRESH_TOKEN"),
-                    clientId:config:getAsString("CLIENT_ID"),
-                    clientSecret:config:getAsString("CLIENT_SECRET")
-                }
-            }
-        };
-
-        gsheets4:Spreadsheet spreadsheet = new;
-        var response = spreadsheetClient -> openSpreadsheetById("abc1234567");
-        match response {
-            gsheets4:Spreadsheet spreadsheetRes => {
-                spreadsheet = spreadsheetRes;
-            }
-            SpreadsheetError err => {
-                io:println(err);
+function main(string... args) {
+    endpoint gsheets4:Client spreadsheetClientEP {
+        clientConfig:{
+            auth:{
+                accessToken:config:getAsString("ACCESS_TOKEN"),
+                refreshToken:config:getAsString("REFRESH_TOKEN"),
+                clientId:config:getAsString("CLIENT_ID"),
+                clientSecret:config:getAsString("CLIENT_SECRET")
             }
         }
+    };
 
-        io:println(spreadsheet);
+    gsheets4:Spreadsheet spreadsheet = new;
+    var response = spreadsheetClientEP->openSpreadsheetById("abc1234567");
+    match response {
+        gsheets4:Spreadsheet spreadsheetRes => {
+            spreadsheet = spreadsheetRes;
+        }
+        gsheets4:SpreadsheetError err => {
+            io:println(err);
+        }
     }
+
+    io:println(spreadsheet);
+}
 ```
