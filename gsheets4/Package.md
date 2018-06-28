@@ -76,7 +76,7 @@ The `getSheetByName` function retrieves a sheet with the given name from a `Spre
 var sheetRes = spreadsheet.getSheetByName(sheetName);
 match sheetRes {
     gsheets4:Sheet s => io:println(s);
-    SpreadsheetError e => io:println(e);
+    gsheets4:SpreadsheetError e => io:println(e);
 }
 ```
 
