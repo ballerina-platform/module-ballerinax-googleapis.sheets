@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/wso2-ballerina/package-googlespreadsheet.svg?branch=master)](https://travis-ci.org/wso2-ballerina/package-googlespreadsheet)
+
 # Ballerina Google Spreadsheet Endpoint
 
 Google Sheets is an online spreadsheet that lets users create and format
