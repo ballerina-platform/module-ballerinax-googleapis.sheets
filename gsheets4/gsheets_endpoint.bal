@@ -20,7 +20,7 @@ documentation {SpreadsheetConfiguration is used to set up the Google Spreadsheet
 this connector, you need to provide the oauth2 credentials.
     F{{clientConfig}} - The HTTP client congiguration
 }
-public type SpreadsheetConfiguration {
+public type SpreadsheetConfiguration record {
     http:ClientEndpointConfig clientConfig = {};
 };
 
@@ -30,10 +30,10 @@ documentation {Google Spreadsheet Endpoint object.
     F{{spreadsheetConnector}} - Spreadsheet connector object
 }
 public type Client object {
-    public {
-        SpreadsheetConfiguration spreadsheetConfig = {};
-        SpreadsheetConnector spreadsheetConnector = new;
-    }
+
+    public SpreadsheetConfiguration spreadsheetConfig = {};
+    public SpreadsheetConnector spreadsheetConnector = new;
+
 
     documentation {Spreadsheet endpoint initialization function
         P{{config}} - Spreadsheet client endpoint configuration object
@@ -46,7 +46,7 @@ public type Client object {
     public function getCallerActions() returns SpreadsheetConnector;
 };
 
-public function Client::init(SpreadsheetConfiguration config) {
+function Client::init(SpreadsheetConfiguration config) {
     config.clientConfig.url = BASE_URL;
     match config.clientConfig.auth {
         () => {}
@@ -58,6 +58,6 @@ public function Client::init(SpreadsheetConfiguration config) {
     self.spreadsheetConnector.httpClient.init(config.clientConfig);
 }
 
-public function Client::getCallerActions() returns SpreadsheetConnector {
+function Client::getCallerActions() returns SpreadsheetConnector {
     return self.spreadsheetConnector;
 }

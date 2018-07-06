@@ -21,12 +21,11 @@ documentation {
     F{{spreadsheetUrl}} - The url of the spreadsheet
 }
 public type Spreadsheet object {
-    public {
-        string spreadsheetId;
-        SpreadsheetProperties properties;
-        Sheet[] sheets;
-        string spreadsheetUrl;
-    }
+
+    public string spreadsheetId;
+    public SpreadsheetProperties properties;
+    public Sheet[] sheets;
+    public string spreadsheetUrl;
 
     documentation {Get the name of the spreadsheet
         R{{}} - Name of the spreadsheet object on success and SpreadsheetError on failure
@@ -56,7 +55,7 @@ documentation {Spreadsheet properties
     F{{autoRecalc}} - The amount of time to wait before volatile functions are recalculated
     F{{timeZone}} - The time zone of the spreadsheet
 }
-public type SpreadsheetProperties {
+public type SpreadsheetProperties record {
     string title;
     string locale;
     string autoRecalc;
@@ -66,7 +65,7 @@ public type SpreadsheetProperties {
 documentation {Sheet object
     F{{properties}} - The properties of the sheet
 }
-public type Sheet {
+public type Sheet record {
     SheetProperties properties;
 };
 
@@ -79,7 +78,7 @@ documentation {Sheet properties
     F{{hidden}} - True if the sheet is hidden in the UI, false if it is visible
     F{{rightToLeft}} - True if the sheet is an RTL sheet instead of an LTR sheet
 }
-public type SheetProperties {
+public type SheetProperties record {
     int sheetId;
     string title;
     int index;
@@ -96,7 +95,7 @@ documentation {Grid properties
     F{{frozenColumnCount}} - The number of columns that are frozen in the grid
     F{{hideGridlines}} - True if the grid is not showing gridlines in the UI
 }
-public type GridProperties {
+public type GridProperties record {
     int rowCount;
     int columnCount;
     int frozenRowCount;
@@ -109,14 +108,14 @@ documentation {Spreadsheet error
     F{{cause}} - The error which caused the Spreadsheet error
     F{{statusCode}} - The status code
 }
-public type SpreadsheetError {
+public type SpreadsheetError record {
     string message;
     error? cause;
     int statusCode;
 };
 
 //Functions binded to Spreadsheet struct
-public function Spreadsheet::getSpreadsheetName() returns (string)|SpreadsheetError {
+function Spreadsheet::getSpreadsheetName() returns (string)|SpreadsheetError {
     SpreadsheetError spreadsheetError = {};
     string title = "";
     if (self.properties == null) {
@@ -127,7 +126,7 @@ public function Spreadsheet::getSpreadsheetName() returns (string)|SpreadsheetEr
     }
 }
 
-public function Spreadsheet::getSpreadsheetId() returns (string)|SpreadsheetError {
+function Spreadsheet::getSpreadsheetId() returns (string)|SpreadsheetError {
     SpreadsheetError spreadsheetError = {};
     string spreadsheetId = "";
     if (self.spreadsheetId == null) {
@@ -137,7 +136,7 @@ public function Spreadsheet::getSpreadsheetId() returns (string)|SpreadsheetErro
     return self.spreadsheetId;
 }
 
-public function Spreadsheet::getSheets() returns Sheet[]|SpreadsheetError {
+function Spreadsheet::getSheets() returns Sheet[]|SpreadsheetError {
     SpreadsheetError spreadsheetError = {};
     if (self.sheets == null) {
         spreadsheetError.message = "No sheets found";
@@ -146,7 +145,7 @@ public function Spreadsheet::getSheets() returns Sheet[]|SpreadsheetError {
     return self.sheets;
 }
 
-public function Spreadsheet::getSheetByName(string sheetName) returns Sheet|SpreadsheetError {
+function Spreadsheet::getSheetByName(string sheetName) returns Sheet|SpreadsheetError {
     Sheet[] sheets = self.sheets;
     Sheet sheetResponse = {};
     SpreadsheetError spreadsheetError = {};
