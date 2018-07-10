@@ -14,10 +14,10 @@ The `wso2/gsheets4` package contains operations to set and get the sheet values 
 
 ## Compatibility
 
-|                                 |       Version                  |
-|  :---------------------------:  |  :---------------------------: |
-|  Ballerina Language             |   0.975.0                      |
-|  Google Spreadsheet API         |   V4                           |
+|                             |       Version               |
+|:---------------------------:|:---------------------------:|
+| Ballerina Language          | 0.980.0                     |
+| Google Spreadsheet API      | V4                          |
 
 ## Sample
 
@@ -73,18 +73,18 @@ match response {
 
 The `getSheetByName` function retrieves a sheet with the given name from a `Spreadsheet` object. The `sheetName` represents the name of the sheet to be retrieved. It returns the `Sheet` object on success and `SpreadsheetError` on failure.
 ```ballerina
-var sheetRes = spreadsheet.getSheetByName(sheetName);
-match sheetRes {
-    gsheets4:Sheet s => io:println(s);
-    gsheets4:SpreadsheetError e => io:println(e);
+var response = spreadsheet.getSheetByName(sheetName);
+match response {
+    gsheets4:Sheet sheet => io:println(sheet);
+    gsheets4:SpreadsheetError err => io:println(err);
 }
 ```
 
 The `setSheetValues` function sets the values for a range of cells. It returns `true` on success or `SpreadsheetError` on failure.
 ```ballerina
-var spreadsheetRes = spreadsheetEP->setSheetValues(spreadsheetId, sheetName, topLeftCell, bottomRightCell, values);
-match spreadsheetRes {
+var response = spreadsheetEP->setSheetValues(spreadsheetId, sheetName, topLeftCell, bottomRightCell, values);
+match response {
     boolean isUpdated => io:println(isUpdated);
-    gsheets4:SpreadsheetError e => io:println(e);
+    gsheets4:SpreadsheetError err => io:println(err);
 }
 ```
