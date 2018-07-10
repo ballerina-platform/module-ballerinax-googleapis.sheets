@@ -21,9 +21,8 @@ documentation {Spreadsheet client connector
     F{{httpClient}} - The HTTP Client
 }
 public type SpreadsheetConnector object {
-    public {
-        http:Client httpClient = new;
-    }
+
+    public http:Client httpClient = new;
 
     documentation {Create a new spreadsheet
         P{{spreadsheetName}} - Name of the spreadsheet
@@ -113,7 +112,7 @@ public type SpreadsheetConnector object {
                                    string[][] values) returns (boolean)|SpreadsheetError;
 };
 
-public function SpreadsheetConnector::createSpreadsheet(string spreadsheetName) returns Spreadsheet|SpreadsheetError {
+function SpreadsheetConnector::createSpreadsheet(string spreadsheetName) returns Spreadsheet|SpreadsheetError {
     endpoint http:Client httpClient = self.httpClient;
     http:Request request = new;
     Spreadsheet spreadsheetResponse = new;
@@ -151,7 +150,7 @@ public function SpreadsheetConnector::createSpreadsheet(string spreadsheetName) 
     }
 }
 
-public function SpreadsheetConnector::openSpreadsheetById(string spreadsheetId) returns Spreadsheet|SpreadsheetError {
+function SpreadsheetConnector::openSpreadsheetById(string spreadsheetId) returns Spreadsheet|SpreadsheetError {
     endpoint http:Client httpClient = self.httpClient;
     http:Request request = new;
     Spreadsheet spreadsheetResponse = new;
@@ -188,7 +187,7 @@ public function SpreadsheetConnector::openSpreadsheetById(string spreadsheetId) 
     }
 }
 
-public function SpreadsheetConnector::addNewSheet(string spreadsheetId, string sheetName)
+function SpreadsheetConnector::addNewSheet(string spreadsheetId, string sheetName)
                                           returns Sheet|SpreadsheetError {
     endpoint http:Client httpClient = self.httpClient;
     http:Request request = new;
@@ -233,7 +232,7 @@ public function SpreadsheetConnector::addNewSheet(string spreadsheetId, string s
     }
 }
 
-public function SpreadsheetConnector::deleteSheet(string spreadsheetId, int sheetId)
+function SpreadsheetConnector::deleteSheet(string spreadsheetId, int sheetId)
                                           returns boolean|SpreadsheetError {
     endpoint http:Client httpClient = self.httpClient;
     http:Request request = new;
@@ -272,7 +271,7 @@ public function SpreadsheetConnector::deleteSheet(string spreadsheetId, int shee
     }
 }
 
-public function SpreadsheetConnector::getSheetValues(string spreadsheetId, string sheetName, string topLeftCell,
+function SpreadsheetConnector::getSheetValues(string spreadsheetId, string sheetName, string topLeftCell,
                                                      string bottomRightCell) returns (string[][])|SpreadsheetError {
     endpoint http:Client httpClient = self.httpClient;
     http:Request request = new;
@@ -329,7 +328,7 @@ public function SpreadsheetConnector::getSheetValues(string spreadsheetId, strin
     }
 }
 
-public function SpreadsheetConnector::getColumnData(string spreadsheetId, string sheetName, string column)
+function SpreadsheetConnector::getColumnData(string spreadsheetId, string sheetName, string column)
                                           returns (string[])|SpreadsheetError {
     endpoint http:Client httpClient = self.httpClient;
     http:Request request = new;
@@ -378,7 +377,7 @@ public function SpreadsheetConnector::getColumnData(string spreadsheetId, string
     }
 }
 
-public function SpreadsheetConnector::getRowData(string spreadsheetId, string sheetName, int row)
+function SpreadsheetConnector::getRowData(string spreadsheetId, string sheetName, int row)
                                           returns (string[])|SpreadsheetError {
     endpoint http:Client httpClient = self.httpClient;
     http:Request request = new;
@@ -423,7 +422,7 @@ public function SpreadsheetConnector::getRowData(string spreadsheetId, string sh
     }
 }
 
-public function SpreadsheetConnector::getCellData(string spreadsheetId, string sheetName, string column, int row)
+function SpreadsheetConnector::getCellData(string spreadsheetId, string sheetName, string column, int row)
                                           returns (string)|SpreadsheetError {
     endpoint http:Client httpClient = self.httpClient;
     http:Request request = new;
@@ -464,7 +463,7 @@ public function SpreadsheetConnector::getCellData(string spreadsheetId, string s
     }
 }
 
-public function SpreadsheetConnector::setCellData(string spreadsheetId, string sheetName, string column, int row,
+function SpreadsheetConnector::setCellData(string spreadsheetId, string sheetName, string column, int row,
                                                   string value) returns (boolean)|SpreadsheetError {
     endpoint http:Client httpClient = self.httpClient;
     http:Request request = new;
@@ -504,7 +503,7 @@ public function SpreadsheetConnector::setCellData(string spreadsheetId, string s
     }
 }
 
-public function SpreadsheetConnector::setSheetValues(string spreadsheetId, string sheetName, string topLeftCell,
+function SpreadsheetConnector::setSheetValues(string spreadsheetId, string sheetName, string topLeftCell,
                                                      string bottomRightCell, string[][] values)
                                           returns (boolean)|SpreadsheetError {
     endpoint http:Client httpClient = self.httpClient;
