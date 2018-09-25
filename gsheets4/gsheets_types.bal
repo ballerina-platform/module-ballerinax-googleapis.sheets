@@ -18,7 +18,7 @@
 # + spreadsheetId - Id of the spreadsheet
 # + properties - Properties of a spreadsheet
 # + sheets - The sheets that are part of a spreadsheet
-# + spreadsheetUrl - The url of the spreadsheet
+# + spreadsheetUrl - The URL of the spreadsheet
 public type Spreadsheet object {
 
     public string spreadsheetId;

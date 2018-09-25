@@ -17,7 +17,7 @@
 import ballerina/mime;
 import ballerina/http;
 
-# Spreadsheet client connector.
+# Spreadsheet client Connector.
 # + httpClient - The HTTP Client
 public type SpreadsheetConnector object {
 

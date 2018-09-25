@@ -17,15 +17,15 @@
 import ballerina/http;
 
 # SpreadsheetConfiguration is used to set up the Google Spreadsheet configuration. In order to use
-# this connector, you need to provide the oauth2 credentials.
+# this Connector, you need to provide the oauth2 credentials.
 # + clientConfig - The HTTP client congiguration
 public type SpreadsheetConfiguration record {
     http:ClientEndpointConfig clientConfig = {};
 };
 
-# Google Spreadsheet Endpoint object..
+# Google Spreadsheet Endpoint object.
 # + spreadsheetConfig - Spreadsheet client endpoint configuration object
-# + spreadsheetConnector - Spreadsheet connector object
+# + spreadsheetConnector - Spreadsheet Connector object
 public type Client object {
 
     public SpreadsheetConfiguration spreadsheetConfig = {};
@@ -35,8 +35,8 @@ public type Client object {
     # + config - Spreadsheet client endpoint configuration object
     public function init(SpreadsheetConfiguration config);
 
-    # Get Spreadsheet connector client.
-    # + return - Spreadsheet connector client
+    # Get Spreadsheet Connector Client.
+    # + return - Spreadsheet Connector Client
     public function getCallerActions() returns SpreadsheetConnector;
 };
 
