@@ -17,97 +17,86 @@
 import ballerina/mime;
 import ballerina/http;
 
-documentation {Spreadsheet client connector
-    F{{httpClient}} - The HTTP Client
-}
+# Spreadsheet client Connector.
+# + httpClient - The HTTP Client
 public type SpreadsheetConnector object {
 
     public http:Client httpClient = new;
 
-    documentation {Create a new spreadsheet
-        P{{spreadsheetName}} - Name of the spreadsheet
-        R{{}} - Spreadsheet object on success and SpreadsheetError on failure
-    }
+    # Create a new spreadsheet.
+    # + spreadsheetName - Name of the spreadsheet
+    # + return - Spreadsheet object on success and SpreadsheetError on failure
     public function createSpreadsheet(string spreadsheetName) returns Spreadsheet|SpreadsheetError;
 
-    documentation {Get a spreadsheet by ID
-        P{{spreadsheetId}} - Id of the spreadsheet
-        R{{}} - Spreadsheet object on success and SpreadsheetError on failure
-    }
+    # Get a spreadsheet by ID.
+    # + spreadsheetId - Id of the spreadsheet
+    # + return - Spreadsheet object on success and SpreadsheetError on failure
     public function openSpreadsheetById(string spreadsheetId) returns Spreadsheet|SpreadsheetError;
 
-    documentation {Add a new worksheet
-        P{{spreadsheetId}} - Id of the spreadsheet
-        P{{sheetName}} - The name of the sheet. It is an optional parameter. If the title is empty, then sheet will be created with the default name.
-        R{{}} - Sheet object on success and SpreadsheetError on failure
-    }
+    # Add a new worksheet.
+    # + spreadsheetId - Id of the spreadsheet
+    # + sheetName - The name of the sheet. It is an optional parameter. If the title is empty, then sheet will be created with the default name.
+    # + return - Sheet object on success and SpreadsheetError on failure
     public function addNewSheet(string spreadsheetId, string sheetName)
                         returns Sheet|SpreadsheetError;
 
-    documentation {Delete specified worksheet
-        P{{spreadsheetId}} - Id of the spreadsheet
-        P{{sheetId}} - The ID of the sheet to delete
-        R{{}} - Sheet object on success and SpreadsheetError on failure
-    }
+    # Delete specified worksheet.
+    # + spreadsheetId - Id of the spreadsheet
+    # + sheetId - The ID of the sheet to delete
+    # + return - Sheet object on success and SpreadsheetError on failure
     public function deleteSheet(string spreadsheetId, int sheetId) returns boolean|SpreadsheetError;
 
-    documentation {Get spreadsheet values
-        P{{spreadsheetId}} - Id of the spreadsheet
-        P{{sheetName}} - Name of the sheet
-        P{{topLeftCell}} - Top left cell
-        P{{bottomRightCell}} - Bottom right cell
-        R{{}} - Sheet values as a two dimensional array on success and SpreadsheetError on failure
-    }
+    # Get spreadsheet values.
+    # + spreadsheetId - Id of the spreadsheet
+    # + sheetName - Name of the sheet
+    # + topLeftCell - Top left cell
+    # + bottomRightCell - Bottom right cell
+    # + return - Sheet values as a two dimensional array on success and SpreadsheetError on failure
     public function getSheetValues(string spreadsheetId, string sheetName, string topLeftCell, string bottomRightCell)
                         returns (string[][])|SpreadsheetError;
 
-    documentation {Get column data
-        P{{spreadsheetId}} - Id of the spreadsheet
-        P{{sheetName}} - Name of the sheet
-        P{{column}} - Column name to retrieve the data
-        R{{}} - Column data as an array on success and SpreadsheetError on failure
-    }
+    # Get column data.
+    # + spreadsheetId - Id of the spreadsheet
+    # + sheetName - Name of the sheet
+    # + column - Column name to retrieve the data
+    # + return - Column data as an array on success and SpreadsheetError on failure
     public function getColumnData(string spreadsheetId, string sheetName, string column)
                         returns (string[])|SpreadsheetError;
 
-    documentation {Get row data
-        P{{spreadsheetId}} - Id of the spreadsheet
-        P{{sheetName}} - Name of the sheet
-        P{{row}} - Row name to retrieve the data
-        R{{}} - Row data as an array on success and SpreadsheetError on failure
-    }
+    # Get row data.
+    # + spreadsheetId - Id of the spreadsheet
+    # + sheetName - Name of the sheet
+    # + row - Row name to retrieve the data
+    # + return - Row data as an array on success and SpreadsheetError on failure
     public function getRowData(string spreadsheetId, string sheetName, int row)
                         returns (string[])|SpreadsheetError;
 
-    documentation {Get cell data
-        P{{spreadsheetId}} - Id of the spreadsheet
-        P{{sheetName}} - Name of the sheet
-        P{{column}} - Column name to retrieve the data
-        P{{row}} - Row name to retrieve the data
-        R{{}} - Cell data on success and SpreadsheetError on failure
-    }
+    # Get cell data.
+    # + spreadsheetId - Id of the spreadsheet
+    # + sheetName - Name of the sheet
+    # + column - column
+    # + row - Row name to retrieve the data
+    # + return - Cell data on success and SpreadsheetError on failure
     public function getCellData(string spreadsheetId, string sheetName, string column, int row)
                         returns (string)|SpreadsheetError;
 
-    documentation {Set cell data
-        P{{spreadsheetId}} - Id of the spreadsheet
-        P{{sheetName}} - Name of the sheet
-        P{{column}} - Column name to set the data
-        P{{row}} - Row name to set the data
-        P{{value}} - The value to be updated
-        R{{}} - True on success and SpreadsheetError on failure
-    }
+    # Set cell data.
+    # + spreadsheetId - Id of the spreadsheet
+    # + sheetName - Name of the sheet
+    # + column - Column name to set the data
+    # + row - Row name to set the data
+    # + value - The value to be updated
+    # + return - True on success and SpreadsheetError on failure
     public function setCellData(string spreadsheetId, string sheetName, string column, int row, string value)
                         returns (boolean)|SpreadsheetError;
 
-    documentation {Set spreadsheet values
-        P{{spreadsheetId}} - Id of the spreadsheet
-        P{{sheetName}} - Name of the sheet
-        P{{topLeftCell}} - Top left cell
-        P{{bottomRightCell}} - Bottom right cell
-        P{{values}} - Values to be updated
-        R{{}} - True on success and SpreadsheetError on failure
-    }
+    # Set spreadsheet values.
+    # + spreadsheetId - Id of the spreadsheet
+    # + sheetName - Name of the sheet
+    # + topLeftCell - Top left cell
+    # + bottomRightCell - Bottom right cell
+    # + values - Values to be updated
+    # + return - True on success and SpreadsheetError on failure
     public function setSheetValues(string spreadsheetId, string sheetName, string topLeftCell, string bottomRightCell,
                                    string[][] values) returns (boolean)|SpreadsheetError;
 };
