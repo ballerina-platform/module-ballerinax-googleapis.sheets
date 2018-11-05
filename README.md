@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/wso2-ballerina/package-googlespreadsheet.svg?branch=master)](https://travis-ci.org/wso2-ballerina/package-googlespreadsheet)
+[![Build Status](https://travis-ci.org/wso2-ballerina/module-googlespreadsheet.svg?branch=master)](https://travis-ci.org/wso2-ballerina/module-googlespreadsheet)
 
 # Ballerina Google Spreadsheet Endpoint
 
@@ -14,14 +14,14 @@ The following sections provide you with information on how to use the Ballerina 
 
 | Ballerina Language Version  | Google Spreadsheet API Version |
 |:---------------------------:|:------------------------------:|
-|  0.982.0                    |   V4                           |
+|  0.983.0                    |   V4                           |
 
 ##### Prerequisites
 Download the ballerina [distribution](https://ballerinalang.org/downloads/).
 
 ##### Contribute To Develop
 Clone the repository by running the following command
-`git clone https://github.com/wso2-ballerina/package-googlespreadsheet.git`
+`git clone https://github.com/wso2-ballerina/module-googlespreadsheet.git`
 
 ## Working with GSheets Endpoint actions
 All the actions return valid response or SpreadsheetError. If the action is a success, then the requested resource will

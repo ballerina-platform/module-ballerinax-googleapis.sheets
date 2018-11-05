@@ -2,7 +2,7 @@
 
 | Ballerina Language Version  | Google Spreadsheet API Version |
 | ----------------------------| -------------------------------|
-|  0.982.0                    |   V4                           |
+|  0.983.0                    |   V4                           |
 
 ### Prerequisites
 
@@ -21,7 +21,7 @@ Visit [here](https://developers.google.com/identity/protocols/OAuth2WebServer) f
 
 ## Running Samples
 You can use the `tests.bal` file to test all the connector actions by following the below steps:
-1. Create ballerina.conf file in package-googlespreadsheet.
+1. Create ballerina.conf file in module-googlespreadsheet.
 2. Obtain the client Id, client secret, access token and refresh token as mentioned above and add those values in the ballerina.conf file.
     ```
     ACCESS_TOKEN="your_access_token"
@@ -29,7 +29,7 @@ You can use the `tests.bal` file to test all the connector actions by following 
     CLIENT_SECRET="your_client_secret"
     REFRESH_TOKEN="your_refresh_token"
     ```
-3. Navigate to the folder `package-googlespreadsheet`.
+3. Navigate to the folder `module-googlespreadsheet`.
 4. Run the following commands to execute the tests.
     ```
     ballerina init

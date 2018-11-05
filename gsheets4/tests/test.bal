@@ -26,6 +26,7 @@ string refreshToken = config:getAsString("REFRESH_TOKEN");
 endpoint Client spreadsheetClient {
     clientConfig: {
         auth: {
+            scheme: http:OAUTH2,
             accessToken: accessToken,
             refreshToken: refreshToken,
             clientId: clientId,
