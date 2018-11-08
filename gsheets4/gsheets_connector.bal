@@ -25,60 +25,60 @@ public type SpreadsheetConnector object {
 
     # Create a new spreadsheet.
     # + spreadsheetName - Name of the spreadsheet
-    # + return - Spreadsheet object on success and SpreadsheetError on failure
-    public function createSpreadsheet(string spreadsheetName) returns Spreadsheet|SpreadsheetError;
+    # + return - Spreadsheet object on success and error on failure
+    public function createSpreadsheet(string spreadsheetName) returns Spreadsheet|error;
 
     # Get a spreadsheet by ID.
     # + spreadsheetId - Id of the spreadsheet
-    # + return - Spreadsheet object on success and SpreadsheetError on failure
-    public function openSpreadsheetById(string spreadsheetId) returns Spreadsheet|SpreadsheetError;
+    # + return - Spreadsheet object on success and error on failure
+    public function openSpreadsheetById(string spreadsheetId) returns Spreadsheet|error;
 
     # Add a new worksheet.
     # + spreadsheetId - Id of the spreadsheet
     # + sheetName - The name of the sheet. It is an optional parameter. If the title is empty, then sheet will be created with the default name.
-    # + return - Sheet object on success and SpreadsheetError on failure
+    # + return - Sheet object on success and error on failure
     public function addNewSheet(string spreadsheetId, string sheetName)
-                        returns Sheet|SpreadsheetError;
+                        returns Sheet|error;
 
     # Delete specified worksheet.
     # + spreadsheetId - Id of the spreadsheet
     # + sheetId - The ID of the sheet to delete
-    # + return - Sheet object on success and SpreadsheetError on failure
-    public function deleteSheet(string spreadsheetId, int sheetId) returns boolean|SpreadsheetError;
+    # + return - Sheet object on success and error on failure
+    public function deleteSheet(string spreadsheetId, int sheetId) returns boolean|error;
 
     # Get spreadsheet values.
     # + spreadsheetId - Id of the spreadsheet
     # + sheetName - Name of the sheet
     # + topLeftCell - Top left cell
     # + bottomRightCell - Bottom right cell
-    # + return - Sheet values as a two dimensional array on success and SpreadsheetError on failure
+    # + return - Sheet values as a two dimensional array on success and error on failure
     public function getSheetValues(string spreadsheetId, string sheetName, string topLeftCell, string bottomRightCell)
-                        returns (string[][])|SpreadsheetError;
+                        returns (string[][])|error;
 
     # Get column data.
     # + spreadsheetId - Id of the spreadsheet
     # + sheetName - Name of the sheet
     # + column - Column name to retrieve the data
-    # + return - Column data as an array on success and SpreadsheetError on failure
+    # + return - Column data as an array on success and error on failure
     public function getColumnData(string spreadsheetId, string sheetName, string column)
-                        returns (string[])|SpreadsheetError;
+                        returns (string[])|error;
 
     # Get row data.
     # + spreadsheetId - Id of the spreadsheet
     # + sheetName - Name of the sheet
     # + row - Row name to retrieve the data
-    # + return - Row data as an array on success and SpreadsheetError on failure
+    # + return - Row data as an array on success and error on failure
     public function getRowData(string spreadsheetId, string sheetName, int row)
-                        returns (string[])|SpreadsheetError;
+                        returns (string[])|error;
 
     # Get cell data.
     # + spreadsheetId - Id of the spreadsheet
     # + sheetName - Name of the sheet
     # + column - column
     # + row - Row name to retrieve the data
-    # + return - Cell data on success and SpreadsheetError on failure
+    # + return - Cell data on success and error on failure
     public function getCellData(string spreadsheetId, string sheetName, string column, int row)
-                        returns (string)|SpreadsheetError;
+                        returns (string)|error;
 
     # Set cell data.
     # + spreadsheetId - Id of the spreadsheet
@@ -86,9 +86,9 @@ public type SpreadsheetConnector object {
     # + column - Column name to set the data
     # + row - Row name to set the data
     # + value - The value to be updated
-    # + return - True on success and SpreadsheetError on failure
+    # + return - True on success and error on failure
     public function setCellData(string spreadsheetId, string sheetName, string column, int row, string value)
-                        returns (boolean)|SpreadsheetError;
+                        returns (boolean)|error;
 
     # Set spreadsheet values.
     # + spreadsheetId - Id of the spreadsheet
@@ -96,42 +96,38 @@ public type SpreadsheetConnector object {
     # + topLeftCell - Top left cell
     # + bottomRightCell - Bottom right cell
     # + values - Values to be updated
-    # + return - True on success and SpreadsheetError on failure
+    # + return - True on success and error on failure
     public function setSheetValues(string spreadsheetId, string sheetName, string topLeftCell, string bottomRightCell,
-                                   string[][] values) returns (boolean)|SpreadsheetError;
+                                   string[][] values) returns (boolean)|error;
 };
 
-function SpreadsheetConnector::createSpreadsheet(string spreadsheetName) returns Spreadsheet|SpreadsheetError {
+function SpreadsheetConnector::createSpreadsheet(string spreadsheetName) returns Spreadsheet|error {
     endpoint http:Client httpClient = self.httpClient;
     http:Request request = new;
     Spreadsheet spreadsheetResponse = new;
-    SpreadsheetError spreadsheetError = {};
     json spreadsheetJSONPayload = { "properties": { "title": spreadsheetName } };
     request.setJsonPayload(spreadsheetJSONPayload);
     var httpResponse = httpClient->post(SPREADSHEET_PATH, request);
     match httpResponse {
         error err => {
-            spreadsheetError.message = err.message;
-            spreadsheetError.cause = err.cause;
-            return spreadsheetError;
+            return err;
         }
         http:Response response => {
             int statusCode = response.statusCode;
             var spreadsheetJSONResponse = response.getJsonPayload();
             match spreadsheetJSONResponse {
                 error err => {
-                    spreadsheetError.message = "Error occured while extracting Json Payload";
-                    spreadsheetError.cause = err.cause;
-                    return spreadsheetError;
+                    return err;
                 }
                 json jsonResponse => {
                     if (statusCode == http:OK_200) {
                         spreadsheetResponse = convertToSpreadsheet(jsonResponse);
                         return spreadsheetResponse;
                     } else {
-                        spreadsheetError.message = jsonResponse.error.message.toString();
-                        spreadsheetError.statusCode = statusCode;
-                        return spreadsheetError;
+                        error err = {};
+                        err.message = jsonResponse.error.message.toString();
+                        err.statusCode = statusCode;
+                        return err;
                     }
                 }
             }
@@ -139,36 +135,32 @@ function SpreadsheetConnector::createSpreadsheet(string spreadsheetName) returns
     }
 }
 
-function SpreadsheetConnector::openSpreadsheetById(string spreadsheetId) returns Spreadsheet|SpreadsheetError {
+function SpreadsheetConnector::openSpreadsheetById(string spreadsheetId) returns Spreadsheet|error {
     endpoint http:Client httpClient = self.httpClient;
     http:Request request = new;
     Spreadsheet spreadsheetResponse = new;
-    SpreadsheetError spreadsheetError = {};
     string getSpreadsheetPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId;
     var httpResponse = httpClient->get(getSpreadsheetPath);
     match httpResponse {
         error err => {
-            spreadsheetError.message = err.message;
-            spreadsheetError.cause = err.cause;
-            return spreadsheetError;
+            return err;
         }
         http:Response response => {
             int statusCode = response.statusCode;
             var spreadsheetJSONResponse = response.getJsonPayload();
             match spreadsheetJSONResponse {
                 error err => {
-                    spreadsheetError.message = "Error occured while extracting Json Payload";
-                    spreadsheetError.cause = err.cause;
-                    return spreadsheetError;
+                    return err;
                 }
                 json jsonResponse => {
                     if (statusCode == http:OK_200) {
                         spreadsheetResponse = convertToSpreadsheet(jsonResponse);
                         return spreadsheetResponse;
                     } else {
-                        spreadsheetError.message = jsonResponse.error.message.toString();
-                        spreadsheetError.statusCode = statusCode;
-                        return spreadsheetError;
+                        error err = {};
+                        err.message = jsonResponse.error.message.toString();
+                        err.statusCode = statusCode;
+                        return err;
                     }
                 }
             }
@@ -177,11 +169,10 @@ function SpreadsheetConnector::openSpreadsheetById(string spreadsheetId) returns
 }
 
 function SpreadsheetConnector::addNewSheet(string spreadsheetId, string sheetName)
-                                          returns Sheet|SpreadsheetError {
+                                          returns Sheet|error {
     endpoint http:Client httpClient = self.httpClient;
     http:Request request = new;
     Sheet newSheet = {};
-    SpreadsheetError spreadsheetError = {};
     json sheetJSONPayload = { "requests": [{ "addSheet": { "properties": {} } }] };
     json jsonSheetProperties = {};
     if (sheetName != EMPTY_STRING) {
@@ -193,27 +184,24 @@ function SpreadsheetConnector::addNewSheet(string spreadsheetId, string sheetNam
     var httpResponse = httpClient->post(addSheetPath, request);
     match httpResponse {
         error err => {
-            spreadsheetError.message = err.message;
-            spreadsheetError.cause = err.cause;
-            return spreadsheetError;
+            return err;
         }
         http:Response response => {
             int statusCode = response.statusCode;
             var sheetJSONResponse = response.getJsonPayload();
             match sheetJSONResponse {
                 error err => {
-                    spreadsheetError.message = "Error occured while extracting Json Payload";
-                    spreadsheetError.cause = err.cause;
-                    return spreadsheetError;
+                    return err;
                 }
                 json jsonResponse => {
                     if (statusCode == http:OK_200) {
                         newSheet = convertToSheet(jsonResponse.replies[0].addSheet);
                         return newSheet;
                     } else {
-                        spreadsheetError.message = jsonResponse.error.message.toString();
-                        spreadsheetError.statusCode = statusCode;
-                        return spreadsheetError;
+                        error err = {};
+                        err.message = jsonResponse.error.message.toString();
+                        err.statusCode = statusCode;
+                        return err;
                     }
                 }
             }
@@ -222,37 +210,33 @@ function SpreadsheetConnector::addNewSheet(string spreadsheetId, string sheetNam
 }
 
 function SpreadsheetConnector::deleteSheet(string spreadsheetId, int sheetId)
-                                          returns boolean|SpreadsheetError {
+                                          returns boolean|error {
     endpoint http:Client httpClient = self.httpClient;
     http:Request request = new;
     Sheet newSheet = {};
-    SpreadsheetError spreadsheetError = {};
     json sheetJSONPayload = { "requests": [{ "deleteSheet": { "sheetId": sheetId } }] };
     request.setJsonPayload(sheetJSONPayload);
     string addSheetPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + BATCH_UPDATE_REQUEST;
     var httpResponse = httpClient->post(addSheetPath, request);
     match httpResponse {
         error err => {
-            spreadsheetError.message = err.message;
-            spreadsheetError.cause = err.cause;
-            return spreadsheetError;
+            return err;
         }
         http:Response response => {
             int statusCode = response.statusCode;
             var sheetJSONResponse = response.getJsonPayload();
             match sheetJSONResponse {
                 error err => {
-                    spreadsheetError.message = "Error occured while extracting Json Payload";
-                    spreadsheetError.cause = err.cause;
-                    return spreadsheetError;
+                    return err;
                 }
                 json jsonResponse => {
                     if (statusCode == http:OK_200) {
                         return true;
                     } else {
-                        spreadsheetError.message = jsonResponse.error.message.toString();
-                        spreadsheetError.statusCode = statusCode;
-                        return spreadsheetError;
+                        error err = {};
+                        err.message = jsonResponse.error.message.toString();
+                        err.statusCode = statusCode;
+                        return err;
                     }
                 }
             }
@@ -261,11 +245,10 @@ function SpreadsheetConnector::deleteSheet(string spreadsheetId, int sheetId)
 }
 
 function SpreadsheetConnector::getSheetValues(string spreadsheetId, string sheetName, string topLeftCell,
-                                                     string bottomRightCell) returns (string[][])|SpreadsheetError {
+                                                     string bottomRightCell) returns (string[][])|error {
     endpoint http:Client httpClient = self.httpClient;
     http:Request request = new;
     string[][] values = [];
-    SpreadsheetError spreadsheetError = {};
     string a1Notation = sheetName;
     if (topLeftCell != EMPTY_STRING && topLeftCell != null) {
         a1Notation = a1Notation + "!" + topLeftCell;
@@ -277,18 +260,14 @@ function SpreadsheetConnector::getSheetValues(string spreadsheetId, string sheet
     var httpResponse = httpClient->get(getSheetValuesPath);
     match httpResponse {
         error err => {
-            spreadsheetError.message = err.message;
-            spreadsheetError.cause = err.cause;
-            return spreadsheetError;
+            return err;
         }
         http:Response response => {
             int statusCode = response.statusCode;
             var spreadsheetJSONResponse = response.getJsonPayload();
             match spreadsheetJSONResponse {
                 error err => {
-                    spreadsheetError.message = "Error occured while extracting Json Payload";
-                    spreadsheetError.cause = err.cause;
-                    return spreadsheetError;
+                    return err;
                 }
                 json jsonResponse => {
                     if (statusCode == http:OK_200) {
@@ -307,9 +286,10 @@ function SpreadsheetConnector::getSheetValues(string spreadsheetId, string sheet
                         }
                         return values;
                     } else {
-                        spreadsheetError.message = jsonResponse.error.message.toString();
-                        spreadsheetError.statusCode = statusCode;
-                        return spreadsheetError;
+                        error err = {};
+                        err.message = jsonResponse.error.message.toString();
+                        err.statusCode = statusCode;
+                        return err;
                     }
                 }
             }
@@ -318,28 +298,23 @@ function SpreadsheetConnector::getSheetValues(string spreadsheetId, string sheet
 }
 
 function SpreadsheetConnector::getColumnData(string spreadsheetId, string sheetName, string column)
-                                          returns (string[])|SpreadsheetError {
+                                          returns (string[])|error {
     endpoint http:Client httpClient = self.httpClient;
     http:Request request = new;
     string[] values = [];
-    SpreadsheetError spreadsheetError = {};
     string a1Notation = sheetName + "!" + column + ":" + column;
     string getColumnDataPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + a1Notation;
     var httpResponse = httpClient->get(getColumnDataPath);
     match httpResponse {
         error err => {
-            spreadsheetError.message = err.message;
-            spreadsheetError.cause = err.cause;
-            return spreadsheetError;
+            return err;
         }
         http:Response response => {
             int statusCode = response.statusCode;
             var spreadsheetJSONResponse = response.getJsonPayload();
             match spreadsheetJSONResponse {
                 error err => {
-                    spreadsheetError.message = "Error occured while extracting Json Payload";
-                    spreadsheetError.cause = err.cause;
-                    return spreadsheetError;
+                    return err;
                 }
                 json jsonResponse => {
                     if (statusCode == http:OK_200) {
@@ -356,9 +331,10 @@ function SpreadsheetConnector::getColumnData(string spreadsheetId, string sheetN
                         }
                         return values;
                     } else {
-                        spreadsheetError.message = jsonResponse.error.message.toString();
-                        spreadsheetError.statusCode = statusCode;
-                        return spreadsheetError;
+                        error err = {};
+                        err.message = jsonResponse.error.message.toString();
+                        err.statusCode = statusCode;
+                        return err;
                     }
                 }
             }
@@ -367,28 +343,23 @@ function SpreadsheetConnector::getColumnData(string spreadsheetId, string sheetN
 }
 
 function SpreadsheetConnector::getRowData(string spreadsheetId, string sheetName, int row)
-                                          returns (string[])|SpreadsheetError {
+                                          returns (string[])|error {
     endpoint http:Client httpClient = self.httpClient;
     http:Request request = new;
     string[] values = [];
-    SpreadsheetError spreadsheetError = {};
     string a1Notation = sheetName + "!" + row + ":" + row;
     string getRowDataPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + a1Notation;
     var httpResponse = httpClient->get(getRowDataPath);
     match httpResponse {
         error err => {
-            spreadsheetError.message = err.message;
-            spreadsheetError.cause = err.cause;
-            return spreadsheetError;
+            return err;
         }
         http:Response response => {
             int statusCode = response.statusCode;
             var spreadsheetJSONResponse = response.getJsonPayload();
             match spreadsheetJSONResponse {
                 error err => {
-                    spreadsheetError.message = "Error occured while extracting Json Payload";
-                    spreadsheetError.cause = err.cause;
-                    return spreadsheetError;
+                    return err;
                 }
                 json jsonResponse => {
                     if (statusCode == http:OK_200) {
@@ -401,9 +372,10 @@ function SpreadsheetConnector::getRowData(string spreadsheetId, string sheetName
                         }
                         return values;
                     } else {
-                        spreadsheetError.message = jsonResponse.error.message.toString();
-                        spreadsheetError.statusCode = statusCode;
-                        return spreadsheetError;
+                        error err = {};
+                        err.message = jsonResponse.error.message.toString();
+                        err.statusCode = statusCode;
+                        return err;
                     }
                 }
             }
@@ -412,28 +384,23 @@ function SpreadsheetConnector::getRowData(string spreadsheetId, string sheetName
 }
 
 function SpreadsheetConnector::getCellData(string spreadsheetId, string sheetName, string column, int row)
-                                          returns (string)|SpreadsheetError {
+                                          returns (string)|error {
     endpoint http:Client httpClient = self.httpClient;
     http:Request request = new;
     string value = EMPTY_STRING;
-    SpreadsheetError spreadsheetError = {};
     string a1Notation = sheetName + "!" + column + row;
     string getCellDataPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + a1Notation;
     var httpResponse = httpClient->get(getCellDataPath);
     match httpResponse {
         error err => {
-            spreadsheetError.message = err.message;
-            spreadsheetError.cause = err.cause;
-            return spreadsheetError;
+            return err;
         }
         http:Response response => {
             int statusCode = response.statusCode;
             var spreadsheetJSONResponse = response.getJsonPayload();
             match spreadsheetJSONResponse {
                 error err => {
-                    spreadsheetError.message = "Error occured while extracting Json Payload";
-                    spreadsheetError.cause = err.cause;
-                    return spreadsheetError;
+                    return err;
                 }
                 json jsonResponse => {
                     if (statusCode == http:OK_200) {
@@ -442,9 +409,10 @@ function SpreadsheetConnector::getCellData(string spreadsheetId, string sheetNam
                         }
                         return value;
                     } else {
-                        spreadsheetError.message = jsonResponse.error.message.toString();
-                        spreadsheetError.statusCode = statusCode;
-                        return spreadsheetError;
+                        error err = {};
+                        err.message = jsonResponse.error.message.toString();
+                        err.statusCode = statusCode;
+                        return err;
                     }
                 }
             }
@@ -453,10 +421,9 @@ function SpreadsheetConnector::getCellData(string spreadsheetId, string sheetNam
 }
 
 function SpreadsheetConnector::setCellData(string spreadsheetId, string sheetName, string column, int row,
-                                                  string value) returns (boolean)|SpreadsheetError {
+                                                  string value) returns (boolean)|error {
     endpoint http:Client httpClient = self.httpClient;
     http:Request request = new;
-    SpreadsheetError spreadsheetError = {};
     json jsonPayload = { "values": [[value]] };
     string a1Notation = sheetName + "!" + column + row;
     string setCellDataPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + a1Notation
@@ -465,26 +432,23 @@ function SpreadsheetConnector::setCellData(string spreadsheetId, string sheetNam
     var httpResponse = httpClient->put(setCellDataPath, request);
     match httpResponse {
         error err => {
-            spreadsheetError.message = err.message;
-            spreadsheetError.cause = err.cause;
-            return spreadsheetError;
+            return err;
         }
         http:Response response => {
             int statusCode = response.statusCode;
             var spreadsheetJSONResponse = response.getJsonPayload();
             match spreadsheetJSONResponse {
                 error err => {
-                    spreadsheetError.message = "Error occured while extracting Json Payload";
-                    spreadsheetError.cause = err.cause;
-                    return spreadsheetError;
+                    return err;
                 }
                 json jsonResponse => {
                     if (statusCode == http:OK_200) {
                         return true;
                     } else {
-                        spreadsheetError.message = jsonResponse.error.message.toString();
-                        spreadsheetError.statusCode = statusCode;
-                        return spreadsheetError;
+                        error err = {};
+                        err.message = jsonResponse.error.message.toString();
+                        err.statusCode = statusCode;
+                        return err;
                     }
                 }
             }
@@ -494,10 +458,9 @@ function SpreadsheetConnector::setCellData(string spreadsheetId, string sheetNam
 
 function SpreadsheetConnector::setSheetValues(string spreadsheetId, string sheetName, string topLeftCell,
                                                      string bottomRightCell, string[][] values)
-                                          returns (boolean)|SpreadsheetError {
+                                          returns (boolean)|error {
     endpoint http:Client httpClient = self.httpClient;
     http:Request request = new;
-    SpreadsheetError spreadsheetError = {};
     string a1Notation = sheetName;
     if (topLeftCell != EMPTY_STRING && topLeftCell != null) {
         a1Notation = a1Notation + "!" + topLeftCell;
@@ -524,26 +487,23 @@ function SpreadsheetConnector::setSheetValues(string spreadsheetId, string sheet
     var httpResponse = httpClient->put(setValuePath, request);
     match httpResponse {
         error err => {
-            spreadsheetError.message = err.message;
-            spreadsheetError.cause = err.cause;
-            return spreadsheetError;
+            return err;
         }
         http:Response response => {
             int statusCode = response.statusCode;
             var spreadsheetJSONResponse = response.getJsonPayload();
             match spreadsheetJSONResponse {
                 error err => {
-                    spreadsheetError.message = "Error occured while extracting Json Payload";
-                    spreadsheetError.cause = err.cause;
-                    return spreadsheetError;
+                    return err;
                 }
                 json jsonResponse => {
                     if (statusCode == http:OK_200) {
                         return true;
                     } else {
-                        spreadsheetError.message = jsonResponse.error.message.toString();
-                        spreadsheetError.statusCode = statusCode;
-                        return spreadsheetError;
+                        error err = {};
+                        err.message = jsonResponse.error.message.toString();
+                        err.statusCode = statusCode;
+                        return err;
                     }
                 }
             }

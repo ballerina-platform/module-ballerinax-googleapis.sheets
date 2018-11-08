@@ -47,7 +47,7 @@ function testCreateSpreadsheet() {
     var spreadsheetRes = spreadsheetClient->createSpreadsheet(testSpreadsheetName);
     match spreadsheetRes {
         Spreadsheet s => testSpreadsheet = s;
-        SpreadsheetError e => test:assertFail(msg = e.message);
+        error e => test:assertFail(msg = e.message);
     }
     test:assertNotEquals(testSpreadsheet.spreadsheetId, null, msg = "Failed to create spreadsheet");
 }
@@ -60,7 +60,7 @@ function testAddNewSheet() {
     var spreadsheetRes = spreadsheetClient->addNewSheet(testSpreadsheet.spreadsheetId, testSheetName);
     match spreadsheetRes {
         Sheet s => testSheet = s;
-        SpreadsheetError e => io:println(e.message);
+        error e => io:println(e.message);
     }
     testSheetId = testSheet.properties.sheetId;
     test:assertNotEquals(testSheet.properties.sheetId, null, msg = "Failed to add sheet");
@@ -74,7 +74,7 @@ function testOpenSpreadsheetById() {
     var spreadsheetRes = spreadsheetClient->openSpreadsheetById(testSpreadsheet.spreadsheetId);
     match spreadsheetRes {
         Spreadsheet s => testSpreadsheet = s;
-        SpreadsheetError e => test:assertFail(msg = e.message);
+        error e => test:assertFail(msg = e.message);
     }
     test:assertNotEquals(testSpreadsheet.spreadsheetId, null, msg = "Failed to open the spreadsheet");
 
@@ -89,7 +89,7 @@ function testGetSpreadsheetName() {
     var res = testSpreadsheet.getSpreadsheetName();
     match res {
         string s => name = s;
-        SpreadsheetError e => test:assertFail(msg = e.message);
+        error e => test:assertFail(msg = e.message);
     }
     test:assertEquals(name, testSpreadsheetName, msg = "getSpreadsheetName() method failed");
 }
@@ -103,7 +103,7 @@ function testGetSpreadsheetId() {
     var res = testSpreadsheet.getSpreadsheetId();
     match res {
         string s => spreadsheetId = s;
-        SpreadsheetError e => test:assertFail(msg = e.message);
+        error e => test:assertFail(msg = e.message);
     }
     test:assertEquals(spreadsheetId, testSpreadsheet.spreadsheetId,
         msg = "getSpreadsheetId() method failed");
@@ -118,7 +118,7 @@ function testGetSheets() {
     var sheetRes = testSpreadsheet.getSheets();
     match sheetRes {
         Sheet[] s => sheets = s;
-        SpreadsheetError e => test:assertFail(msg = e.message);
+        error e => test:assertFail(msg = e.message);
     }
     test:assertEquals(lengthof sheets, 2, msg = "getSheets() method failed");
 }
@@ -132,7 +132,7 @@ function testGetSheetByName() {
     var sheetRes = testSpreadsheet.getSheetByName(testSheetName);
     match sheetRes {
         Sheet s => sheet = s;
-        SpreadsheetError e => test:assertFail(msg = e.message);
+        error e => test:assertFail(msg = e.message);
     }
     test:assertEquals(sheet.properties.title, testSheetName, msg = "getSheetByName() method failed");
 }
@@ -148,7 +148,7 @@ function testSetSheetValues() {
         values);
     match spreadsheetRes {
         boolean isUpdated => test:assertTrue(isUpdated, msg = "Failed to update the values!");
-        SpreadsheetError e => test:assertFail(msg = e.message);
+        error e => test:assertFail(msg = e.message);
     }
 }
 
@@ -162,7 +162,7 @@ function testGetSheetValues() {
     var spreadsheetRes = spreadsheetClient->getSheetValues(testSpreadsheet.spreadsheetId, testSheetName, "A1", "C5");
     match spreadsheetRes {
         string[][] vals => test:assertEquals(vals, values, msg = "Failed to get the values!");
-        SpreadsheetError e => test:assertFail(msg = e.message);
+        error e => test:assertFail(msg = e.message);
     }
 }
 
@@ -175,7 +175,7 @@ function testGetColumnData() {
     var spreadsheetRes = spreadsheetClient->getColumnData(testSpreadsheet.spreadsheetId, testSheetName, "A");
     match spreadsheetRes {
         string[] vals => test:assertEquals(vals, values, msg = "Failed to get the values!");
-        SpreadsheetError e => test:assertFail(msg = e.message);
+        error e => test:assertFail(msg = e.message);
     }
 }
 
@@ -188,7 +188,7 @@ function testGetRowData() {
     var spreadsheetRes = spreadsheetClient->getRowData(testSpreadsheet.spreadsheetId, testSheetName, 1);
     match spreadsheetRes {
         string[] vals => test:assertEquals(vals, values, msg = "Failed to get the values!");
-        SpreadsheetError e => test:assertFail(msg = e.message);
+        error e => test:assertFail(msg = e.message);
     }
 }
 
@@ -201,7 +201,7 @@ function testSetCellData() {
     var spreadsheetRes = spreadsheetClient->setCellData(testSpreadsheet.spreadsheetId, testSheetName, "B", 5, "90");
     match spreadsheetRes {
         boolean isUpdated => test:assertTrue(isUpdated, msg = "Failed to update the value!");
-        SpreadsheetError e => test:assertFail(msg = e.message);
+        error e => test:assertFail(msg = e.message);
     }
 }
 
@@ -214,7 +214,7 @@ function testGetCellData() {
     var spreadsheetRes = spreadsheetClient->getCellData(testSpreadsheet.spreadsheetId, testSheetName, "B", 5);
     match spreadsheetRes {
         string val => test:assertEquals(val, value, msg = "Failed to get the value!");
-        SpreadsheetError e => test:assertFail(msg = e.message);
+        error e => test:assertFail(msg = e.message);
     }
 }
 
@@ -227,6 +227,6 @@ function testDeleteSheet() {
     var spreadsheetRes = spreadsheetClient->deleteSheet(testSpreadsheet.spreadsheetId, testSheetId);
     match spreadsheetRes {
         boolean val => test:assertTrue(val, msg = "Failed to delete the sheet!");
-        SpreadsheetError e => test:assertFail(msg = e.message);
+        error e => test:assertFail(msg = e.message);
     }
 }

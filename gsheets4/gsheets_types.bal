@@ -27,21 +27,21 @@ public type Spreadsheet object {
     public string spreadsheetUrl;
 
     # Get the name of the spreadsheet.
-    # + return - Name of the spreadsheet object on success and SpreadsheetError on failure
-    public function getSpreadsheetName() returns (string)|SpreadsheetError;
+    # + return - Name of the spreadsheet object on success and error on failure
+    public function getSpreadsheetName() returns (string)|error;
 
     # Get the Id of the spreadsheet.
-    # + return - Id of the spreadsheet object on success and SpreadsheetError on failure
-    public function getSpreadsheetId() returns (string)|SpreadsheetError;
+    # + return - Id of the spreadsheet object on success and error on failure
+    public function getSpreadsheetId() returns (string)|error;
 
     # Get sheets of the spreadsheet.
-    # + return - Sheet array on success and SpreadsheetError on failure
-    public function getSheets() returns Sheet[]|SpreadsheetError;
+    # + return - Sheet array on success and error on failure
+    public function getSheets() returns Sheet[]|error;
 
     # Get sheets of the spreadsheet.
     # + sheetName - Name of the sheet to retrieve
-    # + return - Sheet object on success and SpreadsheetError on failure
-    public function getSheetByName(string sheetName) returns Sheet|SpreadsheetError;
+    # + return - Sheet object on success and error on failure
+    public function getSheetByName(string sheetName) returns Sheet|error;
 };
 
 # Spreadsheet properties.
@@ -94,54 +94,44 @@ public type GridProperties record {
     boolean hideGridlines;
 };
 
-# Spreadsheet error.
-# + message - Error message
-# + cause - The error which caused the Spreadsheet error
-# + statusCode - The status code
-public type SpreadsheetError record {
-    string message;
-    error? cause;
-    int statusCode;
-};
-
 //Functions binded to Spreadsheet struct
-function Spreadsheet::getSpreadsheetName() returns (string)|SpreadsheetError {
-    SpreadsheetError spreadsheetError = {};
+function Spreadsheet::getSpreadsheetName() returns (string)|error {
     string title = "";
     if (self.properties == null) {
-        spreadsheetError.message = "Spreadsheet properties cannot be null";
-        return spreadsheetError;
+        error err = {};
+        err.message = "Spreadsheet properties cannot be null";
+        return err;
     } else {
         return self.properties.title;
     }
 }
 
-function Spreadsheet::getSpreadsheetId() returns (string)|SpreadsheetError {
-    SpreadsheetError spreadsheetError = {};
+function Spreadsheet::getSpreadsheetId() returns (string)|error {
     string spreadsheetId = "";
     if (self.spreadsheetId == null) {
-        spreadsheetError.message = "Unable to find the spreadsheet id";
-        return spreadsheetError;
+        error err = {};
+        err.message = "Unable to find the spreadsheet id";
+        return err;
     }
     return self.spreadsheetId;
 }
 
-function Spreadsheet::getSheets() returns Sheet[]|SpreadsheetError {
-    SpreadsheetError spreadsheetError = {};
+function Spreadsheet::getSheets() returns Sheet[]|error {
     if (self.sheets == null) {
-        spreadsheetError.message = "No sheets found";
-        return spreadsheetError;
+        error err = {};
+        err.message = "No sheets found";
+        return err;
     }
     return self.sheets;
 }
 
-function Spreadsheet::getSheetByName(string sheetName) returns Sheet|SpreadsheetError {
+function Spreadsheet::getSheetByName(string sheetName) returns Sheet|error {
     Sheet[] sheets = self.sheets;
     Sheet sheetResponse = {};
-    SpreadsheetError spreadsheetError = {};
     if (sheets == null) {
-        spreadsheetError.message = "No sheet found";
-        return spreadsheetError;
+        error err = {};
+        err.message = "No sheet found";
+        return err;
     } else {
         foreach sheet in sheets {
             if (sheet.properties != null) {
