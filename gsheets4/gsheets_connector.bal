@@ -53,7 +53,7 @@ public type SpreadsheetConnector object {
     # + bottomRightCell - Bottom right cell
     # + return - Sheet values as a two dimensional array on success and error on failure
     public function getSheetValues(string spreadsheetId, string sheetName, string topLeftCell, string bottomRightCell)
-                        returns (string[][])|error;
+                        returns string[][]|error;
 
     # Get column data.
     # + spreadsheetId - Id of the spreadsheet
@@ -61,7 +61,7 @@ public type SpreadsheetConnector object {
     # + column - Column name to retrieve the data
     # + return - Column data as an array on success and error on failure
     public function getColumnData(string spreadsheetId, string sheetName, string column)
-                        returns (string[])|error;
+                        returns string[]|error;
 
     # Get row data.
     # + spreadsheetId - Id of the spreadsheet
@@ -69,7 +69,7 @@ public type SpreadsheetConnector object {
     # + row - Row name to retrieve the data
     # + return - Row data as an array on success and error on failure
     public function getRowData(string spreadsheetId, string sheetName, int row)
-                        returns (string[])|error;
+                        returns string[]|error;
 
     # Get cell data.
     # + spreadsheetId - Id of the spreadsheet
@@ -78,7 +78,7 @@ public type SpreadsheetConnector object {
     # + row - Row name to retrieve the data
     # + return - Cell data on success and error on failure
     public function getCellData(string spreadsheetId, string sheetName, string column, int row)
-                        returns (string)|error;
+                        returns string|error;
 
     # Set cell data.
     # + spreadsheetId - Id of the spreadsheet
@@ -88,7 +88,7 @@ public type SpreadsheetConnector object {
     # + value - The value to be updated
     # + return - True on success and error on failure
     public function setCellData(string spreadsheetId, string sheetName, string column, int row, string value)
-                        returns (boolean)|error;
+                        returns boolean|error;
 
     # Set spreadsheet values.
     # + spreadsheetId - Id of the spreadsheet
@@ -98,7 +98,7 @@ public type SpreadsheetConnector object {
     # + values - Values to be updated
     # + return - True on success and error on failure
     public function setSheetValues(string spreadsheetId, string sheetName, string topLeftCell, string bottomRightCell,
-                                   string[][] values) returns (boolean)|error;
+                                   string[][] values) returns boolean|error;
 };
 
 function SpreadsheetConnector::createSpreadsheet(string spreadsheetName) returns Spreadsheet|error {
@@ -233,7 +233,7 @@ function SpreadsheetConnector::deleteSheet(string spreadsheetId, int sheetId)
 }
 
 function SpreadsheetConnector::getSheetValues(string spreadsheetId, string sheetName, string topLeftCell,
-                                                     string bottomRightCell) returns (string[][])|error {
+                                                     string bottomRightCell) returns string[][]|error {
     endpoint http:Client httpClient = self.httpClient;
     http:Request request = new;
     string[][] values = [];
@@ -283,7 +283,7 @@ function SpreadsheetConnector::getSheetValues(string spreadsheetId, string sheet
 }
 
 function SpreadsheetConnector::getColumnData(string spreadsheetId, string sheetName, string column)
-                                          returns (string[])|error {
+                                          returns string[]|error {
     endpoint http:Client httpClient = self.httpClient;
     http:Request request = new;
     string[] values = [];
@@ -325,7 +325,7 @@ function SpreadsheetConnector::getColumnData(string spreadsheetId, string sheetN
 }
 
 function SpreadsheetConnector::getRowData(string spreadsheetId, string sheetName, int row)
-                                          returns (string[])|error {
+                                          returns string[]|error {
     endpoint http:Client httpClient = self.httpClient;
     http:Request request = new;
     string[] values = [];
@@ -363,7 +363,7 @@ function SpreadsheetConnector::getRowData(string spreadsheetId, string sheetName
 }
 
 function SpreadsheetConnector::getCellData(string spreadsheetId, string sheetName, string column, int row)
-                                          returns (string)|error {
+                                          returns string|error {
     endpoint http:Client httpClient = self.httpClient;
     http:Request request = new;
     string value = EMPTY_STRING;
@@ -397,7 +397,7 @@ function SpreadsheetConnector::getCellData(string spreadsheetId, string sheetNam
 }
 
 function SpreadsheetConnector::setCellData(string spreadsheetId, string sheetName, string column, int row,
-                                                  string value) returns (boolean)|error {
+                                                  string value) returns boolean|error {
     endpoint http:Client httpClient = self.httpClient;
     http:Request request = new;
     json jsonPayload = { "values": [[value]] };
@@ -431,7 +431,7 @@ function SpreadsheetConnector::setCellData(string spreadsheetId, string sheetNam
 
 function SpreadsheetConnector::setSheetValues(string spreadsheetId, string sheetName, string topLeftCell,
                                                      string bottomRightCell, string[][] values)
-                                          returns (boolean)|error {
+                                          returns boolean|error {
     endpoint http:Client httpClient = self.httpClient;
     http:Request request = new;
     string a1Notation = sheetName;

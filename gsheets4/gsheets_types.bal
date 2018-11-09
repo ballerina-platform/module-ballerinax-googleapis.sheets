@@ -95,18 +95,18 @@ public type GridProperties record {
 };
 
 //Functions binded to Spreadsheet struct
-function Spreadsheet::getSpreadsheetName() returns (string)|error {
+function Spreadsheet::getSpreadsheetName() returns string|error {
     string title = "";
     if (self.properties == null) {
         error err = {};
-        err.message = "Spreadsheet properties cannot be null";
+        err.message = "Unable to find the spreadsheet properties";
         return err;
     } else {
         return self.properties.title;
     }
 }
 
-function Spreadsheet::getSpreadsheetId() returns (string)|error {
+function Spreadsheet::getSpreadsheetId() returns string|error {
     string spreadsheetId = "";
     if (self.spreadsheetId == null) {
         error err = {};
