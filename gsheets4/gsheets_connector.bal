@@ -124,10 +124,7 @@ function SpreadsheetConnector::createSpreadsheet(string spreadsheetName) returns
                         spreadsheetResponse = convertToSpreadsheet(jsonResponse);
                         return spreadsheetResponse;
                     } else {
-                        error err = {};
-                        err.message = jsonResponse.error.message.toString();
-                        err.statusCode = statusCode;
-                        return err;
+                       return setResponseError(jsonResponse);
                     }
                 }
             }
@@ -157,10 +154,7 @@ function SpreadsheetConnector::openSpreadsheetById(string spreadsheetId) returns
                         spreadsheetResponse = convertToSpreadsheet(jsonResponse);
                         return spreadsheetResponse;
                     } else {
-                        error err = {};
-                        err.message = jsonResponse.error.message.toString();
-                        err.statusCode = statusCode;
-                        return err;
+                        return setResponseError(jsonResponse);
                     }
                 }
             }
@@ -198,10 +192,7 @@ function SpreadsheetConnector::addNewSheet(string spreadsheetId, string sheetNam
                         newSheet = convertToSheet(jsonResponse.replies[0].addSheet);
                         return newSheet;
                     } else {
-                        error err = {};
-                        err.message = jsonResponse.error.message.toString();
-                        err.statusCode = statusCode;
-                        return err;
+                        return setResponseError(jsonResponse);
                     }
                 }
             }
@@ -233,10 +224,7 @@ function SpreadsheetConnector::deleteSheet(string spreadsheetId, int sheetId)
                     if (statusCode == http:OK_200) {
                         return true;
                     } else {
-                        error err = {};
-                        err.message = jsonResponse.error.message.toString();
-                        err.statusCode = statusCode;
-                        return err;
+                        return setResponseError(jsonResponse);
                     }
                 }
             }
@@ -286,10 +274,7 @@ function SpreadsheetConnector::getSheetValues(string spreadsheetId, string sheet
                         }
                         return values;
                     } else {
-                        error err = {};
-                        err.message = jsonResponse.error.message.toString();
-                        err.statusCode = statusCode;
-                        return err;
+                        return setResponseError(jsonResponse);
                     }
                 }
             }
@@ -331,10 +316,7 @@ function SpreadsheetConnector::getColumnData(string spreadsheetId, string sheetN
                         }
                         return values;
                     } else {
-                        error err = {};
-                        err.message = jsonResponse.error.message.toString();
-                        err.statusCode = statusCode;
-                        return err;
+                        return setResponseError(jsonResponse);
                     }
                 }
             }
@@ -372,10 +354,7 @@ function SpreadsheetConnector::getRowData(string spreadsheetId, string sheetName
                         }
                         return values;
                     } else {
-                        error err = {};
-                        err.message = jsonResponse.error.message.toString();
-                        err.statusCode = statusCode;
-                        return err;
+                        return setResponseError(jsonResponse);
                     }
                 }
             }
@@ -409,10 +388,7 @@ function SpreadsheetConnector::getCellData(string spreadsheetId, string sheetNam
                         }
                         return value;
                     } else {
-                        error err = {};
-                        err.message = jsonResponse.error.message.toString();
-                        err.statusCode = statusCode;
-                        return err;
+                        return setResponseError(jsonResponse);
                     }
                 }
             }
@@ -445,10 +421,7 @@ function SpreadsheetConnector::setCellData(string spreadsheetId, string sheetNam
                     if (statusCode == http:OK_200) {
                         return true;
                     } else {
-                        error err = {};
-                        err.message = jsonResponse.error.message.toString();
-                        err.statusCode = statusCode;
-                        return err;
+                        return setResponseError(jsonResponse);
                     }
                 }
             }
@@ -483,7 +456,7 @@ function SpreadsheetConnector::setSheetValues(string spreadsheetId, string sheet
         i = i + 1;
     }
     json jsonPayload = { "values": jsonValues };
-    request.setJsonPayload(jsonPayload);
+    request.setJsonPayload(untaint jsonPayload);
     var httpResponse = httpClient->put(setValuePath, request);
     match httpResponse {
         error err => {
@@ -500,13 +473,17 @@ function SpreadsheetConnector::setSheetValues(string spreadsheetId, string sheet
                     if (statusCode == http:OK_200) {
                         return true;
                     } else {
-                        error err = {};
-                        err.message = jsonResponse.error.message.toString();
-                        err.statusCode = statusCode;
-                        return err;
+                        return setResponseError(jsonResponse);
                     }
                 }
             }
         }
     }
+}
+
+function setResponseError(json jsonResponse) returns error {
+    error err = {};
+    err.message = jsonResponse.error.message.toString();
+    err.statusCode = jsonResponse.statusCode;
+    return err;
 }
