@@ -61,30 +61,30 @@ The `openSpreadsheetById` function retrieves the spreadsheet whose ID is specifi
 var response = spreadsheetEP->openSpreadsheetById(spreadsheetId);
 ```
 
-The response from `openSpreadsheetById` is a `Spreadsheet` object if the request was successful or a `SpreadsheetError` on failure. The `match` operation can be used to handle the response if an error occurs.
+The response from `openSpreadsheetById` is a `Spreadsheet` object if the request was successful or a `error` on failure. The `match` operation can be used to handle the response if an error occurs.
 ```ballerina
 match response {
    //If successful, returns the Spreadsheet object.
    gsheets4:Spreadsheet spreadsheetRes => io:println(spreadsheetRes);
-   //Unsuccessful attempts return a SpreadsheetError.
-   gsheets4:SpreadsheetError err => io:println(err);
+   //Unsuccessful attempts return a error.
+   gsheets4:error err => io:println(err);
 }
 ```
 
-The `getSheetByName` function retrieves a sheet with the given name from a `Spreadsheet` object. The `sheetName` represents the name of the sheet to be retrieved. It returns the `Sheet` object on success and `SpreadsheetError` on failure.
+The `getSheetByName` function retrieves a sheet with the given name from a `Spreadsheet` object. The `sheetName` represents the name of the sheet to be retrieved. It returns the `Sheet` object on success and `error` on failure.
 ```ballerina
 var response = spreadsheet.getSheetByName(sheetName);
 match response {
     gsheets4:Sheet sheet => io:println(sheet);
-    gsheets4:SpreadsheetError err => io:println(err);
+    gsheets4:error err => io:println(err);
 }
 ```
 
-The `setSheetValues` function sets the values for a range of cells. It returns `true` on success or `SpreadsheetError` on failure.
+The `setSheetValues` function sets the values for a range of cells. It returns `true` on success or `error` on failure.
 ```ballerina
 var response = spreadsheetEP->setSheetValues(spreadsheetId, sheetName, topLeftCell, bottomRightCell, values);
 match response {
     boolean isUpdated => io:println(isUpdated);
-    gsheets4:SpreadsheetError err => io:println(err);
+    gsheets4:error err => io:println(err);
 }
 ```

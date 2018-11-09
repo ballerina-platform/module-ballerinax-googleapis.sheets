@@ -24,8 +24,8 @@ Clone the repository by running the following command
 `git clone https://github.com/wso2-ballerina/module-googlespreadsheet.git`
 
 ## Working with GSheets Endpoint actions
-All the actions return valid response or SpreadsheetError. If the action is a success, then the requested resource will
-be returned. Else SpreadsheetError object will be returned.
+All the actions return valid response or error. If the action is a success, then the requested resource will
+be returned. Else error object will be returned.
 
 In order for you to use the GSheets Endpoint, first you need to create a GSheets Client endpoint.
 
@@ -70,7 +70,7 @@ function main(string... args) {
         gsheets4:Spreadsheet spreadsheetRes => {
             spreadsheet = spreadsheetRes;
         }
-        gsheets4:SpreadsheetError err => {
+        gsheets4:error err => {
             io:println(err);
         }
     }
