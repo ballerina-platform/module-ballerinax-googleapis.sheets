@@ -124,7 +124,7 @@ function SpreadsheetConnector::createSpreadsheet(string spreadsheetName) returns
                         spreadsheetResponse = convertToSpreadsheet(jsonResponse);
                         return spreadsheetResponse;
                     } else {
-                       return setResponseError(jsonResponse);
+                       return setResponseError(statusCode, jsonResponse);
                     }
                 }
             }
@@ -154,7 +154,7 @@ function SpreadsheetConnector::openSpreadsheetById(string spreadsheetId) returns
                         spreadsheetResponse = convertToSpreadsheet(jsonResponse);
                         return spreadsheetResponse;
                     } else {
-                        return setResponseError(jsonResponse);
+                        return setResponseError(statusCode, jsonResponse);
                     }
                 }
             }
@@ -192,7 +192,7 @@ function SpreadsheetConnector::addNewSheet(string spreadsheetId, string sheetNam
                         newSheet = convertToSheet(jsonResponse.replies[0].addSheet);
                         return newSheet;
                     } else {
-                        return setResponseError(jsonResponse);
+                        return setResponseError(statusCode, jsonResponse);
                     }
                 }
             }
@@ -224,7 +224,7 @@ function SpreadsheetConnector::deleteSheet(string spreadsheetId, int sheetId)
                     if (statusCode == http:OK_200) {
                         return true;
                     } else {
-                        return setResponseError(jsonResponse);
+                        return setResponseError(statusCode, jsonResponse);
                     }
                 }
             }
@@ -274,7 +274,7 @@ function SpreadsheetConnector::getSheetValues(string spreadsheetId, string sheet
                         }
                         return values;
                     } else {
-                        return setResponseError(jsonResponse);
+                        return setResponseError(statusCode, jsonResponse);
                     }
                 }
             }
@@ -316,7 +316,7 @@ function SpreadsheetConnector::getColumnData(string spreadsheetId, string sheetN
                         }
                         return values;
                     } else {
-                        return setResponseError(jsonResponse);
+                        return setResponseError(statusCode, jsonResponse);
                     }
                 }
             }
@@ -354,7 +354,7 @@ function SpreadsheetConnector::getRowData(string spreadsheetId, string sheetName
                         }
                         return values;
                     } else {
-                        return setResponseError(jsonResponse);
+                        return setResponseError(statusCode, jsonResponse);
                     }
                 }
             }
@@ -388,7 +388,7 @@ function SpreadsheetConnector::getCellData(string spreadsheetId, string sheetNam
                         }
                         return value;
                     } else {
-                        return setResponseError(jsonResponse);
+                        return setResponseError(statusCode, jsonResponse);
                     }
                 }
             }
@@ -421,7 +421,7 @@ function SpreadsheetConnector::setCellData(string spreadsheetId, string sheetNam
                     if (statusCode == http:OK_200) {
                         return true;
                     } else {
-                        return setResponseError(jsonResponse);
+                        return setResponseError(statusCode, jsonResponse);
                     }
                 }
             }
@@ -473,7 +473,7 @@ function SpreadsheetConnector::setSheetValues(string spreadsheetId, string sheet
                     if (statusCode == http:OK_200) {
                         return true;
                     } else {
-                        return setResponseError(jsonResponse);
+                        return setResponseError(statusCode, jsonResponse);
                     }
                 }
             }
@@ -481,9 +481,9 @@ function SpreadsheetConnector::setSheetValues(string spreadsheetId, string sheet
     }
 }
 
-function setResponseError(json jsonResponse) returns error {
+function setResponseError(int statusCode, json jsonResponse) returns error {
     error err = {};
     err.message = jsonResponse.error.message.toString();
-    err.statusCode = jsonResponse.statusCode;
+    err.statusCode = statusCode;
     return err;
 }
