@@ -67,7 +67,7 @@ match response {
    //If successful, returns the Spreadsheet object.
    gsheets4:Spreadsheet spreadsheetRes => io:println(spreadsheetRes);
    //Unsuccessful attempts return a error.
-   gsheets4:error err => io:println(err);
+   error err => io:println(err);
 }
 ```
 
@@ -76,7 +76,7 @@ The `getSheetByName` function retrieves a sheet with the given name from a `Spre
 var response = spreadsheet.getSheetByName(sheetName);
 match response {
     gsheets4:Sheet sheet => io:println(sheet);
-    gsheets4:error err => io:println(err);
+    error err => io:println(err);
 }
 ```
 
@@ -85,6 +85,6 @@ The `setSheetValues` function sets the values for a range of cells. It returns `
 var response = spreadsheetEP->setSheetValues(spreadsheetId, sheetName, topLeftCell, bottomRightCell, values);
 match response {
     boolean isUpdated => io:println(isUpdated);
-    gsheets4:error err => io:println(err);
+    error err => io:println(err);
 }
 ```
