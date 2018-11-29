@@ -16,7 +16,7 @@ The `wso2/gsheets4` module contains operations to set and get the sheet values o
 
 |                             |       Version               |
 |:---------------------------:|:---------------------------:|
-| Ballerina Language          | 0.983.0                     |
+| Ballerina Language          | 0.985.0                     |
 | Google Spreadsheet API      | V4                          |
 
 ## Sample
@@ -43,16 +43,18 @@ access token and refresh token).
 
 You can now enter the credentials in the HTTP client config:
 ```ballerina
-endpoint gsheets4:Client spreadsheetEP {
-    clientConfig:{
-        auth:{
-            accessToken:accessToken,
-            clientId:clientId,
-            clientSecret:clientSecret,
-            refreshToken:refreshToken
+SpreadsheetConfiguration spreadsheetConfig = {
+    clientConfig: {
+        auth: {
+            scheme: http:OAUTH2,
+            accessToken:testAccessToken,
+            clientId:testClientId,
+            clientSecret:testClientSecret,
+            refreshToken:testRefreshToken
         }
     }
 };
+Client spreadsheetClient = new(spreadsheetConfig);
 ```
 
 The `openSpreadsheetById` function retrieves the spreadsheet whose ID is specified in `spreadsheetId`.
@@ -82,7 +84,7 @@ match response {
 
 The `setSheetValues` function sets the values for a range of cells. It returns `true` on success or `error` on failure.
 ```ballerina
-var response = spreadsheetEP->setSheetValues(spreadsheetId, sheetName, topLeftCell, bottomRightCell, values);
+var response = spreadsheetEP->setSheetValues(spreadsheetId, sheetName, topLeftCell = topCell, bottomRightCell = bottomCell, values);
 match response {
     boolean isUpdated => io:println(isUpdated);
     error err => io:println(err);

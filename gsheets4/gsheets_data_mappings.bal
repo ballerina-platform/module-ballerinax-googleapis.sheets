@@ -50,14 +50,25 @@ function convertToSpreadsheetProperties(json jsonProperties) returns Spreadsheet
     return spreadsheetProperties;
 }
 
-function convertToInt(json jsonVal) returns (int) {
+function convertToInt(json jsonVal) returns int {
     string stringVal = jsonVal.toString();
-    return check <int>stringVal;
+    if (stringVal != "") {
+        var intVal = int.create(stringVal);
+        if (intVal is int) {
+            return intVal;
+        } else {
+            error err = error(SPREADSHEET_ERROR_CODE,
+                        { message: "Error occurred when converting " + stringVal + " to int"});
+            panic err;
+        }
+    } else {
+        return 0;
+    }
 }
 
-function convertToBoolean(json jsonVal) returns (boolean) {
+function convertToBoolean(json jsonVal) returns boolean {
     string stringVal = jsonVal.toString();
-    return <boolean>stringVal;
+    return boolean.create(stringVal);
 }
 
 function convertToSheetProperties(json jsonSheetProperties) returns SheetProperties {

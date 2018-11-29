@@ -21,10 +21,10 @@
 # + spreadsheetUrl - The URL of the spreadsheet
 public type Spreadsheet object {
 
-    public string spreadsheetId;
-    public SpreadsheetProperties properties;
-    public Sheet[] sheets;
-    public string spreadsheetUrl;
+    public string spreadsheetId = "";
+    public SpreadsheetProperties properties = {};
+    public Sheet[] sheets = [];
+    public string spreadsheetUrl = "";
 
     # Get the name of the spreadsheet.
     # + return - Name of the spreadsheet object on success and error on failure
@@ -50,16 +50,16 @@ public type Spreadsheet object {
 # + autoRecalc - The amount of time to wait before volatile functions are recalculated
 # + timeZone - The time zone of the spreadsheet
 public type SpreadsheetProperties record {
-    string title;
-    string locale;
-    string autoRecalc;
-    string timeZone;
+    string title = "";
+    string locale = "";
+    string autoRecalc = "";
+    string timeZone = "";
 };
 
 # Sheet object.
 # + properties - The properties of the sheet
 public type Sheet record {
-    SheetProperties properties;
+    SheetProperties properties = {};
 };
 
 # Sheet properties.
@@ -71,13 +71,13 @@ public type Sheet record {
 # + hidden - True if the sheet is hidden in the UI, false if it is visible
 # + rightToLeft - True if the sheet is an RTL sheet instead of an LTR sheet
 public type SheetProperties record {
-    int sheetId;
-    string title;
-    int index;
-    string sheetType;
-    GridProperties gridProperties;
-    boolean hidden;
-    boolean rightToLeft;
+    int sheetId = 0;
+    string title = "";
+    int index = 0;
+    string sheetType = "";
+    GridProperties gridProperties = {};
+    boolean hidden = false;
+    boolean rightToLeft = false;
 };
 
 # Grid properties.
@@ -87,50 +87,48 @@ public type SheetProperties record {
 # + frozenColumnCount - The number of columns that are frozen in the grid
 # + hideGridlines - True if the grid is not showing gridlines in the UI
 public type GridProperties record {
-    int rowCount;
-    int columnCount;
-    int frozenRowCount;
-    int frozenColumnCount;
-    boolean hideGridlines;
+    int rowCount = 0;
+    int columnCount = 0;
+    int frozenRowCount = 0;
+    int frozenColumnCount = 0;
+    boolean hideGridlines = false;
 };
 
 //Functions binded to Spreadsheet struct
-function Spreadsheet::getSpreadsheetName() returns string|error {
+function Spreadsheet.getSpreadsheetName() returns string|error {
     string title = "";
     if (self.properties == null) {
-        error err = {};
-        err.message = "Unable to find the spreadsheet properties";
+        error err = error(SPREADSHEET_ERROR_CODE, { message: "Unable to find the spreadsheet properties" });
         return err;
     } else {
         return self.properties.title;
     }
 }
 
-function Spreadsheet::getSpreadsheetId() returns string|error {
+function Spreadsheet.getSpreadsheetId() returns string|error {
     string spreadsheetId = "";
-    if (self.spreadsheetId == null) {
-        error err = {};
-        err.message = "Unable to find the spreadsheet id";
+    if (self.spreadsheetId == EMPTY_STRING) {
+        error err = error(SPREADSHEET_ERROR_CODE, { message: "Unable to find the spreadsheet id" });
         return err;
     }
     return self.spreadsheetId;
 }
 
-function Spreadsheet::getSheets() returns Sheet[]|error {
-    if (self.sheets == null) {
-        error err = {};
-        err.message = "No sheets found";
+function Spreadsheet.getSheets() returns Sheet[]|error {
+    Sheet[] sheets = [];
+    if (self.sheets.length() == 0) {
+        error err = error(SPREADSHEET_ERROR_CODE, { message: "No sheets found" });
         return err;
     }
-    return self.sheets;
+    sheets = self.sheets;
+    return sheets;
 }
 
-function Spreadsheet::getSheetByName(string sheetName) returns Sheet|error {
+function Spreadsheet.getSheetByName(string sheetName) returns Sheet|error {
     Sheet[] sheets = self.sheets;
     Sheet sheetResponse = {};
-    if (sheets == null) {
-        error err = {};
-        err.message = "No sheet found";
+    if (sheets.length() == 0) {
+        error err = error(SPREADSHEET_ERROR_CODE, { message: "No sheet found" });
         return err;
     } else {
         foreach sheet in sheets {

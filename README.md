@@ -14,7 +14,7 @@ The following sections provide you with information on how to use the Ballerina 
 
 | Ballerina Language Version  | Google Spreadsheet API Version |
 |:---------------------------:|:------------------------------:|
-|  0.983.0                    |   V4                           |
+|  0.985.0                     |   V4                           |
 
 ##### Prerequisites
 Download the ballerina [distribution](https://ballerinalang.org/downloads/).
@@ -32,9 +32,10 @@ In order for you to use the GSheets Endpoint, first you need to create a GSheets
 ```ballerina
 import wso2/gsheets4;
 
-endpoint gsheets4:Client spreadsheetClientEP {
-    clientConfig:{
-        auth:{
+SpreadsheetConfiguration spreadsheetConfig = {
+    clientConfig: {
+        auth: {
+            scheme: http:OAUTH2,
             accessToken:"<your_accessToken>",
             refreshToken:"<your_refreshToken>",
             clientId:"<your_clientId>",
@@ -42,9 +43,11 @@ endpoint gsheets4:Client spreadsheetClientEP {
         }
     }
 };
+
+Client spreadsheetClient = new(spreadsheetConfig);
 ```
 
-Then the endpoint actions can be invoked as `var response = spreadsheetClientEP -> actionName(arguments)`.
+Then the endpoint actions can be invoked as `var response = spreadsheetClient -> actionName(arguments)`.
 
 #### Sample
 ```ballerina
@@ -53,28 +56,26 @@ import ballerina/io;
 import wso2/gsheets4;
 
 function main(string... args) {
-    endpoint gsheets4:Client spreadsheetClientEP {
-        clientConfig:{
-            auth:{
-                accessToken:config:getAsString("ACCESS_TOKEN"),
-                refreshToken:config:getAsString("REFRESH_TOKEN"),
-                clientId:config:getAsString("CLIENT_ID"),
-                clientSecret:config:getAsString("CLIENT_SECRET")
+    SpreadsheetConfiguration spreadsheetConfig = {
+        clientConfig: {
+            auth: {
+                scheme: http:OAUTH2,
+                accessToken: config:getAsString("ACCESS_TOKEN"),
+                clientId: config:getAsString("CLIENT_ID"),
+                clientSecret: config:getAsString("CLIENT_SECRET"),
+                refreshToken: config:getAsString("REFRESH_TOKEN")
             }
         }
     };
+    Client spreadsheetClient = new(spreadsheetConfig);
 
     gsheets4:Spreadsheet spreadsheet = new;
-    var response = spreadsheetClientEP->openSpreadsheetById("abc1234567");
-    match response {
-        gsheets4:Spreadsheet spreadsheetRes => {
-            spreadsheet = spreadsheetRes;
-        }
-        error err => {
-            io:println(err);
-        }
+    var response = spreadsheetClient->openSpreadsheetById("abc1234567");
+    if (response is gsheets4:Spreadsheet) {
+        spreadsheet = response;
+    } else {
+        io:println(response);
     }
-
     io:println(spreadsheet);
 }
 ```
