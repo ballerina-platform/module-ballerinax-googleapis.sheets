@@ -14,7 +14,7 @@ The following sections provide you with information on how to use the Ballerina 
 
 | Ballerina Language Version  | Google Spreadsheet API Version |
 |:---------------------------:|:------------------------------:|
-|  0.985.0                     |   V4                           |
+|  0.990.0                     |   V4                           |
 
 ##### Prerequisites
 Download the ballerina [distribution](https://ballerinalang.org/downloads/).
@@ -47,7 +47,7 @@ SpreadsheetConfiguration spreadsheetConfig = {
 Client spreadsheetClient = new(spreadsheetConfig);
 ```
 
-Then the endpoint actions can be invoked as `var response = spreadsheetClient -> actionName(arguments)`.
+Then the endpoint actions can be invoked as `var response = spreadsheetClient->actionName(arguments)`.
 
 #### Sample
 ```ballerina

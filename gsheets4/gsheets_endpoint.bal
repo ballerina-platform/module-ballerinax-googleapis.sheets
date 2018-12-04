@@ -17,7 +17,8 @@
 import ballerina/http;
 
 # Google Spreadsheet Client object.
-# + spreadsheetConnector - TwitterConnector Connector object
+#
+# + spreadsheetConnector - SpreadsheetConnector Connector object
 public type Client client object {
     public SpreadsheetConnector spreadsheetConnector;
 

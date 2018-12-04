@@ -45,12 +45,11 @@ function testCreateSpreadsheet() {
     var spreadsheetRes = spreadsheetClient->createSpreadsheet(testSpreadsheetName);
     if (spreadsheetRes is Spreadsheet) {
         testSpreadsheet = spreadsheetRes;
+        test:assertNotEquals(spreadsheetRes.spreadsheetId, null, msg = "Failed to create spreadsheet");
     } else {
         test:assertFail(msg = <string>spreadsheetRes.detail().message);
     }
-    test:assertNotEquals(testSpreadsheet.spreadsheetId, null, msg = "Failed to create spreadsheet");
 }
-
 
 @test:Config {
     dependsOn: ["testCreateSpreadsheet"]
@@ -59,12 +58,11 @@ function testAddNewSheet() {
     io:println("-----------------Test case for addNewSheet method------------------");
     var spreadsheetRes = spreadsheetClient->addNewSheet(testSpreadsheet.spreadsheetId, testSheetName);
     if (spreadsheetRes is Sheet) {
-        testSheet = spreadsheetRes;
+        testSheetId = spreadsheetRes.properties.sheetId;
+        test:assertNotEquals(spreadsheetRes.properties.sheetId, null, msg = "Failed to add sheet");
     } else {
         test:assertFail(msg = <string>spreadsheetRes.detail().message);
     }
-    testSheetId = testSheet.properties.sheetId;
-    test:assertNotEquals(testSheet.properties.sheetId, null, msg = "Failed to add sheet");
 }
 
 @test:Config {
@@ -75,11 +73,10 @@ function testOpenSpreadsheetById() {
     var spreadsheetRes = spreadsheetClient->openSpreadsheetById(testSpreadsheet.spreadsheetId);
     if (spreadsheetRes is Spreadsheet) {
         testSpreadsheet = spreadsheetRes;
+        test:assertNotEquals(spreadsheetRes.spreadsheetId, null, msg = "Failed to open the spreadsheet");
     } else {
         test:assertFail(msg = <string>spreadsheetRes.detail().message);
     }
-    test:assertNotEquals(testSpreadsheet.spreadsheetId, null, msg = "Failed to open the spreadsheet");
-
 }
 
 @test:Config {
@@ -90,11 +87,11 @@ function testGetSpreadsheetName() {
     string name = "";
     var res = testSpreadsheet.getSpreadsheetName();
     if (res is string) {
-        name = res;
+        test:assertEquals(res, testSpreadsheetName, msg = "getSpreadsheetName() method failed");
     } else {
         test:assertFail(msg = <string>res.detail().message);
     }
-    test:assertEquals(name, testSpreadsheetName, msg = "getSpreadsheetName() method failed");
+
 }
 
 @test:Config {
@@ -105,12 +102,10 @@ function testGetSpreadsheetId() {
     string spreadsheetId = "";
     var res = testSpreadsheet.getSpreadsheetId();
     if (res is string) {
-        spreadsheetId = res;
+        test:assertEquals(res, testSpreadsheet.spreadsheetId, msg = "getSpreadsheetId() method failed");
     } else {
         test:assertFail(msg = <string>res.detail().message);
     }
-    test:assertEquals(spreadsheetId, testSpreadsheet.spreadsheetId,
-        msg = "getSpreadsheetId() method failed");
 }
 
 @test:Config {
@@ -135,11 +130,11 @@ function testGetSheetByName() {
     Sheet sheet = {};
     var sheetRes = testSpreadsheet.getSheetByName(testSheetName);
     if (sheetRes is Sheet) {
-        sheet = sheetRes;
+        test:assertEquals(sheetRes.properties.title, testSheetName, msg = "getSheetByName() method failed");
     } else {
         test:assertFail(msg = <string>sheetRes.detail().message);
     }
-    test:assertEquals(sheet.properties.title, testSheetName, msg = "getSheetByName() method failed");
+
 }
 
 @test:Config {

@@ -16,7 +16,7 @@ The `wso2/gsheets4` module contains operations to set and get the sheet values o
 
 |                             |       Version               |
 |:---------------------------:|:---------------------------:|
-| Ballerina Language          | 0.985.0                     |
+| Ballerina Language          | 0.990.0                     |
 | Google Spreadsheet API      | V4                          |
 
 ## Sample
@@ -65,28 +65,33 @@ var response = spreadsheetEP->openSpreadsheetById(spreadsheetId);
 
 The response from `openSpreadsheetById` is a `Spreadsheet` object if the request was successful or a `error` on failure. The `match` operation can be used to handle the response if an error occurs.
 ```ballerina
-match response {
+if(response is gsheets4:Spreadsheet) {
    //If successful, returns the Spreadsheet object.
-   gsheets4:Spreadsheet spreadsheetRes => io:println(spreadsheetRes);
+   io:println(spreadsheetRes);
+} else {
    //Unsuccessful attempts return a error.
-   error err => io:println(err);
+   io:println(spreadsheetRes);
 }
 ```
 
 The `getSheetByName` function retrieves a sheet with the given name from a `Spreadsheet` object. The `sheetName` represents the name of the sheet to be retrieved. It returns the `Sheet` object on success and `error` on failure.
 ```ballerina
 var response = spreadsheet.getSheetByName(sheetName);
-match response {
-    gsheets4:Sheet sheet => io:println(sheet);
-    error err => io:println(err);
+if(response is gsheets4:Sheet) {
+   io:println(response);
+} else {
+   //Unsuccessful attempts return a error.
+   io:println(response);
 }
 ```
 
 The `setSheetValues` function sets the values for a range of cells. It returns `true` on success or `error` on failure.
 ```ballerina
 var response = spreadsheetEP->setSheetValues(spreadsheetId, sheetName, topLeftCell = topCell, bottomRightCell = bottomCell, values);
-match response {
-    boolean isUpdated => io:println(isUpdated);
-    error err => io:println(err);
+if(response is boolean) {
+   io:println(response);
+} else {
+   //Unsuccessful attempts return a error.
+   io:println(response);
 }
 ```

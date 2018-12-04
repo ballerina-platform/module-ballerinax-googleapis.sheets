@@ -56,12 +56,11 @@ public type SpreadsheetConnector client object {
 };
 
 remote function SpreadsheetConnector.createSpreadsheet(string spreadsheetName) returns Spreadsheet|error {
-    http:Client httpClient = self.spreadsheetClient;
     string requestPath = SPREADSHEET_PATH;
     http:Request request = new;
     json spreadsheetJSONPayload = { "properties": { "title": spreadsheetName } };
     request.setJsonPayload(spreadsheetJSONPayload);
-    var httpResponse = httpClient->post(SPREADSHEET_PATH, request);
+    var httpResponse = self.spreadsheetClient->post(SPREADSHEET_PATH, request);
 
     if (httpResponse is http:Response) {
         int statusCode = httpResponse.statusCode;
@@ -86,9 +85,8 @@ remote function SpreadsheetConnector.createSpreadsheet(string spreadsheetName) r
 
 
 remote function SpreadsheetConnector.openSpreadsheetById(string spreadsheetId) returns Spreadsheet|error {
-    http:Client httpClient =  self.spreadsheetClient;
     string getSpreadsheetPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId;
-    var httpResponse = httpClient->get(getSpreadsheetPath);
+    var httpResponse = self.spreadsheetClient->get(getSpreadsheetPath);
     if (httpResponse is http:Response) {
         int statusCode = httpResponse.statusCode;
         var jsonResponse = httpResponse.getJsonPayload();
@@ -112,7 +110,6 @@ remote function SpreadsheetConnector.openSpreadsheetById(string spreadsheetId) r
 
 remote function SpreadsheetConnector.addNewSheet(string spreadsheetId, string sheetName)
                                             returns Sheet|error {
-    http:Client httpClient =  self.spreadsheetClient;
     http:Request request = new;
     json sheetJSONPayload = {"requests" : [{"addSheet":{"properties":{}}}]};
     json jsonSheetProperties = {};
@@ -122,7 +119,7 @@ remote function SpreadsheetConnector.addNewSheet(string spreadsheetId, string sh
     sheetJSONPayload.requests[0].addSheet.properties = jsonSheetProperties;
     request.setJsonPayload(sheetJSONPayload);
     string addSheetPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + BATCH_UPDATE_REQUEST;
-    var httpResponse = httpClient->post(addSheetPath, request);
+    var httpResponse = self.spreadsheetClient->post(addSheetPath, request);
     if (httpResponse is http:Response) {
         int statusCode = httpResponse.statusCode;
         var jsonResponse = httpResponse.getJsonPayload();
@@ -147,12 +144,11 @@ remote function SpreadsheetConnector.addNewSheet(string spreadsheetId, string sh
 
 remote function SpreadsheetConnector.deleteSheet(string spreadsheetId, int sheetId)
                                                      returns boolean|error {
-    http:Client httpClient = self.spreadsheetClient;
     http:Request request = new;
     json sheetJSONPayload = {"requests" : [{"deleteSheet":{"sheetId":sheetId}}]};
     request.setJsonPayload(sheetJSONPayload);
     string deleteSheetPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + BATCH_UPDATE_REQUEST;
-    var httpResponse = httpClient->post(deleteSheetPath, request);
+    var httpResponse = self.spreadsheetClient->post(deleteSheetPath, request);
     if (httpResponse is http:Response) {
         int statusCode = httpResponse.statusCode;
         var jsonResponse = httpResponse.getJsonPayload();
@@ -175,7 +171,6 @@ remote function SpreadsheetConnector.deleteSheet(string spreadsheetId, int sheet
 
 remote function SpreadsheetConnector.getSheetValues(string spreadsheetId, string sheetName, string topLeftCell = "",
                                                      string bottomRightCell = "") returns string[][]|error {
-    http:Client httpClient = self.spreadsheetClient;
     string[][] values = [];
     string a1Notation = sheetName;
     if (topLeftCell != EMPTY_STRING) {
@@ -185,7 +180,7 @@ remote function SpreadsheetConnector.getSheetValues(string spreadsheetId, string
         a1Notation = a1Notation + ":" + bottomRightCell;
     }
     string getSheetValuesPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + a1Notation;
-    var httpResponse = httpClient->get(getSheetValuesPath);
+    var httpResponse = self.spreadsheetClient->get(getSheetValuesPath);
     if (httpResponse is http:Response) {
         int statusCode = httpResponse.statusCode;
         var jsonResponse = httpResponse.getJsonPayload();
@@ -221,11 +216,10 @@ remote function SpreadsheetConnector.getSheetValues(string spreadsheetId, string
 
 remote function SpreadsheetConnector.getColumnData(string spreadsheetId, string sheetName, string column)
                                                      returns string[]|error {
-    http:Client httpClient = self.spreadsheetClient;
     string[] values = [];
     string a1Notation = sheetName + "!" + column + ":" + column;
     string getColumnDataPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + a1Notation;
-    var httpResponse = httpClient->get(getColumnDataPath);
+    var httpResponse = self.spreadsheetClient->get(getColumnDataPath);
     if (httpResponse is http:Response) {
         int statusCode = httpResponse.statusCode;
         var jsonResponse = httpResponse.getJsonPayload();
@@ -259,11 +253,10 @@ remote function SpreadsheetConnector.getColumnData(string spreadsheetId, string 
 
 remote function SpreadsheetConnector.getRowData(string spreadsheetId, string sheetName, int row)
                                                      returns string[]|error {
-    http:Client httpClient = self.spreadsheetClient;
     string[] values = [];
     string a1Notation = sheetName + "!" + row + ":" + row;
     string getRowDataPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + a1Notation;
-    var httpResponse = httpClient->get(getRowDataPath);
+    var httpResponse = self.spreadsheetClient->get(getRowDataPath);
     if (httpResponse is http:Response) {
         int statusCode = httpResponse.statusCode;
         var jsonResponse = httpResponse.getJsonPayload();
@@ -293,11 +286,10 @@ remote function SpreadsheetConnector.getRowData(string spreadsheetId, string she
 
 remote function SpreadsheetConnector.getCellData(string spreadsheetId, string sheetName, string column, int row)
                                                      returns string|error {
-    http:Client httpClient = self.spreadsheetClient;
     string value = EMPTY_STRING;
     string a1Notation = sheetName + "!" + column + row;
     string getCellDataPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + a1Notation;
-    var httpResponse = httpClient->get(getCellDataPath);
+    var httpResponse = self.spreadsheetClient->get(getCellDataPath);
     if (httpResponse is http:Response) {
         int statusCode = httpResponse.statusCode;
         var jsonResponse = httpResponse.getJsonPayload();
@@ -323,14 +315,13 @@ remote function SpreadsheetConnector.getCellData(string spreadsheetId, string sh
 
 remote function SpreadsheetConnector.setCellData(string spreadsheetId, string sheetName, string column, int row,
                                                   string value) returns boolean|error {
-    http:Client httpClient = self.spreadsheetClient;
     http:Request request = new;
     json jsonPayload = {"values":[[value]]};
     string a1Notation = sheetName + "!" + column + row;
     string setCellDataPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + a1Notation
         + QUESTION_MARK + VALUE_INPUT_OPTION;
     request.setJsonPayload(jsonPayload);
-    var httpResponse = httpClient->put(setCellDataPath, request);
+    var httpResponse = self.spreadsheetClient->put(setCellDataPath, request);
     if (httpResponse is http:Response) {
         int statusCode = httpResponse.statusCode;
         var jsonResponse = httpResponse.getJsonPayload();
@@ -354,7 +345,6 @@ remote function SpreadsheetConnector.setCellData(string spreadsheetId, string sh
 remote function SpreadsheetConnector.setSheetValues(string spreadsheetId, string sheetName, string topLeftCell = "",
                                                      string bottomRightCell = "", string[][] values)
                                                      returns boolean|error {
-    http:Client httpClient = self.spreadsheetClient;
     http:Request request = new;
     string a1Notation = sheetName;
     if (topLeftCell != EMPTY_STRING ) {
@@ -379,7 +369,7 @@ remote function SpreadsheetConnector.setSheetValues(string spreadsheetId, string
     }
     json jsonPayload = { "values": jsonValues };
     request.setJsonPayload(untaint jsonPayload);
-    var httpResponse = httpClient->put(setValuePath, request);
+    var httpResponse = self.spreadsheetClient->put(setValuePath, request);
     if (httpResponse is http:Response) {
         int statusCode = httpResponse.statusCode;
         var jsonResponse = httpResponse.getJsonPayload();
