@@ -131,7 +131,7 @@ function Spreadsheet.getSheetByName(string sheetName) returns Sheet|error {
         error err = error(SPREADSHEET_ERROR_CODE, { message: "No sheet found" });
         return err;
     } else {
-        foreach sheet in sheets {
+        foreach var sheet in sheets {
             if (sheet.properties != null) {
                 if (sheet.properties.title.equalsIgnoreCase(sheetName)) {
                     sheetResponse = sheet;

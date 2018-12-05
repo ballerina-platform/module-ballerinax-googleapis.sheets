@@ -21,15 +21,15 @@ function convertToSpreadsheet(json jsonSpreadsheet) returns Spreadsheet {
                             ? convertToSpreadsheetProperties(jsonSpreadsheet.properties) : {};
     spreadsheet.spreadsheetUrl = jsonSpreadsheet.spreadsheetUrl.toString();
     spreadsheet.sheets = jsonSpreadsheet.sheets != null
-                            ? convertToSheets(jsonSpreadsheet.sheets) : [];
+                            ? convertToSheets(<json[]>jsonSpreadsheet.sheets) : [];
 
     return spreadsheet;
 }
 
-function convertToSheets(json jsonSheets) returns Sheet[] {
+function convertToSheets(json[] jsonSheets) returns Sheet[] {
     int i = 0;
     Sheet[] sheets = [];
-    foreach jsonSheet in jsonSheets {
+    foreach json jsonSheet in jsonSheets {
         sheets[i] = convertToSheet(jsonSheet);
         i = i + 1;
     }
@@ -53,7 +53,7 @@ function convertToSpreadsheetProperties(json jsonProperties) returns Spreadsheet
 function convertToInt(json jsonVal) returns int {
     string stringVal = jsonVal.toString();
     if (stringVal != "") {
-        var intVal = int.create(stringVal);
+        var intVal = int.convert(stringVal);
         if (intVal is int) {
             return intVal;
         } else {
@@ -68,7 +68,7 @@ function convertToInt(json jsonVal) returns int {
 
 function convertToBoolean(json jsonVal) returns boolean {
     string stringVal = jsonVal.toString();
-    return boolean.create(stringVal);
+    return boolean.convert(stringVal);
 }
 
 function convertToSheetProperties(json jsonSheetProperties) returns SheetProperties {

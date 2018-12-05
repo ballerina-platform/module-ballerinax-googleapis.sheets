@@ -55,7 +55,7 @@ import ballerina/config;
 import ballerina/io;
 import wso2/gsheets4;
 
-function main(string... args) {
+public function main() {
     SpreadsheetConfiguration spreadsheetConfig = {
         clientConfig: {
             auth: {
