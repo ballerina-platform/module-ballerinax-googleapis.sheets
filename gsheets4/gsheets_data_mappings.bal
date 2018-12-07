@@ -21,15 +21,15 @@ function convertToSpreadsheet(json jsonSpreadsheet) returns Spreadsheet {
                             ? convertToSpreadsheetProperties(jsonSpreadsheet.properties) : {};
     spreadsheet.spreadsheetUrl = jsonSpreadsheet.spreadsheetUrl.toString();
     spreadsheet.sheets = jsonSpreadsheet.sheets != null
-                            ? convertToSheets(jsonSpreadsheet.sheets) : [];
+                            ? convertToSheets(<json[]>jsonSpreadsheet.sheets) : [];
 
     return spreadsheet;
 }
 
-function convertToSheets(json jsonSheets) returns Sheet[] {
+function convertToSheets(json[] jsonSheets) returns Sheet[] {
     int i = 0;
     Sheet[] sheets = [];
-    foreach jsonSheet in jsonSheets {
+    foreach json jsonSheet in jsonSheets {
         sheets[i] = convertToSheet(jsonSheet);
         i = i + 1;
     }
@@ -50,14 +50,25 @@ function convertToSpreadsheetProperties(json jsonProperties) returns Spreadsheet
     return spreadsheetProperties;
 }
 
-function convertToInt(json jsonVal) returns (int) {
+function convertToInt(json jsonVal) returns int {
     string stringVal = jsonVal.toString();
-    return check <int>stringVal;
+    if (stringVal != "") {
+        var intVal = int.convert(stringVal);
+        if (intVal is int) {
+            return intVal;
+        } else {
+            error err = error(SPREADSHEET_ERROR_CODE,
+                        { message: "Error occurred when converting " + stringVal + " to int"});
+            panic err;
+        }
+    } else {
+        return 0;
+    }
 }
 
-function convertToBoolean(json jsonVal) returns (boolean) {
+function convertToBoolean(json jsonVal) returns boolean {
     string stringVal = jsonVal.toString();
-    return <boolean>stringVal;
+    return boolean.convert(stringVal);
 }
 
 function convertToSheetProperties(json jsonSheetProperties) returns SheetProperties {
