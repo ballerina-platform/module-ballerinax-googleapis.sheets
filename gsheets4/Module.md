@@ -65,7 +65,7 @@ var response = spreadsheetEP->openSpreadsheetById(spreadsheetId);
 
 The response from `openSpreadsheetById` is a `Spreadsheet` object if the request was successful or a `error` on failure. The `match` operation can be used to handle the response if an error occurs.
 ```ballerina
-if(response is gsheets4:Spreadsheet) {
+if (response is gsheets4:Spreadsheet) {
    //If successful, returns the Spreadsheet object.
    io:println(spreadsheetRes);
 } else {
@@ -77,7 +77,7 @@ if(response is gsheets4:Spreadsheet) {
 The `getSheetByName` function retrieves a sheet with the given name from a `Spreadsheet` object. The `sheetName` represents the name of the sheet to be retrieved. It returns the `Sheet` object on success and `error` on failure.
 ```ballerina
 var response = spreadsheet.getSheetByName(sheetName);
-if(response is gsheets4:Sheet) {
+if (response is gsheets4:Sheet) {
    io:println(response);
 } else {
    //Unsuccessful attempts return a error.
@@ -88,7 +88,7 @@ if(response is gsheets4:Sheet) {
 The `setSheetValues` function sets the values for a range of cells. It returns `true` on success or `error` on failure.
 ```ballerina
 var response = spreadsheetEP->setSheetValues(spreadsheetId, sheetName, topLeftCell = topCell, bottomRightCell = bottomCell, values);
-if(response is boolean) {
+if (response is boolean) {
    io:println(response);
 } else {
    //Unsuccessful attempts return a error.
