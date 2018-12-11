@@ -43,7 +43,7 @@ access token and refresh token).
 
 You can now enter the credentials in the HTTP client config:
 ```ballerina
-SpreadsheetConfiguration spreadsheetConfig = {
+gsheets4:SpreadsheetConfiguration spreadsheetConfig = {
     clientConfig: {
         auth: {
             scheme: http:OAUTH2,
@@ -54,7 +54,8 @@ SpreadsheetConfiguration spreadsheetConfig = {
         }
     }
 };
-Client spreadsheetClient = new(spreadsheetConfig);
+
+gsheets4:Client spreadsheetClient = new(spreadsheetConfig);
 ```
 
 The `openSpreadsheetById` function retrieves the spreadsheet whose ID is specified in `spreadsheetId`.

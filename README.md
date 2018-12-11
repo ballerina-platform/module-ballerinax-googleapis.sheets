@@ -32,7 +32,7 @@ In order for you to use the GSheets Endpoint, first you need to create a GSheets
 ```ballerina
 import wso2/gsheets4;
 
-SpreadsheetConfiguration spreadsheetConfig = {
+gsheets4:SpreadsheetConfiguration spreadsheetConfig = {
     clientConfig: {
         auth: {
             scheme: http:OAUTH2,
@@ -44,7 +44,7 @@ SpreadsheetConfiguration spreadsheetConfig = {
     }
 };
 
-Client spreadsheetClient = new(spreadsheetConfig);
+gsheets4:Client spreadsheetClient = new(spreadsheetConfig);
 ```
 
 Then the endpoint actions can be invoked as `var response = spreadsheetClient->actionName(arguments)`.
@@ -56,7 +56,7 @@ import ballerina/io;
 import wso2/gsheets4;
 
 public function main() {
-    SpreadsheetConfiguration spreadsheetConfig = {
+    gsheets4:SpreadsheetConfiguration spreadsheetConfig = {
         clientConfig: {
             auth: {
                 scheme: http:OAUTH2,
@@ -67,7 +67,8 @@ public function main() {
             }
         }
     };
-    Client spreadsheetClient = new(spreadsheetConfig);
+
+    gsheets4:Client spreadsheetClient = new(spreadsheetConfig);
 
     gsheets4:Spreadsheet spreadsheet = new;
     var response = spreadsheetClient->openSpreadsheetById("abc1234567");
