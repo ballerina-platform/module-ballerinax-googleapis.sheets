@@ -95,7 +95,7 @@ public type GridProperties record {
 };
 
 //Functions binded to Spreadsheet struct
-function Spreadsheet.getSpreadsheetName() returns string|error {
+public function Spreadsheet.getSpreadsheetName() returns string|error {
     string title = "";
     if (self.properties == null) {
         error err = error(SPREADSHEET_ERROR_CODE, { message: "Unable to find the spreadsheet properties" });
@@ -105,7 +105,7 @@ function Spreadsheet.getSpreadsheetName() returns string|error {
     }
 }
 
-function Spreadsheet.getSpreadsheetId() returns string|error {
+public function Spreadsheet.getSpreadsheetId() returns string|error {
     string spreadsheetId = "";
     if (self.spreadsheetId == EMPTY_STRING) {
         error err = error(SPREADSHEET_ERROR_CODE, { message: "Unable to find the spreadsheet id" });
@@ -114,7 +114,7 @@ function Spreadsheet.getSpreadsheetId() returns string|error {
     return self.spreadsheetId;
 }
 
-function Spreadsheet.getSheets() returns Sheet[]|error {
+public function Spreadsheet.getSheets() returns Sheet[]|error {
     Sheet[] sheets = [];
     if (self.sheets.length() == 0) {
         error err = error(SPREADSHEET_ERROR_CODE, { message: "No sheets found" });
@@ -124,7 +124,7 @@ function Spreadsheet.getSheets() returns Sheet[]|error {
     return sheets;
 }
 
-function Spreadsheet.getSheetByName(string sheetName) returns Sheet|error {
+public function Spreadsheet.getSheetByName(string sheetName) returns Sheet|error {
     Sheet[] sheets = self.sheets;
     Sheet sheetResponse = {};
     if (sheets.length() == 0) {

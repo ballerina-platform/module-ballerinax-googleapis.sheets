@@ -120,7 +120,7 @@ public type Client client object {
                                     string bottomRightCell = "", string[][] values) returns (boolean)|error;
 };
 
-remote function Client.createSpreadsheet(string spreadsheetName) returns Spreadsheet|error {
+public remote function Client.createSpreadsheet(string spreadsheetName) returns Spreadsheet|error {
     string requestPath = SPREADSHEET_PATH;
     http:Request request = new;
     json spreadsheetJSONPayload = { "properties": { "title": spreadsheetName } };
@@ -148,7 +148,7 @@ remote function Client.createSpreadsheet(string spreadsheetName) returns Spreads
     }
 }
 
-remote function Client.openSpreadsheetById(string spreadsheetId) returns Spreadsheet|error {
+public remote function Client.openSpreadsheetById(string spreadsheetId) returns Spreadsheet|error {
     string getSpreadsheetPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId;
     var httpResponse = self.spreadsheetClient->get(getSpreadsheetPath);
     if (httpResponse is http:Response) {
@@ -172,7 +172,7 @@ remote function Client.openSpreadsheetById(string spreadsheetId) returns Spreads
     }
 }
 
-remote function Client.addNewSheet(string spreadsheetId, string sheetName)
+public remote function Client.addNewSheet(string spreadsheetId, string sheetName)
                                             returns Sheet|error {
     http:Request request = new;
     json sheetJSONPayload = {"requests" : [{"addSheet":{"properties":{}}}]};
@@ -205,7 +205,7 @@ remote function Client.addNewSheet(string spreadsheetId, string sheetName)
     }
 }
 
-remote function Client.deleteSheet(string spreadsheetId, int sheetId)
+public remote function Client.deleteSheet(string spreadsheetId, int sheetId)
                                                      returns boolean|error {
     http:Request request = new;
     json sheetJSONPayload = {"requests" : [{"deleteSheet":{"sheetId":sheetId}}]};
@@ -232,7 +232,7 @@ remote function Client.deleteSheet(string spreadsheetId, int sheetId)
     }
 }
 
-remote function Client.getSheetValues(string spreadsheetId, string sheetName, string topLeftCell = "",
+public remote function Client.getSheetValues(string spreadsheetId, string sheetName, string topLeftCell = "",
                                                      string bottomRightCell = "") returns string[][]|error {
     string[][] values = [];
     string a1Notation = sheetName;
@@ -279,7 +279,7 @@ remote function Client.getSheetValues(string spreadsheetId, string sheetName, st
     }
 }
 
-remote function Client.getColumnData(string spreadsheetId, string sheetName, string column)
+public remote function Client.getColumnData(string spreadsheetId, string sheetName, string column)
                                                      returns string[]|error {
     string[] values = [];
     string a1Notation = sheetName + "!" + column + ":" + column;
@@ -318,7 +318,7 @@ remote function Client.getColumnData(string spreadsheetId, string sheetName, str
     }
 }
 
-remote function Client.getRowData(string spreadsheetId, string sheetName, int row)
+public remote function Client.getRowData(string spreadsheetId, string sheetName, int row)
                                                      returns string[]|error {
     string[] values = [];
     string a1Notation = sheetName + "!" + row + ":" + row;
@@ -353,7 +353,7 @@ remote function Client.getRowData(string spreadsheetId, string sheetName, int ro
     }
 }
 
-remote function Client.getCellData(string spreadsheetId, string sheetName, string column, int row)
+public remote function Client.getCellData(string spreadsheetId, string sheetName, string column, int row)
                                                      returns string|error {
     string value = EMPTY_STRING;
     string a1Notation = sheetName + "!" + column + row;
@@ -382,7 +382,7 @@ remote function Client.getCellData(string spreadsheetId, string sheetName, strin
     }
 }
 
-remote function Client.setCellData(string spreadsheetId, string sheetName, string column, int row,
+public remote function Client.setCellData(string spreadsheetId, string sheetName, string column, int row,
                                                   string value) returns boolean|error {
     http:Request request = new;
     json jsonPayload = {"values":[[value]]};
@@ -411,7 +411,7 @@ remote function Client.setCellData(string spreadsheetId, string sheetName, strin
     }
 }
 
-remote function Client.setSheetValues(string spreadsheetId, string sheetName, string topLeftCell = "",
+public remote function Client.setSheetValues(string spreadsheetId, string sheetName, string topLeftCell = "",
                                                      string bottomRightCell = "", string[][] values)
                                                      returns boolean|error {
     http:Request request = new;
@@ -459,7 +459,7 @@ remote function Client.setSheetValues(string spreadsheetId, string sheetName, st
     }
 }
 
-function Client.init(SpreadsheetConfiguration spreadsheetConfig) {
+public function Client.init(SpreadsheetConfiguration spreadsheetConfig) {
     http:AuthConfig? authConfig = spreadsheetConfig.clientConfig.auth;
     if (authConfig is http:AuthConfig) {
         authConfig.refreshUrl = REFRESH_URL;
