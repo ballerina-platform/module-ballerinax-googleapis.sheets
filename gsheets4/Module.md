@@ -16,7 +16,7 @@ The `wso2/gsheets4` module contains operations to set and get the sheet values o
 
 |                             |       Version               |
 |:---------------------------:|:---------------------------:|
-| Ballerina Language          | 0.990.0                     |
+| Ballerina Language          | 0.990.3                     |
 | Google Spreadsheet API      | V4                          |
 
 ## Sample
