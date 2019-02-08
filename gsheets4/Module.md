@@ -61,38 +61,43 @@ gsheets4:Client spreadsheetClient = new(spreadsheetConfig);
 The `openSpreadsheetById` function retrieves the spreadsheet whose ID is specified in `spreadsheetId`.
 ```ballerina
 //Open a spreadsheet.
-var response = spreadsheetEP->openSpreadsheetById(spreadsheetId);
+var response = spreadsheetClient->openSpreadsheetById(spreadsheetId);
 ```
 
-The response from `openSpreadsheetById` is a `Spreadsheet` object if the request was successful or a `error` on failure. The `match` operation can be used to handle the response if an error occurs.
+The response from `openSpreadsheetById` is a `Spreadsheet` object if the request was successful or an `error` if unsuccessful.
+
 ```ballerina
+string spreadsheetId = "1Ti2W5mGK4mq0_xh9Gl_zG_dK9cRvdduirsFgl6zZu7M";
+var response = spreadsheetClient->openSpreadsheetById(spreadsheetId);
 if (response is gsheets4:Spreadsheet) {
-   //If successful, returns the Spreadsheet object.
-   io:println(spreadsheetRes);
+    //If successful, print the Spreadsheet object.
+    io:println("Spreadsheet Details : ", response);
 } else {
-   //Unsuccessful attempts return a error.
-   io:println(spreadsheetRes);
+    // If unsuccessful, print the error returned.
+    io:println("Error: ", response);
 }
 ```
 
-The `getSheetByName` function retrieves a sheet with the given name from a `Spreadsheet` object. The `sheetName` represents the name of the sheet to be retrieved. It returns the `Sheet` object on success and `error` on failure.
+The `getSheetByName` function retrieves a sheet with the given name from a `Spreadsheet` object. The `sheetName` represents the name of the sheet to be retrieved. It returns the `Sheet` object on success or an `error` if unsuccessful.
 ```ballerina
+string sheetName = "Sheet1";
 var response = spreadsheet.getSheetByName(sheetName);
 if (response is gsheets4:Sheet) {
-   io:println(response);
+   //If successful, print the Spreadsheet Details.
+   io:println("Sheet Details : ", response);
 } else {
-   //Unsuccessful attempts return a error.
-   io:println(response);
+   // If unsuccessful, print the error returned.
+   io:println("Error: ", response);
 }
 ```
 
-The `setSheetValues` function sets the values for a range of cells. It returns `true` on success or `error` on failure.
+The `setSheetValues` function sets the values for a range of cells. It returns `true` on success or an `error` if unsuccessful.
 ```ballerina
-var response = spreadsheetEP->setSheetValues(spreadsheetId, sheetName, topLeftCell = topCell, bottomRightCell = bottomCell, values);
+var response = spreadsheetClient->setSheetValues(spreadsheetId, sheetName, topLeftCell = topCell, bottomRightCell = bottomCell, values);
 if (response is boolean) {
-   io:println(response);
+   io:println("Sheet Values: ", response);
 } else {
-   //Unsuccessful attempts return a error.
-   io:println(response);
+   // If unsuccessful, print the error returned.
+   io:println("Error: ", response);
 }
 ```

@@ -51,32 +51,30 @@ Then the endpoint actions can be invoked as `var response = spreadsheetClient->a
 
 #### Sample
 ```ballerina
-import ballerina/config;
 import ballerina/io;
+import ballerina/http;
 import wso2/gsheets4;
 
-public function main() {
-    gsheets4:SpreadsheetConfiguration spreadsheetConfig = {
-        clientConfig: {
-            auth: {
-                scheme: http:OAUTH2,
-                accessToken: config:getAsString("ACCESS_TOKEN"),
-                clientId: config:getAsString("CLIENT_ID"),
-                clientSecret: config:getAsString("CLIENT_SECRET"),
-                refreshToken: config:getAsString("REFRESH_TOKEN")
-            }
+gsheets4:SpreadsheetConfiguration spreadsheetConfig = {
+    clientConfig: {
+        auth: {
+            scheme: http:OAUTH2,
+            accessToken:"<accessToken>",
+            clientId:"<clientId>",
+            clientSecret:"<clientSecret>",
+            refreshToken:"<refreshToken>"
         }
-    };
-
-    gsheets4:Client spreadsheetClient = new(spreadsheetConfig);
-
-    gsheets4:Spreadsheet spreadsheet = new;
-    var response = spreadsheetClient->openSpreadsheetById("abc1234567");
-    if (response is gsheets4:Spreadsheet) {
-        spreadsheet = response;
-    } else {
-        io:println(response);
     }
-    io:println(spreadsheet);
+};
+gsheets4:Client spreadsheetClient = new(spreadsheetConfig);
+
+public function main(string... args) {
+    string spreadsheetId = "1Ti2W5mGK4mq0_xh9Gl_zG_dK9qqwdduirsFgl6zZu7M";
+    var response = spreadsheetClient->openSpreadsheetById(spreadsheetId);
+    if (response is gsheets4:Spreadsheet) {
+        io:println("Spreadsheet Details : ", response);
+    } else {
+        io:println("Error: ", response);
+    }
 }
 ```
