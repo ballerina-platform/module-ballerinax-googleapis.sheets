@@ -51,26 +51,25 @@ Then the endpoint actions can be invoked as `var response = spreadsheetClient->a
 
 #### Sample
 ```ballerina
-import ballerina/io;
 import ballerina/http;
+import ballerina/io;
 import wso2/gsheets4;
 
 gsheets4:SpreadsheetConfiguration spreadsheetConfig = {
     clientConfig: {
         auth: {
             scheme: http:OAUTH2,
-            accessToken:"<accessToken>",
-            clientId:"<clientId>",
-            clientSecret:"<clientSecret>",
-            refreshToken:"<refreshToken>"
+            accessToken: "<accessToken>",
+            clientId: "<clientId>",
+            clientSecret: "<clientSecret>",
+            refreshToken: "<refreshToken>"
         }
     }
 };
 gsheets4:Client spreadsheetClient = new(spreadsheetConfig);
 
 public function main(string... args) {
-    string spreadsheetId = "1Ti2W5mGK4mq0_xh9Gl_zG_dK9qqwdduirsFgl6zZu7M";
-    var response = spreadsheetClient->openSpreadsheetById(spreadsheetId);
+    var response = spreadsheetClient->openSpreadsheetById("1Ti2W5mGK4mq0_xh9Gl_zG_dK9qqwdduirsFgl6zZu7M");
     if (response is gsheets4:Spreadsheet) {
         io:println("Spreadsheet Details : ", response);
     } else {
