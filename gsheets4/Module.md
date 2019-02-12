@@ -47,10 +47,10 @@ gsheets4:SpreadsheetConfiguration spreadsheetConfig = {
     clientConfig: {
         auth: {
             scheme: http:OAUTH2,
-            accessToken:testAccessToken,
-            clientId:testClientId,
-            clientSecret:testClientSecret,
-            refreshToken:testRefreshToken
+            accessToken: testAccessToken,
+            clientId: testClientId,
+            clientSecret: testClientSecret,
+            refreshToken: testRefreshToken
         }
     }
 };
@@ -60,7 +60,7 @@ gsheets4:Client spreadsheetClient = new(spreadsheetConfig);
 
 The `openSpreadsheetById` function retrieves the spreadsheet whose ID is specified in `spreadsheetId`.
 ```ballerina
-//Open a spreadsheet.
+// Open a spreadsheet.
 var response = spreadsheetClient->openSpreadsheetById(spreadsheetId);
 ```
 
@@ -70,8 +70,8 @@ The response from `openSpreadsheetById` is a `Spreadsheet` object if the request
 string spreadsheetId = "1Ti2W5mGK4mq0_xh9Gl_zG_dK9cRvdduirsFgl6zZu7M";
 var response = spreadsheetClient->openSpreadsheetById(spreadsheetId);
 if (response is gsheets4:Spreadsheet) {
-    //If successful, print the Spreadsheet object.
-    io:println("Spreadsheet Details : ", response);
+    // If successful, print the Spreadsheet object.
+    io:println("Spreadsheet Details: ", response);
 } else {
     // If unsuccessful, print the error returned.
     io:println("Error: ", response);
@@ -83,19 +83,19 @@ The `getSheetByName` function retrieves a sheet with the given name from a `Spre
 string sheetName = "Sheet1";
 var response = spreadsheet.getSheetByName(sheetName);
 if (response is gsheets4:Sheet) {
-   //If successful, print the Spreadsheet Details.
-   io:println("Sheet Details : ", response);
+   // If successful, print the Spreadsheet Details.
+   io:println("Sheet Details: ", response);
 } else {
    // If unsuccessful, print the error returned.
    io:println("Error: ", response);
 }
 ```
 
-The `setSheetValues` function sets the values for a range of cells. It returns `true` on success or an `error` if unsuccessful.
+The `setSheetValues` function sets the values for a range of cells. It returns the `boolean` status if successful or an `error` if unsuccessful.
 ```ballerina
 var response = spreadsheetClient->setSheetValues(spreadsheetId, sheetName, topLeftCell = topCell, bottomRightCell = bottomCell, values);
 if (response is boolean) {
-   io:println("Sheet Values: ", response);
+   io:println("Status: ", response);
 } else {
    // If unsuccessful, print the error returned.
    io:println("Error: ", response);

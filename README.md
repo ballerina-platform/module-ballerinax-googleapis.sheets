@@ -36,10 +36,10 @@ gsheets4:SpreadsheetConfiguration spreadsheetConfig = {
     clientConfig: {
         auth: {
             scheme: http:OAUTH2,
-            accessToken:"<your_accessToken>",
-            refreshToken:"<your_refreshToken>",
-            clientId:"<your_clientId>",
-            clientSecret:"<your_clientSecret>"
+            accessToken: "<your_accessToken>",
+            refreshToken: "<your_refreshToken>",
+            clientId: "<your_clientId>",
+            clientSecret: "<your_clientSecret>"
         }
     }
 };
@@ -71,7 +71,7 @@ gsheets4:Client spreadsheetClient = new(spreadsheetConfig);
 public function main(string... args) {
     var response = spreadsheetClient->openSpreadsheetById("1Ti2W5mGK4mq0_xh9Gl_zG_dK9qqwdduirsFgl6zZu7M");
     if (response is gsheets4:Spreadsheet) {
-        io:println("Spreadsheet Details : ", response);
+        io:println("Spreadsheet Details: ", response);
     } else {
         io:println("Error: ", response);
     }
