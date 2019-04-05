@@ -461,10 +461,6 @@ public remote function Client.setSheetValues(string spreadsheetId, string sheetN
 
 public function Client.init(SpreadsheetConfiguration spreadsheetConfig) {
     http:AuthConfig? authConfig = spreadsheetConfig.clientConfig.auth;
-    if (authConfig is http:AuthConfig) {
-        authConfig.refreshUrl = REFRESH_URL;
-        authConfig.scheme = http:OAUTH2;
-    }
 }
 
 # Object for Spreadsheet configuration.

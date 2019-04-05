@@ -14,7 +14,7 @@ The following sections provide you with information on how to use the Ballerina 
 
 | Ballerina Language Version  | Google Spreadsheet API Version |
 |:---------------------------:|:------------------------------:|
-|  0.990.3                     |   V4                           |
+|  0.991.0                     |   V4                           |
 
 ##### Prerequisites
 Download the ballerina [distribution](https://ballerinalang.org/downloads/).
@@ -36,12 +36,20 @@ gsheets4:SpreadsheetConfiguration spreadsheetConfig = {
     clientConfig: {
         auth: {
             scheme: http:OAUTH2,
-            accessToken: "<your_accessToken>",
-            refreshToken: "<your_refreshToken>",
-            clientId: "<your_clientId>",
-            clientSecret: "<your_clientSecret>"
+            config: {
+                grantType: http:DIRECT_TOKEN,
+                config: {
+                    accessToken: "<accessToken>",
+                    refreshConfig: {
+                        clientId: "<clientId>",
+                        clientSecret: "<clientSecret>",
+                        refreshToken: "<refreshToken>",
+                        refreshUrl: "<refreshUrl>"
+                    }
+                }
+            }
         }
-    }
+    }   
 };
 
 gsheets4:Client spreadsheetClient = new(spreadsheetConfig);
@@ -59,12 +67,20 @@ gsheets4:SpreadsheetConfiguration spreadsheetConfig = {
     clientConfig: {
         auth: {
             scheme: http:OAUTH2,
-            accessToken: "<accessToken>",
-            clientId: "<clientId>",
-            clientSecret: "<clientSecret>",
-            refreshToken: "<refreshToken>"
+            config: {
+                grantType: http:DIRECT_TOKEN,
+                config: {
+                    accessToken: "<accessToken>",
+                    refreshConfig: {
+                        clientId: "<clientId>",
+                        clientSecret: "<clientSecret>",
+                        refreshToken: "<refreshToken>",
+                        refreshUrl: "<refreshUrl>"
+                    }
+                }
+            }
         }
-    }
+    }   
 };
 gsheets4:Client spreadsheetClient = new(spreadsheetConfig);
 
