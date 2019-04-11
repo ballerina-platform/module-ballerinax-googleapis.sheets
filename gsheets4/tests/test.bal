@@ -31,7 +31,7 @@ SpreadsheetConfiguration spreadsheetConfig = {
                     refreshConfig: {
                         clientId: config:getAsString("CLIENT_ID"),
                         clientSecret: config:getAsString("CLIENT_SECRET"),
-                        refreshUrl: "https://www.googleapis.com/oauth2/v3/token",
+                        refreshUrl: REFRESH_URL,
                         refreshToken: config:getAsString("REFRESH_TOKEN")
                     }
                 }
@@ -53,7 +53,7 @@ function testCreateSpreadsheet() {
     var spreadsheetRes = spreadsheetClient->createSpreadsheet(testSpreadsheetName);
     if (spreadsheetRes is Spreadsheet) {
         testSpreadsheet = spreadsheetRes;
-        test:assertNotEquals(spreadsheetRes.spreadsheetId, (), msg = "Failed to create spreadsheet");
+        test:assertNotEquals(spreadsheetRes.spreadsheetId, "", msg = "Failed to create spreadsheet");
     } else {
         test:assertFail(msg = <string>spreadsheetRes.detail().message);
     }
@@ -67,7 +67,7 @@ function testAddNewSheet() {
     var spreadsheetRes = spreadsheetClient->addNewSheet(testSpreadsheet.spreadsheetId, testSheetName);
     if (spreadsheetRes is Sheet) {
         testSheetId = spreadsheetRes.properties.sheetId;
-        test:assertNotEquals(spreadsheetRes.properties.sheetId, (), msg = "Failed to add sheet");
+        test:assertNotEquals(spreadsheetRes.properties.sheetId, "", msg = "Failed to add sheet");
     } else {
         test:assertFail(msg = <string>spreadsheetRes.detail().message);
     }
@@ -81,7 +81,7 @@ function testOpenSpreadsheetById() {
     var spreadsheetRes = spreadsheetClient->openSpreadsheetById(testSpreadsheet.spreadsheetId);
     if (spreadsheetRes is Spreadsheet) {
         testSpreadsheet = spreadsheetRes;
-        test:assertNotEquals(spreadsheetRes.spreadsheetId, (), msg = "Failed to open the spreadsheet");
+        test:assertNotEquals(spreadsheetRes.spreadsheetId, "", msg = "Failed to open the spreadsheet");
     } else {
         test:assertFail(msg = <string>spreadsheetRes.detail().message);
     }

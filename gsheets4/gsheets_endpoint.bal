@@ -24,14 +24,8 @@ public type Client client object {
     public http:Client spreadsheetClient;
 
     public function __init(SpreadsheetConfiguration spreadsheetConfig) {
-        self.init(spreadsheetConfig);
         self.spreadsheetClient = new(BASE_URL, config = spreadsheetConfig.clientConfig);
     }
-
-    # Initialize Spreadsheet endpoint.
-    #
-    # + spreadsheetConfig - Spreadsheet configuraion
-    public function init(SpreadsheetConfiguration spreadsheetConfig);
 
     # Create a new spreadsheet.
     #
@@ -457,10 +451,6 @@ public remote function Client.setSheetValues(string spreadsheetId, string sheetN
         error err = error(SPREADSHEET_ERROR_CODE, { message: "Error occurred while invoking the REST API" });
         return err;
     }
-}
-
-public function Client.init(SpreadsheetConfiguration spreadsheetConfig) {
-    http:AuthConfig? authConfig = spreadsheetConfig.clientConfig.auth;
 }
 
 # Object for Spreadsheet configuration.
