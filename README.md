@@ -44,7 +44,7 @@ gsheets4:SpreadsheetConfiguration spreadsheetConfig = {
                         clientId: "<clientId>",
                         clientSecret: "<clientSecret>",
                         refreshToken: "<refreshToken>",
-                        refreshUrl: "<refreshUrl>"
+                        refreshUrl: gsheets4:REFRESH_URL
                     }
                 }
             }
@@ -75,7 +75,7 @@ gsheets4:SpreadsheetConfiguration spreadsheetConfig = {
                         clientId: "<clientId>",
                         clientSecret: "<clientSecret>",
                         refreshToken: "<refreshToken>",
-                        refreshUrl: "<refreshUrl>"
+                        refreshUrl: gsheets4:REFRESH_URL
                     }
                 }
             }

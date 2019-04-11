@@ -96,9 +96,8 @@ public type GridProperties record {|
 
 //Functions binded to Spreadsheet struct
 public function Spreadsheet.getSpreadsheetName() returns string|error {
-    string title = "";
-    if (self.properties == ()) {
-        error err = error(SPREADSHEET_ERROR_CODE, { message: "Unable to find the spreadsheet properties" });
+    if (self.properties.title == EMPTY_STRING) {
+        error err = error(SPREADSHEET_ERROR_CODE, { message: "Unable to find the spreadsheet title" });
         return err;
     } else {
         return self.properties.title;
@@ -132,7 +131,7 @@ public function Spreadsheet.getSheetByName(string sheetName) returns Sheet|error
         return err;
     } else {
         foreach var sheet in sheets {
-            if (sheet.properties != ()) {
+            if (sheet.properties.title == EMPTY_STRING) {
                 if (sheet.properties.title.equalsIgnoreCase(sheetName)) {
                     sheetResponse = sheet;
                     break;
