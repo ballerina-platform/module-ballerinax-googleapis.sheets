@@ -16,7 +16,7 @@ The `wso2/gsheets4` module contains operations to set and get the sheet values o
 
 |                             |       Version               |
 |:---------------------------:|:---------------------------:|
-| Ballerina Language          | 0.990.3                     |
+| Ballerina Language          | 0.991.0                     |
 | Google Spreadsheet API      | V4                          |
 
 ## Sample
@@ -47,12 +47,20 @@ gsheets4:SpreadsheetConfiguration spreadsheetConfig = {
     clientConfig: {
         auth: {
             scheme: http:OAUTH2,
-            accessToken: testAccessToken,
-            clientId: testClientId,
-            clientSecret: testClientSecret,
-            refreshToken: testRefreshToken
+            config: {
+                grantType: http:DIRECT_TOKEN,
+                config: {
+                    accessToken: "<accessToken>",
+                    refreshConfig: {
+                        clientId: "<clientId>",
+                        clientSecret: "<clientSecret>",
+                        refreshToken: "<refreshToken>",
+                        refreshUrl: gsheets4:REFRESH_URL
+                    }
+                }
+            }
         }
-    }
+    }   
 };
 
 gsheets4:Client spreadsheetClient = new(spreadsheetConfig);

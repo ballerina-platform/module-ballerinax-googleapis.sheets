@@ -49,18 +49,18 @@ public type Spreadsheet object {
 # + locale - The locale of the spreadsheet
 # + autoRecalc - The amount of time to wait before volatile functions are recalculated
 # + timeZone - The time zone of the spreadsheet
-public type SpreadsheetProperties record {
+public type SpreadsheetProperties record {|
     string title = "";
     string locale = "";
     string autoRecalc = "";
     string timeZone = "";
-};
+|};
 
 # Sheet object.
 # + properties - The properties of the sheet
-public type Sheet record {
+public type Sheet record {|
     SheetProperties properties = {};
-};
+|};
 
 # Sheet properties.
 # + sheetId - The ID of the sheet
@@ -70,7 +70,7 @@ public type Sheet record {
 # + gridProperties - Additional properties of the sheet if this sheet is a grid
 # + hidden - True if the sheet is hidden in the UI, false if it is visible
 # + rightToLeft - True if the sheet is an RTL sheet instead of an LTR sheet
-public type SheetProperties record {
+public type SheetProperties record {|
     int sheetId = 0;
     string title = "";
     int index = 0;
@@ -78,7 +78,7 @@ public type SheetProperties record {
     GridProperties gridProperties = {};
     boolean hidden = false;
     boolean rightToLeft = false;
-};
+|};
 
 # Grid properties.
 # + rowCount - The number of rows in the grid
@@ -86,19 +86,18 @@ public type SheetProperties record {
 # + frozenRowCount - The number of rows that are frozen in the grid
 # + frozenColumnCount - The number of columns that are frozen in the grid
 # + hideGridlines - True if the grid is not showing gridlines in the UI
-public type GridProperties record {
+public type GridProperties record {|
     int rowCount = 0;
     int columnCount = 0;
     int frozenRowCount = 0;
     int frozenColumnCount = 0;
     boolean hideGridlines = false;
-};
+|};
 
 //Functions binded to Spreadsheet struct
 public function Spreadsheet.getSpreadsheetName() returns string|error {
-    string title = "";
-    if (self.properties == null) {
-        error err = error(SPREADSHEET_ERROR_CODE, { message: "Unable to find the spreadsheet properties" });
+    if (self.properties.title == EMPTY_STRING) {
+        error err = error(SPREADSHEET_ERROR_CODE, { message: "Unable to find the spreadsheet title" });
         return err;
     } else {
         return self.properties.title;
@@ -132,11 +131,9 @@ public function Spreadsheet.getSheetByName(string sheetName) returns Sheet|error
         return err;
     } else {
         foreach var sheet in sheets {
-            if (sheet.properties != null) {
-                if (sheet.properties.title.equalsIgnoreCase(sheetName)) {
-                    sheetResponse = sheet;
-                    break;
-                }
+            if (sheet.properties.title.equalsIgnoreCase(sheetName)) {
+                sheetResponse = sheet;
+                break;
             }
         }
         return sheetResponse;
