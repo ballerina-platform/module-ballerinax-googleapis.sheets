@@ -131,11 +131,9 @@ public function Spreadsheet.getSheetByName(string sheetName) returns Sheet|error
         return err;
     } else {
         foreach var sheet in sheets {
-            if (sheet.properties.title == EMPTY_STRING) {
-                if (sheet.properties.title.equalsIgnoreCase(sheetName)) {
-                    sheetResponse = sheet;
-                    break;
-                }
+            if (sheet.properties.title.equalsIgnoreCase(sheetName)) {
+                sheetResponse = sheet;
+                break;
             }
         }
         return sheetResponse;
