@@ -15,7 +15,6 @@
 // under the License.
 
 import ballerina/http;
-import ballerina/io;
 
 function setResponseError(json jsonResponse) returns error {
     map<json> mapValue = <map<json>> map<json>.convert(jsonResponse);

@@ -157,7 +157,6 @@ public remote function Client.openSpreadsheetById(string spreadsheetId) returns 
                     Spreadsheet spreadsheet = convertToSpreadsheet(jsonResponse);
                     return spreadsheet;
                 } else {
-                    io:println(jsonResponse);
                     return setResponseError(jsonResponse);
                 }
             } else {
