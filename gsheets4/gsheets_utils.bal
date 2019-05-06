@@ -15,8 +15,44 @@
 // under the License.
 
 import ballerina/http;
+import ballerina/io;
 
 function setResponseError(json jsonResponse) returns error {
-    error err = error(SPREADSHEET_ERROR_CODE, { message: jsonResponse.message.toString() });
-    return err;
+    map<json> mapValue = <map<json>> map<json>.convert(jsonResponse);
+    foreach var (i, errorDetails) in mapValue {
+       error err = error(SPREADSHEET_ERROR_CODE, { message: errorDetails.message.toString()});
+       return err;
+    }
+}
+
+function validateSpreadSheetId(string spreadSheetId) returns boolean|error {
+    string regEx = "[a-zA-Z0-9-_]+";
+    boolean|error isMatch = spreadSheetId.matches(regEx);
+    if (isMatch is error) {
+        panic isMatch;
+    } else {
+        if (!isMatch) {
+            error err = error(SPREADSHEET_ERROR_CODE, { message: "Error occurred by a spreadsheet ID: "
+                + spreadSheetId + ", which supports only letters, numbers and some special characters."});
+            return err;
+        } else {
+            return isMatch;
+        }
+    }
+}
+
+function validateSheetName(string spreadSheetName) returns boolean {
+    int|error index = spreadSheetName.indexOf("(");
+    boolean|error isContain = spreadSheetName.contains(" ");
+    if (isContain is error) {
+        panic isContain;
+    } else if(index is error) {
+        panic index;
+    } else {
+        if (index == 0 || isContain) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
