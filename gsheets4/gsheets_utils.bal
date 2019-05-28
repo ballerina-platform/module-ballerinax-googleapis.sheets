@@ -22,7 +22,12 @@ function setResponseError(json jsonResponse) returns error {
     return err;
 }
 
-function validateSpreadSheetId(string spreadSheetId) returns boolean|error {
+function setResError(error apiResponse) returns error {
+    error err = error(SPREADSHEET_ERROR_CODE, { message: <string>apiResponse.detail().message});
+    return err;
+}
+
+function validateSpreadSheetId(string spreadSheetId) returns error? {
     string regEx = "[a-zA-Z0-9-_]+";
     boolean isMatch = checkpanic spreadSheetId.matches(regEx);
     if (!isMatch) {
@@ -30,21 +35,14 @@ function validateSpreadSheetId(string spreadSheetId) returns boolean|error {
             + spreadSheetId + ", which supports only letters, numbers and some special characters."});
         return err;
     }
-    return isMatch;
 }
 
 function validateSheetName(string spreadSheetName) returns boolean {
-    int|error index = spreadSheetName.indexOf("(");
-    boolean|error isContain = spreadSheetName.contains(" ");
-    if (isContain is error) {
-        panic isContain;
-    } else if(index is error) {
-        panic index;
+    int index = spreadSheetName.indexOf("(");
+    boolean isContain = spreadSheetName.contains(" ");
+    if (index == 0 || isContain) {
+        return true;
     } else {
-        if (index == 0 || isContain) {
-            return true;
-        } else {
-            return false;
-        }
+        return false;
     }
 }
