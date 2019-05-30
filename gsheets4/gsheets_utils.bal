@@ -18,31 +18,41 @@ import ballerina/http;
 import ballerina/io;
 
 function setResponseError(json jsonResponse) returns error {
-    error err = error(SPREADSHEET_ERROR_CODE, { message: jsonResponse["error"].message.toString()});
-    return err;
+    return error(SPREADSHEET_ERROR_CODE, { message: jsonResponse["error"].message.toString()});
 }
 
 function setResError(error apiResponse) returns error {
-    error err = error(SPREADSHEET_ERROR_CODE, { message: <string>apiResponse.detail().message});
-    return err;
+    return error(SPREADSHEET_ERROR_CODE, { message: <string>apiResponse.detail().message});
+}
+
+function setJsonResponse(json jsonResponse, int statusCode) returns Spreadsheet|error {
+    if (statusCode == http:OK_200) {
+        Spreadsheet spreadsheet = convertToSpreadsheet(jsonResponse);
+        return spreadsheet;
+    }
+    return setResponseError(jsonResponse);
+}
+
+function setResponse(json jsonResponse, int statusCode) returns boolean|error{
+    if (statusCode == http:OK_200) {
+        return true;
+    }
+    return setResponseError(jsonResponse);
 }
 
 function validateSpreadSheetId(string spreadSheetId) returns error? {
     string regEx = "[a-zA-Z0-9-_]+";
     boolean isMatch = checkpanic spreadSheetId.matches(regEx);
-    if (!isMatch) {
-        error err = error(SPREADSHEET_ERROR_CODE, { message: "Error occurred by a spreadsheet ID: "
-            + spreadSheetId + ", which supports only letters, numbers and some special characters."});
-        return err;
+    if (isMatch) {
+        return;
     }
+    error err = error(SPREADSHEET_ERROR_CODE, { message: "Error occurred by a spreadsheet ID: "
+                + spreadSheetId + ", that should be satisfy the regular expression format: [a-zA-Z0-9-_]+"});
+    return err;
 }
 
 function validateSheetName(string spreadSheetName) returns boolean {
     int index = spreadSheetName.indexOf("(");
-    boolean isContain = spreadSheetName.contains(" ");
-    if (index == 0 || isContain) {
-        return true;
-    } else {
-        return false;
-    }
+    boolean containsSpace = spreadSheetName.contains(" ");
+    return (index == 0 || containsSpace);
 }
