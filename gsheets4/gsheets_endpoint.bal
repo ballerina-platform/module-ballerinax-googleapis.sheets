@@ -51,7 +51,7 @@ public type Client client object {
     # + spreadsheetId - Id of the spreadsheet
     # + sheetId - The ID of the sheet to delete
     # + return - Sheet object on success and error on failure
-    public remote function deleteSheet(string spreadsheetId, int sheetId) returns boolean|error;
+    public remote function deleteSheet(string spreadsheetId, int sheetId) returns error?;
 
     # Get spreadsheet values.
     #
@@ -100,7 +100,7 @@ public type Client client object {
     # + value - The value to be updated
     # + return - True on success and error on failure
     public remote function setCellData(string spreadsheetId, string sheetName, string column, int row, string value)
-                                                     returns (boolean)|error;
+                                                     returns error?;
 
     # Set spreadsheet values.
     #
@@ -111,7 +111,7 @@ public type Client client object {
     # + values - Values to be updated
     # + return - True on success and error on failure
     public remote function setSheetValues(string spreadsheetId, string sheetName, string topLeftCell = "",
-                                    string bottomRightCell = "", string[][] values) returns (boolean)|error;
+                                    string bottomRightCell = "", string[][] values) returns error?;
 };
 
 public remote function Client.createSpreadsheet(string spreadsheetName) returns Spreadsheet|error {
@@ -136,7 +136,10 @@ public remote function Client.createSpreadsheet(string spreadsheetName) returns 
 }
 
 public remote function Client.openSpreadsheetById(string spreadsheetId) returns Spreadsheet|error {
-    checkpanic validateSpreadSheetId(spreadsheetId);
+    error? validateResult = validateSpreadSheetId(spreadsheetId);
+    if (validateResult is error) {
+        return validateResult;
+    }
     string getSpreadsheetPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId;
     var httpResponse = self.spreadsheetClient->get(getSpreadsheetPath);
     if (httpResponse is http:Response) {
@@ -157,7 +160,10 @@ public remote function Client.openSpreadsheetById(string spreadsheetId) returns 
 
 public remote function Client.addNewSheet(string spreadsheetId, string sheetName)
                                             returns Sheet|error {
-    checkpanic validateSpreadSheetId(spreadsheetId);
+    error? validateResult = validateSpreadSheetId(spreadsheetId);
+    if (validateResult is error) {
+        return validateResult;
+    }
     boolean sheetNameValidateResult = validateSheetName(sheetName);
     http:Request request = new;
     json sheetJSONPayload = {"requests" : [{"addSheet":{"properties":{}}}]};
@@ -189,9 +195,11 @@ public remote function Client.addNewSheet(string spreadsheetId, string sheetName
     }
 }
 
-public remote function Client.deleteSheet(string spreadsheetId, int sheetId)
-                                                     returns boolean|error {
-    checkpanic validateSpreadSheetId(spreadsheetId);
+public remote function Client.deleteSheet(string spreadsheetId, int sheetId) returns error? {
+    error? validateResult = validateSpreadSheetId(spreadsheetId);
+    if (validateResult is error) {
+        return validateResult;
+    }
     http:Request request = new;
     json sheetJSONPayload = {"requests" : [{"deleteSheet":{"sheetId":sheetId}}]};
     request.setJsonPayload(sheetJSONPayload);
@@ -214,7 +222,10 @@ public remote function Client.deleteSheet(string spreadsheetId, int sheetId)
 
 public remote function Client.getSheetValues(string spreadsheetId, string sheetName, string topLeftCell = "",
                                                      string bottomRightCell = "") returns string[][]|error {
-    checkpanic validateSpreadSheetId(spreadsheetId);
+    error? validateResult = validateSpreadSheetId(spreadsheetId);
+    if (validateResult is error) {
+        return validateResult;
+    }
     boolean sheetNameValidateResult = validateSheetName(sheetName);
     string[][] values = [];
     string a1Notation;
@@ -267,7 +278,10 @@ public remote function Client.getSheetValues(string spreadsheetId, string sheetN
 
 public remote function Client.getColumnData(string spreadsheetId, string sheetName, string column)
                                                      returns string[]|error {
-    checkpanic validateSpreadSheetId(spreadsheetId);
+    error? validateResult = validateSpreadSheetId(spreadsheetId);
+    if (validateResult is error) {
+        return validateResult;
+    }
     boolean sheetNameValidateResult = validateSheetName(sheetName);
     string[] values = [];
     string a1Notation;
@@ -312,7 +326,10 @@ public remote function Client.getColumnData(string spreadsheetId, string sheetNa
 
 public remote function Client.getRowData(string spreadsheetId, string sheetName, int row)
                                                      returns string[]|error {
-    checkpanic validateSpreadSheetId(spreadsheetId);
+    error? validateResult = validateSpreadSheetId(spreadsheetId);
+    if (validateResult is error) {
+        return validateResult;
+    }
     boolean sheetNameValidateResult = validateSheetName(sheetName);
     string[] values = [];
     string a1Notation;
@@ -353,7 +370,10 @@ public remote function Client.getRowData(string spreadsheetId, string sheetName,
 
 public remote function Client.getCellData(string spreadsheetId, string sheetName, string column, int row)
                                                      returns string|error {
-    checkpanic validateSpreadSheetId(spreadsheetId);
+    error? validateResult = validateSpreadSheetId(spreadsheetId);
+    if (validateResult is error) {
+        return validateResult;
+    }
     boolean sheetNameValidateResult = validateSheetName(sheetName);
     string value = EMPTY_STRING;
     string a1Notation;
@@ -387,8 +407,11 @@ public remote function Client.getCellData(string spreadsheetId, string sheetName
 }
 
 public remote function Client.setCellData(string spreadsheetId, string sheetName, string column, int row,
-                                                  string value) returns boolean|error {
-    checkpanic validateSpreadSheetId(spreadsheetId);
+                                                  string value) returns error? {
+    error? validateResult = validateSpreadSheetId(spreadsheetId);
+    if (validateResult is error) {
+        return validateResult;
+    }
     boolean sheetNameValidateResult = validateSheetName(sheetName);
     http:Request request = new;
     string a1Notation;
@@ -419,8 +442,11 @@ public remote function Client.setCellData(string spreadsheetId, string sheetName
 
 public remote function Client.setSheetValues(string spreadsheetId, string sheetName, string topLeftCell = "",
                                                      string bottomRightCell = "", string[][] values)
-                                                     returns boolean|error {
-    checkpanic validateSpreadSheetId(spreadsheetId);
+                                                     returns error? {
+    error? validateResult = validateSpreadSheetId(spreadsheetId);
+    if (validateResult is error) {
+        return validateResult;
+    }
     boolean sheetNameValidateResult = validateSheetName(sheetName);
     string a1Notation;
     http:Request request = new;

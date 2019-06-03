@@ -33,22 +33,26 @@ function setJsonResponse(json jsonResponse, int statusCode) returns Spreadsheet|
     return setResponseError(jsonResponse);
 }
 
-function setResponse(json jsonResponse, int statusCode) returns boolean|error{
-    if (statusCode == http:OK_200) {
-        return true;
+function setResponse(json jsonResponse, int statusCode) returns error? {
+    if (statusCode != 200) {
+        return setResponseError(jsonResponse);
     }
-    return setResponseError(jsonResponse);
 }
 
 function validateSpreadSheetId(string spreadSheetId) returns error? {
     string regEx = "[a-zA-Z0-9-_]+";
-    boolean isMatch = checkpanic spreadSheetId.matches(regEx);
-    if (isMatch) {
-        return;
+    boolean|error isMatch = spreadSheetId.matches(regEx);
+    if (isMatch is error) {
+        return isMatch;
+    } else {
+        if (!isMatch) {
+            error err = error(SPREADSHEET_ERROR_CODE, { message: "Error occurred by a spreadsheet ID: "
+            + spreadSheetId + ", that should be satisfy the regular expression format: [a-zA-Z0-9-_]+"});
+            return err;
+        } else {
+            return;
+        }
     }
-    error err = error(SPREADSHEET_ERROR_CODE, { message: "Error occurred by a spreadsheet ID: "
-                + spreadSheetId + ", that should be satisfy the regular expression format: [a-zA-Z0-9-_]+"});
-    return err;
 }
 
 function validateSheetName(string spreadSheetName) returns boolean {
