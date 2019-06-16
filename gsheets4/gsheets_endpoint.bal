@@ -136,10 +136,7 @@ public remote function Client.createSpreadsheet(string spreadsheetName) returns 
 }
 
 public remote function Client.openSpreadsheetById(string spreadsheetId) returns Spreadsheet|error {
-    error? validateResult = validateSpreadSheetId(spreadsheetId);
-    if (validateResult is error) {
-        return validateResult;
-    }
+    check validateSpreadSheetId(spreadsheetId);
     string getSpreadsheetPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId;
     var httpResponse = self.spreadsheetClient->get(getSpreadsheetPath);
     if (httpResponse is http:Response) {
@@ -160,10 +157,7 @@ public remote function Client.openSpreadsheetById(string spreadsheetId) returns 
 
 public remote function Client.addNewSheet(string spreadsheetId, string sheetName)
                                             returns Sheet|error {
-    error? validateResult = validateSpreadSheetId(spreadsheetId);
-    if (validateResult is error) {
-        return validateResult;
-    }
+    check validateSpreadSheetId(spreadsheetId);
     boolean sheetNameValidateResult = validateSheetName(sheetName);
     http:Request request = new;
     json sheetJSONPayload = {"requests" : [{"addSheet":{"properties":{}}}]};
@@ -196,10 +190,7 @@ public remote function Client.addNewSheet(string spreadsheetId, string sheetName
 }
 
 public remote function Client.deleteSheet(string spreadsheetId, int sheetId) returns error? {
-    error? validateResult = validateSpreadSheetId(spreadsheetId);
-    if (validateResult is error) {
-        return validateResult;
-    }
+    check validateSpreadSheetId(spreadsheetId);
     http:Request request = new;
     json sheetJSONPayload = {"requests" : [{"deleteSheet":{"sheetId":sheetId}}]};
     request.setJsonPayload(sheetJSONPayload);
@@ -222,23 +213,15 @@ public remote function Client.deleteSheet(string spreadsheetId, int sheetId) ret
 
 public remote function Client.getSheetValues(string spreadsheetId, string sheetName, string topLeftCell = "",
                                                      string bottomRightCell = "") returns string[][]|error {
-    error? validateResult = validateSpreadSheetId(spreadsheetId);
-    if (validateResult is error) {
-        return validateResult;
-    }
+    check validateSpreadSheetId(spreadsheetId);
     boolean sheetNameValidateResult = validateSheetName(sheetName);
     string[][] values = [];
-    string a1Notation;
-    if (sheetNameValidateResult) {
-        a1Notation = "'" + sheetName.replace(" ", "%20") + "'";
-    } else {
-        a1Notation = sheetName;
-    }
+    string a1Notation = seta1Notation(sheetName, sheetNameValidateResult);
     if (topLeftCell != EMPTY_STRING) {
-        a1Notation = a1Notation + "!" + topLeftCell;
+        a1Notation = a1Notation + EXCLAMATION_MARK + topLeftCell;
     }
     if (bottomRightCell != EMPTY_STRING) {
-        a1Notation = a1Notation + ":" + bottomRightCell;
+        a1Notation = a1Notation + COLON + bottomRightCell;
     }
     string getSheetValuesPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + a1Notation;
     var httpResponse = self.spreadsheetClient->get(getSheetValuesPath);
@@ -278,18 +261,10 @@ public remote function Client.getSheetValues(string spreadsheetId, string sheetN
 
 public remote function Client.getColumnData(string spreadsheetId, string sheetName, string column)
                                                      returns string[]|error {
-    error? validateResult = validateSpreadSheetId(spreadsheetId);
-    if (validateResult is error) {
-        return validateResult;
-    }
+    check validateSpreadSheetId(spreadsheetId);
     boolean sheetNameValidateResult = validateSheetName(sheetName);
     string[] values = [];
-    string a1Notation;
-    if (sheetNameValidateResult) {
-        a1Notation = "'" + sheetName.replace(" ", "%20") + "'" + "!" + column + ":" + column;
-    } else {
-        a1Notation = sheetName + "!" + column + ":" + column;
-    }
+    string a1Notation = setColumna1Notation(sheetName, column, sheetNameValidateResult);
     string getColumnDataPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + a1Notation;
     var httpResponse = self.spreadsheetClient->get(getColumnDataPath);
     if (httpResponse is http:Response) {
@@ -326,18 +301,10 @@ public remote function Client.getColumnData(string spreadsheetId, string sheetNa
 
 public remote function Client.getRowData(string spreadsheetId, string sheetName, int row)
                                                      returns string[]|error {
-    error? validateResult = validateSpreadSheetId(spreadsheetId);
-    if (validateResult is error) {
-        return validateResult;
-    }
+    check validateSpreadSheetId(spreadsheetId);
     boolean sheetNameValidateResult = validateSheetName(sheetName);
     string[] values = [];
-    string a1Notation;
-    if (sheetNameValidateResult) {
-        a1Notation = "'" + sheetName.replace(" ", "%20") + "'" + "!" + row + ":" + row;
-    } else {
-        a1Notation = sheetName + "!" +  row + ":" + row;
-    }
+    string a1Notation = setRowa1Notation(sheetName, row, sheetNameValidateResult);
     string getRowDataPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + a1Notation;
     var httpResponse = self.spreadsheetClient->get(getRowDataPath);
     if (httpResponse is http:Response) {
@@ -370,18 +337,10 @@ public remote function Client.getRowData(string spreadsheetId, string sheetName,
 
 public remote function Client.getCellData(string spreadsheetId, string sheetName, string column, int row)
                                                      returns string|error {
-    error? validateResult = validateSpreadSheetId(spreadsheetId);
-    if (validateResult is error) {
-        return validateResult;
-    }
+    check validateSpreadSheetId(spreadsheetId);
     boolean sheetNameValidateResult = validateSheetName(sheetName);
     string value = EMPTY_STRING;
-    string a1Notation;
-    if (sheetNameValidateResult) {
-        a1Notation = "'" + sheetName.replace(" ", "%20") + "'" + "!" + column + row;
-    } else {
-        a1Notation = sheetName + "!" + column + row;
-    }
+    string a1Notation = setRowColumna1Notation(sheetName, row, column, sheetNameValidateResult);
     string getCellDataPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + a1Notation;
     var httpResponse = self.spreadsheetClient->get(getCellDataPath);
     if (httpResponse is http:Response) {
@@ -408,19 +367,11 @@ public remote function Client.getCellData(string spreadsheetId, string sheetName
 
 public remote function Client.setCellData(string spreadsheetId, string sheetName, string column, int row,
                                                   string value) returns error? {
-    error? validateResult = validateSpreadSheetId(spreadsheetId);
-    if (validateResult is error) {
-        return validateResult;
-    }
+    check validateSpreadSheetId(spreadsheetId);
     boolean sheetNameValidateResult = validateSheetName(sheetName);
     http:Request request = new;
-    string a1Notation;
+    string a1Notation = setRowColumna1Notation(sheetName, row, column, sheetNameValidateResult);
     json jsonPayload = {"values":[[value]]};
-    if (sheetNameValidateResult) {
-        a1Notation = "'" + sheetName.replace(" ", "%20") + "'" + "!" + column + row;
-    } else {
-        a1Notation = sheetName + "!" + column + row;
-    }
     string setCellDataPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + a1Notation
         + QUESTION_MARK + VALUE_INPUT_OPTION;
     request.setJsonPayload(jsonPayload);
@@ -443,23 +394,15 @@ public remote function Client.setCellData(string spreadsheetId, string sheetName
 public remote function Client.setSheetValues(string spreadsheetId, string sheetName, string topLeftCell = "",
                                                      string bottomRightCell = "", string[][] values)
                                                      returns error? {
-    error? validateResult = validateSpreadSheetId(spreadsheetId);
-    if (validateResult is error) {
-        return validateResult;
-    }
+    check validateSpreadSheetId(spreadsheetId);
     boolean sheetNameValidateResult = validateSheetName(sheetName);
-    string a1Notation;
+    string a1Notation = seta1Notation(sheetName, sheetNameValidateResult);
     http:Request request = new;
-    if (sheetNameValidateResult) {
-        a1Notation = "'" + sheetName.replace(" ", "%20") + "'";
-    } else {
-        a1Notation = sheetName;
-    }
     if (topLeftCell != EMPTY_STRING ) {
-        a1Notation = a1Notation + "!" + topLeftCell;
+        a1Notation = a1Notation + EXCLAMATION_MARK + topLeftCell;
     }
     if (bottomRightCell != EMPTY_STRING) {
-        a1Notation = a1Notation + ":" + bottomRightCell;
+        a1Notation = a1Notation + COLON + bottomRightCell;
     }
     string setValuePath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + a1Notation
         + QUESTION_MARK + VALUE_INPUT_OPTION;

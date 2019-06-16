@@ -30,8 +30,12 @@ final string QUESTION_MARK = "?";
 final string PATH_SEPARATOR = "/";
 final string EMPTY_STRING = "";
 final string WHITE_SPACE = " ";
+final string ENCODED_VALUE_FOR_WHITE_SPACE = "%20";
 final string FORWARD_SLASH = "/";
 final string DASH_WITH_WHITE_SPACES_SYMBOL = " - ";
+final string COLON = ":";
+final string EXCLAMATION_MARK = "!";
+final string APOSTROPHE = "'";
 
 // Error Codes
 final string SPREADSHEET_ERROR_CODE = "(wso2/gsheets4)SpreadsheetError";

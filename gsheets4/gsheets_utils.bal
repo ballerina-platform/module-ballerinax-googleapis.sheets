@@ -18,45 +18,81 @@ import ballerina/http;
 import ballerina/io;
 
 function setResponseError(json jsonResponse) returns error {
-    return error(SPREADSHEET_ERROR_CODE, { message: jsonResponse["error"].message.toString()});
+    return error(SPREADSHEET_ERROR_CODE, { message: jsonResponse["error"].message.toString() });
 }
 
 function setResError(error apiResponse) returns error {
-    return error(SPREADSHEET_ERROR_CODE, { message: <string>apiResponse.detail().message});
+    return error(SPREADSHEET_ERROR_CODE, { message: <string>apiResponse.detail().message });
 }
 
 function setJsonResponse(json jsonResponse, int statusCode) returns Spreadsheet|error {
     if (statusCode == http:OK_200) {
-        Spreadsheet spreadsheet = convertToSpreadsheet(jsonResponse);
-        return spreadsheet;
+        return convertToSpreadsheet(jsonResponse);
     }
     return setResponseError(jsonResponse);
 }
 
 function setResponse(json jsonResponse, int statusCode) returns error? {
-    if (statusCode != 200) {
-        return setResponseError(jsonResponse);
+    if (statusCode == 200) {
+        return;
     }
+    return setResponseError(jsonResponse);
 }
 
 function validateSpreadSheetId(string spreadSheetId) returns error? {
     string regEx = "[a-zA-Z0-9-_]+";
-    boolean|error isMatch = spreadSheetId.matches(regEx);
-    if (isMatch is error) {
-        return isMatch;
-    } else {
-        if (!isMatch) {
-            error err = error(SPREADSHEET_ERROR_CODE, { message: "Error occurred by a spreadsheet ID: "
-            + spreadSheetId + ", that should be satisfy the regular expression format: [a-zA-Z0-9-_]+"});
-            return err;
-        } else {
-            return;
-        }
+    boolean isMatch = check spreadSheetId.matches(regEx);
+    if (isMatch) {
+        return;
     }
+    error err = error(SPREADSHEET_ERROR_CODE, { message: "Error occurred by a spreadsheet ID: "
+    + spreadSheetId + ", that should be satisfy the regular expression format: [a-zA-Z0-9-_]+"});
+    return err;
 }
 
 function validateSheetName(string spreadSheetName) returns boolean {
-    int index = spreadSheetName.indexOf("(");
-    boolean containsSpace = spreadSheetName.contains(" ");
-    return (index == 0 || containsSpace);
+    return (spreadSheetName.indexOf("(") == 0 || spreadSheetName.contains(" "));
+}
+
+function setRowa1Notation(string sheetName, int row, boolean sheetNameValidateResult) returns string {
+    string a1Notation;
+    if (sheetNameValidateResult) {
+        a1Notation = APOSTROPHE + sheetName.replace(WHITE_SPACE, ENCODED_VALUE_FOR_WHITE_SPACE) + APOSTROPHE
+        + EXCLAMATION_MARK + row + COLON + row;
+    } else {
+        a1Notation = sheetName + EXCLAMATION_MARK +  row + COLON + row;
+    }
+    return a1Notation;
+}
+
+function setColumna1Notation(string sheetName, string column, boolean sheetNameValidateResult) returns string {
+    string a1Notation;
+    if (sheetNameValidateResult) {
+        a1Notation = APOSTROPHE + sheetName.replace(WHITE_SPACE, ENCODED_VALUE_FOR_WHITE_SPACE) + APOSTROPHE
+        + EXCLAMATION_MARK + column + COLON + column;
+    } else {
+        a1Notation = sheetName + EXCLAMATION_MARK + column + COLON + column;
+    }
+    return a1Notation;
+}
+
+function seta1Notation(string sheetName, boolean sheetNameValidateResult) returns string {
+    string a1Notation;
+    if (sheetNameValidateResult) {
+        a1Notation = APOSTROPHE + sheetName.replace(WHITE_SPACE, ENCODED_VALUE_FOR_WHITE_SPACE) + APOSTROPHE;
+    } else {
+        a1Notation = sheetName;
+    }
+    return a1Notation;
+}
+
+function setRowColumna1Notation(string sheetName, int row, string column, boolean sheetNameValidateResult) returns string {
+    string a1Notation;
+    if (sheetNameValidateResult) {
+        a1Notation = APOSTROPHE + sheetName.replace(WHITE_SPACE, ENCODED_VALUE_FOR_WHITE_SPACE) + APOSTROPHE
+        + EXCLAMATION_MARK + column + row;
+    } else {
+        a1Notation = sheetName + EXCLAMATION_MARK + column + row;
+    }
+    return a1Notation;
 }
