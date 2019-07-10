@@ -204,7 +204,7 @@ function testGetRowData() {
 }
 
 @test:Config {
-    dependsOn: ["testGetSheetValues", "testGetSheets"]
+    dependsOn: ["testGetSheetValues", "testGetSheets", "testGetColumnData", "testGetRowData"]
 }
 function testSetCellData() {
     io:println("-----------------Test case for setCellData method------------------");

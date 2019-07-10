@@ -15,6 +15,7 @@
 // under the License.
 
 import ballerina/http;
+import ballerina/io;
 
 # Google Spreadsheet Client object.
 #
@@ -216,7 +217,7 @@ public remote function Client.getSheetValues(string spreadsheetId, string sheetN
     check validateSpreadSheetId(spreadsheetId);
     boolean sheetNameValidateResult = validateSheetName(sheetName);
     string[][] values = [];
-    string a1Notation = seta1Notation(sheetName, sheetNameValidateResult);
+    string a1Notation = setA1Notation(sheetName, sheetNameValidateResult);
     if (topLeftCell != EMPTY_STRING) {
         a1Notation = a1Notation + EXCLAMATION_MARK + topLeftCell;
     }
@@ -264,8 +265,9 @@ public remote function Client.getColumnData(string spreadsheetId, string sheetNa
     check validateSpreadSheetId(spreadsheetId);
     boolean sheetNameValidateResult = validateSheetName(sheetName);
     string[] values = [];
-    string a1Notation = setColumna1Notation(sheetName, column, sheetNameValidateResult);
+    string a1Notation = setColumnA1Notation(sheetName, column, sheetNameValidateResult);
     string getColumnDataPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + a1Notation;
+    io:println(getColumnDataPath);
     var httpResponse = self.spreadsheetClient->get(getColumnDataPath);
     if (httpResponse is http:Response) {
         int statusCode = httpResponse.statusCode;
@@ -304,7 +306,7 @@ public remote function Client.getRowData(string spreadsheetId, string sheetName,
     check validateSpreadSheetId(spreadsheetId);
     boolean sheetNameValidateResult = validateSheetName(sheetName);
     string[] values = [];
-    string a1Notation = setRowa1Notation(sheetName, row, sheetNameValidateResult);
+    string a1Notation = setRowA1Notation(sheetName, row, sheetNameValidateResult);
     string getRowDataPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + a1Notation;
     var httpResponse = self.spreadsheetClient->get(getRowDataPath);
     if (httpResponse is http:Response) {
@@ -340,7 +342,7 @@ public remote function Client.getCellData(string spreadsheetId, string sheetName
     check validateSpreadSheetId(spreadsheetId);
     boolean sheetNameValidateResult = validateSheetName(sheetName);
     string value = EMPTY_STRING;
-    string a1Notation = setRowColumna1Notation(sheetName, row, column, sheetNameValidateResult);
+    string a1Notation = setRowColumnA1Notation(sheetName, row, column, sheetNameValidateResult);
     string getCellDataPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + a1Notation;
     var httpResponse = self.spreadsheetClient->get(getCellDataPath);
     if (httpResponse is http:Response) {
@@ -370,7 +372,7 @@ public remote function Client.setCellData(string spreadsheetId, string sheetName
     check validateSpreadSheetId(spreadsheetId);
     boolean sheetNameValidateResult = validateSheetName(sheetName);
     http:Request request = new;
-    string a1Notation = setRowColumna1Notation(sheetName, row, column, sheetNameValidateResult);
+    string a1Notation = setRowColumnA1Notation(sheetName, row, column, sheetNameValidateResult);
     json jsonPayload = {"values":[[value]]};
     string setCellDataPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + a1Notation
         + QUESTION_MARK + VALUE_INPUT_OPTION;
@@ -396,7 +398,7 @@ public remote function Client.setSheetValues(string spreadsheetId, string sheetN
                                                      returns error? {
     check validateSpreadSheetId(spreadsheetId);
     boolean sheetNameValidateResult = validateSheetName(sheetName);
-    string a1Notation = seta1Notation(sheetName, sheetNameValidateResult);
+    string a1Notation = setA1Notation(sheetName, sheetNameValidateResult);
     http:Request request = new;
     if (topLeftCell != EMPTY_STRING ) {
         a1Notation = a1Notation + EXCLAMATION_MARK + topLeftCell;

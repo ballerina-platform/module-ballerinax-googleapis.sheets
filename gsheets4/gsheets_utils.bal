@@ -54,9 +54,9 @@ function validateSheetName(string spreadSheetName) returns boolean {
     return (spreadSheetName.indexOf("(") == 0 || spreadSheetName.contains(" "));
 }
 
-function setRowa1Notation(string sheetName, int row, boolean sheetNameValidateResult) returns string {
+function setRowA1Notation(string sheetName, int row, boolean sheetNameValidationResult) returns string {
     string a1Notation;
-    if (sheetNameValidateResult) {
+    if (sheetNameValidationResult) {
         a1Notation = APOSTROPHE + sheetName.replace(WHITE_SPACE, ENCODED_VALUE_FOR_WHITE_SPACE) + APOSTROPHE
         + EXCLAMATION_MARK + row + COLON + row;
     } else {
@@ -65,9 +65,9 @@ function setRowa1Notation(string sheetName, int row, boolean sheetNameValidateRe
     return a1Notation;
 }
 
-function setColumna1Notation(string sheetName, string column, boolean sheetNameValidateResult) returns string {
+function setColumnA1Notation(string sheetName, string column, boolean sheetNameValidationResult) returns string {
     string a1Notation;
-    if (sheetNameValidateResult) {
+    if (sheetNameValidationResult) {
         a1Notation = APOSTROPHE + sheetName.replace(WHITE_SPACE, ENCODED_VALUE_FOR_WHITE_SPACE) + APOSTROPHE
         + EXCLAMATION_MARK + column + COLON + column;
     } else {
@@ -76,23 +76,18 @@ function setColumna1Notation(string sheetName, string column, boolean sheetNameV
     return a1Notation;
 }
 
-function seta1Notation(string sheetName, boolean sheetNameValidateResult) returns string {
-    string a1Notation;
-    if (sheetNameValidateResult) {
-        a1Notation = APOSTROPHE + sheetName.replace(WHITE_SPACE, ENCODED_VALUE_FOR_WHITE_SPACE) + APOSTROPHE;
-    } else {
-        a1Notation = sheetName;
+function setA1Notation(string sheetName, boolean sheetNameValidationResult) returns string {
+    if (sheetNameValidationResult) {
+        return APOSTROPHE + sheetName.replace(WHITE_SPACE, ENCODED_VALUE_FOR_WHITE_SPACE) + APOSTROPHE;
     }
-    return a1Notation;
+    return sheetName;
 }
 
-function setRowColumna1Notation(string sheetName, int row, string column, boolean sheetNameValidateResult) returns string {
-    string a1Notation;
-    if (sheetNameValidateResult) {
-        a1Notation = APOSTROPHE + sheetName.replace(WHITE_SPACE, ENCODED_VALUE_FOR_WHITE_SPACE) + APOSTROPHE
+function setRowColumnA1Notation(string sheetName, int row, string column, boolean sheetNameValidationResult)
+returns string {
+    if (sheetNameValidationResult) {
+        return APOSTROPHE + sheetName.replace(WHITE_SPACE, ENCODED_VALUE_FOR_WHITE_SPACE) + APOSTROPHE
         + EXCLAMATION_MARK + column + row;
-    } else {
-        a1Notation = sheetName + EXCLAMATION_MARK + column + row;
     }
-    return a1Notation;
+    return sheetName;
 }

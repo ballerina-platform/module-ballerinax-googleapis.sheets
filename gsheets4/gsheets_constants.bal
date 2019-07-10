@@ -15,27 +15,27 @@
 // under the License.
 
 //API urls
-final string BASE_URL = "https://sheets.googleapis.com";
-public const string REFRESH_URL = "https://www.googleapis.com/oauth2/v3/token";
-final string SPREADSHEET_PATH = "/v4/spreadsheets";
-final string VALUES_PATH = "/values/";
-final string VALUE_INPUT_OPTION = "valueInputOption=RAW";
-final string BATCH_UPDATE_REQUEST = ":batchUpdate";
+const string BASE_URL = "https://sheets.googleapis.com";
+const string REFRESH_URL = "https://www.googleapis.com/oauth2/v3/token";
+const string SPREADSHEET_PATH = "/v4/spreadsheets";
+const string VALUES_PATH = "/values/";
+const string VALUE_INPUT_OPTION = "valueInputOption=RAW";
+const string BATCH_UPDATE_REQUEST = ":batchUpdate";
 
 //Secure client configs
-final string SCHEME = "oauth";
+const string SCHEME = "oauth";
 
 //Symbols
-final string QUESTION_MARK = "?";
-final string PATH_SEPARATOR = "/";
-final string EMPTY_STRING = "";
-final string WHITE_SPACE = " ";
-final string ENCODED_VALUE_FOR_WHITE_SPACE = "%20";
-final string FORWARD_SLASH = "/";
-final string DASH_WITH_WHITE_SPACES_SYMBOL = " - ";
-final string COLON = ":";
-final string EXCLAMATION_MARK = "!";
-final string APOSTROPHE = "'";
+const string QUESTION_MARK = "?";
+const string PATH_SEPARATOR = "/";
+const string EMPTY_STRING = "";
+const string WHITE_SPACE = " ";
+const string ENCODED_VALUE_FOR_WHITE_SPACE = "%20";
+const string FORWARD_SLASH = "/";
+const string DASH_WITH_WHITE_SPACES_SYMBOL = " - ";
+const string COLON = ":";
+const string EXCLAMATION_MARK = "!";
+const string APOSTROPHE = "'";
 
 // Error Codes
-final string SPREADSHEET_ERROR_CODE = "(wso2/gsheets4)SpreadsheetError";
+const string SPREADSHEET_ERROR_CODE = "(wso2/gsheets4)SpreadsheetError";
