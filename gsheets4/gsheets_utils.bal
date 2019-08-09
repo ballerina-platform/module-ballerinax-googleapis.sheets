@@ -15,8 +15,79 @@
 // under the License.
 
 import ballerina/http;
+import ballerina/io;
 
 function setResponseError(json jsonResponse) returns error {
-    error err = error(SPREADSHEET_ERROR_CODE, { message: jsonResponse.message.toString() });
+    return error(SPREADSHEET_ERROR_CODE, { message: jsonResponse["error"].message.toString() });
+}
+
+function setResError(error apiResponse) returns error {
+    return error(SPREADSHEET_ERROR_CODE, { message: <string>apiResponse.detail().message });
+}
+
+function setJsonResponse(json jsonResponse, int statusCode) returns Spreadsheet|error {
+    if (statusCode == http:OK_200) {
+        return convertToSpreadsheet(jsonResponse);
+    }
+    return setResponseError(jsonResponse);
+}
+
+function setResponse(json jsonResponse, int statusCode) returns error? {
+    if (statusCode == 200) {
+        return;
+    }
+    return setResponseError(jsonResponse);
+}
+
+function validateSpreadSheetId(string spreadSheetId) returns error? {
+    string regEx = "[a-zA-Z0-9-_]+";
+    boolean isMatch = check spreadSheetId.matches(regEx);
+    if (isMatch) {
+        return;
+    }
+    error err = error(SPREADSHEET_ERROR_CODE, { message: "Error occurred by a spreadsheet ID: "
+    + spreadSheetId + ", that should be satisfy the regular expression format: [a-zA-Z0-9-_]+"});
     return err;
+}
+
+function validateSheetName(string spreadSheetName) returns boolean {
+    return (spreadSheetName.indexOf("(") == 0 || spreadSheetName.contains(" "));
+}
+
+function setRowA1Notation(string sheetName, int row, boolean sheetNameValidationResult) returns string {
+    string a1Notation;
+    if (sheetNameValidationResult) {
+        a1Notation = APOSTROPHE + sheetName.replace(WHITE_SPACE, ENCODED_VALUE_FOR_WHITE_SPACE) + APOSTROPHE
+        + EXCLAMATION_MARK + row + COLON + row;
+    } else {
+        a1Notation = sheetName + EXCLAMATION_MARK +  row + COLON + row;
+    }
+    return a1Notation;
+}
+
+function setColumnA1Notation(string sheetName, string column, boolean sheetNameValidationResult) returns string {
+    string a1Notation;
+    if (sheetNameValidationResult) {
+        a1Notation = APOSTROPHE + sheetName.replace(WHITE_SPACE, ENCODED_VALUE_FOR_WHITE_SPACE) + APOSTROPHE
+        + EXCLAMATION_MARK + column + COLON + column;
+    } else {
+        a1Notation = sheetName + EXCLAMATION_MARK + column + COLON + column;
+    }
+    return a1Notation;
+}
+
+function setA1Notation(string sheetName, boolean sheetNameValidationResult) returns string {
+    if (sheetNameValidationResult) {
+        return APOSTROPHE + sheetName.replace(WHITE_SPACE, ENCODED_VALUE_FOR_WHITE_SPACE) + APOSTROPHE;
+    }
+    return sheetName;
+}
+
+function setRowColumnA1Notation(string sheetName, int row, string column, boolean sheetNameValidationResult)
+returns string {
+    if (sheetNameValidationResult) {
+        return APOSTROPHE + sheetName.replace(WHITE_SPACE, ENCODED_VALUE_FOR_WHITE_SPACE) + APOSTROPHE
+        + EXCLAMATION_MARK + column + row;
+    }
+    return sheetName;
 }

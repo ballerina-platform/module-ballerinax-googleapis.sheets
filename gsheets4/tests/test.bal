@@ -154,9 +154,7 @@ function testSetSheetValues() {
     ["Nisha", "98"], ["Kana", "86"]];
     var spreadsheetRes = spreadsheetClient->setSheetValues(testSpreadsheet.spreadsheetId, testSheetName,
                                             topLeftCell ="A1", bottomRightCell = "C5", values);
-    if (spreadsheetRes is boolean) {
-        test:assertTrue(spreadsheetRes, msg = "Failed to update the values!");
-    } else {
+    if (spreadsheetRes is error) {
         test:assertFail(msg = <string>spreadsheetRes.detail().message);
     }
 }
@@ -206,15 +204,13 @@ function testGetRowData() {
 }
 
 @test:Config {
-    dependsOn: ["testGetSheetValues", "testGetSheets"]
+    dependsOn: ["testGetSheetValues", "testGetSheets", "testGetColumnData", "testGetRowData"]
 }
 function testSetCellData() {
     io:println("-----------------Test case for setCellData method------------------");
     string value = "90";
     var spreadsheetRes = spreadsheetClient->setCellData(testSpreadsheet.spreadsheetId, testSheetName, "B", 5, "90");
-    if (spreadsheetRes is boolean) {
-        test:assertTrue(spreadsheetRes, msg = "Failed to update the values!");
-    } else {
+    if (spreadsheetRes is error) {
         test:assertFail(msg = <string>spreadsheetRes.detail().message);
     }
 }
@@ -240,9 +236,7 @@ function testDeleteSheet() {
     io:println("-----------------Test case for deleteSheet method------------------");
     string value = "90";
     var spreadsheetRes = spreadsheetClient->deleteSheet(testSpreadsheet.spreadsheetId, testSheetId);
-    if (spreadsheetRes is boolean) {
-       test:assertTrue(spreadsheetRes, msg = "Failed to delete the sheet!");
-    } else {
+    if (spreadsheetRes is error) {
         test:assertFail(msg = <string>spreadsheetRes.detail().message);
     }
 }

@@ -15,10 +15,11 @@
 // under the License.
 
 import ballerina/http;
+import ballerina/io;
 
 # Google Spreadsheet Client object.
 #
-# + spreadsheetClient - SpreadsheetConnector client endpont
+# + spreadsheetClient - SpreadsheetConnector client endpoint
 public type Client client object {
 
     public http:Client spreadsheetClient;
@@ -50,8 +51,8 @@ public type Client client object {
     #
     # + spreadsheetId - Id of the spreadsheet
     # + sheetId - The ID of the sheet to delete
-    # + return - Sheet object on success and error on failure
-    public remote function deleteSheet(string spreadsheetId, int sheetId) returns boolean|error;
+    # + return - Error on failure
+    public remote function deleteSheet(string spreadsheetId, int sheetId) returns error?;
 
     # Get spreadsheet values.
     #
@@ -98,9 +99,9 @@ public type Client client object {
     # + column - Column name to set the data
     # + row - Row name to set the data
     # + value - The value to be updated
-    # + return - True on success and error on failure
+    # + return - Error on failure
     public remote function setCellData(string spreadsheetId, string sheetName, string column, int row, string value)
-                                                     returns (boolean)|error;
+                                                     returns error?;
 
     # Set spreadsheet values.
     #
@@ -109,9 +110,9 @@ public type Client client object {
     # + topLeftCell - Top left cell
     # + bottomRightCell - Bottom right cell
     # + values - Values to be updated
-    # + return - True on success and error on failure
+    # + return - Error on failure
     public remote function setSheetValues(string spreadsheetId, string sheetName, string topLeftCell = "",
-                                    string bottomRightCell = "", string[][] values) returns (boolean)|error;
+                                    string bottomRightCell = "", string[][] values) returns error?;
 };
 
 public remote function Client.createSpreadsheet(string spreadsheetName) returns Spreadsheet|error {
@@ -125,49 +126,39 @@ public remote function Client.createSpreadsheet(string spreadsheetName) returns 
         int statusCode = httpResponse.statusCode;
         var jsonResponse = httpResponse.getJsonPayload();
         if (jsonResponse is json) {
-            if (statusCode == http:OK_200) {
-                Spreadsheet spreadsheet = convertToSpreadsheet(jsonResponse);
-                return spreadsheet;
-            } else {
-                return setResponseError(jsonResponse);
-            }
-        } else {
-            error err = error(SPREADSHEET_ERROR_CODE,
-                { message: "Error occurred while accessing the JSON payload of the response" });
-            return err;
+            return setJsonResponse(jsonResponse, statusCode);
         }
-    } else {
-        error err = error(SPREADSHEET_ERROR_CODE, { message: "Error occurred while invoking the REST API" });
+        error err = error(SPREADSHEET_ERROR_CODE,
+            { message: "Error occurred while accessing the JSON payload of the response" });
         return err;
+    } else {
+        return setResError(httpResponse);
     }
 }
 
 public remote function Client.openSpreadsheetById(string spreadsheetId) returns Spreadsheet|error {
+    check validateSpreadSheetId(spreadsheetId);
     string getSpreadsheetPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId;
     var httpResponse = self.spreadsheetClient->get(getSpreadsheetPath);
     if (httpResponse is http:Response) {
         int statusCode = httpResponse.statusCode;
         var jsonResponse = httpResponse.getJsonPayload();
         if (jsonResponse is json) {
-            if (statusCode == http:OK_200) {
-                Spreadsheet spreadsheet = convertToSpreadsheet(jsonResponse);
-                return spreadsheet;
-            } else {
-                return setResponseError(jsonResponse);
-            }
+            return setJsonResponse(jsonResponse, statusCode);
         } else {
             error err = error(SPREADSHEET_ERROR_CODE,
                 { message: "Error occurred while accessing the JSON payload of the response" });
             return err;
         }
     } else {
-        error err = error(SPREADSHEET_ERROR_CODE, { message: "Error occurred while invoking the REST API" });
-        return err;
+        return setResError(httpResponse);
     }
+
 }
 
 public remote function Client.addNewSheet(string spreadsheetId, string sheetName)
                                             returns Sheet|error {
+    check validateSpreadSheetId(spreadsheetId);
     http:Request request = new;
     json sheetJSONPayload = {"requests" : [{"addSheet":{"properties":{}}}]};
     json jsonSheetProperties = {};
@@ -194,13 +185,12 @@ public remote function Client.addNewSheet(string spreadsheetId, string sheetName
             return err;
         }
     } else {
-        error err = error(SPREADSHEET_ERROR_CODE, { message: "Error occurred while invoking the REST API" });
-        return err;
+        return setResError(httpResponse);
     }
 }
 
-public remote function Client.deleteSheet(string spreadsheetId, int sheetId)
-                                                     returns boolean|error {
+public remote function Client.deleteSheet(string spreadsheetId, int sheetId) returns error? {
+    check validateSpreadSheetId(spreadsheetId);
     http:Request request = new;
     json sheetJSONPayload = {"requests" : [{"deleteSheet":{"sheetId":sheetId}}]};
     request.setJsonPayload(sheetJSONPayload);
@@ -210,31 +200,28 @@ public remote function Client.deleteSheet(string spreadsheetId, int sheetId)
         int statusCode = httpResponse.statusCode;
         var jsonResponse = httpResponse.getJsonPayload();
         if (jsonResponse is json) {
-            if (statusCode == http:OK_200) {
-                return true;
-            } else {
-                return setResponseError(jsonResponse);
-            }
+            return setResponse(jsonResponse, statusCode);
         } else {
             error err = error(SPREADSHEET_ERROR_CODE,
                 { message: "Error occurred while accessing the JSON payload of the response" });
             return err;
         }
     } else {
-        error err = error(SPREADSHEET_ERROR_CODE, { message: "Error occurred while invoking the REST API" });
-        return err;
+        return setResError(httpResponse);
     }
 }
 
 public remote function Client.getSheetValues(string spreadsheetId, string sheetName, string topLeftCell = "",
                                                      string bottomRightCell = "") returns string[][]|error {
+    check validateSpreadSheetId(spreadsheetId);
+    boolean sheetNameValidateResult = validateSheetName(sheetName);
     string[][] values = [];
-    string a1Notation = sheetName;
+    string a1Notation = setA1Notation(sheetName, sheetNameValidateResult);
     if (topLeftCell != EMPTY_STRING) {
-        a1Notation = a1Notation + "!" + topLeftCell;
+        a1Notation = a1Notation + EXCLAMATION_MARK + topLeftCell;
     }
     if (bottomRightCell != EMPTY_STRING) {
-        a1Notation = a1Notation + ":" + bottomRightCell;
+        a1Notation = a1Notation + COLON + bottomRightCell;
     }
     string getSheetValuesPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + a1Notation;
     var httpResponse = self.spreadsheetClient->get(getSheetValuesPath);
@@ -243,7 +230,7 @@ public remote function Client.getSheetValues(string spreadsheetId, string sheetN
         var jsonResponse = httpResponse.getJsonPayload();
         if (jsonResponse is json) {
             if (statusCode == http:OK_200) {
-                if (jsonResponse.values != null) {
+                if (jsonResponse.values.length() > 0) {
                     int i = 0;
                     json[] jsonValues = <json[]>jsonResponse.values;
                     foreach json value in jsonValues {
@@ -268,23 +255,25 @@ public remote function Client.getSheetValues(string spreadsheetId, string sheetN
             return err;
         }
     } else {
-        error err = error(SPREADSHEET_ERROR_CODE, { message: "Error occurred while invoking the REST API" });
-        return err;
+        return setResError(httpResponse);
     }
 }
 
 public remote function Client.getColumnData(string spreadsheetId, string sheetName, string column)
                                                      returns string[]|error {
+    check validateSpreadSheetId(spreadsheetId);
+    boolean sheetNameValidateResult = validateSheetName(sheetName);
     string[] values = [];
-    string a1Notation = sheetName + "!" + column + ":" + column;
+    string a1Notation = setColumnA1Notation(sheetName, column, sheetNameValidateResult);
     string getColumnDataPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + a1Notation;
+    io:println(getColumnDataPath);
     var httpResponse = self.spreadsheetClient->get(getColumnDataPath);
     if (httpResponse is http:Response) {
         int statusCode = httpResponse.statusCode;
         var jsonResponse = httpResponse.getJsonPayload();
         if (jsonResponse is json) {
             if (statusCode == http:OK_200) {
-                if (jsonResponse.values != null) {
+                if (jsonResponse.values.length() > 0) {
                     int i = 0;
                     json[] jsonValues = <json[]>jsonResponse.values;
                     foreach json value in jsonValues {
@@ -307,15 +296,16 @@ public remote function Client.getColumnData(string spreadsheetId, string sheetNa
             return err;
         }
     } else {
-        error err = error(SPREADSHEET_ERROR_CODE, { message: "Error occurred while invoking the REST API" });
-        return err;
+        return setResError(httpResponse);
     }
 }
 
 public remote function Client.getRowData(string spreadsheetId, string sheetName, int row)
                                                      returns string[]|error {
+    check validateSpreadSheetId(spreadsheetId);
+    boolean sheetNameValidateResult = validateSheetName(sheetName);
     string[] values = [];
-    string a1Notation = sheetName + "!" + row + ":" + row;
+    string a1Notation = setRowA1Notation(sheetName, row, sheetNameValidateResult);
     string getRowDataPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + a1Notation;
     var httpResponse = self.spreadsheetClient->get(getRowDataPath);
     if (httpResponse is http:Response) {
@@ -323,7 +313,7 @@ public remote function Client.getRowData(string spreadsheetId, string sheetName,
         var jsonResponse = httpResponse.getJsonPayload();
         if (jsonResponse is json) {
             if (statusCode == http:OK_200) {
-                if (jsonResponse.values != null) {
+                if (jsonResponse.values.length() > 0) {
                     int i = 0;
                     json[] jsonValues = <json[]>jsonResponse.values;
                     json[] jsonArray = <json[]>jsonValues[0];
@@ -342,15 +332,16 @@ public remote function Client.getRowData(string spreadsheetId, string sheetName,
             return err;
         }
     } else {
-        error err = error(SPREADSHEET_ERROR_CODE, { message: "Error occurred while invoking the REST API" });
-        return err;
+        return setResError(httpResponse);
     }
 }
 
 public remote function Client.getCellData(string spreadsheetId, string sheetName, string column, int row)
                                                      returns string|error {
+    check validateSpreadSheetId(spreadsheetId);
+    boolean sheetNameValidateResult = validateSheetName(sheetName);
     string value = EMPTY_STRING;
-    string a1Notation = sheetName + "!" + column + row;
+    string a1Notation = setRowColumnA1Notation(sheetName, row, column, sheetNameValidateResult);
     string getCellDataPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + a1Notation;
     var httpResponse = self.spreadsheetClient->get(getCellDataPath);
     if (httpResponse is http:Response) {
@@ -358,7 +349,7 @@ public remote function Client.getCellData(string spreadsheetId, string sheetName
         var jsonResponse = httpResponse.getJsonPayload();
         if (jsonResponse is json) {
             if (statusCode == http:OK_200) {
-                if (jsonResponse.values != null) {
+                if (jsonResponse.values.length() > 0) {
                     value = jsonResponse.values[0][0].toString();
                 }
                 return value;
@@ -371,16 +362,17 @@ public remote function Client.getCellData(string spreadsheetId, string sheetName
             return err;
         }
     } else {
-        error err = error(SPREADSHEET_ERROR_CODE, { message: "Error occurred while invoking the REST API" });
-        return err;
+        return setResError(httpResponse);
     }
 }
 
 public remote function Client.setCellData(string spreadsheetId, string sheetName, string column, int row,
-                                                  string value) returns boolean|error {
+                                                  string value) returns error? {
+    check validateSpreadSheetId(spreadsheetId);
+    boolean sheetNameValidateResult = validateSheetName(sheetName);
     http:Request request = new;
+    string a1Notation = setRowColumnA1Notation(sheetName, row, column, sheetNameValidateResult);
     json jsonPayload = {"values":[[value]]};
-    string a1Notation = sheetName + "!" + column + row;
     string setCellDataPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + a1Notation
         + QUESTION_MARK + VALUE_INPUT_OPTION;
     request.setJsonPayload(jsonPayload);
@@ -389,35 +381,32 @@ public remote function Client.setCellData(string spreadsheetId, string sheetName
         int statusCode = httpResponse.statusCode;
         var jsonResponse = httpResponse.getJsonPayload();
         if (jsonResponse is json) {
-            if (statusCode == http:OK_200) {
-                return true;
-            } else {
-                return setResponseError(jsonResponse);
-            }
+            return setResponse(jsonResponse, statusCode);
         } else {
             error err = error(SPREADSHEET_ERROR_CODE,
                 { message: "Error occurred while accessing the JSON payload of the response" });
             return err;
         }
     } else {
-        error err = error(SPREADSHEET_ERROR_CODE, { message: "Error occurred while invoking the REST API" });
-        return err;
+        return setResError(httpResponse);
     }
 }
 
 public remote function Client.setSheetValues(string spreadsheetId, string sheetName, string topLeftCell = "",
                                                      string bottomRightCell = "", string[][] values)
-                                                     returns boolean|error {
+                                                     returns error? {
+    check validateSpreadSheetId(spreadsheetId);
+    boolean sheetNameValidateResult = validateSheetName(sheetName);
+    string a1Notation = setA1Notation(sheetName, sheetNameValidateResult);
     http:Request request = new;
-    string a1Notation = sheetName;
     if (topLeftCell != EMPTY_STRING ) {
-        a1Notation = a1Notation + "!" + topLeftCell;
+        a1Notation = a1Notation + EXCLAMATION_MARK + topLeftCell;
     }
     if (bottomRightCell != EMPTY_STRING) {
-        a1Notation = a1Notation + ":" + bottomRightCell;
+        a1Notation = a1Notation + COLON + bottomRightCell;
     }
-    string setValuePath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + a1Notation + QUESTION_MARK
-        + VALUE_INPUT_OPTION;
+    string setValuePath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + a1Notation
+        + QUESTION_MARK + VALUE_INPUT_OPTION;
     json[][] jsonValues = [];
     int i = 0;
     foreach string[] value in values {
@@ -437,19 +426,14 @@ public remote function Client.setSheetValues(string spreadsheetId, string sheetN
         int statusCode = httpResponse.statusCode;
         var jsonResponse = httpResponse.getJsonPayload();
         if (jsonResponse is json) {
-            if (statusCode == http:OK_200) {
-                return true;
-            } else {
-                return setResponseError(jsonResponse);
-            }
+            return setResponse(jsonResponse, statusCode);
         } else {
             error err = error(SPREADSHEET_ERROR_CODE,
                 { message: "Error occurred while accessing the JSON payload of the response" });
             return err;
         }
     } else {
-        error err = error(SPREADSHEET_ERROR_CODE, { message: "Error occurred while invoking the REST API" });
-        return err;
+        return setResError(httpResponse);
     }
 }
 

@@ -17,10 +17,10 @@
 function convertToSpreadsheet(json jsonSpreadsheet) returns Spreadsheet {
     Spreadsheet spreadsheet = new;
     spreadsheet.spreadsheetId = jsonSpreadsheet.spreadsheetId.toString();
-    spreadsheet.properties = jsonSpreadsheet.properties != null
+    spreadsheet.properties = jsonSpreadsheet.properties.length() > 0
                             ? convertToSpreadsheetProperties(jsonSpreadsheet.properties) : {};
     spreadsheet.spreadsheetUrl = jsonSpreadsheet.spreadsheetUrl.toString();
-    spreadsheet.sheets = jsonSpreadsheet.sheets != null
+    spreadsheet.sheets = jsonSpreadsheet.sheets.length() > 0
                             ? convertToSheets(<json[]>jsonSpreadsheet.sheets) : [];
 
     return spreadsheet;
