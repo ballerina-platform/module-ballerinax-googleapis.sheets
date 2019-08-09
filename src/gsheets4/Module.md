@@ -16,7 +16,7 @@ The `wso2/gsheets4` module contains operations to set and get the sheet values o
 
 |                             |       Version               |
 |:---------------------------:|:---------------------------:|
-| Ballerina Language          | 0.991.0                     |
+| Ballerina Language          | 0.992.0                     |
 | Google Spreadsheet API      | V4                          |
 
 ## Sample
@@ -43,24 +43,22 @@ access token and refresh token).
 
 You can now enter the credentials in the HTTP client config:
 ```ballerina
-gsheets4:SpreadsheetConfiguration spreadsheetConfig = {
+oauth2:OutboundOAuth2Provider oauth2Provider = new({
+    accessToken: "<accessToken>",
+    refreshConfig: {
+        clientId: "<clientId>",
+        clientSecret: "<clientSecret>",
+        refreshUrl: REFRESH_URL,
+        refreshToken: "<refreshToken>"
+    }
+});
+http:BearerAuthHandler oauth2Handler = new(oauth2Provider);
+SpreadsheetConfiguration spreadsheetConfig = {
     clientConfig: {
         auth: {
-            scheme: http:OAUTH2,
-            config: {
-                grantType: http:DIRECT_TOKEN,
-                config: {
-                    accessToken: "<accessToken>",
-                    refreshConfig: {
-                        clientId: "<clientId>",
-                        clientSecret: "<clientSecret>",
-                        refreshToken: "<refreshToken>",
-                        refreshUrl: gsheets4:REFRESH_URL
-                    }
-                }
-            }
+            authHandler: oauth2Handler
         }
-    }   
+    }
 };
 
 gsheets4:Client spreadsheetClient = new(spreadsheetConfig);
@@ -101,7 +99,7 @@ if (response is gsheets4:Sheet) {
 
 The `setSheetValues` function sets the values for a range of cells. It returns the `boolean` status if successful or an `error` if unsuccessful.
 ```ballerina
-var response = spreadsheetClient->setSheetValues(spreadsheetId, sheetName, topLeftCell = topCell, bottomRightCell = bottomCell, values);
+var response = spreadsheetClient->setSheetValues(spreadsheetId, sheetName, values, topLeftCell = topCell, bottomRightCell = bottomCell);
 if (response is boolean) {
    io:println("Status: ", response);
 } else {

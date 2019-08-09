@@ -19,23 +19,22 @@ import ballerina/io;
 import ballerina/test;
 import ballerina/log;
 import ballerina/http;
+import ballerina/oauth2;
 
+oauth2:OutboundOAuth2Provider oauth2Provider = new({
+    accessToken: "ya29.xxxxxxx",
+    refreshConfig: {
+        clientId: "xxxxxxx",
+        clientSecret: "xxxxxxx",
+        refreshUrl: REFRESH_URL,
+        refreshToken: "1/Rxxxxxxx"
+    }
+});
+http:BearerAuthHandler oauth2Handler = new(oauth2Provider);
 SpreadsheetConfiguration spreadsheetConfig = {
     clientConfig: {
         auth: {
-            scheme: http:OAUTH2,
-            config: {
-                grantType: http:DIRECT_TOKEN,
-                config: {
-                    accessToken: config:getAsString("ACCESS_TOKEN"),
-                    refreshConfig: {
-                        clientId: config:getAsString("CLIENT_ID"),
-                        clientSecret: config:getAsString("CLIENT_SECRET"),
-                        refreshUrl: REFRESH_URL,
-                        refreshToken: config:getAsString("REFRESH_TOKEN")
-                    }
-                }
-            }
+            authHandler: oauth2Handler
         }
     }
 };
@@ -46,16 +45,19 @@ Sheet testSheet = {};
 string testSpreadsheetName = "testBalFile";
 string testSheetName = "testSheet";
 int testSheetId = 0;
+string[][] entries = [["Name", "Score", "Performance"], ["Keetz", "12"], ["Niro", "78"],
+                     ["Nisha", "98"], ["Kana", "86"]];
+string cellValue = "90";
 
-@test:Config
+@test:Config {}
 function testCreateSpreadsheet() {
     io:println("-----------------Test case for createSpreadsheet method------------------");
     var spreadsheetRes = spreadsheetClient->createSpreadsheet(testSpreadsheetName);
     if (spreadsheetRes is Spreadsheet) {
-        testSpreadsheet = spreadsheetRes;
+        testSpreadsheet = <@untainted> spreadsheetRes;
         test:assertNotEquals(spreadsheetRes.spreadsheetId, "", msg = "Failed to create spreadsheet");
     } else {
-        test:assertFail(msg = <string>spreadsheetRes.detail().message);
+        test:assertFail(msg = <string>spreadsheetRes.detail()["message"]);
     }
 }
 
@@ -66,10 +68,10 @@ function testAddNewSheet() {
     io:println("-----------------Test case for addNewSheet method------------------");
     var spreadsheetRes = spreadsheetClient->addNewSheet(testSpreadsheet.spreadsheetId, testSheetName);
     if (spreadsheetRes is Sheet) {
-        testSheetId = spreadsheetRes.properties.sheetId;
+        testSheetId = <@untainted> spreadsheetRes.properties.sheetId;
         test:assertNotEquals(spreadsheetRes.properties.sheetId, "", msg = "Failed to add sheet");
     } else {
-        test:assertFail(msg = <string>spreadsheetRes.detail().message);
+        test:assertFail(msg = <string>spreadsheetRes.detail()["message"]);
     }
 }
 
@@ -80,10 +82,11 @@ function testOpenSpreadsheetById() {
     io:println("-----------------Test case for openSpreadsheetById method------------------");
     var spreadsheetRes = spreadsheetClient->openSpreadsheetById(testSpreadsheet.spreadsheetId);
     if (spreadsheetRes is Spreadsheet) {
-        testSpreadsheet = spreadsheetRes;
-        test:assertNotEquals(spreadsheetRes.spreadsheetId, "", msg = "Failed to open the spreadsheet");
+        test:assertEquals(spreadsheetRes.spreadsheetId, testSpreadsheet.spreadsheetId,
+        msg = "Failed to open the spreadsheet");
+        testSpreadsheet = <@untainted> spreadsheetRes;
     } else {
-        test:assertFail(msg = <string>spreadsheetRes.detail().message);
+        test:assertFail(msg = <string>spreadsheetRes.detail()["message"]);
     }
 }
 
@@ -93,11 +96,11 @@ function testOpenSpreadsheetById() {
 function testGetSpreadsheetName() {
     io:println("-----------------Test case for getSpreadsheetName method------------------");
     string name = "";
-    var res = testSpreadsheet.getSpreadsheetName();
-    if (res is string) {
-        test:assertEquals(res, testSpreadsheetName, msg = "getSpreadsheetName() method failed");
+    var result = testSpreadsheet.getSpreadsheetName();
+    if (result is string) {
+        test:assertEquals(result, testSpreadsheetName, msg = "getSpreadsheetName() method failed");
     } else {
-        test:assertFail(msg = <string>res.detail().message);
+        test:assertFail(msg = <string>result.detail()["message"]);
     }
 
 }
@@ -108,11 +111,11 @@ function testGetSpreadsheetName() {
 function testGetSpreadsheetId() {
     io:println("-----------------Test case for getSpreadsheetId method------------------");
     string spreadsheetId = "";
-    var res = testSpreadsheet.getSpreadsheetId();
-    if (res is string) {
-        test:assertEquals(res, testSpreadsheet.spreadsheetId, msg = "getSpreadsheetId() method failed");
+    var result = testSpreadsheet.getSpreadsheetId();
+    if (result is string) {
+        test:assertEquals(result, testSpreadsheet.spreadsheetId, msg = "getSpreadsheetId() method failed");
     } else {
-        test:assertFail(msg = <string>res.detail().message);
+        test:assertFail(msg = <string>result.detail()["message"]);
     }
 }
 
@@ -124,7 +127,7 @@ function testGetSheets() {
     Sheet[] sheets = [];
     var sheetRes = testSpreadsheet.getSheets();
     if (sheetRes is error) {
-        test:assertFail(msg = <string>sheetRes.detail().message);
+        test:assertFail(msg = <string>sheetRes.detail()["message"]);
     } else {
         test:assertEquals(sheetRes.length(), 2, msg = "getSheets() method failed");
     }
@@ -140,7 +143,7 @@ function testGetSheetByName() {
     if (sheetRes is Sheet) {
         test:assertEquals(sheetRes.properties.title, testSheetName, msg = "getSheetByName() method failed");
     } else {
-        test:assertFail(msg = <string>sheetRes.detail().message);
+        test:assertFail(msg = <string>sheetRes.detail()["message"]);
     }
 
 }
@@ -150,14 +153,12 @@ function testGetSheetByName() {
 }
 function testSetSheetValues() {
     io:println("-----------------Test case for setSheetValues method------------------");
-    string[][] values = [["Name", "Score", "Performance"], ["Keetz", "12"], ["Niro", "78"],
-    ["Nisha", "98"], ["Kana", "86"]];
-    var spreadsheetRes = spreadsheetClient->setSheetValues(testSpreadsheet.spreadsheetId, testSheetName,
-                                            topLeftCell ="A1", bottomRightCell = "C5", values);
+    var spreadsheetRes = spreadsheetClient->setSheetValues(testSpreadsheet.spreadsheetId, testSheetName, entries,
+                                            topLeftCell ="A1", bottomRightCell = "C5");
     if (spreadsheetRes is boolean) {
         test:assertTrue(spreadsheetRes, msg = "Failed to update the values!");
     } else {
-        test:assertFail(msg = <string>spreadsheetRes.detail().message);
+        test:assertFail(msg = <string>spreadsheetRes.detail()["message"]);
     }
 }
 
@@ -166,14 +167,12 @@ function testSetSheetValues() {
 }
 function testGetSheetValues() {
     io:println("-----------------Test case for getSheetValues method------------------");
-    string[][] values = [["Name", "Score", "Performance"], ["Keetz", "12"], ["Niro", "78"],
-    ["Nisha", "98"], ["Kana", "86"]];
     var spreadsheetRes = spreadsheetClient->getSheetValues(testSpreadsheet.spreadsheetId, testSheetName,
                                             topLeftCell ="A1", bottomRightCell = "C5");
     if (spreadsheetRes is error) {
-        test:assertFail(msg = <string>spreadsheetRes.detail().message);
+        test:assertFail(msg = <string>spreadsheetRes.detail()["message"]);
     } else {
-        test:assertEquals(spreadsheetRes, values, msg = "Failed to get the values!");
+        test:assertEquals(spreadsheetRes, entries, msg = "Failed to get the values!");
     }
 }
 
@@ -182,12 +181,17 @@ function testGetSheetValues() {
 }
 function testGetColumnData() {
     io:println("-----------------Test case for getColumnData method------------------");
-    string[] values = ["Name", "Keetz", "Niro", "Nisha", "Kana"];
+    string[] columnValues = [];
+    int counter = 0;
+    foreach var entry in entries {
+        columnValues[counter] = entries[counter][0];
+        counter += 1;
+    }
     var spreadsheetRes = spreadsheetClient->getColumnData(testSpreadsheet.spreadsheetId, testSheetName, "A");
     if (spreadsheetRes is error) {
-        test:assertFail(msg = <string>spreadsheetRes.detail().message);
+        test:assertFail(msg = <string>spreadsheetRes.detail()["message"]);
     } else {
-        test:assertEquals(spreadsheetRes, values, msg = "Failed to get the values!");
+        test:assertEquals(spreadsheetRes, columnValues, msg = "Failed to get the values!");
     }
 }
 
@@ -196,12 +200,11 @@ function testGetColumnData() {
 }
 function testGetRowData() {
     io:println("-----------------Test case for getRowData method------------------");
-    string[] values = ["Name", "Score", "Performance"];
     var spreadsheetRes = spreadsheetClient->getRowData(testSpreadsheet.spreadsheetId, testSheetName, 1);
     if (spreadsheetRes is error) {
-        test:assertFail(msg = <string>spreadsheetRes.detail().message);
+        test:assertFail(msg = <string>spreadsheetRes.detail()["message"]);
     } else {
-        test:assertEquals(spreadsheetRes, values, msg = "Failed to get the values!");
+        test:assertEquals(spreadsheetRes, entries[0], msg = "Failed to get the values!");
     }
 }
 
@@ -210,12 +213,11 @@ function testGetRowData() {
 }
 function testSetCellData() {
     io:println("-----------------Test case for setCellData method------------------");
-    string value = "90";
-    var spreadsheetRes = spreadsheetClient->setCellData(testSpreadsheet.spreadsheetId, testSheetName, "B", 5, "90");
+    var spreadsheetRes = spreadsheetClient->setCellData(testSpreadsheet.spreadsheetId, testSheetName, "B", 5, cellValue);
     if (spreadsheetRes is boolean) {
         test:assertTrue(spreadsheetRes, msg = "Failed to update the values!");
     } else {
-        test:assertFail(msg = <string>spreadsheetRes.detail().message);
+        test:assertFail(msg = <string>spreadsheetRes.detail()["message"]);
     }
 }
 
@@ -224,12 +226,11 @@ function testSetCellData() {
 }
 function testGetCellData() {
     io:println("-----------------Test case for getCellData method------------------");
-    string value = "90";
     var spreadsheetRes = spreadsheetClient->getCellData(testSpreadsheet.spreadsheetId, testSheetName, "B", 5);
     if (spreadsheetRes is string) {
-       test:assertEquals(spreadsheetRes, value, msg = "Failed to get the value!");
+       test:assertEquals(spreadsheetRes, cellValue, msg = "Failed to get the value!");
     } else {
-        test:assertFail(msg = <string>spreadsheetRes.detail().message);
+        test:assertFail(msg = <string>spreadsheetRes.detail()["message"]);
     }
 }
 
@@ -238,11 +239,10 @@ function testGetCellData() {
 }
 function testDeleteSheet() {
     io:println("-----------------Test case for deleteSheet method------------------");
-    string value = "90";
     var spreadsheetRes = spreadsheetClient->deleteSheet(testSpreadsheet.spreadsheetId, testSheetId);
     if (spreadsheetRes is boolean) {
        test:assertTrue(spreadsheetRes, msg = "Failed to delete the sheet!");
     } else {
-        test:assertFail(msg = <string>spreadsheetRes.detail().message);
+        test:assertFail(msg = <string>spreadsheetRes.detail()["message"]);
     }
 }

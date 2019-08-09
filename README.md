@@ -14,16 +14,49 @@ The following sections provide you with information on how to use the Ballerina 
 
 | Ballerina Language Version  | Google Spreadsheet API Version |
 |:---------------------------:|:------------------------------:|
-|  0.991.0                     |   V4                           |
+|  0.992.0                     |   V4                           |
 
 ##### Prerequisites
 Download the ballerina [distribution](https://ballerinalang.org/downloads/).
 
-##### Contribute To Develop
-Clone the repository by running the following command
-`git clone https://github.com/wso2-ballerina/module-googlespreadsheet.git`
+### Pull and Install
 
-## Working with GSheets Endpoint actions
+#### Pull the Module
+You can pull the Spreadsheet client from Ballerina Central:
+```ballerina
+$ ballerina pull wso2/gsheets4
+```
+
+#### Install from Source
+Alternatively, you can install Spreadsheet client from the source using the following instructions.
+
+**Building the source**
+1. Clone this repository using the following command:
+```shell
+    $ git clone https://github.com/wso2-ballerina/module-googlespreadsheet.git
+    ```
+
+2. Run this command from the `module-googlespreadsheet` root directory:
+
+    ```shell
+    $ ballerina build gsheets4
+    ```
+
+**Installation**
+You can install module-googlespreadsheet using:
+    ```shell
+    $ ballerina install gsheets4
+    ```
+This adds the googlespreadsheet module into the Ballerina home repository.
+
+### Working with GSheets Endpoint actions
+
+First, import the `wso2/gsheets4` module into the Ballerina project.
+
+```ballerina
+import wso2/gsheets4;
+```
+
 All the actions return valid response or error. If the action is a success, then the requested resource will
 be returned. Else error will be returned.
 
@@ -32,24 +65,22 @@ In order for you to use the GSheets Endpoint, first you need to create a GSheets
 ```ballerina
 import wso2/gsheets4;
 
-gsheets4:SpreadsheetConfiguration spreadsheetConfig = {
+oauth2:OutboundOAuth2Provider oauth2Provider = new({
+    accessToken: "<accessToken>",
+    refreshConfig: {
+        clientId: "<clientId>",
+        clientSecret: "<clientSecret>",
+        refreshUrl: REFRESH_URL,
+        refreshToken: "<refreshToken>"
+    }
+});
+http:BearerAuthHandler oauth2Handler = new(oauth2Provider);
+SpreadsheetConfiguration spreadsheetConfig = {
     clientConfig: {
         auth: {
-            scheme: http:OAUTH2,
-            config: {
-                grantType: http:DIRECT_TOKEN,
-                config: {
-                    accessToken: "<accessToken>",
-                    refreshConfig: {
-                        clientId: "<clientId>",
-                        clientSecret: "<clientSecret>",
-                        refreshToken: "<refreshToken>",
-                        refreshUrl: gsheets4:REFRESH_URL
-                    }
-                }
-            }
+            authHandler: oauth2Handler
         }
-    }   
+    }
 };
 
 gsheets4:Client spreadsheetClient = new(spreadsheetConfig);
@@ -63,24 +94,22 @@ import ballerina/http;
 import ballerina/io;
 import wso2/gsheets4;
 
-gsheets4:SpreadsheetConfiguration spreadsheetConfig = {
+oauth2:OutboundOAuth2Provider oauth2Provider = new({
+    accessToken: "<accessToken>",
+    refreshConfig: {
+        clientId: "<clientId>",
+        clientSecret: "<clientSecret>",
+        refreshUrl: REFRESH_URL,
+        refreshToken: "<refreshToken>"
+    }
+});
+http:BearerAuthHandler oauth2Handler = new(oauth2Provider);
+SpreadsheetConfiguration spreadsheetConfig = {
     clientConfig: {
         auth: {
-            scheme: http:OAUTH2,
-            config: {
-                grantType: http:DIRECT_TOKEN,
-                config: {
-                    accessToken: "<accessToken>",
-                    refreshConfig: {
-                        clientId: "<clientId>",
-                        clientSecret: "<clientSecret>",
-                        refreshToken: "<refreshToken>",
-                        refreshUrl: gsheets4:REFRESH_URL
-                    }
-                }
-            }
+            authHandler: oauth2Handler
         }
-    }   
+    }
 };
 gsheets4:Client spreadsheetClient = new(spreadsheetConfig);
 
@@ -93,3 +122,10 @@ public function main(string... args) {
     }
 }
 ```
+
+### How you can contribute
+
+Clone the repository by running the following command
+`git clone https://github.com/wso2-ballerina/module-googlespreadsheet.git`
+
+As an open source project, we welcome contributions from the community. Check the [issue tracker](https://github.com/wso2-ballerina/module-googlespreadsheet/issues) for open issues that interest you. We look forward to receiving your contributions.
