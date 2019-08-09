@@ -51,7 +51,7 @@ public type Client client object {
     #
     # + spreadsheetId - Id of the spreadsheet
     # + sheetId - The ID of the sheet to delete
-    # + return - Sheet object on success and error on failure
+    # + return - Error on failure
     public remote function deleteSheet(string spreadsheetId, int sheetId) returns error?;
 
     # Get spreadsheet values.
@@ -99,7 +99,7 @@ public type Client client object {
     # + column - Column name to set the data
     # + row - Row name to set the data
     # + value - The value to be updated
-    # + return - True on success and error on failure
+    # + return - Error on failure
     public remote function setCellData(string spreadsheetId, string sheetName, string column, int row, string value)
                                                      returns error?;
 
@@ -110,7 +110,7 @@ public type Client client object {
     # + topLeftCell - Top left cell
     # + bottomRightCell - Bottom right cell
     # + values - Values to be updated
-    # + return - True on success and error on failure
+    # + return - Error on failure
     public remote function setSheetValues(string spreadsheetId, string sheetName, string topLeftCell = "",
                                     string bottomRightCell = "", string[][] values) returns error?;
 };
@@ -159,7 +159,6 @@ public remote function Client.openSpreadsheetById(string spreadsheetId) returns 
 public remote function Client.addNewSheet(string spreadsheetId, string sheetName)
                                             returns Sheet|error {
     check validateSpreadSheetId(spreadsheetId);
-    boolean sheetNameValidateResult = validateSheetName(sheetName);
     http:Request request = new;
     json sheetJSONPayload = {"requests" : [{"addSheet":{"properties":{}}}]};
     json jsonSheetProperties = {};
