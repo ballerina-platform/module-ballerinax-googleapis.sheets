@@ -20,3 +20,22 @@ function setResponseError(json jsonResponse) returns error {
     error err = error(SPREADSHEET_ERROR_CODE, message = jsonResponse.message.toString());
     return err;
 }
+
+function setResError(error errorResponse) returns error {
+    error err = error(SPREADSHEET_ERROR_CODE, message = <string> errorResponse.detail()?.message);
+    return err;
+}
+
+function setJsonResponse(json jsonResponse, int statusCode) returns Spreadsheet|error {
+    if (statusCode == http:STATUS_OK) {
+        return convertToSpreadsheet(jsonResponse);
+    }
+    return setResponseError(jsonResponse);
+}
+
+function setResponse(json jsonResponse, int statusCode) returns boolean|error {
+    if (statusCode == http:STATUS_OK) {
+        return true;
+    }
+    return setResponseError(jsonResponse);
+}

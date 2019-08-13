@@ -83,7 +83,7 @@ SpreadsheetConfiguration spreadsheetConfig = {
     }
 };
 
-gsheets4:Client spreadsheetClient = new(spreadsheetConfig);
+Client spreadsheetClient = new(spreadsheetConfig);
 ```
 
 Then the endpoint actions can be invoked as `var response = spreadsheetClient->actionName(arguments)`.
@@ -111,7 +111,7 @@ SpreadsheetConfiguration spreadsheetConfig = {
         }
     }
 };
-gsheets4:Client spreadsheetClient = new(spreadsheetConfig);
+Client spreadsheetClient = new(spreadsheetConfig);
 
 public function main(string... args) {
     var response = spreadsheetClient->openSpreadsheetById("1Ti2W5mGK4mq0_xh9Gl_zG_dK9qqwdduirsFgl6zZu7M");

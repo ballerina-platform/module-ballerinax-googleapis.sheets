@@ -32,6 +32,8 @@ const string EMPTY_STRING = "";
 const string WHITE_SPACE = " ";
 const string FORWARD_SLASH = "/";
 const string DASH_WITH_WHITE_SPACES_SYMBOL = " - ";
+const string COLON = ":";
+const string EXCLAMATION_MARK = "!";
 
 // Error Codes
 const string SPREADSHEET_ERROR_CODE = "(wso2/gsheets4)SpreadsheetError";

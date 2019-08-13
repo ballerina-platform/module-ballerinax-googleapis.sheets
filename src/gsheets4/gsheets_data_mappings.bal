@@ -41,9 +41,8 @@ function convertToSheets(json[] jsonSheets) returns Sheet[] {
 
 function convertToSheet(json jsonSheet) returns Sheet {
     Sheet sheet = {};
-    json|error spreadsheetProperties= jsonSheet.properties;
-    sheet.properties = spreadsheetProperties != null
-                       ? convertToSheetProperties(!(spreadsheetProperties is error) ? spreadsheetProperties : {}) : {};
+    json|error spreadsheetProperties = jsonSheet.properties;
+    sheet.properties = !(spreadsheetProperties is error) ? convertToSheetProperties(spreadsheetProperties) : {};
     return sheet;
 }
 
