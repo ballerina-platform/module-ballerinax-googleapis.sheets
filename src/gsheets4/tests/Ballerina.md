@@ -2,7 +2,7 @@
 
 | Ballerina Language Version  | Google Spreadsheet API Version |
 | ----------------------------| -------------------------------|
-|  0.991.0                    |   V4                           |
+|  0.992.0                    |   V4                           |
 
 ### Prerequisites
 

@@ -30,12 +30,10 @@ const string QUESTION_MARK = "?";
 const string PATH_SEPARATOR = "/";
 const string EMPTY_STRING = "";
 const string WHITE_SPACE = " ";
-const string ENCODED_VALUE_FOR_WHITE_SPACE = "%20";
 const string FORWARD_SLASH = "/";
 const string DASH_WITH_WHITE_SPACES_SYMBOL = " - ";
 const string COLON = ":";
 const string EXCLAMATION_MARK = "!";
-const string APOSTROPHE = "'";
 
 // Error Codes
 const string SPREADSHEET_ERROR_CODE = "(wso2/gsheets4)SpreadsheetError";

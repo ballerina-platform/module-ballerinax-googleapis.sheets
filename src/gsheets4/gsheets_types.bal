@@ -14,6 +14,8 @@
 // specific language governing permissions and limitations
 // under the License.
 
+import ballerina/internal;
+
 # Spreadsheet object.
 # + spreadsheetId - Id of the spreadsheet
 # + properties - Properties of a spreadsheet
@@ -28,20 +30,57 @@ public type Spreadsheet object {
 
     # Get the name of the spreadsheet.
     # + return - Name of the spreadsheet object on success and error on failure
-    public function getSpreadsheetName() returns (string)|error;
+    public function getSpreadsheetName() returns (string)|error {
+        if (self.properties.title == EMPTY_STRING) {
+            error err = error(SPREADSHEET_ERROR_CODE, message = "Unable to find the spreadsheet title");
+            return err;
+        } else {
+            return self.properties.title;
+        }
+    }
 
     # Get the Id of the spreadsheet.
     # + return - Id of the spreadsheet object on success and error on failure
-    public function getSpreadsheetId() returns (string)|error;
+    public function getSpreadsheetId() returns (string)|error {
+        string spreadsheetId = "";
+        if (self.spreadsheetId == EMPTY_STRING) {
+            error err = error(SPREADSHEET_ERROR_CODE, message = "Unable to find the spreadsheet id");
+            return err;
+        }
+        return self.spreadsheetId;
+    }
 
     # Get sheets of the spreadsheet.
     # + return - Sheet array on success and error on failure
-    public function getSheets() returns Sheet[]|error;
+    public function getSheets() returns Sheet[]|error {
+        Sheet[] sheets = [];
+        if (self.sheets.length() == 0) {
+            error err = error(SPREADSHEET_ERROR_CODE, message = "No sheets found");
+            return err;
+        }
+        sheets = self.sheets;
+        return sheets;
+    }
 
     # Get sheets of the spreadsheet.
     # + sheetName - Name of the sheet to retrieve
     # + return - Sheet object on success and error on failure
-    public function getSheetByName(string sheetName) returns Sheet|error;
+    public function getSheetByName(string sheetName) returns Sheet|error {
+        Sheet[] sheets = self.sheets;
+        Sheet sheetResponse = {};
+        if (sheets.length() == 0) {
+            error err = error(SPREADSHEET_ERROR_CODE, message = "No sheet found");
+            return err;
+        } else {
+            foreach var sheet in sheets {
+                if (internal:equalsIgnoreCase(sheet.properties.title, sheetName)) {
+                    sheetResponse = sheet;
+                    break;
+                }
+            }
+            return sheetResponse;
+        }
+    }
 };
 
 # Spreadsheet properties.
@@ -94,48 +133,3 @@ public type GridProperties record {|
     boolean hideGridlines = false;
 |};
 
-//Functions binded to Spreadsheet struct
-public function Spreadsheet.getSpreadsheetName() returns string|error {
-    if (self.properties.title == EMPTY_STRING) {
-        error err = error(SPREADSHEET_ERROR_CODE, { message: "Unable to find the spreadsheet title" });
-        return err;
-    } else {
-        return self.properties.title;
-    }
-}
-
-public function Spreadsheet.getSpreadsheetId() returns string|error {
-    string spreadsheetId = "";
-    if (self.spreadsheetId == EMPTY_STRING) {
-        error err = error(SPREADSHEET_ERROR_CODE, { message: "Unable to find the spreadsheet id" });
-        return err;
-    }
-    return self.spreadsheetId;
-}
-
-public function Spreadsheet.getSheets() returns Sheet[]|error {
-    Sheet[] sheets = [];
-    if (self.sheets.length() == 0) {
-        error err = error(SPREADSHEET_ERROR_CODE, { message: "No sheets found" });
-        return err;
-    }
-    sheets = self.sheets;
-    return sheets;
-}
-
-public function Spreadsheet.getSheetByName(string sheetName) returns Sheet|error {
-    Sheet[] sheets = self.sheets;
-    Sheet sheetResponse = {};
-    if (sheets.length() == 0) {
-        error err = error(SPREADSHEET_ERROR_CODE, { message: "No sheet found" });
-        return err;
-    } else {
-        foreach var sheet in sheets {
-            if (sheet.properties.title.equalsIgnoreCase(sheetName)) {
-                sheetResponse = sheet;
-                break;
-            }
-        }
-        return sheetResponse;
-    }
-}
