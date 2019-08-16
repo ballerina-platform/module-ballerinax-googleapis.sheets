@@ -16,6 +16,7 @@
 
 import ballerina/http;
 import ballerina/io;
+import ballerina/oauth2;
 
 # Google Spreadsheet Client object.
 #
@@ -25,7 +26,16 @@ public type Client client object {
     public http:Client spreadsheetClient;
 
     public function __init(SpreadsheetConfiguration spreadsheetConfig) {
-        self.spreadsheetClient = new(BASE_URL, spreadsheetConfig.clientConfig);
+        // Create OAuth2 provider.
+        oauth2:OutboundOAuth2Provider oauth2Provider = new(spreadsheetConfig.clientConfig);
+        // Create bearer auth handler using created provider.
+        http:BearerAuthHandler bearerHandler = new(oauth2Provider);
+        // Create salesforce http client.
+        self.spreadsheetClient = new(BASE_URL, {
+            auth: {
+                authHandler: bearerHandler
+            }
+        });
     }
 
     # Create a new spreadsheet.
@@ -403,5 +413,5 @@ public type Client client object {
 #
 # + clientConfig - The http client endpoint
 public type SpreadsheetConfiguration record {
-    http:ClientEndpointConfig clientConfig;
+    oauth2:DirectTokenConfig clientConfig;
 };

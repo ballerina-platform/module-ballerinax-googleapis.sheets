@@ -21,23 +21,18 @@ import ballerina/log;
 import ballerina/http;
 import ballerina/oauth2;
 
-oauth2:OutboundOAuth2Provider oauth2Provider = new({
-    accessToken: "ya29.xxxxxxx",
-    refreshConfig: {
-        clientId: "xxxxxxx",
-        clientSecret: "xxxxxxx",
-        refreshUrl: REFRESH_URL,
-        refreshToken: "1/Rxxxxxxx"
-    }
-});
-http:BearerAuthHandler oauth2Handler = new(oauth2Provider);
 SpreadsheetConfiguration spreadsheetConfig = {
     clientConfig: {
-        auth: {
-            authHandler: oauth2Handler
+        accessToken: "<accessToken>",
+        refreshConfig: {
+            clientId: "<clientId>",
+            clientSecret: "<clientSecret>",
+            refreshUrl: REFRESH_URL,
+            refreshToken: "<refreshToken>"
         }
     }
 };
+
 Client spreadsheetClient = new(spreadsheetConfig);
 
 Spreadsheet testSpreadsheet = new;
