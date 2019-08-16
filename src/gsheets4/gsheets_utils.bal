@@ -17,7 +17,7 @@
 import ballerina/http;
 
 function setResponseError(json jsonResponse) returns error {
-    error err = error(SPREADSHEET_ERROR_CODE, message = jsonResponse.message.toString());
+    error err = error(SPREADSHEET_ERROR_CODE, message = jsonResponse.toString());
     return err;
 }
 
