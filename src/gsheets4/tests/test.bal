@@ -14,12 +14,8 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import ballerina/config;
 import ballerina/io;
 import ballerina/test;
-import ballerina/log;
-import ballerina/http;
-import ballerina/oauth2;
 
 SpreadsheetConfiguration spreadsheetConfig = {
     clientConfig: {
