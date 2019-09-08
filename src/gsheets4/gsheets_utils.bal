@@ -39,3 +39,10 @@ function setResponse(json jsonResponse, int statusCode) returns boolean|error {
     }
     return setResponseError(jsonResponse);
 }
+
+function equalsIgnoreCase(string stringOne, string stringTwo) returns boolean {
+    if (stringOne.toLowerAscii() == stringTwo.toLowerAscii()) {
+        return true;
+    }
+    return false;
+}
