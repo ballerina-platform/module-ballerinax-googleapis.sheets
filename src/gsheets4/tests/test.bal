@@ -18,7 +18,7 @@ import ballerina/io;
 import ballerina/test;
 
 SpreadsheetConfiguration spreadsheetConfig = {
-    clientConfig: {
+    oAuthClientConfig: {
         accessToken: "<accessToken>",
         refreshConfig: {
             clientId: "<clientId>",
