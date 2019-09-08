@@ -17,6 +17,7 @@
 import ballerina/http;
 import ballerina/io;
 import ballerina/oauth2;
+import ballerina/log;
 
 # Google Spreadsheet Client object.
 #
@@ -27,15 +28,29 @@ public type Client client object {
 
     public function __init(SpreadsheetConfiguration spreadsheetConfig) {
         // Create OAuth2 provider.
-        oauth2:OutboundOAuth2Provider oauth2Provider = new(spreadsheetConfig.clientConfig);
+        oauth2:OutboundOAuth2Provider oauth2Provider = new(spreadsheetConfig.oAuthClientConfig);
         // Create bearer auth handler using created provider.
         http:BearerAuthHandler bearerHandler = new(oauth2Provider);
-        // Create salesforce http client.
-        self.spreadsheetClient = new(BASE_URL, {
-            auth: {
-                authHandler: bearerHandler
-            }
-        });
+        // Create spreadsheet http client.
+        http:ClientSecureSocket? socketConfig = spreadsheetConfig?.secureSocketConfig;
+        if (socketConfig is http:ClientSecureSocket) {
+            self.spreadsheetClient = new(BASE_URL, {
+                auth: {
+                    authHandler: bearerHandler
+                },
+                secureSocket: socketConfig
+            });
+        } else {
+            log:printWarn("An unsecured connection is establishing since SSL configuration not provided.");
+            self.spreadsheetClient = new(BASE_URL, {
+                auth: {
+                    authHandler: bearerHandler
+                },
+                secureSocket: {
+                    disable: true
+                }
+            });
+        }
     }
 
     # Create a new spreadsheet.
@@ -411,7 +426,9 @@ public type Client client object {
 
 # Object for Spreadsheet configuration.
 #
-# + clientConfig - The http client endpoint
+# + oAuthClientConfig - The OAuth client configuration
+# + secureSocketConfig - The secure socket configuration
 public type SpreadsheetConfiguration record {
-    oauth2:DirectTokenConfig clientConfig;
+    oauth2:DirectTokenConfig oAuthClientConfig;
+    http:ClientSecureSocket secureSocketConfig?;
 };

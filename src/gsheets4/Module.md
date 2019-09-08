@@ -16,7 +16,7 @@ The `wso2/gsheets4` module contains operations to set and get the sheet values o
 
 |                             |       Version               |
 |:---------------------------:|:---------------------------:|
-| Ballerina Language          | 0.992.0                     |
+| Ballerina Language          | 1.0.0                     |
 | Google Spreadsheet API      | V4                          |
 
 ## Sample
@@ -43,20 +43,28 @@ access token and refresh token).
 
 You can now enter the credentials in the HTTP client config:
 ```ballerina
-oauth2:OutboundOAuth2Provider oauth2Provider = new({
-    accessToken: "<accessToken>",
-    refreshConfig: {
-        clientId: "<clientId>",
-        clientSecret: "<clientSecret>",
-        refreshUrl: REFRESH_URL,
-        refreshToken: "<refreshToken>"
-    }
-});
-http:BearerAuthHandler oauth2Handler = new(oauth2Provider);
-SpreadsheetConfiguration spreadsheetConfig = {
-    clientConfig: {
-        auth: {
-            authHandler: oauth2Handler
+gsheets4:SpreadsheetConfiguration spreadsheetConfig = {
+    oAuthClientConfig: {
+        accessToken: "<accessToken>",
+        refreshConfig: {
+            clientId: "<clientId>",
+            clientSecret: "<clientSecret>",
+            refreshUrl: "<refreshUrl>",
+            refreshToken: "<refreshToken>",
+            clientConfig: {
+                secureSocket:{
+                    trustStore:{
+                        path: "<fullQualifiedPathToTrustStore>",
+                        password: "<truststorePassword>"
+                    }
+                }
+            }
+        }
+    },
+    secureSocketConfig: {
+        trustStore:{
+            path: "<fullQualifiedPathToTrustStore>",
+            password: "<truststorePassword>"
         }
     }
 };

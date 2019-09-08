@@ -14,7 +14,7 @@ The following sections provide you with information on how to use the Ballerina 
 
 | Ballerina Language Version  | Google Spreadsheet API Version |
 |:---------------------------:|:------------------------------:|
-|  0.992.0                     |   V4                           |
+|  1.0.0                     |   V4                           |
 
 ##### Prerequisites
 Download the ballerina [distribution](https://ballerinalang.org/downloads/).
@@ -32,12 +32,11 @@ Alternatively, you can install Spreadsheet client from the source using the foll
 
 **Building the source**
 1. Clone this repository using the following command:
-```shell
+    ```shell
     $ git clone https://github.com/wso2-ballerina/module-googlespreadsheet.git
     ```
 
 2. Run this command from the `module-googlespreadsheet` root directory:
-
     ```shell
     $ ballerina build gsheets4
     ```
@@ -65,56 +64,106 @@ In order for you to use the GSheets Endpoint, first you need to create a GSheets
 ```ballerina
 import wso2/gsheets4;
 
-oauth2:OutboundOAuth2Provider oauth2Provider = new({
-    accessToken: "<accessToken>",
-    refreshConfig: {
-        clientId: "<clientId>",
-        clientSecret: "<clientSecret>",
-        refreshUrl: REFRESH_URL,
-        refreshToken: "<refreshToken>"
-    }
-});
-http:BearerAuthHandler oauth2Handler = new(oauth2Provider);
-SpreadsheetConfiguration spreadsheetConfig = {
-    clientConfig: {
-        auth: {
-            authHandler: oauth2Handler
+gsheets4:SpreadsheetConfiguration spreadsheetConfig = {
+    oAuthClientConfig: {
+        accessToken: "<accessToken>",
+        refreshConfig: {
+            clientId: "<clientId>",
+            clientSecret: "<clientSecret>",
+            refreshUrl: "<refreshUrl>",
+            refreshToken: "<refreshToken>",
+            clientConfig: {
+                secureSocket:{
+                    trustStore:{
+                        path: "<fullQualifiedPathToTrustStore>",
+                        password: "<truststorePassword>"
+                    }
+                }
+            }
+        }
+    },
+    secureSocketConfig: {
+        trustStore:{
+            path: "<fullQualifiedPathToTrustStore>",
+            password: "<truststorePassword>"
         }
     }
 };
 
-Client spreadsheetClient = new(spreadsheetConfig);
+gsheets4:Client spreadsheetClient = new (spreadsheetConfig);
 ```
 
 Then the endpoint actions can be invoked as `var response = spreadsheetClient->actionName(arguments)`.
 
-#### Sample
+#### Sample with secured client
 ```ballerina
-import ballerina/http;
 import ballerina/io;
 import wso2/gsheets4;
 
-oauth2:OutboundOAuth2Provider oauth2Provider = new({
-    accessToken: "<accessToken>",
-    refreshConfig: {
-        clientId: "<clientId>",
-        clientSecret: "<clientSecret>",
-        refreshUrl: REFRESH_URL,
-        refreshToken: "<refreshToken>"
-    }
-});
-http:BearerAuthHandler oauth2Handler = new(oauth2Provider);
-SpreadsheetConfiguration spreadsheetConfig = {
-    clientConfig: {
-        auth: {
-            authHandler: oauth2Handler
+gsheets4:SpreadsheetConfiguration spreadsheetConfig = {
+    oAuthClientConfig: {
+        accessToken: "<accessToken>",
+        refreshConfig: {
+            clientId: "<clientId>",
+            clientSecret: "<clientSecret>",
+            refreshUrl: "<refreshUrl>",
+            refreshToken: "<refreshToken>",
+            clientConfig: {
+                secureSocket:{
+                    trustStore:{
+                        path: "<fullQualifiedPathToTrustStore>",
+                        password: "<truststorePassword>"
+                    }
+                }
+            }
+        }
+    },
+    secureSocketConfig: {
+        trustStore:{
+            path: "<fullQualifiedPathToTrustStore>",
+            password: "<truststorePassword>"
         }
     }
 };
-Client spreadsheetClient = new(spreadsheetConfig);
+
+gsheets4:Client spreadsheetClient = new (spreadsheetConfig);
 
 public function main(string... args) {
-    var response = spreadsheetClient->openSpreadsheetById("1Ti2W5mGK4mq0_xh9Gl_zG_dK9qqwdduirsFgl6zZu7M");
+    var response = spreadsheetClient->openSpreadsheetById("1nROELRHZ9JadnvIBizBfnx0FASo2tg7r-gRP1ribYNY");
+    if (response is gsheets4:Spreadsheet) {
+        io:println("Spreadsheet Details: ", response);
+    } else {
+        io:println("Error: ", response);
+    }
+}
+```
+
+#### Sample with unsecured client
+```ballerina
+import ballerina/io;
+import wso2/gsheets4;
+
+gsheets4:SpreadsheetConfiguration spreadsheetConfig = {
+    oAuthClientConfig: {
+        accessToken: "<accessToken>",
+        refreshConfig: {
+            clientId: "<clientId>",
+            clientSecret: "<clientSecret>",
+            refreshUrl: "<refreshUrl>",
+            refreshToken: "<refreshToken>",
+            clientConfig: {
+                secureSocket:{
+                    disable: true
+                }
+            }
+        }
+    }
+};
+
+gsheets4:Client spreadsheetClient = new (spreadsheetConfig);
+
+public function main(string... args) {
+    var response = spreadsheetClient->openSpreadsheetById("1nROELRHZ9JadnvIBizBfnx0FASo2tg7r-gRP1ribYNY");
     if (response is gsheets4:Spreadsheet) {
         io:println("Spreadsheet Details: ", response);
     } else {
