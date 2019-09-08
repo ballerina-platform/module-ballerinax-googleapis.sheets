@@ -34,6 +34,12 @@ public type Client client object {
         self.spreadsheetClient = new(BASE_URL, {
             auth: {
                 authHandler: bearerHandler
+            },
+            secureSocket:{
+                trustStore:{
+                    path: "resources/ballerinaTruststore.p12",
+                    password: "ballerina"
+                }
             }
         });
     }
