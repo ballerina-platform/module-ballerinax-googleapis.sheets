@@ -14,8 +14,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import ballerina/internal;
-
 # Spreadsheet object.
 # + spreadsheetId - Id of the spreadsheet
 # + properties - Properties of a spreadsheet
@@ -73,7 +71,7 @@ public type Spreadsheet object {
             return err;
         } else {
             foreach var sheet in sheets {
-                if (internal:equalsIgnoreCase(sheet.properties.title, sheetName)) {
+                if (equalsIgnoreCase(sheet.properties.title, sheetName)) {
                     sheetResponse = sheet;
                     break;
                 }

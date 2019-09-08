@@ -13,18 +13,23 @@
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
-
+import ballerina/config;
 import ballerina/io;
 import ballerina/test;
 
 SpreadsheetConfiguration spreadsheetConfig = {
     oAuthClientConfig: {
-        accessToken: "<accessToken>",
+        accessToken: config:getAsString("ACCESS_TOKEN"),
         refreshConfig: {
-            clientId: "<clientId>",
-            clientSecret: "<clientSecret>",
+            clientId: config:getAsString("CLIENT_ID"),
+            clientSecret: config:getAsString("CLIENT_SECRET"),
             refreshUrl: REFRESH_URL,
-            refreshToken: "<refreshToken>"
+            refreshToken: config:getAsString("REFRESH_TOKEN"),
+            clientConfig: {
+                secureSocket:{
+                    disable: true
+                }
+            }
         }
     }
 };
