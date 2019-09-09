@@ -50,15 +50,25 @@ gsheets4:SpreadsheetConfiguration spreadsheetConfig = {
             clientId: "<clientId>",
             clientSecret: "<clientSecret>",
             refreshUrl: "<refreshUrl>",
-            refreshToken: "<refreshToken>",
-            clientConfig: {
-                secureSocket:{
-                    trustStore:{
-                        path: "<fullQualifiedPathToTrustStore>",
-                        password: "<truststorePassword>"
-                    }
-                }
-            }
+            refreshToken: "<refreshToken>"
+        }
+    }
+};
+
+gsheets4:Client spreadsheetClient = new(spreadsheetConfig);
+```
+
+If you want to use custom truststore for secure socket connection, then create the `gsheets4:SpreadsheetConfiguration` as below.
+
+```ballerina
+gsheets4:SpreadsheetConfiguration spreadsheetConfig = {
+    oAuthClientConfig: {
+        accessToken: "<accessToken>",
+        refreshConfig: {
+            clientId: "<clientId>",
+            clientSecret: "<clientSecret>",
+            refreshUrl: "<refreshUrl>",
+            refreshToken: "<refreshToken>"
         }
     },
     secureSocketConfig: {

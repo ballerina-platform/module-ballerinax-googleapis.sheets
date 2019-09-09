@@ -71,21 +71,7 @@ gsheets4:SpreadsheetConfiguration spreadsheetConfig = {
             clientId: "<clientId>",
             clientSecret: "<clientSecret>",
             refreshUrl: "<refreshUrl>",
-            refreshToken: "<refreshToken>",
-            clientConfig: {
-                secureSocket:{
-                    trustStore:{
-                        path: "<fullQualifiedPathToTrustStore>",
-                        password: "<truststorePassword>"
-                    }
-                }
-            }
-        }
-    },
-    secureSocketConfig: {
-        trustStore:{
-            path: "<fullQualifiedPathToTrustStore>",
-            password: "<truststorePassword>"
+            refreshToken: "<refreshToken>"
         }
     }
 };
@@ -95,7 +81,7 @@ gsheets4:Client spreadsheetClient = new (spreadsheetConfig);
 
 Then the endpoint actions can be invoked as `var response = spreadsheetClient->actionName(arguments)`.
 
-#### Sample with secured client
+#### Sample with default truststore
 ```ballerina
 import ballerina/io;
 import wso2/gsheets4;
@@ -107,21 +93,7 @@ gsheets4:SpreadsheetConfiguration spreadsheetConfig = {
             clientId: "<clientId>",
             clientSecret: "<clientSecret>",
             refreshUrl: "<refreshUrl>",
-            refreshToken: "<refreshToken>",
-            clientConfig: {
-                secureSocket:{
-                    trustStore:{
-                        path: "<fullQualifiedPathToTrustStore>",
-                        password: "<truststorePassword>"
-                    }
-                }
-            }
-        }
-    },
-    secureSocketConfig: {
-        trustStore:{
-            path: "<fullQualifiedPathToTrustStore>",
-            password: "<truststorePassword>"
+            refreshToken: "<refreshToken>"
         }
     }
 };
@@ -138,7 +110,7 @@ public function main(string... args) {
 }
 ```
 
-#### Sample with unsecured client
+#### Sample with custom truststore
 ```ballerina
 import ballerina/io;
 import wso2/gsheets4;
@@ -150,12 +122,13 @@ gsheets4:SpreadsheetConfiguration spreadsheetConfig = {
             clientId: "<clientId>",
             clientSecret: "<clientSecret>",
             refreshUrl: "<refreshUrl>",
-            refreshToken: "<refreshToken>",
-            clientConfig: {
-                secureSocket:{
-                    disable: true
-                }
-            }
+            refreshToken: "<refreshToken>"
+        }
+    },
+    secureSocketConfig: {
+        trustStore:{
+            path: "<fullQualifiedPathToTrustStore>",
+            password: "<truststorePassword>"
         }
     }
 };
