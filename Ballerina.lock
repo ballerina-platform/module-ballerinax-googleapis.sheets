@@ -1,4 +1,4 @@
 org_name = "wso2"
-version = "0.8.24"
+version = "0.9.0"
 lockfile_version = "1.0.0"
 ballerina_version = "1.0.0"
