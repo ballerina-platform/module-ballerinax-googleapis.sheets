@@ -17,7 +17,6 @@
 import ballerina/http;
 import ballerina/io;
 import ballerina/oauth2;
-import ballerina/log;
 
 # Google Spreadsheet Client object.
 #
@@ -41,13 +40,9 @@ public type Client client object {
                 secureSocket: socketConfig
             });
         } else {
-            log:printWarn("An unsecured connection is establishing since SSL configuration not provided.");
             self.spreadsheetClient = new(BASE_URL, {
                 auth: {
                     authHandler: bearerHandler
-                },
-                secureSocket: {
-                    disable: true
                 }
             });
         }

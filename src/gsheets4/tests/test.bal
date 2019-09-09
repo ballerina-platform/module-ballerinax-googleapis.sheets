@@ -24,12 +24,7 @@ SpreadsheetConfiguration spreadsheetConfig = {
             clientId: config:getAsString("CLIENT_ID"),
             clientSecret: config:getAsString("CLIENT_SECRET"),
             refreshUrl: REFRESH_URL,
-            refreshToken: config:getAsString("REFRESH_TOKEN"),
-            clientConfig: {
-                secureSocket:{
-                    disable: true
-                }
-            }
+            refreshToken: config:getAsString("REFRESH_TOKEN")
         }
     }
 };
