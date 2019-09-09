@@ -51,14 +51,6 @@ gsheets4:SpreadsheetConfiguration spreadsheetConfig = {
             clientSecret: "<clientSecret>",
             refreshUrl: "<refreshUrl>",
             refreshToken: "<refreshToken>",
-            clientConfig: {
-                secureSocket:{
-                    trustStore:{
-                        path: "<fullQualifiedPathToTrustStore>",
-                        password: "<truststorePassword>"
-                    }
-                }
-            }
         }
     },
     secureSocketConfig: {
