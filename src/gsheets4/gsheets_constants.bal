@@ -16,7 +16,7 @@
 
 //API urls
 const string BASE_URL = "https://sheets.googleapis.com";
-const string REFRESH_URL = "https://www.googleapis.com/oauth2/v3/token";
+public const string REFRESH_URL = "https://www.googleapis.com/oauth2/v3/token";
 const string SPREADSHEET_PATH = "/v4/spreadsheets";
 const string VALUES_PATH = "/values/";
 const string VALUE_INPUT_OPTION = "valueInputOption=RAW";
