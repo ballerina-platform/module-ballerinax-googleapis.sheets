@@ -10,7 +10,7 @@ The `wso2/gsheets4` module contains operations that create or retrieve a spreads
 
 |                             |       Version               |
 |:---------------------------:|:---------------------------:|
-| Ballerina Language          | 1.0.1                       |
+| Ballerina Language          | 1.0.2                       |
 | Google Spreadsheet API      | V4                          |
 
 ## Configurations
