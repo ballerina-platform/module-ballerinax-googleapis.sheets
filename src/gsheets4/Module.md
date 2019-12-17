@@ -459,7 +459,8 @@ function convertToStringMDArray(json[] jsonObjectContent) returns string[][] {
 }
 ```
 
-**Testing the sample**
+## Testing
+
 
 First build the module. Navigate to the project root directory and execute the following command.
 
@@ -479,7 +480,7 @@ You will see the following service log after successfully invoking the service.
 [ballerina/http] started HTTP/WS listener 0.0.0.0:9090
 ```
 
-### 1. Testing create a new spreadsheet
+### 1. Creating a new spreadsheet
  ```bash
  curl -v -X POST http://localhost:9090/spreadsheets/<SPREADSHEET_NAME>
 ```
@@ -487,7 +488,7 @@ e.g.
 ```bash
 curl -v -X POST http://localhost:9090/spreadsheets/firstSpreadsheet
 ```
-### 2. Testing adding a new worksheet
+### 2. Adding a new worksheet
 ```bash
 curl -v -X POST http://localhost:9090/spreadsheets/<SPREADSHEET_ID>/<WORKSHEET_NAME>
 ```
@@ -496,7 +497,7 @@ e.g.
 curl -v -X POST http://localhost:9090/spreadsheets/1AoOHLyn3Ds6do6UMq8t_pv20RrRwNV4aoqQVI_Z5xKY/firstWorksheet
    ```
 
-### 3. Testing viewing a spreadsheet
+### 3. Viewing a spreadsheet
 ```bash
 curl -X GET http://localhost:9090/spreadsheets/<SPREADSHEET_ID>
 ```
@@ -505,7 +506,7 @@ e.g.
 curl -X GET http://localhost:9090/spreadsheets/1AoOHLyn3Ds6do6UMq8t_pv20RrRwNV4aoqQVI_Z5xKY
 ```
 
-### 4. Testing adding values into a worksheet
+### 4. Adding values into a worksheet
 ```bash
 curl -H "Content-Type: application/json" \ -X PUT \ -d '[["Name", "Score"], ["Keetz", "12"], ["Niro", "78"], ["Nisha", "98"], ["Kana", "86"]]'\http://localhost:9090/spreadsheets/<SPREADSHEET_ID>/<WORKSHEET_NAME>/<TOP_LEFT_CELL>/<BOTTOM_RIGHT_CELL>
 ```
@@ -514,7 +515,7 @@ e.g.
 curl -H "Content-Type: application/json" \-X PUT \ -d '[["Name", "Score"], ["Keetz", "12"], ["Niro", "78"], ["Nisha", "98"], ["Kana", "86"]]' \ http://localhost:9090/spreadsheets/1AoOHLyn3Ds6do6UMq8t_pv20RrRwNV4aoqQVI_Z5xKY/firstWorksheet/A1/B5
 ```
 
-### 5. Testing  get values from worksheet
+### 5. Getting values from worksheet
 ```bash\
 curl -X GET http://localhost:9090/spreadsheets/worksheet/<SPREADSHEET_ID>/<WORKSHEET_NAME>/<TOP_LEFT_CELL>/<BOTTOM_RIGHT_CELL>
 ```
@@ -523,12 +524,12 @@ e.g.
 curl -X GET http://localhost:9090/spreadsheets/column/1AoOHLyn3Ds6do6UMq8t_pv20RrRwNV4aoqQVI_Z5xKY/firstWorksheet/B
 ```
 
-### 6. Testing retrieving values of a column
+### 6. Retrieving values of a column
 ```bash
 curl -X GET http://localhost:9090/spreadsheets/column/<SPREADSHEET_ID>/<WORKSHEET_NAME>/<COLUMN_NAME>
 ```
 
-### 7. Testing retrieving values of a row
+### 7. Retrieving values of a row
 ```bash
 curl -X GET http://localhost:9090/spreadsheets/row/<SPREADSHEET_ID>/<WORKSHEET_NAME>/<COLUMN_NAME>/<ROW_NAME>
 ```
@@ -537,7 +538,7 @@ e.g.
 curl -X GET http://localhost:9090/spreadsheets/row/1AoOHLyn3Ds6do6UMq8t_pv20RrRwNV4aoqQVI_Z5xKY/firstWorksheet/2
 ```
 
-### 8. Testing  adding value into a cell
+### 8. Adding value into a cell
 ```bash
 curl -H "Content-Type: text/plain" \ -X PUT \ -d 'Test Value' \http://localhost:9090/spreadsheets/cell/<SPREADSHEET_ID>/<WORKSHEET_NAME>/<TOP_LEFT_CELL>/<BOTTOM_RIGHT_CELL>
 ```
@@ -547,7 +548,7 @@ curl -H "Content-Type: text/plain" \ -X PUT \ -d 'Test Value' \
 http://localhost:9090/spreadsheets/cell/1AoOHLyn3Ds6do6UMq8t_pv20RrRwNV4aoqQVI_Z5xKY/firstWorksheet/C/2
 ```
 
-### 9. Testing  retrieving value of a cell
+### 9. Retrieving value of a cell
 ```bash
 curl -X GET http://localhost:9090/spreadsheets/cell/<SPREADSHEET_ID>/<WORKSHEET_NAME>/<TOP_LEFT_CELL>/<BOTTOM_RIGHT_CELL>
 ```
@@ -556,7 +557,7 @@ e.g.
 curl -X GET http://localhost:9090/spreadsheets/cell/1AoOHLyn3Ds6do6UMq8t_pv20RrRwNV4aoqQVI_Z5xKY/firstWorksheet/C/2
 ```
 
-### 10. Testing deleting a worksheet
+### 10. Deleting a worksheet
 ```bash
 curl -X DELETE http://localhost:9090/spreadsheets/<SPREADSHEET_ID>/<WORKSHEET_ID>
 ```
