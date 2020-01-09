@@ -21,9 +21,9 @@ The `wso2/gsheets4` module allows you to perform following operations.
 
 ## Compatibility
 
-|                             |       Version               |
+|                             |       Versions               |
 |:---------------------------:|:---------------------------:|
-| Ballerina Language          | 1.0.1                     |
+| Ballerina Language          | 1.0.x, 1.1.x                     |
 | Google Spreadsheet API      | V4                          |
 
 ## Sample
