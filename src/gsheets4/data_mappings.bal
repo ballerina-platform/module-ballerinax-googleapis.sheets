@@ -16,33 +16,34 @@
 
 import ballerina/'lang\.int as ints;
 
-function convertToSpreadsheet(json jsonSpreadsheet) returns Spreadsheet {
-    Spreadsheet spreadsheet = new;
-    spreadsheet.spreadsheetId = jsonSpreadsheet.spreadsheetId.toString();
+function convertToSpreadsheet(json jsonSpreadsheet, Client spreadsheetClient) returns Spreadsheet {
+    string id = jsonSpreadsheet.spreadsheetId.toString();
     json|error spreadsheetProperties= jsonSpreadsheet.properties;
-    spreadsheet.properties = !(spreadsheetProperties is error)
+    SpreadsheetProperties properties = !(spreadsheetProperties is error)
                              ? convertToSpreadsheetProperties(spreadsheetProperties) : {};
-    spreadsheet.spreadsheetUrl = jsonSpreadsheet.spreadsheetUrl.toString();
-    spreadsheet.sheets = !(jsonSpreadsheet.sheets is error)
-                         ? convertToSheets(<json[]> jsonSpreadsheet.sheets) : [];
-
+    string spreadsheetUrl = jsonSpreadsheet.spreadsheetUrl.toString();
+     Sheet[] sheets = !(jsonSpreadsheet.sheets is error)
+                                              ? convertToSheets(<json[]> jsonSpreadsheet.sheets, spreadsheetClient, id)
+                                              : [];
+     Spreadsheet spreadsheet = new(spreadsheetClient, id, properties, spreadsheetUrl, sheets);
     return spreadsheet;
 }
 
-function convertToSheets(json[] jsonSheets) returns Sheet[] {
+function convertToSheets(json[] jsonSheets, Client spreadsheetClient, string id) returns Sheet[] {
     int i = 0;
     Sheet[] sheets = [];
     foreach json jsonSheet in jsonSheets {
-        sheets[i] = convertToSheet(jsonSheet);
+        sheets[i] = convertToSheet(jsonSheet, spreadsheetClient, id);
         i = i + 1;
     }
     return sheets;
 }
 
-function convertToSheet(json jsonSheet) returns Sheet {
-    Sheet sheet = {};
+function convertToSheet(json jsonSheet, Client spreadsheetClient, string id) returns Sheet {
     json|error spreadsheetProperties = jsonSheet.properties;
-    sheet.properties = !(spreadsheetProperties is error) ? convertToSheetProperties(spreadsheetProperties) : {};
+    SheetProperties properties = !(spreadsheetProperties is error) ? convertToSheetProperties(spreadsheetProperties)
+    : {};
+    Sheet sheet = new(properties, spreadsheetClient, id);
     return sheet;
 }
 

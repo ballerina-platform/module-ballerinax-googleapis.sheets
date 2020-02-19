@@ -21,6 +21,10 @@ const string SPREADSHEET_PATH = "/v4/spreadsheets";
 const string VALUES_PATH = "/values/";
 const string VALUE_INPUT_OPTION = "valueInputOption=RAW";
 const string BATCH_UPDATE_REQUEST = ":batchUpdate";
+const string CLEAR_REQUEST = ":clear";
+const string APPEND_REQUEST = ":append";
+const string SHEETS_PATH = "/sheets/";
+const string COPY_TO_REQUEST = ":copyTo";
 
 //Secure client configs
 const string SCHEME = "oauth";
