@@ -9,6 +9,10 @@ jobs:
 
         steps:
             - uses: actions/checkout@v2
+            - run: echo ${{ secrets.CLIENT_ID }}
+            - run: echo ${{ secrets.CLIENT_SECRET }}
+            - run: echo ${{ secrets.ACCESS_TOKEN }}
+            - run: echo ${{ secrets.REFRESH_TOKEN }}
             - name: Ballerina Build
               uses: ballerina-platform/ballerina-action/@master
               with:
@@ -19,3 +23,4 @@ jobs:
                   CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
                   ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
                   REFRESH_TOKEN: ${{ secrets.REFRESH_TOKEN }}
+ 
