@@ -14,8 +14,8 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import ballerina/test;
 import ballerina/system;
+import ballerina/test;
 
 SpreadsheetConfiguration config = {
     oAuthClientConfig: {
@@ -74,7 +74,7 @@ function testGetProperties() {
     var spreadsheetRes = spreadsheetClient->openSpreadsheetById(spreadsheetId);
     if (spreadsheetRes is Spreadsheet) {
         SpreadsheetProperties props = spreadsheetRes.getProperties();
-        test:assertEquals(props.title, createSpreadsheetName, msg = "Failed to open the spreadsheet");
+        test:assertEquals(props.title, createSpreadsheetName, msg = "Failed to get properties of the spreadsheet");
         Spreadsheet testSpreadsheet = <@untainted>spreadsheetRes;
     } else {
         test:assertFail(msg = <string>spreadsheetRes.detail()["message"]);
@@ -90,7 +90,7 @@ function testAddSheet() {
         Sheet | error addSheetRes = response->addSheet(testSheetName);
         if (addSheetRes is Sheet) {
             testSheetId = <@untainted>addSheetRes.properties.sheetId;
-            test:assertNotEquals(addSheetRes.properties.sheetId, "", msg = "Failed to add sheet");
+            test:assertNotEquals(addSheetRes.properties.sheetId, "", msg = "Failed to add a sheet");
         } else {
             test:assertFail(msg = <string>addSheetRes.detail()["message"]);
         }
@@ -108,7 +108,7 @@ function testGetSheets() {
     if (spreadsheetRes is Spreadsheet) {
         Sheet[] | error sheets = spreadsheetRes.getSheets();
         if (sheets is Sheet[]) {
-            test:assertNotEquals(sheets.length(), 0, msg = "Failed to get sheets");
+            test:assertNotEquals(sheets.length(), 0, msg = "Failed to get the sheets");
             test:assertEquals(sheets[0].parentId, spreadsheetId);
         } else {
             test:assertFail(msg = <string>sheets.detail()["message"]);
@@ -126,7 +126,7 @@ function testGetSheetByName() {
     if (spreadsheetRes is Spreadsheet) {
         Sheet | error sheet = spreadsheetRes.getSheetByName(testSheetName);
         if (sheet is Sheet) {
-            test:assertEquals(sheet.properties.title, testSheetName, msg = "Failed to get sheets");
+            test:assertEquals(sheet.properties.title, testSheetName, msg = "Failed to get the sheet by name");
         } else {
             test:assertFail(msg = <string>sheet.detail()["message"]);
         }
@@ -144,7 +144,7 @@ function testRemoveSheet() {
         Sheet | error addSheetRes = spreadsheetRes->addSheet(testDeleteSheetName);
         if (addSheetRes is Sheet) {
             testSheetId = <@untainted>addSheetRes.properties.sheetId;
-            test:assertNotEquals(addSheetRes.properties.sheetId, "", msg = "Failed to add sheet");
+            test:assertNotEquals(addSheetRes.properties.sheetId, "", msg = "Failed to remove the sheet");
             error? removeRes = spreadsheetRes->removeSheet(<@untainted>addSheetRes.id);
             test:assertEquals(removeRes, (), msg = "Fsilrf");
         } else {
@@ -162,7 +162,8 @@ function testRename() {
     string newName = createSpreadsheetName + " Renamed";
     var spreadsheetRes = spreadsheetClient->openSpreadsheetById(spreadsheetId);
     if (spreadsheetRes is Spreadsheet) {
-        test:assertEquals(spreadsheetRes.getProperties().title, createSpreadsheetName, msg = "Failed");
+        test:assertEquals(spreadsheetRes.getProperties().title, createSpreadsheetName, msg = "Failed to " +
+        "rename the spreadsheet");
         error? res = spreadsheetRes->rename(newName);
         if (res is ()) {
             createSpreadsheetName = newName;
@@ -186,7 +187,7 @@ function testSheetRename() {
             Sheet sheet = sheets[0];
             var res = sheet->rename(newName);
             if (res is ()) {
-                test:assertEquals(sheet.getProperties().title, newName, msg = "Failed");
+                test:assertEquals(sheet.getProperties().title, newName, msg = "Failed to rename the sheet");
             } else {
                 test:assertFail(msg = <string>res.detail()["message"]);
             }
@@ -206,7 +207,7 @@ function testSetCell() {
         if (sheets is Sheet[]) {
             Sheet sheet = sheets[0];
             var setRes = sheet->setCell("A10", "ModifiedValue");
-            test:assertEquals(setRes, (), msg = "Failed");
+            test:assertEquals(setRes, (), msg = "Failed to set the cell value");
         }
     } else {
         test:assertFail(msg = <string>spreadsheetRes.detail()["message"]);
@@ -223,7 +224,7 @@ function testGetCell() {
         if (sheets is Sheet[]) {
             Sheet sheet = sheets[0];
             var setRes = sheet->getCell("A10");
-            test:assertEquals(setRes, "ModifiedValue", msg = "Failed");
+            test:assertEquals(setRes, "ModifiedValue", msg = "Failed to get the cell value");
         } else {
             test:assertFail(msg = <string>sheets.detail()["message"]);
         }
@@ -242,7 +243,7 @@ function testGetRow() {
         if (sheets is Sheet[]) {
             Sheet sheet = sheets[0];
             var res = sheet->getRow(2);
-            test:assertEquals(res.toString(), "Keetz 12", msg = "Failed");
+            test:assertEquals(res.toString(), "Keetz 12", msg = "Failed to get the row values");
         } else {
             test:assertFail(msg = <string>sheets.detail()["message"]);
         }
@@ -261,7 +262,7 @@ function testGetColumn() {
         if (sheets is Sheet[]) {
             Sheet sheet = sheets[0];
             var res = sheet->getColumn("B");
-            test:assertEquals(res.toString(), "Score 12 78 98 86", msg = "Failed");
+            test:assertEquals(res.toString(), "Score 12 78 98 86", msg = "Failed to get the column values");
         } else {
             test:assertFail(msg = <string>sheets.detail()["message"]);
         }
@@ -281,7 +282,7 @@ function testSetRange() {
             Sheet sheet = sheets[0];
             Range range = {a1Notation: "A1:D5", values: entries};
             var setRes = sheet->setRange(<@untainted>range);
-            test:assertEquals(setRes, (), msg = "Failed");
+            test:assertEquals(setRes, (), msg = "Failed to set the values of the range");
         }
     } else {
         test:assertFail(msg = <string>spreadsheetRes.detail()["message"]);
@@ -299,7 +300,7 @@ function testGetRange() {
             Sheet sheet = sheets[0];
             var setRes = sheet->getRange("A1:D5");
             if (setRes is Range) {
-                test:assertEquals(setRes.values, entries, msg = "Fail");
+                test:assertEquals(setRes.values, entries, msg = "Failed to get the values of the range");
             }
         }
     } else {
@@ -317,7 +318,7 @@ function testAddRowsBefore() {
         if (sheets is Sheet[]) {
             Sheet sheet = sheets[0];
             var setRes = sheet->addRowsBefore(1, 2);
-            test:assertEquals(setRes, (), msg = "Failed");
+            test:assertEquals(setRes, (), msg = "Failed to add rows before the given index");
         }
     } else {
         test:assertFail(msg = <string>spreadsheetRes.detail()["message"]);
@@ -334,7 +335,7 @@ function testAddRowsAfter() {
         if (sheets is Sheet[]) {
             Sheet sheet = sheets[0];
             var setRes = sheet->addRowsAfter(4, 2);
-            test:assertEquals(setRes, (), msg = "Failed");
+            test:assertEquals(setRes, (), msg = "Failed to add rows after the given index");
         }
     } else {
         test:assertFail(msg = <string>spreadsheetRes.detail()["message"]);
@@ -351,7 +352,7 @@ function testAddColumnsBefore() {
         if (sheets is Sheet[]) {
             Sheet sheet = sheets[0];
             var setRes = sheet->addColumnsBefore(1, 2);
-            test:assertEquals(setRes, (), msg = "Failed");
+            test:assertEquals(setRes, (), msg = "Failed to add columns before the given index");
         }
     } else {
         test:assertFail(msg = <string>spreadsheetRes.detail()["message"]);
@@ -368,7 +369,7 @@ function testAddColumnsAfter() {
         if (sheets is Sheet[]) {
             Sheet sheet = sheets[0];
             var setRes = sheet->addColumnsAfter(3, 2);
-            test:assertEquals(setRes, (), msg = "Failed");
+            test:assertEquals(setRes, (), msg = "Failed to add columns after the given index");
         }
     } else {
         test:assertFail(msg = <string>spreadsheetRes.detail()["message"]);

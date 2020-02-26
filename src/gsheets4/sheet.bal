@@ -463,9 +463,9 @@ public type Sheet client object {
             }
             ]
         };
-        request.setJsonPayload(sheetJSONPayload);
+        request.setJsonPayload(<@untainted>sheetJSONPayload);
         string deleteSheetPath = SPREADSHEET_PATH + PATH_SEPARATOR + self.parentId + BATCH_UPDATE_REQUEST;
-        var httpResponse = self.httpClient->post(deleteSheetPath, request);
+        var httpResponse = self.httpClient->post(<@untainted>deleteSheetPath, request);
         if (httpResponse is http:Response) {
             int statusCode = httpResponse.statusCode;
             var jsonResponse = httpResponse.getJsonPayload();
