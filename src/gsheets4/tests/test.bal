@@ -21,10 +21,10 @@ SpreadsheetConfiguration config = {
     oAuthClientConfig: {
         accessToken: system:getEnv("ACCESS_TOKEN"),
         refreshConfig: {
+            refreshToken: "1//04OnzYR5qkaK4CgYIARAAGAQSNwF-L9Ir5-rY8fg27kEsRIVvCsIvroPE02mF95A6CDU-LEdGLF4xoEdHOc-tq0DZnjfmkVtLhEo",
             clientId: system:getEnv("CLIENT_ID"),
             clientSecret: system:getEnv("CLIENT_SECRET"),
-            refreshUrl: REFRESH_URL,
-            refreshToken: "1//04OnzYR5qkaK4CgYIARAAGAQSNwF-L9Ir5-rY8fg27kEsRIVvCsIvroPE02mF95A6CDU-LEdGLF4xoEdHOc-tq0DZnjfmkVtLhEo"
+            refreshUrl: REFRESH_URL
         }
     }
 };
