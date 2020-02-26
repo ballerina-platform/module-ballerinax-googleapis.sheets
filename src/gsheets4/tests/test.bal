@@ -24,7 +24,7 @@ SpreadsheetConfiguration config = {
             clientId: "999332401198-m4lqtiu4io7h592of98qmfue8jeqtfan.apps.googleusercontent.com",
             clientSecret: "BYYXpvBV5IP0cwXwGAz-yHkC",
             refreshUrl: REFRESH_URL,
-            refreshToken: system:getEnv("1//04OnzYR5qkaK4CgYIARAAGAQSNwF-L9Ir5-rY8fg27kEsRIVvCsIvroPE02mF95A6CDU-LEdGLF4xoEdHOc-tq0DZnjfmkVtLhEo")
+            refreshToken: "1//04OnzYR5qkaK4CgYIARAAGAQSNwF-L9Ir5-rY8fg27kEsRIVvCsIvroPE02mF95A6CDU-LEdGLF4xoEdHOc-tq0DZnjfmkVtLhEo"
         }
     }
 };
