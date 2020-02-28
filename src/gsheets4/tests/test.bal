@@ -53,7 +53,7 @@ function testCreateSpreadsheet() {
     }
     SpreadsheetConfiguration config = {
         oAuthClientConfig: {
-            accessToken: accessToken,
+            accessToken: "",
             refreshConfig: {
                 clientId: clientId,
                 clientSecret: clientSecret,
