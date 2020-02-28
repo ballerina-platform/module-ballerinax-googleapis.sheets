@@ -63,7 +63,7 @@ function testCreateSpreadsheet() {
         }
     };
     Client spreadsheetClient = new (config);
-    //var spreadsheetRes = spreadsheetClient->createSpreadsheet(createSpreadsheetName);
+    var spreadsheetRes = spreadsheetClient->createSpreadsheet(createSpreadsheetName);
     //if (spreadsheetRes is Spreadsheet) {
     //    Spreadsheet testSpreadsheet = <@untainted>spreadsheetRes;
     //    test:assertNotEquals(spreadsheetRes.spreadsheetId, "", msg = "Failed to create spreadsheet");
