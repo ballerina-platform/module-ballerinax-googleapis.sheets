@@ -31,20 +31,12 @@ public type Client client object {
         oauth2:OutboundOAuth2Provider oauth2Provider = new (spreadsheetConfig.oAuthClientConfig);
         http:BearerAuthHandler bearerHandler = new (oauth2Provider);
         http:ClientSecureSocket? socketConfig = spreadsheetConfig?.secureSocketConfig;
-        if (socketConfig is http:ClientSecureSocket) {
-            self.httpClient = new (BASE_URL, {
-                auth: {
-                    authHandler: bearerHandler
-                },
-                secureSocket: socketConfig
-            });
-        } else {
-            self.httpClient = new (BASE_URL, {
-                auth: {
-                    authHandler: bearerHandler
-                }
-            });
-        }
+        self.httpClient = new (BASE_URL, {
+            auth: {
+                authHandler: bearerHandler
+            },
+            secureSocket: socketConfig
+        });
     }
 
     # Creates a new spreadsheet.

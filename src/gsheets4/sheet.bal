@@ -15,6 +15,7 @@
 // under the License.
 
 import ballerina/http;
+import ballerina/io;
 
 # Ballerina public API to provide Google Spreadsheet - Sheet related functionality.
 public type Sheet client object {
@@ -49,9 +50,7 @@ public type Sheet client object {
         (string | int | float)[][] values = [];
         string notation = self.name;
         if (a1Notation == EMPTY_STRING) {
-            error err = error(SPREADSHEET_ERROR_CODE,
-            message = "Invalid range notation");
-            return err;
+            return error(SPREADSHEET_ERROR_CODE, message = "Invalid range notation");
         }
         notation = notation + EXCLAMATION_MARK + a1Notation;
         string getSheetValuesPath = SPREADSHEET_PATH + PATH_SEPARATOR + self.parentId + VALUES_PATH +
@@ -61,7 +60,9 @@ public type Sheet client object {
             int statusCode = httpResponse.statusCode;
             var jsonResponse = httpResponse.getJsonPayload();
             if (jsonResponse is json) {
-                if (statusCode == http:STATUS_OK) {
+                if (statusCode != http:STATUS_OK) {
+                    return setResponseError(jsonResponse);
+                } else {
                     if (!(jsonResponse.values is error)) {
                         int i = 0;
                         json[] jsonValues = <json[]>jsonResponse.values;
@@ -79,8 +80,6 @@ public type Sheet client object {
                     }
                     Range range = {a1Notation: a1Notation, values: values};
                     return range;
-                } else {
-                    return setResponseError(jsonResponse);
                 }
             } else {
                 error err = error(SPREADSHEET_ERROR_CODE,
@@ -102,9 +101,7 @@ public type Sheet client object {
         http:Request request = new;
         string notation = self.name;
         if (a1Notation == EMPTY_STRING) {
-            error err = error(SPREADSHEET_ERROR_CODE,
-            message = "Invalid range notation");
-            return err;
+            return error(SPREADSHEET_ERROR_CODE, message = "Invalid range notation");
         }
         notation = notation + EXCLAMATION_MARK + a1Notation;
         string setValuePath = SPREADSHEET_PATH + PATH_SEPARATOR + self.parentId + VALUES_PATH + notation
@@ -285,12 +282,14 @@ public type Sheet client object {
     public remote function rename(string name) returns @tainted error? {
         http:Request request = new;
         json sheetJSONPayload = {
-            "requests": [{
-                "updateSheetProperties": {
-                    "properties": {"title": name},
-                    "fields": "title"
+            "requests": [
+                {
+                    "updateSheetProperties": {
+                        "properties": {"title": name},
+                        "fields": "title"
+                    }
                 }
-            }]
+            ]
         };
         request.setJsonPayload(sheetJSONPayload);
         string renamePath = SPREADSHEET_PATH + PATH_SEPARATOR + self.parentId + BATCH_UPDATE_REQUEST;
@@ -300,7 +299,6 @@ public type Sheet client object {
             var jsonResponse = httpResponse.getJsonPayload();
             if (jsonResponse is json) {
                 self.properties.title = name;
-                //return setResponse(jsonResponse, statusCode);
                 return ();
             } else {
                 error err = error(SPREADSHEET_ERROR_CODE,
@@ -318,14 +316,16 @@ public type Sheet client object {
     public remote function clearAll() returns error? {
         http:Request request = new;
         json sheetJSONPayload = {
-            "requests": [{
-                "updateCells": {
-                    "range": {
-                        "sheetId": self.id
-                    },
-                    "fields": "*"
+            "requests": [
+                {
+                    "updateCells": {
+                        "range": {
+                            "sheetId": self.id
+                        },
+                        "fields": "*"
+                    }
                 }
-            }]
+            ]
         };
         request.setJsonPayload(sheetJSONPayload);
         string deleteSheetPath = SPREADSHEET_PATH + PATH_SEPARATOR + self.parentId + BATCH_UPDATE_REQUEST;
@@ -334,7 +334,6 @@ public type Sheet client object {
             int statusCode = httpResponse.statusCode;
             var jsonResponse = httpResponse.getJsonPayload();
             if (jsonResponse is json) {
-                //return setResponse(jsonResponse, statusCode);
                 return ();
             } else {
                 error err = error(SPREADSHEET_ERROR_CODE,
@@ -355,12 +354,11 @@ public type Sheet client object {
         http:Request request = new;
         string deleteSheetPath = SPREADSHEET_PATH + PATH_SEPARATOR + self.parentId + VALUES_PATH +
         notation + CLEAR_REQUEST;
-        var httpResponse = self.httpClient->post(deleteSheetPath, request);
+        var httpResponse = self.httpClient->post(<@untainted>deleteSheetPath, request);
         if (httpResponse is http:Response) {
             int statusCode = httpResponse.statusCode;
             var jsonResponse = httpResponse.getJsonPayload();
             if (jsonResponse is json) {
-                //return setResponse(jsonResponse, statusCode);
                 return ();
             } else {
                 error err = error(SPREADSHEET_ERROR_CODE,
@@ -395,7 +393,7 @@ public type Sheet client object {
         }
         json jsonPayload = {"values": jsonValues};
         request.setJsonPayload(<@untainted>jsonPayload);
-        var httpResponse = self.httpClient->put(setValuePath, request);
+        var httpResponse = self.httpClient->post(<@untainted>setValuePath, request);
         if (httpResponse is http:Response) {
             int statusCode = httpResponse.statusCode;
             var jsonResponse = httpResponse.getJsonPayload();
@@ -422,17 +420,18 @@ public type Sheet client object {
         string notation = self.id.toString();
         string setCellDataPath = SPREADSHEET_PATH + PATH_SEPARATOR + self.parentId + SHEETS_PATH + notation +
         COPY_TO_REQUEST;
-        request.setJsonPayload(jsonPayload);
-        var httpResponse = self.httpClient->put(setCellDataPath, request);
+        io:println(setCellDataPath);
+        io:println(destinationId);
+        request.setJsonPayload(<@untainted>jsonPayload);
+        var httpResponse = self.httpClient->post(<@untainted>setCellDataPath, request);
         if (httpResponse is http:Response) {
             int statusCode = httpResponse.statusCode;
             var jsonResponse = httpResponse.getJsonPayload();
             if (jsonResponse is json) {
                 return setResponse(jsonResponse, statusCode);
             } else {
-                error err = error(SPREADSHEET_ERROR_CODE,
-                message = "Error occurred while accessing the JSON payload of the response");
-                return err;
+                return error(SPREADSHEET_ERROR_CODE, message = "Error occurred while accessing the JSON payload " +
+                                                                    "of the response");
             }
         } else {
             return setResError(httpResponse);
@@ -446,21 +445,21 @@ public type Sheet client object {
     # + return - Nil on success, else returns an error
     public remote function deleteColumns(int column, int numberOfColumns)
     returns error? {
-        int startIndex = column;
+        int startIndex = column - 1;
         int endIndex = startIndex + numberOfColumns;
         http:Request request = new;
         json sheetJSONPayload = {
             "requests": [
-            {
-                "deleteDimension": {
-                    "range": {
-                        "sheetId": self.id,
-                        "dimension": "COLUMNS",
-                        "startIndex": startIndex,
-                        "endIndex": endIndex
+                {
+                    "deleteDimension": {
+                        "range": {
+                            "sheetId": self.id,
+                            "dimension": "COLUMNS",
+                            "startIndex": startIndex,
+                            "endIndex": endIndex
+                        }
                     }
                 }
-            }
             ]
         };
         request.setJsonPayload(<@untainted>sheetJSONPayload);
@@ -470,7 +469,6 @@ public type Sheet client object {
             int statusCode = httpResponse.statusCode;
             var jsonResponse = httpResponse.getJsonPayload();
             if (jsonResponse is json) {
-                //return setResponse(jsonResponse, statusCode);
                 return ();
             } else {
                 error err = error(SPREADSHEET_ERROR_CODE,
@@ -491,30 +489,29 @@ public type Sheet client object {
     # + return - Nil on success, else returns an error
     public remote function deleteRows(int row, int numberOfRows) returns error? {
         http:Request request = new;
-        int startIndex = row;
+        int startIndex = row - 1;
         int endIndex = startIndex + numberOfRows;
         json sheetJSONPayload = {
             "requests": [
-            {
-                "deleteDimension": {
-                    "range": {
-                        "sheetId": self.id,
-                        "dimension": "ROWS",
-                        "startIndex": startIndex,
-                        "endIndex": endIndex
+                {
+                    "deleteDimension": {
+                        "range": {
+                            "sheetId": self.id,
+                            "dimension": "ROWS",
+                            "startIndex": startIndex,
+                            "endIndex": endIndex
+                        }
                     }
                 }
-            }
             ]
         };
-        request.setJsonPayload(sheetJSONPayload);
+        request.setJsonPayload(<@untainted>sheetJSONPayload);
         string deleteSheetPath = SPREADSHEET_PATH + PATH_SEPARATOR + self.parentId + BATCH_UPDATE_REQUEST;
-        var httpResponse = self.httpClient->post(deleteSheetPath, request);
+        var httpResponse = self.httpClient->post(<@untainted>deleteSheetPath, request);
         if (httpResponse is http:Response) {
             int statusCode = httpResponse.statusCode;
             var jsonResponse = httpResponse.getJsonPayload();
             if (jsonResponse is json) {
-                //return setResponse(jsonResponse, statusCode);
                 return ();
             } else {
                 error err = error(SPREADSHEET_ERROR_CODE,
@@ -538,16 +535,16 @@ public type Sheet client object {
         http:Request request = new;
         json sheetJSONPayload = {
             "requests": [
-            {
-                "insertDimension": {
-                    "range": {
-                        "sheetId": self.id,
-                        "dimension": "COLUMNS",
-                        "startIndex": startIndex,
-                        "endIndex": endIndex
+                {
+                    "insertDimension": {
+                        "range": {
+                            "sheetId": self.id,
+                            "dimension": "COLUMNS",
+                            "startIndex": startIndex,
+                            "endIndex": endIndex
+                        }
                     }
                 }
-            }
             ]
         };
         request.setJsonPayload(<@untainted>sheetJSONPayload);
@@ -557,7 +554,6 @@ public type Sheet client object {
             int statusCode = httpResponse.statusCode;
             var jsonResponse = httpResponse.getJsonPayload();
             if (jsonResponse is json) {
-                //return setResponse(jsonResponse, statusCode);
                 return ();
             } else {
                 error err = error(SPREADSHEET_ERROR_CODE,
@@ -581,16 +577,16 @@ public type Sheet client object {
         http:Request request = new;
         json sheetJSONPayload = {
             "requests": [
-            {
-                "insertDimension": {
-                    "range": {
-                        "sheetId": self.id,
-                        "dimension": "COLUMNS",
-                        "startIndex": startIndex,
-                        "endIndex": endIndex
+                {
+                    "insertDimension": {
+                        "range": {
+                            "sheetId": self.id,
+                            "dimension": "COLUMNS",
+                            "startIndex": startIndex,
+                            "endIndex": endIndex
+                        }
                     }
                 }
-            }
             ]
         };
         request.setJsonPayload(<@untainted>sheetJSONPayload);
@@ -600,7 +596,6 @@ public type Sheet client object {
             int statusCode = httpResponse.statusCode;
             var jsonResponse = httpResponse.getJsonPayload();
             if (jsonResponse is json) {
-                //return setResponse(jsonResponse, statusCode);
                 return ();
             } else {
                 error err = error(SPREADSHEET_ERROR_CODE,
@@ -623,16 +618,16 @@ public type Sheet client object {
         http:Request request = new;
         json sheetJSONPayload = {
             "requests": [
-            {
-                "insertDimension": {
-                    "range": {
-                        "sheetId": self.id,
-                        "dimension": "ROWS",
-                        "startIndex": startIndex,
-                        "endIndex": endIndex
+                {
+                    "insertDimension": {
+                        "range": {
+                            "sheetId": self.id,
+                            "dimension": "ROWS",
+                            "startIndex": startIndex,
+                            "endIndex": endIndex
+                        }
                     }
                 }
-            }
             ]
         };
         request.setJsonPayload(<@untainted>sheetJSONPayload);
@@ -642,7 +637,6 @@ public type Sheet client object {
             int statusCode = httpResponse.statusCode;
             var jsonResponse = httpResponse.getJsonPayload();
             if (jsonResponse is json) {
-                //return setResponse(jsonResponse, statusCode);
                 return ();
             } else {
                 error err = error(SPREADSHEET_ERROR_CODE,
@@ -665,16 +659,16 @@ public type Sheet client object {
         http:Request request = new;
         json sheetJSONPayload = {
             "requests": [
-            {
-                "insertDimension": {
-                    "range": {
-                        "sheetId": self.id,
-                        "dimension": "ROWS",
-                        "startIndex": startIndex,
-                        "endIndex": endIndex
+                {
+                    "insertDimension": {
+                        "range": {
+                            "sheetId": self.id,
+                            "dimension": "ROWS",
+                            "startIndex": startIndex,
+                            "endIndex": endIndex
+                        }
                     }
                 }
-            }
             ]
         };
         request.setJsonPayload(<@untainted>sheetJSONPayload);
@@ -684,7 +678,6 @@ public type Sheet client object {
             int statusCode = httpResponse.statusCode;
             var jsonResponse = httpResponse.getJsonPayload();
             if (jsonResponse is json) {
-                //return setResponse(jsonResponse, statusCode);
                 return ();
             } else {
                 error err = error(SPREADSHEET_ERROR_CODE,
