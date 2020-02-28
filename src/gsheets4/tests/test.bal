@@ -63,14 +63,14 @@ function testCreateSpreadsheet() {
         }
     };
     Client spreadsheetClient = new (config);
-    var spreadsheetRes = spreadsheetClient->createSpreadsheet(createSpreadsheetName);
-    if (spreadsheetRes is Spreadsheet) {
-        Spreadsheet testSpreadsheet = <@untainted>spreadsheetRes;
-        test:assertNotEquals(spreadsheetRes.spreadsheetId, "", msg = "Failed to create spreadsheet");
-        string spreadsheetId = testSpreadsheet.spreadsheetId;
-    } else {
-        test:assertFail(msg = <string>spreadsheetRes.detail()["message"]);
-    }
+    //var spreadsheetRes = spreadsheetClient->createSpreadsheet(createSpreadsheetName);
+    //if (spreadsheetRes is Spreadsheet) {
+    //    Spreadsheet testSpreadsheet = <@untainted>spreadsheetRes;
+    //    test:assertNotEquals(spreadsheetRes.spreadsheetId, "", msg = "Failed to create spreadsheet");
+    //    string spreadsheetId = testSpreadsheet.spreadsheetId;
+    //} else {
+    //    test:assertFail(msg = <string>spreadsheetRes.detail()["message"]);
+    //}
 }
 
 //SpreadsheetConfiguration config = {
