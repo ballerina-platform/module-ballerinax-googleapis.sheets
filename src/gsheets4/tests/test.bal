@@ -32,6 +32,7 @@ function testEnvVariables() {
 // Tests the Client actions
 @test:Config {}
 function testCreateSpreadsheet() {
+    string createSpreadsheetName = "Ballerina Connector New";
     string clientId = system:getEnv("CLIENT_ID");
     string accessToken = system:getEnv("ACCESS_TOKEN");
     string clientSecret = system:getEnv("CLIENT_SECRET");
@@ -52,7 +53,7 @@ function testCreateSpreadsheet() {
     if (spreadsheetRes is Spreadsheet) {
         Spreadsheet testSpreadsheet = <@untainted>spreadsheetRes;
         test:assertNotEquals(spreadsheetRes.spreadsheetId, "", msg = "Failed to create spreadsheet");
-        spreadsheetId = testSpreadsheet.spreadsheetId;
+        string spreadsheetId = testSpreadsheet.spreadsheetId;
     } else {
         test:assertFail(msg = <string>spreadsheetRes.detail()["message"]);
     }
