@@ -66,7 +66,7 @@ function testCreateSpreadsheet() {
     var spreadsheetRes = spreadsheetClient->createSpreadsheet(createSpreadsheetName);
     if (spreadsheetRes is Spreadsheet) {
         Spreadsheet testSpreadsheet = <@untainted>spreadsheetRes;
-        test:assertNotEquals(spreadsheetRes.spreadsheetId, "", msg = "Failed to create spreadsheet");
+        test:assertNotEquals(spreadsheetRes.spreadsheetId, "", msg = "Failed to create spreadsheet.");
         string spreadsheetId = testSpreadsheet.spreadsheetId;
     } else {
         test:assertFail(msg = <string>spreadsheetRes.detail()["message"]);
