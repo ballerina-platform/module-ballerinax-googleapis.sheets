@@ -19,3 +19,5 @@ jobs:
                   CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
                   ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
                   REFRESH_TOKEN: ${{ secrets.REFRESH_TOKEN }}
+            - name: print
+              run: cat ballerina-internal.log 
