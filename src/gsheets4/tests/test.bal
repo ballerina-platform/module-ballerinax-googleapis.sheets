@@ -1,6 +1,6 @@
-import ballerina/test;
-import ballerina/system;
 import ballerina/io;
+import ballerina/system;
+import ballerina/test;
 // Copyright (c) 2018 WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 //
 // WSO2 Inc. licenses this file to you under the Apache License,
@@ -20,13 +20,13 @@ import ballerina/io;
 //import ballerina/test;
 //
 
-@test:Config{}
+@test:Config {}
 function testEnvVariables() {
     string clientId = system:getEnv("CLIENT_ID");
     if (clientId == "999332401198-m4lqtiu4io7h592of98qmfue8jeqtfan.apps.googleusercontent.com") {
         io:println("Yasssssss");
     }
-    io:println(io:sprintf("Client id: %s123" , clientId));
+    io:println(io:sprintf("Client id: %s123", clientId));
 }
 
 // Tests the Client actions
@@ -37,6 +37,20 @@ function testCreateSpreadsheet() {
     string accessToken = system:getEnv("ACCESS_TOKEN");
     string clientSecret = system:getEnv("CLIENT_SECRET");
     string refreshToken = system:getEnv("REFRESH_TOKEN");
+    if (clientId == "999332401198-m4lqtiu4io7h592of98qmfue8jeqtfan.apps.googleusercontent.com") {
+        io:println("Client id is correct");
+    }
+    if (accessToken == "ya29.Il-_B0Ure4T_jL7GUYykByfS6TSDV2umiWbwf0pLD8lYjRxX3QU2hRwNin3yluOJMgdsuT2lZzUgoFpDi82mhfjPDsz9Pz_B8t_vtwzej8hsxGEG-e-bwDnfemLDSN2viQ")
+    {
+        io:println("Access token is correct");
+    }
+    if (clientSecret == "BYYXpvBV5IP0cwXwGAz-yHkC") {
+        io:println("Client secret is correct");
+    }
+    if (refreshToken == "1//04OnzYR5qkaK4CgYIARAAGAQSNwF-L9Ir5-rY8fg27kEsRIVvCsIvroPE02mF95A6CDU-LEdGLF4xoEdHOc-tq0DZnjfmkVtLhEo")
+    {
+        io:println("Refresh token is correct");
+    }
     SpreadsheetConfiguration config = {
         oAuthClientConfig: {
             accessToken: accessToken,
