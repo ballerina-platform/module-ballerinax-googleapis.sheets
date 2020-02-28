@@ -28,6 +28,36 @@ function testEnvVariables() {
     }
     io:println(io:sprintf("Client id: %s123" , clientId));
 }
+
+// Tests the Client actions
+@test:Config {}
+function testCreateSpreadsheet() {
+    string clientId = system:getEnv("CLIENT_ID");
+    string accessToken = system:getEnv("ACCESS_TOKEN");
+    string clientSecret = system:getEnv("CLIENT_SECRET");
+    string refreshToken = system:getEnv("REFRESH_TOKEN");
+    SpreadsheetConfiguration config = {
+        oAuthClientConfig: {
+            accessToken: system:getEnv("ACCESS_TOKEN"),
+            refreshConfig: {
+                clientId: "999332401198-m4lqtiu4io7h592of98qmfue8jeqtfan.apps.googleusercontent.com",
+                clientSecret: "BYYXpvBV5IP0cwXwGAz-yHkC",
+                refreshUrl: REFRESH_URL,
+                refreshToken: "1//04OnzYR5qkaK4CgYIARAAGAQSNwF-L9Ir5-rY8fg27kEsRIVvCsIvroPE02mF95A6CDU-LEdGLF4xoEdHOc-tq0DZnjfmkVtLhEo "
+            }
+        }
+    };
+    Client spreadsheetClient = new (config);
+    var spreadsheetRes = spreadsheetClient->createSpreadsheet(createSpreadsheetName);
+    if (spreadsheetRes is Spreadsheet) {
+        Spreadsheet testSpreadsheet = <@untainted>spreadsheetRes;
+        test:assertNotEquals(spreadsheetRes.spreadsheetId, "", msg = "Failed to create spreadsheet");
+        spreadsheetId = testSpreadsheet.spreadsheetId;
+    } else {
+        test:assertFail(msg = <string>spreadsheetRes.detail()["message"]);
+    }
+}
+
 //SpreadsheetConfiguration config = {
 //    oAuthClientConfig: {
 //        accessToken: system:getEnv("ACCESS_TOKEN"),
