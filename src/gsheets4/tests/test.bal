@@ -26,7 +26,7 @@ function testEnvVariables() {
     if (clientId == "999332401198-m4lqtiu4io7h592of98qmfue8jeqtfan.apps.googleusercontent.com") {
         io:println("Yasssssss");
     }
-    io:println("Client id: " + clientId);
+    io:println(io:sprintf("Client id: %S123" , clientId));
 }
 //SpreadsheetConfiguration config = {
 //    oAuthClientConfig: {
