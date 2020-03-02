@@ -39,5 +39,10 @@ const string DASH_WITH_WHITE_SPACES_SYMBOL = " - ";
 const string COLON = ":";
 const string EXCLAMATION_MARK = "!";
 
+// URL constants
+const string URL_START = "https://docs.google.com/spreadsheets/d/";
+const string URL_END = "/edit";
+const int ID_START_INDEX = 39;
+
 // Error codes
 const string SPREADSHEET_ERROR_CODE = "(wso2/gsheets4)SpreadsheetError";
