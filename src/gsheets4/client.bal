@@ -66,6 +66,32 @@ public type Client client object {
             return response;
         }
     }
+
+    # Opens a Spreadsheet by the given URL.
+    #
+    # + url - URL of the Spreadsheet
+    # + return - A Spreadsheet client object on success, else returns an error
+    public remote function openSpreadsheetByUrl(string url) returns @tainted Spreadsheet | error {
+        string | error id = self.getIdFromUrl(url);
+        if (id is string) {
+            return self->openSpreadsheetById(id);
+        } else {
+            return createConnectorError(id);
+        }
+    }
+
+    function getIdFromUrl(string url) returns string | error {
+        if (!url.startsWith(URL_START)) {
+            return error(SPREADSHEET_ERROR_CODE, message = "Invalid url: " + url);
+        } else {
+            int? endIndex = url.indexOf(URL_END);
+            if (endIndex is ()) {
+                return error(SPREADSHEET_ERROR_CODE, message = "Invalid url: " + url);
+            } else {
+                return url.substring(ID_START_INDEX, endIndex);
+            }
+        }
+    }
 };
 
 # Holds the parameters used to create a `Client`.
