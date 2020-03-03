@@ -73,6 +73,7 @@ function testOpenSpreadsheetById() {
     }
 }
 
+@test:Config {}
 function testOpenSpreadsheetByUrl() {
     var spreadsheetRes = spreadsheetClient->openSpreadsheetByUrl(system:getEnv("URL"));
     if (spreadsheetRes is Spreadsheet) {
@@ -193,7 +194,24 @@ function testRename() {
     }
 }
 
-//// Tests the Sheet client actions
+// Tests the Sheet client actions
+@test:Config {
+    dependsOn: ["testClearAll"]
+}
+function testAppendRow() {
+    string[] values = ["Appending", "Some", "Values"];
+    var spreadsheetRes = spreadsheetClient->openSpreadsheetById(urlSpreadsheetId);
+    if (spreadsheetRes is Spreadsheet) {
+        Sheet[] | error sheets = spreadsheetRes.getSheets();
+        if (sheets is Sheet[]) {
+            Sheet sheet = sheets[0];
+            var setRes = sheet->appendRow(values);
+        }
+    } else {
+        test:assertFail(msg = <string>spreadsheetRes.detail()["message"]);
+    }
+}
+
 @test:Config {
     dependsOn: ["testAddSheet"]
 }

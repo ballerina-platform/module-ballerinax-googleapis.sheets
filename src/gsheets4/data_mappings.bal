@@ -14,7 +14,8 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import ballerina/ 'lang\.int as ints;
+import ballerina/lang.'int as ints;
+import ballerina/log;
 
 function convertToSpreadsheet(json jsonSpreadsheet, Client spreadsheetClient) returns Spreadsheet {
     string id = jsonSpreadsheet.spreadsheetId.toString();
@@ -22,8 +23,13 @@ function convertToSpreadsheet(json jsonSpreadsheet, Client spreadsheetClient) re
     SpreadsheetProperties properties = !(spreadsheetProperties is error)
     ? convertToSpreadsheetProperties(spreadsheetProperties) : {};
     string spreadsheetUrl = jsonSpreadsheet.spreadsheetUrl.toString();
-    Sheet[] sheets = !(jsonSpreadsheet.sheets is error)
-    ? convertToSheets(<json[]>jsonSpreadsheet.sheets, spreadsheetClient, id) : [];
+    Sheet[] sheets = [];
+    json | error sheetsJson = jsonSpreadsheet.sheets;
+    if (sheetsJson is error) {
+        log:printError("Could not retrieve the sheets", sheetsJson);
+    } else {
+        sheets = convertToSheets(<json[]>jsonSpreadsheet.sheets, spreadsheetClient, id);
+    }
     Spreadsheet spreadsheet = new (spreadsheetClient, id, properties, spreadsheetUrl, sheets);
     return spreadsheet;
 }
