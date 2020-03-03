@@ -16,16 +16,6 @@
 
 import ballerina/http;
 
-function setResponseError(json jsonResponse) returns error {
-    error err = error(SPREADSHEET_ERROR_CODE, message = jsonResponse.toString());
-    return err;
-}
-
-function setResError(error errorResponse) returns error {
-    error err = error(SPREADSHEET_ERROR_CODE, message = <string>errorResponse.detail()?.message);
-    return err;
-}
-
 function sendRequestWithPayload(http:Client httpClient, string path, json jsonPayload = ())
 returns @tainted json | error {
     http:Request httpRequest = new;
@@ -43,10 +33,10 @@ returns @tainted json | error {
             }
             return jsonResponse;
         } else {
-            return createConnectorError(jsonResponse);
+            return getSpreadsheetError(jsonResponse);
         }
     } else {
-        return createConnectorError(httpResponse);
+        return getSpreadsheetError(httpResponse);
     }
 }
 
@@ -62,16 +52,11 @@ function sendRequest(http:Client httpClient, string path) returns @tainted json 
             }
             return jsonResponse;
         } else {
-            return createConnectorError(jsonResponse);
+            return getSpreadsheetError(jsonResponse);
         }
     } else {
-        return createConnectorError(httpResponse);
+        return getSpreadsheetError(httpResponse);
     }
-}
-
-function createConnectorError(error errorResponse) returns error {
-    error err = error(SPREADSHEET_ERROR_CODE, message = <string>errorResponse.detail()?.message);
-    return err;
 }
 
 function getConvertedValue(json value) returns string | int | float {
@@ -84,31 +69,23 @@ function getConvertedValue(json value) returns string | int | float {
     }
 }
 
-function setJsonResponse(json jsonResponse, int statusCode, Client cli) returns Spreadsheet | error {
-    if (statusCode == http:STATUS_OK) {
-        return convertToSpreadsheet(jsonResponse, cli);
-    }
-    return setResponseError(jsonResponse);
-}
-
 function validateResponse(json jsonResponse, int statusCode, Client cli) returns Spreadsheet | error {
     if (statusCode == http:STATUS_OK) {
         return convertToSpreadsheet(jsonResponse, cli);
     }
-    return setResponseError(jsonResponse);
+    return getSpreadsheetError(jsonResponse);
 }
 
 function validateStatusCode(json response, int statusCode) returns error? {
     if (statusCode != http:STATUS_OK) {
-        return setResponseError(response);
+        return getSpreadsheetError(response);
     }
-    return ();
 }
+
 function setResponse(json jsonResponse, int statusCode) returns error? {
-    if (statusCode == http:STATUS_OK) {
-        return ();
+    if (!(statusCode == http:STATUS_OK)) {
+        return getSpreadsheetError(jsonResponse);
     }
-    return setResponseError(jsonResponse);
 }
 
 function equalsIgnoreCase(string stringOne, string stringTwo) returns boolean {
@@ -116,4 +93,12 @@ function equalsIgnoreCase(string stringOne, string stringTwo) returns boolean {
         return true;
     }
     return false;
+}
+
+function getSpreadsheetError(json|error errorResponse) returns error {
+  if (errorResponse is json) {
+        return error(SPREADSHEET_ERROR_CODE, message = errorResponse.toString());
+  } else {
+        return error(SPREADSHEET_ERROR_CODE, message = <string>errorResponse.detail()?.message);
+  }
 }

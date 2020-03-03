@@ -156,29 +156,6 @@ service spreadsheetService on new http:Listener(config:getAsInt("LISTENER_PORT")
     }
 
     @http:ResourceConfig {
-        methods: ["GET"],
-        path: "/{spreadsheetId}"
-    }
-    // Function to open spreadsheet.
-    resource function openSpreadsheetById(http:Caller caller, http:Request request, string spreadsheetId) {
-        // Define new response.
-        http:Response backendResponse = new();
-        // Invoke openSpreadsheetById remote function from spreadsheetClient.
-        var response = spreadsheetClient->openSpreadsheetById(spreadsheetId);
-        if (response is gsheets4:Spreadsheet) {
-            // If there is no error, send the success response.
-            backendResponse.statusCode = http:STATUS_OK;
-            backendResponse.setJsonPayload(<@untainted> convertSpreadsheetToJSON(response),
-                                           contentType = "application/json");
-            respondAndHandleError(caller, backendResponse, RESPOND_ERROR_MSG);
-        } else {
-            // Send the error response.
-            createAndSendErrorResponse(caller, <@untainted> <string>response.detail()?.message,
-                            SPREADSHEET_RETRIEVAL_ERROR_MSG);
-        }
-    }
-
-    @http:ResourceConfig {
         methods: ["PUT"],
         path: "/{spreadsheetId}/{worksheetName}/{a1Notation}"
     }

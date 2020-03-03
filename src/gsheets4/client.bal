@@ -76,7 +76,7 @@ public type Client client object {
         if (id is string) {
             return self->openSpreadsheetById(id);
         } else {
-            return createConnectorError(id);
+            return getSpreadsheetError(id);
         }
     }
 

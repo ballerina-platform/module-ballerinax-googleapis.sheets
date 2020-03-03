@@ -63,18 +63,14 @@ public type Spreadsheet client object {
     # + return - Sheet object on success and error on failure
     public function getSheetByName(string sheetName) returns Sheet | error {
         Sheet[] sheets = self.sheets;
-        error err = error(SPREADSHEET_ERROR_CODE, message = "Sheet not found");
-        if (sheets.length() == 0) {
-            return err;
-        } else {
-            foreach var sheet in sheets {
-                if (equalsIgnoreCase(sheet.properties.title, sheetName)) {
-                    return sheet;
-                }
+        foreach var sheet in sheets {
+            if (equalsIgnoreCase(sheet.properties.title, sheetName)) {
+                return sheet;
             }
-            return err;
         }
+        return error(SPREADSHEET_ERROR_CODE, message = "Sheet not found");
     }
+
 
     # Add a new worksheet.
     #
@@ -114,8 +110,6 @@ public type Spreadsheet client object {
         json | error response = sendRequestWithPayload(self.httpClient, deleteSheetPath, payload);
         if (response is error) {
             return response;
-        } else {
-            return;
         }
     }
 
@@ -140,7 +134,6 @@ public type Spreadsheet client object {
             return response;
         } else {
             self.properties.title = name;
-            return;
         }
     }
 };
