@@ -476,7 +476,6 @@ public type Sheet client object {
     # + values - Array of values of the row to be added
     # + return - Nil on success, else returns an error
     public remote function appendRow((int | string | float)[] values) returns @tainted error? {
-        http:Request request = new;
         string setValuePath = SPREADSHEET_PATH + PATH_SEPARATOR + self.parentId + VALUES_PATH + self.name + APPEND_REQUEST;
         json[] jsonValues = [];
         int i = 0;
@@ -484,20 +483,17 @@ public type Sheet client object {
             jsonValues[i] = value;
             i = i + 1;
         }
-        json jsonPayload = {"values": jsonValues};
-        request.setJsonPayload(<@untainted>jsonPayload);
-        var httpResponse = self.httpClient->put(<@untainted>setValuePath, request);
-        if (httpResponse is http:Response) {
-            int statusCode = httpResponse.statusCode;
-            var jsonResponse = httpResponse.getJsonPayload();
-            if (jsonResponse is json) {
-                return setResponse(jsonResponse, statusCode);
-            } else {
-                return error(SPREADSHEET_ERROR_CODE, message = "Error occurred while accessing the JSON payload of " +
-                "the response");
-            }
-        } else {
-            return getSpreadsheetError(httpResponse);
+        json jsonPayload = {
+            "range": self.name,
+            "majorDimension": "ROWS",
+            "values": [
+                jsonValues
+            ]
+        };
+        json | error response = sendRequestWithPayload(self.httpClient, <@untainted>setValuePath,
+        <@untainted>jsonPayload);
+        if (response is error) {
+            return response;
         }
     }
 };
