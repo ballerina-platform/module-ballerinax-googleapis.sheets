@@ -89,7 +89,7 @@ function testOpenSpreadsheetByUrl() {
     }
     var spreadsheetRes = spreadsheetClient->openSpreadsheetByUrl(system:getEnv("URL"));
     if (spreadsheetRes is Spreadsheet) {
-        test:assertEquals(spreadsheetRes.spreadsheetId, urlSpreadsheetId, msg = "Failed to open the spreadsheet");
+        test:assertEquals(spreadsheetRes.spreadsheetId, urlSpreadsheetId, msg = "Failed to open the spreadsheet.");
         Spreadsheet testSpreadsheet = <@untainted>spreadsheetRes;
     } else {
         test:assertFail(msg = <string>spreadsheetRes.detail()["message"]);
