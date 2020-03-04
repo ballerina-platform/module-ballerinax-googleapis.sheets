@@ -578,7 +578,7 @@ function testClearAll() {
 @test:Config {}
 function testAppendRow() {
     string[] values = ["Appending", "Some", "Values"];
-    var spreadsheetRes = spreadsheetClient->openSpreadsheetById(urlSpreadsheetId);
+    var spreadsheetRes = spreadsheetClient->openSpreadsheetById("13oJGUL-pD6Alk2iGIFJm_qN4De9r65m9Rq5IaiMTELw");
     if (spreadsheetRes is Spreadsheet) {
         Sheet[] | error sheets = spreadsheetRes.getSheets();
         if (sheets is Sheet[]) {
