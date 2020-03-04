@@ -16,6 +16,7 @@
 
 import ballerina/system;
 import ballerina/test;
+import ballerina/io;
 
 SpreadsheetConfiguration config = {
     oAuthClientConfig: {
@@ -75,6 +76,17 @@ function testOpenSpreadsheetById() {
 
 @test:Config {}
 function testOpenSpreadsheetByUrl() {
+    if (system:getEnv("URL") == "https://docs.google.com/spreadsheets/d/13oJGUL-pD6Alk2iGIFJm_qN4De9r65m9Rq5IaiMTELw/edit#gid=0")
+    {
+        io:println("URL Correct");
+    } else {
+        io:println("URL Incorrect");
+    }
+    if (system:getEnv("URL_ID") == "13oJGUL-pD6Alk2iGIFJm_qN4De9r65m9Rq5IaiMTELw"){
+        io:println("URL ID Correct");
+    } else {
+        io:println("URL ID Incorrect");
+    }
     var spreadsheetRes = spreadsheetClient->openSpreadsheetByUrl(system:getEnv("URL"));
     if (spreadsheetRes is Spreadsheet) {
         test:assertEquals(spreadsheetRes.spreadsheetId, urlSpreadsheetId, msg = "Failed to open the spreadsheet");
