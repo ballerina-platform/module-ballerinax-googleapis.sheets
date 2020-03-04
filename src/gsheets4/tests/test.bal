@@ -196,23 +196,6 @@ function testRename() {
 
 // Tests the Sheet client actions
 @test:Config {
-    dependsOn: ["testClearAll"]
-}
-function testAppendRow() {
-    string[] values = ["Appending", "Some", "Values"];
-    var spreadsheetRes = spreadsheetClient->openSpreadsheetById(urlSpreadsheetId);
-    if (spreadsheetRes is Spreadsheet) {
-        Sheet[] | error sheets = spreadsheetRes.getSheets();
-        if (sheets is Sheet[]) {
-            Sheet sheet = sheets[0];
-            var setRes = sheet->appendRow(values);
-        }
-    } else {
-        test:assertFail(msg = <string>spreadsheetRes.detail()["message"]);
-    }
-}
-
-@test:Config {
     dependsOn: ["testAddSheet"]
 }
 function testSheetRename() {
@@ -586,6 +569,22 @@ function testClearAll() {
             }
         } else {
             test:assertFail(msg = <string>sheets.detail()["message"]);
+        }
+    } else {
+        test:assertFail(msg = <string>spreadsheetRes.detail()["message"]);
+    }
+}
+
+@test:Config {}
+function testAppendRow() {
+    string[] values = ["Appending", "Some", "Values"];
+    var spreadsheetRes = spreadsheetClient->openSpreadsheetById(urlSpreadsheetId);
+    if (spreadsheetRes is Spreadsheet) {
+        Sheet[] | error sheets = spreadsheetRes.getSheets();
+        if (sheets is Sheet[]) {
+            Sheet sheet = sheets[0];
+            var appendRes = sheet->appendRow(values);
+            test:assertEquals(appendRes, (), msg = "Appending a row failed");
         }
     } else {
         test:assertFail(msg = <string>spreadsheetRes.detail()["message"]);
