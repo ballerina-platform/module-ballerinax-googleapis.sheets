@@ -14,17 +14,17 @@
 //specific language governing permissions and limitations
 //under the License.
 
-import ballerina/system;
 import ballerina/test;
+import ballerina/io;
 
 SpreadsheetConfiguration config = {
     oAuthClientConfig: {
         accessToken: "",
         refreshConfig: {
-            clientId: system:getEnv("CLIENT_ID"),
-            clientSecret: system:getEnv("CLIENT_SECRET"),
+            clientId: "999332401198-m4lqtiu4io7h592of98qmfue8jeqtfan.apps.googleusercontent.com",
+            clientSecret: "BYYXpvBV5IP0cwXwGAz-yHkC",
             refreshUrl: REFRESH_URL,
-            refreshToken: system:getEnv("REFRESH_TOKEN")
+            refreshToken: "1//04OnzYR5qkaK4CgYIARAAGAQSNwF-L9Ir5-rY8fg27kEsRIVvCsIvroPE02mF95A6CDU-LEdGLF4xoEdHOc-tq0DZnjfmkVtLhEo"
         }
     }
 };
@@ -32,7 +32,7 @@ SpreadsheetConfiguration config = {
 Client spreadsheetClient = new (config);
 
 string copyToSpreadsheet = "Copy To";
-string urlSpreadsheetId = system:getEnv("URL_ID");
+string urlSpreadsheetId = "13oJGUL-pD6Alk2iGIFJm_qN4De9r65m9Rq5IaiMTELw";
 string spreadsheetId = "";
 string testSpreadsheetName = "Ballerina Connector";
 string createSpreadsheetName = "Ballerina Connector New";
@@ -75,7 +75,11 @@ function testOpenSpreadsheetById() {
 
 @test:Config {}
 function testOpenSpreadsheetByUrl() {
-    var spreadsheetRes = spreadsheetClient->openSpreadsheetByUrl(system:getEnv("URL"));
+     if (system:getEnv("URL") == "https://docs.google.com/spreadsheets/d/13oJGUL-pD6Alk2iGIFJm_qN4De9r65m9Rq5IaiMTELw/edit#gid=0")
+        {
+            io:println("yas");
+        }
+    var spreadsheetRes = spreadsheetClient->openSpreadsheetByUrl("https://docs.google.com/spreadsheets/d/13oJGUL-pD6Alk2iGIFJm_qN4De9r65m9Rq5IaiMTELw/edit#gid=0");
     if (spreadsheetRes is Spreadsheet) {
         test:assertEquals(spreadsheetRes.spreadsheetId, urlSpreadsheetId, msg = "Failed to open the spreadsheet");
         Spreadsheet testSpreadsheet = <@untainted>spreadsheetRes;

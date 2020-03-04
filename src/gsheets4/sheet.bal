@@ -15,6 +15,7 @@
 // under the License.
 
 import ballerina/http;
+import ballerina/io;
 
 # Ballerina public API to provide Google Spreadsheet - Sheet related functionality.
 public type Sheet client object {
@@ -490,6 +491,8 @@ public type Sheet client object {
         if (httpResponse is http:Response) {
             int statusCode = httpResponse.statusCode;
             var jsonResponse = httpResponse.getJsonPayload();
+                        io:println(jsonResponse);
+
             if (jsonResponse is json) {
                 return setResponse(jsonResponse, statusCode);
             } else {
