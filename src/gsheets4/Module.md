@@ -48,7 +48,7 @@ Add the project configuration file by creating a `ballerina.conf` file under the
 This file should have following configurations. Add the tokens obtained in the previous step to the `ballerina.conf` file.
 
 ```
-ACCESS_TOKEN = "<Acces_token>"
+ACCESS_TOKEN = "<Access_token>"
 CLIENT_ID = "<Client_id">
 CLIENT_SECRET = "<Client_secret>"
 REFRESH_TOKEN = "<Refresh_token>"
@@ -59,7 +59,7 @@ BASE_PATH = "/spreadsheets"
 
 **Implementation**
 
-``` ballerina
+```ballerina
 import ballerina/config;
 import ballerina/io;
 import ballerina/http;
@@ -134,71 +134,62 @@ service spreadsheetService on new http:Listener(config:getAsInt("LISTENER_PORT")
         // Define new response.
         http:Response backendResponse = new();
         // Invoke addNewSheet remote function from spreadsheetClient.
-        var response = spreadsheetClient->addNewSheet(<@untainted> spreadsheetId, <@untainted> worksheetName);
-        if (response is gsheets4:Sheet) {
-            // If there is no error, send the success response.
-            backendResponse.statusCode = http:STATUS_CREATED;
-            backendResponse.setJsonPayload(<@untainted> convertSheetPropertiesToJSON(response.properties),
-                                           contentType = "application/json");
-            respondAndHandleError(caller, backendResponse, RESPOND_ERROR_MSG);
+        var spreadsheet = spreadsheetClient->openSpreadsheetById(spreadsheetId);
+        if (spreadsheet is gsheets4:Spreadsheet) {
+            var response = spreadsheetClient->addNewSheet(worksheetName);
+            if (response is gsheets4:Sheet) {
+                // If there is no error, send the success response.
+                backendResponse.statusCode = http:STATUS_CREATED;
+                backendResponse.setJsonPayload(<@untainted> convertSheetPropertiesToJSON(response.properties),
+                                               contentType = "application/json");
+                respondAndHandleError(caller, backendResponse, RESPOND_ERROR_MSG);
+            } else {
+                // Send the error response.
+                createAndSendErrorResponse(caller, <@untainted> <string>response.detail()?.message,
+                                WORKSHEET_CREATION_ERROR_MSG);
+            }  
         } else {
             // Send the error response.
             createAndSendErrorResponse(caller, <@untainted> <string>response.detail()?.message,
-                            WORKSHEET_CREATION_ERROR_MSG);
-        }
-    }
-
-    @http:ResourceConfig {
-        methods: ["GET"],
-        path: "/{spreadsheetId}"
-    }
-    // Function to open spreadsheet.
-    resource function openSpreadsheetById(http:Caller caller, http:Request request, string spreadsheetId) {
-        // Define new response.
-        http:Response backendResponse = new();
-        // Invoke openSpreadsheetById remote function from spreadsheetClient.
-        var response = spreadsheetClient->openSpreadsheetById(<@untainted> spreadsheetId);
-        if (response is gsheets4:Spreadsheet) {
-            // If there is no error, send the success response.
-            backendResponse.statusCode = http:STATUS_OK;
-            backendResponse.setJsonPayload(<@untainted> convertSpreadsheetToJSON(response),
-                                           contentType = "application/json");
-            respondAndHandleError(caller, backendResponse, RESPOND_ERROR_MSG);
-        } else {
-            // Send the error response.
-            createAndSendErrorResponse(caller, <@untainted> <string>response.detail()?.message,
-                            SPREADSHEET_RETRIEVAL_ERROR_MSG);
+                                SPREADSHEET_RETRIEVAL_ERROR_MSG);
         }
     }
 
     @http:ResourceConfig {
         methods: ["PUT"],
-        path: "/{spreadsheetId}/{worksheetName}/{topLeftCell}/{bottomRightCell}"
+        path: "/{spreadsheetId}/{worksheetName}/{a1Notation}"
     }
     // Function to add entries into an existing worksheet.
     resource function setSheetValues(http:Caller caller, http:Request request, string spreadsheetId,
-                                     string worksheetName, string topLeftCell, string bottomRightCell) {
+                                     string worksheetName, string a1Notation) {
         // Define new response.
         http:Response backendResponse = new();
         // Extract the object content from request payload.
-        string|string[][]|error entries = extractRequestContent(request);
+        string|(int|float|string)[][]|error entries = extractRequestContent(request);
         if (entries is string[][]) {
-            // Invoke setSheetValues remote function from spreadsheetClient.
-            var response = spreadsheetClient->setSheetValues(<@untainted> spreadsheetId, <@untainted> worksheetName,
-                                                             <@untainted> entries, <@untainted> topLeftCell,
-                                                             <@untainted> bottomRightCell);
-            if (response == true) {
-                // If the response is the boolean value 'true', send the success response.
-                string payload = "The entries have been added into the worksheet " + worksheetName;
-                backendResponse.statusCode = http:STATUS_CREATED;
-                backendResponse.setTextPayload(payload, contentType = "text/plain");
-                respondAndHandleError(caller, backendResponse, RESPOND_ERROR_MSG);
-            } else {
-                // Else, send the failure response.
-                string payload = "Unable to add the entries into the worksheet " + worksheetName;
-                backendResponse.statusCode = http:STATUS_BAD_REQUEST;
-                backendResponse.setTextPayload(payload, contentType = "text/plain");
-                respondAndHandleError(caller, backendResponse, RESPOND_ERROR_MSG);
+            var spreadsheet = spreadsheetClient->openSpreadsheetById(spreadsheetId);
+            if (spreadsheet is gsheets4:Spreadsheet) {
+                var sheet = spreadsheet->getSheetByName(worksheetName);
+                if (sheet is gsheets4:Sheet) {
+                    Range range = {a1Notation: a1Notation, values: entries};
+                    var setRes = sheet->setRange(<@untainted>range);
+                    if (setRes is ()) {
+                        // If the response is the boolean value 'true', send the success response.
+                        string payload = "The entries have been added into the worksheet " + worksheetName;
+                        backendResponse.statusCode = http:STATUS_CREATED;
+                        backendResponse.setTextPayload(payload, contentType = "text/plain");
+                        respondAndHandleError(caller, backendResponse, RESPOND_ERROR_MSG);
+                    } else {
+                        // Else, send the failure response.
+                        string payload = "Unable to add the entries into the worksheet " + worksheetName;
+                        backendResponse.statusCode = http:STATUS_BAD_REQUEST;
+                        backendResponse.setTextPayload(payload, contentType = "text/plain");
+                        respondAndHandleError(caller, backendResponse, RESPOND_ERROR_MSG);
+                    }
+                } else {
+                    createAndSendErrorResponse(caller, <@untainted> <string>sheet.detail()?.message,
+                                    WORKSHEET_RETRIEVAL_ERROR_MSG);
+                }
             }
         } else {
             // Send the error response.
@@ -213,21 +204,29 @@ service spreadsheetService on new http:Listener(config:getAsInt("LISTENER_PORT")
     }
     // Function to retrieve worksheet entries.
     resource function getSheetValues(http:Caller caller, http:Request request, string spreadsheetId,
-                                     string worksheetName, string topLeftCell, string bottomRightCell) {
+                                     string worksheetName, string a1Notation) {
         // Define new response.
         http:Response backendResponse = new();
-        // Invoke getSheetValues remote function from spreadsheetClient.
-        var response = spreadsheetClient->getSheetValues(<@untainted> spreadsheetId, <@untainted> worksheetName,
-                                                         <@untainted> topLeftCell, <@untainted> bottomRightCell);
-        if (response is error) {
-            // Send the error response.
-            createAndSendErrorResponse(caller, <@untainted> <string>response.detail()?.message,
-                            WORKSHEET_RETRIEVAL_ERROR_MSG);
-        } else {
-            // If there is no error, send the success response.
-            backendResponse.statusCode = http:STATUS_OK;
-            backendResponse.setJsonPayload(<@untainted> response, contentType = "application/json");
-            respondAndHandleError(caller, backendResponse, RESPOND_ERROR_MSG);
+        var spreadsheet = spreadsheetClient->openSpreadsheetById(spreadsheetId);
+        if (spreadsheet is gsheets4:Spreadsheet) {
+            var sheet = spreadsheet->getSheetByName(worksheetName);
+            if (sheet is gsheets4:Sheet) {
+                // Invoke getSheetValues remote function from spreadsheetClient.
+                var response = sheet->getRange(a1Notation);
+                if (response is gsheets4:Range) {
+                    // If there is no error, send the success response.
+                    backendResponse.statusCode = http:STATUS_OK;
+                    backendResponse.setJsonPayload(<@untainted> response, contentType = "application/json");
+                    respondAndHandleError(caller, backendResponse, RESPOND_ERROR_MSG);
+                } else {
+                    // Send the error response.
+                    createAndSendErrorResponse(caller, <@untainted> <string>response.detail()?.message,
+                                    WORKSHEET_RETRIEVAL_ERROR_MSG);
+                }
+            } else {
+                createAndSendErrorResponse(caller, <@untainted> <string>sheet.detail()?.message,
+                                    WORKSHEET_RETRIEVAL_ERROR_MSG);
+            }
         }
     }
 
@@ -240,18 +239,23 @@ service spreadsheetService on new http:Listener(config:getAsInt("LISTENER_PORT")
                                     string worksheetName, string column) {
         // Define new response.
         http:Response backendResponse = new();
-        // Invoke getColumnData remote function from spreadsheetClient.
-        var response = spreadsheetClient->getColumnData(<@untainted> spreadsheetId, <@untainted> worksheetName,
-                                                        <@untainted> column);
-        if (response is error) {
-            // Send the error response.
-            createAndSendErrorResponse(caller, <@untainted> <string>response.detail()?.message,
-                            COLUMN_DATA_RETRIEVAL_ERROR_MSG);
-        } else {
-            // If there is no error, send the success response.
-            backendResponse.statusCode = http:STATUS_OK;
-            backendResponse.setJsonPayload(<@untainted> response, contentType = "application/json");
-            respondAndHandleError(caller, backendResponse, RESPOND_ERROR_MSG);
+        var spreadsheet = spreadsheetClient->openSpreadsheetById(spreadsheetId);
+        if (spreadsheet is gsheets4:Spreadsheet) {
+            var sheet = spreadsheet->getSheetByName(worksheetName);
+            if (sheet is gsheets4:Sheet) {
+                // Invoke getColumnData remote function from spreadsheetClient.
+                var response = sheet->getColumn(column);
+                if (response is error) {
+                    // Send the error response.
+                    createAndSendErrorResponse(caller, <@untainted> <string>response.detail()?.message,
+                                    COLUMN_DATA_RETRIEVAL_ERROR_MSG);
+                } else {
+                    // If there is no error, send the success response.
+                    backendResponse.statusCode = http:STATUS_OK;
+                    backendResponse.setJsonPayload(<@untainted> response, contentType = "application/json");
+                    respondAndHandleError(caller, backendResponse, RESPOND_ERROR_MSG);
+                }
+            }
         }
     }
 
@@ -264,18 +268,23 @@ service spreadsheetService on new http:Listener(config:getAsInt("LISTENER_PORT")
                                  int row) {
         // Define new response.
         http:Response backendResponse = new();
-        // Invoke getRowData remote function from spreadsheetClient.
-        var response = spreadsheetClient->getRowData(<@untainted> spreadsheetId, <@untainted> worksheetName,
-                                                     <@untainted> row);
-        if (response is error) {
-            // Send the error response.
-            createAndSendErrorResponse(caller, <@untainted> <string>response.detail()?.message,
-                            ROW_DATA_RETRIEVAL_ERROR_MSG);
-        } else {
-            // If there is no error, send the success response.
-            backendResponse.statusCode = http:STATUS_OK;
-            backendResponse.setJsonPayload(<@untainted> response, contentType = "application/json");
-            respondAndHandleError(caller, backendResponse, RESPOND_ERROR_MSG);
+        var spreadsheet = spreadsheetClient->openSpreadsheetById(spreadsheetId);
+        if (spreadsheet is gsheets4:Spreadsheet) {
+            var sheet = spreadsheet->getSheetByName(worksheetName);
+            if (sheet is gsheets4:Sheet) {
+                // Invoke getRowData remote function from spreadsheetClient.
+                var response = sheet->getRow(row);
+                if (response is error) {
+                    // Send the error response.
+                    createAndSendErrorResponse(caller, <@untainted> <string>response.detail()?.message,
+                                    ROW_DATA_RETRIEVAL_ERROR_MSG);
+                } else {
+                    // If there is no error, send the success response.
+                    backendResponse.statusCode = http:STATUS_OK;
+                    backendResponse.setJsonPayload(<@untainted> response, contentType = "application/json");
+                    respondAndHandleError(caller, backendResponse, RESPOND_ERROR_MSG);
+                }
+            }
         }
     }
 
@@ -285,27 +294,33 @@ service spreadsheetService on new http:Listener(config:getAsInt("LISTENER_PORT")
     }
     // Function to enter value into a cell.
     resource function setCellData(http:Caller caller, http:Request request, string spreadsheetId, string worksheetName,
-                                  string column, int row) {
+                                  string a1Notation) {
         // Define new response.
         http:Response backendResponse = new();
         // Invoke setCellData remote function from spreadsheetClient.
         string|string[][]|error cellValue = extractRequestContent(request);
         if (cellValue is string) {
-        var response = spreadsheetClient->setCellData(<@untainted> spreadsheetId, <@untainted> worksheetName,
-                                                      <@untainted> column, <@untainted> row, <@untainted> cellValue);
-        if (response == true) {
-            // If the response is the boolean value 'true', send the success response.
-            string payload = "The cell data has been added into the worksheet " + worksheetName;
-            backendResponse.statusCode = http:STATUS_CREATED;
-            backendResponse.setTextPayload(payload, contentType = "text/plain");
-            respondAndHandleError(caller, backendResponse, RESPOND_ERROR_MSG);
-        } else {
-            // Else, send the failure response.
-            string payload = "Unable to enter the value into the cell in the worksheet" + worksheetName;
-            backendResponse.statusCode = http:STATUS_BAD_REQUEST;
-            backendResponse.setTextPayload(payload, contentType = "text/plain");
-            respondAndHandleError(caller, backendResponse, RESPOND_ERROR_MSG);
-        }
+            var spreadsheet = spreadsheetClient->openSpreadsheetById(spreadsheetId);
+            if (spreadsheet is gsheets4:Spreadsheet) {
+                var sheet = spreadsheet->getSheetByName(worksheetName);
+                if (sheet is gsheets4:Sheet) {
+                    // Invoke getRowData remote function from spreadsheetClient.
+                    var response = sheet->setCell(roa1Notationw, cellValue);
+                    if (response is error) {
+                        // Send the error response.
+                        string payload = "Unable to enter the value into the cell in the worksheet" + worksheetName;
+                        backendResponse.statusCode = http:STATUS_BAD_REQUEST;
+                        backendResponse.setTextPayload(payload, contentType = "text/plain");
+                        respondAndHandleError(caller, backendResponse, RESPOND_ERROR_MSG);
+                    } else {
+                        // If the response is the boolean value 'true', send the success response.
+                        string payload = "The cell data has been added into the worksheet " + worksheetName;
+                        backendResponse.statusCode = http:STATUS_CREATED;
+                        backendResponse.setTextPayload(payload, contentType = "text/plain");
+                        respondAndHandleError(caller, backendResponse, RESPOND_ERROR_MSG);
+                    }
+                }
+            }
         } else {
             // Send the error response.
             createAndSendErrorResponse(caller, "Invalid content. String payload is expected by this method.",
@@ -319,21 +334,25 @@ service spreadsheetService on new http:Listener(config:getAsInt("LISTENER_PORT")
     }
     // Function to retrieve value of a cell.
     resource function getCellData(http:Caller caller, http:Request request, string spreadsheetId, string worksheetName,
-                                  string column, int row) {
+                                  string a1Notation) {
         // Define new response.
         http:Response backendResponse = new();
-        // Invoke getCellData remote function from spreadsheetClient.
-        var response = spreadsheetClient->getCellData(<@untainted> spreadsheetId, <@untainted> worksheetName,
-                                                      <@untainted> column, <@untainted> row);
-        if (response is string) {
-            // If there is no error, send the success response.
-            backendResponse.statusCode = http:STATUS_OK;
-            backendResponse.setTextPayload(<@untainted> response, contentType = "text/plain");
-            respondAndHandleError(caller, backendResponse, RESPOND_ERROR_MSG);
-        } else {
-            // Send the error response.
-            createAndSendErrorResponse(caller, <@untainted> <string>response.detail()?.message,
-                            CELL_DATA_RETRIEVAL_ERROR_MSG);
+        var spreadsheet = spreadsheetClient->openSpreadsheetById(spreadsheetId);
+        if (spreadsheet is gsheets4:Spreadsheet) {
+            var sheet = spreadsheet->getSheetByName(worksheetName);
+            if (sheet is gsheets4:Sheet) {
+                var response = sheet->getCell(a1Notation);
+                if (response is error) {
+                    // Send the error response.
+                    createAndSendErrorResponse(caller, <@untainted> <string>response.detail()?.message,
+                                    CELL_DATA_RETRIEVAL_ERROR_MSG);
+                } else {
+                    // If there is no error, send the success response.
+                    backendResponse.statusCode = http:STATUS_OK;
+                    backendResponse.setTextPayload(<@untainted> response, contentType = "text/plain");
+                    respondAndHandleError(caller, backendResponse, RESPOND_ERROR_MSG);
+                }
+            }
         }
     }
 
@@ -345,19 +364,22 @@ service spreadsheetService on new http:Listener(config:getAsInt("LISTENER_PORT")
     resource function deleteSheet(http:Caller caller, http:Request request, string spreadsheetId, int worksheetId) {
         // Define new response.
         http:Response backendResponse = new();
-        var response = spreadsheetClient->deleteSheet(spreadsheetId, worksheetId);
-        if (response == true) {
-            // If the response is the boolean value 'true', send the success response.
-            string payload = "The worksheet " + io:sprintf("%s", worksheetId) + " has been deleted.";
-            backendResponse.statusCode = http:STATUS_NO_CONTENT;
-            backendResponse.setTextPayload(payload, contentType = "text/plain");
-            respondAndHandleError(caller, backendResponse, RESPOND_ERROR_MSG);
-        } else {
-            // Else, send the failure response.
-            string payload = "Unable to delete the worksheet " + io:sprintf("%s", worksheetId);
-            backendResponse.statusCode = http:STATUS_BAD_REQUEST;
-            backendResponse.setTextPayload(payload, contentType = "text/plain");
-            respondAndHandleError(caller, backendResponse, RESPOND_ERROR_MSG);
+        var spreadsheet = spreadsheetClient->openSpreadsheetById(spreadsheetId);
+        if (spreadsheet is gsheets4:Spreadsheet) {
+            var response = spreadsheet->removeSheet(worksheetId); 
+            if (response is error) {
+                // Else, send the failure response.
+                string payload = "Unable to delete the worksheet " + io:sprintf("%s", worksheetId);
+                backendResponse.statusCode = http:STATUS_BAD_REQUEST;
+                backendResponse.setTextPayload(payload, contentType = "text/plain");
+                respondAndHandleError(caller, backendResponse, RESPOND_ERROR_MSG);
+            } else {
+                // If the response is the boolean value 'true', send the success response.
+                string payload = "The worksheet " + io:sprintf("%s", worksheetId) + " has been deleted.";
+                backendResponse.statusCode = http:STATUS_NO_CONTENT;
+                backendResponse.setTextPayload(payload, contentType = "text/plain");
+                respondAndHandleError(caller, backendResponse, RESPOND_ERROR_MSG);
+            }
         }
     }
 }
@@ -461,7 +483,6 @@ function convertToStringMDArray(json[] jsonObjectContent) returns string[][] {
 
 ## Testing
 
-
 First build the module. Navigate to the project root directory and execute the following command.
 
 ```bash
@@ -517,7 +538,7 @@ curl -H "Content-Type: application/json" \-X PUT \ -d '[["Name", "Score"], ["Kee
 
 ### 5. Getting values from worksheet
 ```bash\
-curl -X GET http://localhost:9090/spreadsheets/worksheet/<SPREADSHEET_ID>/<WORKSHEET_NAME>/<TOP_LEFT_CELL>/<BOTTOM_RIGHT_CELL>
+curl -X GET http://localhost:9090/spreadsheets/worksheet/<SPREADSHEET_ID>/<WORKSHEET_NAME>/<a1Notation>
 ```
 e.g.
 ```bash
@@ -531,7 +552,7 @@ curl -X GET http://localhost:9090/spreadsheets/column/<SPREADSHEET_ID>/<WORKSHEE
 
 ### 7. Retrieving values of a row
 ```bash
-curl -X GET http://localhost:9090/spreadsheets/row/<SPREADSHEET_ID>/<WORKSHEET_NAME>/<COLUMN_NAME>/<ROW_NAME>
+curl -X GET http://localhost:9090/spreadsheets/row/<SPREADSHEET_ID>/<WORKSHEET_NAME>/<ROW_NAME>
 ```
 e.g.
 ```bash
@@ -540,7 +561,8 @@ curl -X GET http://localhost:9090/spreadsheets/row/1AoOHLyn3Ds6do6UMq8t_pv20RrRw
 
 ### 8. Adding value into a cell
 ```bash
-curl -H "Content-Type: text/plain" \ -X PUT \ -d 'Test Value' \http://localhost:9090/spreadsheets/cell/<SPREADSHEET_ID>/<WORKSHEET_NAME>/<TOP_LEFT_CELL>/<BOTTOM_RIGHT_CELL>
+curl -H "Content-Type: text/plain" \ -X PUT \ -d 'Test Value' \http://localhost:9090/spreadsheets/cell
+/<SPREADSHEET_ID>/<WORKSHEET_NAME>/<a1Notation>
 ```
 e.g.
 ```bash
@@ -550,7 +572,7 @@ http://localhost:9090/spreadsheets/cell/1AoOHLyn3Ds6do6UMq8t_pv20RrRwNV4aoqQVI_Z
 
 ### 9. Retrieving value of a cell
 ```bash
-curl -X GET http://localhost:9090/spreadsheets/cell/<SPREADSHEET_ID>/<WORKSHEET_NAME>/<TOP_LEFT_CELL>/<BOTTOM_RIGHT_CELL>
+curl -X GET http://localhost:9090/spreadsheets/cell/<SPREADSHEET_ID>/<WORKSHEET_NAME>/<a1Notation>
 ```
 e.g.
 ```bash
