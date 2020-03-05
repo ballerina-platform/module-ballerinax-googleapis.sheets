@@ -32,7 +32,6 @@ SpreadsheetConfiguration config = {
 Client spreadsheetClient = new (config);
 
 string copyToSpreadsheet = "Copy To";
-string urlSpreadsheetId = system:getEnv("URL_ID");
 string spreadsheetId = "";
 string testSpreadsheetName = "Ballerina Connector";
 string createSpreadsheetName = "Ballerina Connector New";
@@ -75,9 +74,11 @@ function testOpenSpreadsheetById() {
 
 @test:Config {}
 function testOpenSpreadsheetByUrl() {
-    var spreadsheetRes = spreadsheetClient->openSpreadsheetByUrl(system:getEnv("URL"));
+    string id = system:getEnv("URL_ID");
+    string url = "https://docs.google.com/spreadsheets/d/" + id + "/edit#gid=0";
+    var spreadsheetRes = spreadsheetClient->openSpreadsheetByUrl(url);
     if (spreadsheetRes is Spreadsheet) {
-        test:assertEquals(spreadsheetRes.spreadsheetId, urlSpreadsheetId, msg = "Failed to open the spreadsheet");
+        test:assertEquals(spreadsheetRes.spreadsheetId, id, msg = "Failed to open the spreadsheet");
         Spreadsheet testSpreadsheet = <@untainted>spreadsheetRes;
     } else {
         test:assertFail(msg = <string>spreadsheetRes.detail()["message"]);
@@ -195,23 +196,6 @@ function testRename() {
 }
 
 // Tests the Sheet client actions
-@test:Config {
-    dependsOn: ["testClearAll"]
-}
-function testAppendRow() {
-    string[] values = ["Appending", "Some", "Values"];
-    var spreadsheetRes = spreadsheetClient->openSpreadsheetById(urlSpreadsheetId);
-    if (spreadsheetRes is Spreadsheet) {
-        Sheet[] | error sheets = spreadsheetRes.getSheets();
-        if (sheets is Sheet[]) {
-            Sheet sheet = sheets[0];
-            var setRes = sheet->appendRow(values);
-        }
-    } else {
-        test:assertFail(msg = <string>spreadsheetRes.detail()["message"]);
-    }
-}
-
 @test:Config {
     dependsOn: ["testAddSheet"]
 }
@@ -586,6 +570,22 @@ function testClearAll() {
             }
         } else {
             test:assertFail(msg = <string>sheets.detail()["message"]);
+        }
+    } else {
+        test:assertFail(msg = <string>spreadsheetRes.detail()["message"]);
+    }
+}
+
+@test:Config {}
+function testAppendRow() {
+    string[] values = ["Appending", "Some", "Values"];
+    var spreadsheetRes = spreadsheetClient->openSpreadsheetById(system:getEnv("URL_ID"));
+    if (spreadsheetRes is Spreadsheet) {
+        Sheet[] | error sheets = spreadsheetRes.getSheets();
+        if (sheets is Sheet[]) {
+            Sheet sheet = sheets[0];
+            var appendRes = sheet->appendRow(values);
+            test:assertEquals(appendRes, (), msg = "Appending a row failed");
         }
     } else {
         test:assertFail(msg = <string>spreadsheetRes.detail()["message"]);
