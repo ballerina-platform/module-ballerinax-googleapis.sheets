@@ -1,7 +1,7 @@
 [project]
-org-name = "wso2"
-version = "0.11.0"
+org-name = "ballerinax"
+version = "0.12.0"
 license= ["Apache-2.0"]
 authors = ["WSO2"]
-keywords = ["gsheets", "google", "spreadsheet"]
-repository = "https://github.com/wso2-ballerina/module-googlespreadsheet"
+keywords = ["sheets", "google", "spreadsheet"]
+repository = "https://github.com/ballerina-platform/module-googlespreadsheet"

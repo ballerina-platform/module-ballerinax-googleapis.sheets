@@ -6,7 +6,7 @@ The Google Spreadsheet connector allows you to create and access Google Spreadsh
 
 **Spreadsheet Operations**
 
-The `wso2/gsheets4` module allows you to perform following operations.
+The `ballerinax/googleapis.sheets4` module allows you to perform following operations.
 
 - Create a new spreadsheet
 - Create a new worksheet
@@ -23,7 +23,7 @@ The `wso2/gsheets4` module allows you to perform following operations.
 
 |                             |       Versions               |
 |:---------------------------:|:---------------------------:|
-| Ballerina Language          | 1.0.x, 1.1.x                     |
+| Ballerina Language          | 1.0.x, 1.1.x, 1.2.0                     |
 | Google Spreadsheet API      | V4                          |
 
 ## Sample
@@ -65,7 +65,7 @@ import ballerina/io;
 import ballerina/http;
 import ballerina/log;
 
-import wso2/gsheets4;
+import ballerinax/googleapis.sheets4;
 
 // Constants for error codes and messages.
 const string RESPOND_ERROR_MSG = "Error occurred while responding to client.";
@@ -82,7 +82,7 @@ const string CELL_DATA_ADDITION_ERROR_MSG = "Error while adding the value to the
 const string CELL_DATA_RETRIEVAL_ERROR_MSG = "Error while retrieving the value of the cell.";
 const string WORKSHEET_DELETION_ERROR_MSG = "Error while deleting the worksheet.";
 
-gsheets4:SpreadsheetConfiguration spreadsheetConfig = {
+sheets4:SpreadsheetConfiguration spreadsheetConfig = {
     oAuthClientConfig: {
         accessToken: config:getAsString("ACCESS_TOKEN"),
         refreshConfig: {
@@ -94,7 +94,7 @@ gsheets4:SpreadsheetConfiguration spreadsheetConfig = {
     }
 };
 
-gsheets4:Client spreadsheetClient = new(spreadsheetConfig);
+sheets4:Client spreadsheetClient = new(spreadsheetConfig);
 
 @http:ServiceConfig {
     basePath: config:getAsString("BASE_PATH")
@@ -111,7 +111,7 @@ service spreadsheetService on new http:Listener(config:getAsInt("LISTENER_PORT")
         http:Response backendResponse = new();
         // Invoke createSpreadsheet remote function from spreadsheetClient.
         var response = spreadsheetClient->createSpreadsheet(<@untainted> spreadsheetName);
-        if (response is gsheets4:Spreadsheet) {
+        if (response is sheets4:Spreadsheet) {
             // If there is no error, send the success response.
             backendResponse.statusCode = http:STATUS_CREATED;
             backendResponse.setJsonPayload(<@untainted> convertSpreadsheetToJSON(response),
@@ -135,9 +135,9 @@ service spreadsheetService on new http:Listener(config:getAsInt("LISTENER_PORT")
         http:Response backendResponse = new();
         // Invoke addNewSheet remote function from spreadsheetClient.
         var spreadsheet = spreadsheetClient->openSpreadsheetById(spreadsheetId);
-        if (spreadsheet is gsheets4:Spreadsheet) {
+        if (spreadsheet is sheets4:Spreadsheet) {
             var response = spreadsheetClient->addNewSheet(worksheetName);
-            if (response is gsheets4:Sheet) {
+            if (response is sheets4:Sheet) {
                 // If there is no error, send the success response.
                 backendResponse.statusCode = http:STATUS_CREATED;
                 backendResponse.setJsonPayload(<@untainted> convertSheetPropertiesToJSON(response.properties),
@@ -168,9 +168,9 @@ service spreadsheetService on new http:Listener(config:getAsInt("LISTENER_PORT")
         string|(int|float|string)[][]|error entries = extractRequestContent(request);
         if (entries is string[][]) {
             var spreadsheet = spreadsheetClient->openSpreadsheetById(spreadsheetId);
-            if (spreadsheet is gsheets4:Spreadsheet) {
+            if (spreadsheet is sheets4:Spreadsheet) {
                 var sheet = spreadsheet->getSheetByName(worksheetName);
-                if (sheet is gsheets4:Sheet) {
+                if (sheet is sheets4:Sheet) {
                     Range range = {a1Notation: a1Notation, values: entries};
                     var setRes = sheet->setRange(<@untainted>range);
                     if (setRes is ()) {
@@ -208,12 +208,12 @@ service spreadsheetService on new http:Listener(config:getAsInt("LISTENER_PORT")
         // Define new response.
         http:Response backendResponse = new();
         var spreadsheet = spreadsheetClient->openSpreadsheetById(spreadsheetId);
-        if (spreadsheet is gsheets4:Spreadsheet) {
+        if (spreadsheet is sheets4:Spreadsheet) {
             var sheet = spreadsheet->getSheetByName(worksheetName);
-            if (sheet is gsheets4:Sheet) {
+            if (sheet is sheets4:Sheet) {
                 // Invoke getSheetValues remote function from spreadsheetClient.
                 var response = sheet->getRange(a1Notation);
-                if (response is gsheets4:Range) {
+                if (response is sheets4:Range) {
                     // If there is no error, send the success response.
                     backendResponse.statusCode = http:STATUS_OK;
                     backendResponse.setJsonPayload(<@untainted> response, contentType = "application/json");
@@ -240,9 +240,9 @@ service spreadsheetService on new http:Listener(config:getAsInt("LISTENER_PORT")
         // Define new response.
         http:Response backendResponse = new();
         var spreadsheet = spreadsheetClient->openSpreadsheetById(spreadsheetId);
-        if (spreadsheet is gsheets4:Spreadsheet) {
+        if (spreadsheet is sheets4:Spreadsheet) {
             var sheet = spreadsheet->getSheetByName(worksheetName);
-            if (sheet is gsheets4:Sheet) {
+            if (sheet is sheets4:Sheet) {
                 // Invoke getColumnData remote function from spreadsheetClient.
                 var response = sheet->getColumn(column);
                 if (response is error) {
@@ -269,9 +269,9 @@ service spreadsheetService on new http:Listener(config:getAsInt("LISTENER_PORT")
         // Define new response.
         http:Response backendResponse = new();
         var spreadsheet = spreadsheetClient->openSpreadsheetById(spreadsheetId);
-        if (spreadsheet is gsheets4:Spreadsheet) {
+        if (spreadsheet is sheets4:Spreadsheet) {
             var sheet = spreadsheet->getSheetByName(worksheetName);
-            if (sheet is gsheets4:Sheet) {
+            if (sheet is sheets4:Sheet) {
                 // Invoke getRowData remote function from spreadsheetClient.
                 var response = sheet->getRow(row);
                 if (response is error) {
@@ -301,9 +301,9 @@ service spreadsheetService on new http:Listener(config:getAsInt("LISTENER_PORT")
         string|string[][]|error cellValue = extractRequestContent(request);
         if (cellValue is string) {
             var spreadsheet = spreadsheetClient->openSpreadsheetById(spreadsheetId);
-            if (spreadsheet is gsheets4:Spreadsheet) {
+            if (spreadsheet is sheets4:Spreadsheet) {
                 var sheet = spreadsheet->getSheetByName(worksheetName);
-                if (sheet is gsheets4:Sheet) {
+                if (sheet is sheets4:Sheet) {
                     // Invoke getRowData remote function from spreadsheetClient.
                     var response = sheet->setCell(roa1Notationw, cellValue);
                     if (response is error) {
@@ -338,9 +338,9 @@ service spreadsheetService on new http:Listener(config:getAsInt("LISTENER_PORT")
         // Define new response.
         http:Response backendResponse = new();
         var spreadsheet = spreadsheetClient->openSpreadsheetById(spreadsheetId);
-        if (spreadsheet is gsheets4:Spreadsheet) {
+        if (spreadsheet is sheets4:Spreadsheet) {
             var sheet = spreadsheet->getSheetByName(worksheetName);
-            if (sheet is gsheets4:Sheet) {
+            if (sheet is sheets4:Sheet) {
                 var response = sheet->getCell(a1Notation);
                 if (response is error) {
                     // Send the error response.
@@ -365,7 +365,7 @@ service spreadsheetService on new http:Listener(config:getAsInt("LISTENER_PORT")
         // Define new response.
         http:Response backendResponse = new();
         var spreadsheet = spreadsheetClient->openSpreadsheetById(spreadsheetId);
-        if (spreadsheet is gsheets4:Spreadsheet) {
+        if (spreadsheet is sheets4:Spreadsheet) {
             var response = spreadsheet->removeSheet(worksheetId); 
             if (response is error) {
                 // Else, send the failure response.
@@ -440,7 +440,7 @@ function equalsIgnoreCase(string str1, string str2) returns boolean {
     }
 }
 
-function convertSpreadsheetToJSON(gsheets4:Spreadsheet spreadsheet) returns json {
+function convertSpreadsheetToJSON(sheets4:Spreadsheet spreadsheet) returns json {
     json jsonSpreadsheet = {
                                 spreadsheetId: spreadsheet.spreadsheetId,
                                 properties: io:sprintf("%s", spreadsheet.properties),
@@ -450,7 +450,7 @@ function convertSpreadsheetToJSON(gsheets4:Spreadsheet spreadsheet) returns json
     return jsonSpreadsheet;
 }
 
-function convertSheetPropertiesToJSON(gsheets4:SheetProperties sheetProperties) returns json {
+function convertSheetPropertiesToJSON(sheets4:SheetProperties sheetProperties) returns json {
     json jsonSheetProperties = {
                                    title: sheetProperties.title,
                                    sheetId: sheetProperties.sheetId,
@@ -489,7 +489,7 @@ First build the module. Navigate to the project root directory and execute the f
 $ ballerina build googlespreadsheet_service
 ```
 
-This creates the executables. Now run the `googlespreadsheet_servicet.jar` file created in the above step.
+This creates the executables. Now run the `googlespreadsheet_service.jar` file created in the above step.
 
 ```bash
 $ java -jar target/bin/googlespreadsheet_service.jar

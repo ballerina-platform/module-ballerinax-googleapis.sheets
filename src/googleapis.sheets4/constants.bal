@@ -45,4 +45,4 @@ const string URL_END = "/edit";
 const int ID_START_INDEX = 39;
 
 // Error codes
-const string SPREADSHEET_ERROR_CODE = "(wso2/gsheets4)SpreadsheetError";
+const string SPREADSHEET_ERROR_CODE = "(ballerinax/googleapis.gsheets4)SpreadsheetError";
