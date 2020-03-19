@@ -2,6 +2,6 @@
 org-name = "ballerinax"
 version = "0.12.0"
 license= ["Apache-2.0"]
-authors = ["WSO2"]
+authors = ["Ballerina"]
 keywords = ["sheets", "google", "spreadsheet"]
 repository = "https://github.com/ballerina-platform/module-googlespreadsheet"
