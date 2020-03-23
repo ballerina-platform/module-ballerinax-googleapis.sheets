@@ -31,13 +31,14 @@ public type Spreadsheet client object {
     http:Client httpClient;
     public Sheet[] sheets;
 
-    public function __init(Client spreadsheetClient1, string id, SpreadsheetProperties props, string u, Sheet[] sheit) {
-        self.spreadsheetClient = spreadsheetClient1;
+    public function __init(Client spreadsheetClient, string id, SpreadsheetProperties props, string url, Sheet[]
+            sheets) {
+        self.spreadsheetClient = spreadsheetClient;
         self.spreadsheetId = id;
         self.properties = props;
-        self.spreadsheetUrl = u;
-        self.httpClient = spreadsheetClient1.httpClient;
-        self.sheets = sheit;
+        self.spreadsheetUrl = url;
+        self.httpClient = spreadsheetClient.httpClient;
+        self.sheets = sheets;
     }
 
     # Get the name of the spreadsheet.

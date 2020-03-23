@@ -28,7 +28,7 @@ public type Client client object {
     #
     # +  spreadsheetConfig - Configurations required to initialize the `Client` endpoint
     public function __init(SpreadsheetConfiguration spreadsheetConfig) {
-        oauth2:OutboundOAuth2Provider oauth2Provider = new (spreadsheetConfig.oAuthClientConfig);
+        oauth2:OutboundOAuth2Provider oauth2Provider = new (spreadsheetConfig.oauth2Config);
         http:BearerAuthHandler bearerHandler = new (oauth2Provider);
         http:ClientSecureSocket? socketConfig = spreadsheetConfig?.secureSocketConfig;
         self.httpClient = new (BASE_URL, {
@@ -96,9 +96,9 @@ public type Client client object {
 
 # Holds the parameters used to create a `Client`.
 #
-# + oAuthClientConfig - OAuth client configuration
+# + oauth2Config - OAuth client configuration
 # + secureSocketConfig - Secure socket configuration
 public type SpreadsheetConfiguration record {
-    oauth2:DirectTokenConfig oAuthClientConfig;
+    oauth2:DirectTokenConfig oauth2Config;
     http:ClientSecureSocket secureSocketConfig?;
 };

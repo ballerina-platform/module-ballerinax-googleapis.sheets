@@ -13,8 +13,8 @@ The following sections provide you with information on how to use the Ballerina 
 ### Compatibility
 
 | Ballerina Language Versions  | Google Spreadsheet API Version |
-|:---------------------------:|:------------------------------:|
-|  1.0.x, 1.1.x, 1.2.x        |   V4                           |
+|:----------------------------:|:------------------------------:|
+|         1.1.x, 1.2.x         |   V4                           |
 
 ##### Prerequisites
 Download the ballerina [distribution](https://ballerinalang.org/downloads/).
@@ -33,7 +33,7 @@ Alternatively, you can install Spreadsheet client from the source using the foll
 **Building the source**
 1. Clone this repository using the following command:
     ```shell
-    $ git clone https://github.com/wso2-ballerina/module-googlespreadsheet.git
+    $ git clone https://github.com/ballerina-platform/module-googlespreadsheet.git
     ```
 
 2. Run this command from the `module-googlespreadsheet` root directory:
@@ -58,7 +58,7 @@ In order for you to use the GSheets Endpoint, first you need to create a GSheets
 import ballerinax/googleapis.sheets4;
 
 sheets4:SpreadsheetConfiguration spreadsheetConfig = {
-    oAuthClientConfig: {
+    oauth2Config: {
         accessToken: "<accessToken>",
         refreshConfig: {
             clientId: "<clientId>",
@@ -80,7 +80,7 @@ import ballerina/io;
 import ballerinax/googleapis.sheets4;
 
 sheets4:SpreadsheetConfiguration spreadsheetConfig = {
-    oAuthClientConfig: {
+    oauth2Config: {
         accessToken: "<accessToken>",
         refreshConfig: {
             clientId: "<clientId>",
@@ -94,7 +94,7 @@ sheets4:SpreadsheetConfiguration spreadsheetConfig = {
 sheets4:Client spreadsheetClient = new (spreadsheetConfig);
 
 public function main(string... args) {
-    var response = spreadsheetClient->openSpreadsheetById("1nROELRHZ9JadnvIBizBfnx0FASo2tg7r-gRP1ribYNY");
+    var response = spreadsheetClient->openSpreadsheetById(<spreadsheet-id>);
     if (response is sheets4:Spreadsheet) {
         io:println("Spreadsheet Details: ", response);
     } else {
@@ -109,7 +109,7 @@ import ballerina/io;
 import ballerinax/googleapis.sheets4;
 
 sheets4:SpreadsheetConfiguration spreadsheetConfig = {
-    oAuthClientConfig: {
+    oauth2Config: {
         accessToken: "<accessToken>",
         refreshConfig: {
             clientId: "<clientId>",
@@ -119,7 +119,7 @@ sheets4:SpreadsheetConfiguration spreadsheetConfig = {
         }
     },
     secureSocketConfig: {
-        trustStore:{
+        trustStore: {
             path: "<fullQualifiedPathToTrustStore>",
             password: "<truststorePassword>"
         }
@@ -129,7 +129,7 @@ sheets4:SpreadsheetConfiguration spreadsheetConfig = {
 sheets4:Client spreadsheetClient = new (spreadsheetConfig);
 
 public function main(string... args) {
-    var response = spreadsheetClient->openSpreadsheetById("1nROELRHZ9JadnvIBizBfnx0FASo2tg7r-gRP1ribYNY");
+    var response = spreadsheetClient->openSpreadsheetById(<spreadsheet-id>);
     if (response is sheets4:Spreadsheet) {
         io:println("Spreadsheet Details: ", response);
     } else {
@@ -141,6 +141,6 @@ public function main(string... args) {
 ### How you can contribute
 
 Clone the repository by running the following command
-`git clone https://github.com/wso2-ballerina/module-googlespreadsheet.git`
+`git clone https://github.com/ballerina-platform/module-googlespreadsheet.git`
 
-As an open source project, we welcome contributions from the community. Check the [issue tracker](https://github.com/wso2-ballerina/module-googlespreadsheet/issues) for open issues that interest you. We look forward to receiving your contributions.
+As an open source project, we welcome contributions from the community. Check the [issue tracker](https://github.com/ballerina-platform/module-googlespreadsheet/issues) for open issues that interest you. We look forward to receiving your contributions.

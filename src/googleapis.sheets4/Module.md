@@ -11,20 +11,19 @@ The `ballerinax/googleapis.sheets4` module allows you to perform following opera
 - Create a new spreadsheet
 - Create a new worksheet
 - View a spreadsheet
-- Add values into a worksheet
-- Get values from worksheet
-- Retrieving values of a column
+- Add values into a given range in the worksheet
+- Retrieving range of values from a worksheet
+- Retrieving values of a column 
 - Retrieving values of a row
 - Adding value into a cell
-- Retrieving value of a cell
 - Retrieving value of a cell
 
 ## Compatibility
 
-|                             |       Versions               |
+|                             |       Versions              |
 |:---------------------------:|:---------------------------:|
-| Ballerina Language          | 1.0.x, 1.1.x, 1.2.x         |
-| Google Spreadsheet API      | V4                          |
+| Ballerina Language          |        1.1.x, 1.2.x         |
+| Google Spreadsheet API      |             V4              |
 
 ## Sample
 
@@ -48,535 +47,94 @@ Add the project configuration file by creating a `ballerina.conf` file under the
 This file should have following configurations. Add the tokens obtained in the previous step to the `ballerina.conf` file.
 
 ```
-ACCESS_TOKEN = "<Access_token>"
-CLIENT_ID = "<Client_id">
-CLIENT_SECRET = "<Client_secret>"
-REFRESH_TOKEN = "<Refresh_token>"
-REFRESH_URL = "<Refresh_URL>"
-LISTENER_PORT = 9090
-BASE_PATH = "/spreadsheets"
+ACCESS_TOKEN = "<access_token>"
+CLIENT_ID = "<client_id">
+CLIENT_SECRET = "<client_secret>"
+REFRESH_TOKEN = "<refresh_token>"
+REFRESH_URL = "<refresh_URL>"
 ```
 
-**Implementation**
+**Example Code**
 
+Creating a sheets4:Client by giving the HTTP client config details. 
 ```ballerina
-import ballerina/config;
-import ballerina/io;
-import ballerina/http;
-import ballerina/log;
-
-import ballerinax/googleapis.sheets4;
-
-// Constants for error codes and messages.
-const string RESPOND_ERROR_MSG = "Error occurred while responding to client.";
-const string INVALID_PAYLOAD_MSG = "Invalid request payload.";
-const string SPREADSHEET_CREATION_ERROR_MSG = "Error while creating creating the spreadsheet.";
-const string WORKSHEET_CREATION_ERROR_MSG = "Error while creating the worksheet.";
-const string SPREADSHEET_RETRIEVAL_ERROR_MSG = "Error while retrieving the spreadsheet information.";
-const string PAYLOAD_EXTRACTION_ERROR_MSG = "Error while extracting the payload from request.";
-const string ENTRY_ADDITION_ERROR_MSG = "Error while adding the entries to the worksheet.";
-const string WORKSHEET_RETRIEVAL_ERROR_MSG = "Error while retrieving the entries in the worksheet.";
-const string COLUMN_DATA_RETRIEVAL_ERROR_MSG = "Error while retrieving the values in the column.";
-const string ROW_DATA_RETRIEVAL_ERROR_MSG = "Error while retrieving the values in the row.";
-const string CELL_DATA_ADDITION_ERROR_MSG = "Error while adding the value to the cell.";
-const string CELL_DATA_RETRIEVAL_ERROR_MSG = "Error while retrieving the value of the cell.";
-const string WORKSHEET_DELETION_ERROR_MSG = "Error while deleting the worksheet.";
-
-sheets4:SpreadsheetConfiguration spreadsheetConfig = {
-    oAuthClientConfig: {
-        accessToken: config:getAsString("ACCESS_TOKEN"),
-        refreshConfig: {
-            clientId: config:getAsString("CLIENT_ID"),
-            clientSecret: config:getAsString("CLIENT_SECRET"),
-            refreshUrl: config:getAsString("REFRESH_URL"),
-            refreshToken: config:getAsString("REFRESH_TOKEN")
-        }
-    }
-};
-
-sheets4:Client spreadsheetClient = new(spreadsheetConfig);
-
-@http:ServiceConfig {
-    basePath: config:getAsString("BASE_PATH")
-}
-service spreadsheetService on new http:Listener(config:getAsInt("LISTENER_PORT")) {
-
-    @http:ResourceConfig {
-        methods: ["POST"],
-        path: "/{spreadsheetName}"
-    }
-    // Function to create a new spreadsheet.
-    resource function createSpreadsheet(http:Caller caller, http:Request request, string spreadsheetName) {
-        // Define new response.
-        http:Response backendResponse = new();
-        // Invoke createSpreadsheet remote function from spreadsheetClient.
-        var response = spreadsheetClient->createSpreadsheet(<@untainted> spreadsheetName);
-        if (response is sheets4:Spreadsheet) {
-            // If there is no error, send the success response.
-            backendResponse.statusCode = http:STATUS_CREATED;
-            backendResponse.setJsonPayload(<@untainted> convertSpreadsheetToJSON(response),
-                                           contentType = "application/json");
-            respondAndHandleError(caller, backendResponse, RESPOND_ERROR_MSG);
-        } else {
-            // Send the error response.
-            createAndSendErrorResponse(caller, <@untainted> <string>response.detail()?.message,
-                            SPREADSHEET_CREATION_ERROR_MSG);
-        }
-    }
-
-    @http:ResourceConfig {
-        methods: ["POST"],
-        path: "/{spreadsheetId}/{worksheetName}"
-    }
-    // Function to add new worksheet.
-    resource function addNewSheet(http:Caller caller, http:Request request, string spreadsheetId,
-                                 string worksheetName) {
-        // Define new response.
-        http:Response backendResponse = new();
-        // Invoke addNewSheet remote function from spreadsheetClient.
-        var spreadsheet = spreadsheetClient->openSpreadsheetById(spreadsheetId);
-        if (spreadsheet is sheets4:Spreadsheet) {
-            var response = spreadsheet->addSheet(worksheetName);
-            if (response is sheets4:Sheet) {
-                // If there is no error, send the success response.
-                backendResponse.statusCode = http:STATUS_CREATED;
-                backendResponse.setJsonPayload(<@untainted> convertSheetPropertiesToJSON(response.getProperties()),
-                                               contentType = "application/json");
-                respondAndHandleError(caller, backendResponse, RESPOND_ERROR_MSG);
-            } else {
-                // Send the error response.
-                createAndSendErrorResponse(caller, <@untainted> <string>response.detail()?.message,
-                                WORKSHEET_CREATION_ERROR_MSG);
-            }  
-        } else {
-            // Send the error response.
-            createAndSendErrorResponse(caller, <@untainted> <string>spreadsheet.detail()?.message,
-                                SPREADSHEET_RETRIEVAL_ERROR_MSG);
-        }
-    }
-
-    @http:ResourceConfig {
-        methods: ["PUT"],
-        path: "/{spreadsheetId}/{worksheetName}/{a1Notation}"
-    }
-    // Function to add entries into an existing worksheet.
-    resource function setSheetValues(http:Caller caller, http:Request request, string spreadsheetId,
-                                     string worksheetName, string a1Notation) {
-        // Define new response.
-        http:Response backendResponse = new();
-        // Extract the object content from request payload.
-        string|(int|float|string)[][]|error entries = extractRequestContent(request);
-        if (entries is string[][]) {
-            var spreadsheet = spreadsheetClient->openSpreadsheetById(spreadsheetId);
-            if (spreadsheet is gsheets4:Spreadsheet) {
-                var sheet = spreadsheet.getSheetByName(worksheetName);
-                if (sheet is sheets4:Sheet) {
-                    Range range = {a1Notation: a1Notation, values: entries};
-                    var setRes = sheet->setRange(<@untainted>range);
-                    if (setRes is ()) {
-                        // If the response is the boolean value 'true', send the success response.
-                        string payload = "The entries have been added into the worksheet " + worksheetName;
-                        backendResponse.statusCode = http:STATUS_CREATED;
-                        backendResponse.setTextPayload(<@untainted>payload, contentType = "text/plain");
-                        respondAndHandleError(caller, backendResponse, RESPOND_ERROR_MSG);
-                    } else {
-                        // Else, send the failure response.
-                        string payload = "Unable to add the entries into the worksheet " + worksheetName;
-                        backendResponse.statusCode = http:STATUS_BAD_REQUEST;
-                        backendResponse.setTextPayload(<@untainted>payload, contentType = "text/plain");
-                        respondAndHandleError(caller, backendResponse, RESPOND_ERROR_MSG);
-                    }
-                } else {
-                    createAndSendErrorResponse(caller, <@untainted> <string>sheet.detail()?.message,
-                                    WORKSHEET_RETRIEVAL_ERROR_MSG);
-                }
-            }
-        } else {
-            // Send the error response.
-            createAndSendErrorResponse(caller, "Invalid content. String payload is expected by this method.",
-                            INVALID_PAYLOAD_MSG);
-        }
-    }
-
-    @http:ResourceConfig {
-        methods: ["GET"],
-        path: "/worksheet/{spreadsheetId}/{worksheetName}/{a1Notation}"
-    }
-    // Function to retrieve worksheet entries.
-    resource function getSheetValues(http:Caller caller, http:Request request, string spreadsheetId,
-                                     string worksheetName, string a1Notation) {
-        // Define new response.
-        http:Response backendResponse = new();
-        var spreadsheet = spreadsheetClient->openSpreadsheetById(spreadsheetId);
-        if (spreadsheet is sheets4:Spreadsheet) {
-            var sheet = spreadsheet.getSheetByName(worksheetName);
-            if (sheet is sheets4:Sheet) {
-                // Invoke getSheetValues remote function from spreadsheetClient.
-                var response = sheet->getRange(a1Notation);
-                if (response is sheets4:Range) {
-                    // If there is no error, send the success response.
-                    backendResponse.statusCode = http:STATUS_OK;
-                    backendResponse.setTextPayload(<@untainted> response.toString(), contentType = "plain/text");
-                    respondAndHandleError(caller, backendResponse, RESPOND_ERROR_MSG);
-                } else {
-                    // Send the error response.
-                    createAndSendErrorResponse(caller, <@untainted> <string>response.detail()?.message,
-                                    WORKSHEET_RETRIEVAL_ERROR_MSG);
-                }
-            } else {
-                createAndSendErrorResponse(caller, <@untainted> <string>sheet.detail()?.message,
-                                    WORKSHEET_RETRIEVAL_ERROR_MSG);
+    import ballerina/config;   
+    import ballerinax/googleapis.sheets4;
+   
+    sheets4:SpreadsheetConfiguration spreadsheetConfig = {
+        oauth2Config: {
+            accessToken: config:getAsString("ACCESS_TOKEN"),
+            refreshConfig: {
+                clientId: config:getAsString("CLIENT_ID"),
+                clientSecret: config:getAsString("CLIENT_SECRET"),
+                refreshUrl: config:getAsString("REFRESH_URL"),
+                refreshToken: config:getAsString("REFRESH_TOKEN")
             }
         }
+    };
+   
+    sheets4:Client spreadsheetClient = new (spreadsheetConfig);
+```
+
+Creating a new spreadsheet
+```ballerina
+    sheets4:Spreadsheet|error spreadsheet = spreadsheetClient->createSpreadsheet(<spreadsheet-name>);
+```
+
+Opening an existing spreadsheet 
+```ballerina
+    sheets4:Spreadsheet|error spreadsheet = spreadsheetClient->openSpreadsheetById(<spreadsheetId>);
+```
+
+Adding values to a given range and retrieving values from a range
+```ballerina
+    string a1Notation = "A1:D5";
+    string[][] entries = [
+        ["Name", "Score", "Performance", "Average"],
+        ["Keetz", "12"],
+        ["Niro", "78"],
+        ["Nisha", "98"],
+        ["Kana", "86"]
+    ];
+    sheets4:Sheet|error sheet = spreadsheet.getSheetByName(<worksheet-name>);
+    if (sheet is sheets4:Sheet) {
+        Range range = {a1Notation: a1Notation, values: entries};
+        error? setValuesResult = sheet->setRange(<@untainted>range);
+        sheets4:Range|error getValuesResult = sheet->getRange(a1Notation);
+    } 
+```
+
+Adding values to a cell and retrieving values from a cell
+```ballerina
+    sheets4:Sheet|error sheet = spreadsheet.getSheetByName(<worksheet-name>);
+    if (sheet is sheets4:Sheet) {
+        error? setValueResult = sheet->setCell("A10", "Foo");
+        int|string|float|error getValueResult = sheet->getCell("A10");
     }
+```
 
-    @http:ResourceConfig {
-        methods: ["GET"],
-        path: "column/{spreadsheetId}/{worksheetName}/{column}"
+Retrieving values from a column
+```ballerina
+    sheets4:Sheet|error sheet = spreadsheet.getSheetByName(<worksheet-name>);
+    if (sheet is sheets4:Sheet) {
+        (string|int|float)[]|error getValueResult = sheet->getColumn("C");
     }
-    // Function to retrieve values in a column.
-    resource function getColumnData(http:Caller caller, http:Request request, string spreadsheetId,
-                                    string worksheetName, string column) {
-        // Define new response.
-        http:Response backendResponse = new();
-        var spreadsheet = spreadsheetClient->openSpreadsheetById(spreadsheetId);
-        if (spreadsheet is sheets4:Spreadsheet) {
-            var sheet = spreadsheet.getSheetByName(worksheetName);
-            if (sheet is sheets4:Sheet) {
-                // Invoke getColumnData remote function from spreadsheetClient.
-                var response = sheet->getColumn(column);
-                if (response is error) {
-                    // Send the error response.
-                    createAndSendErrorResponse(caller, <@untainted> <string>response.detail()?.message,
-                                    COLUMN_DATA_RETRIEVAL_ERROR_MSG);
-                } else {
-                    // If there is no error, send the success response.
-                    backendResponse.statusCode = http:STATUS_OK;
-                    backendResponse.setJsonPayload(<@untainted> response, contentType = "application/json");
-                    respondAndHandleError(caller, backendResponse, RESPOND_ERROR_MSG);
-                }
-            }
-        }
+```
+
+Retrieving values from a row
+```ballerina
+    sheets4:Sheet|error sheet = spreadsheet.getSheetByName(<worksheet-name>);
+    if (sheet is sheets4:Sheet) {
+        (string|int|float)[]|error getValueResult = sheet->getRow(3);
     }
+```
 
-    @http:ResourceConfig {
-        methods: ["GET"],
-        path: "/row/{spreadsheetId}/{worksheetName}/{row}"
+Appending values to a sheet
+```ballerina
+    string[] values = ["Appending", "Some", "Values"];
+    sheets4:Sheet|error sheet = spreadsheet.getSheetByName(<worksheet-name>);
+    if (sheet is sheets4:Sheet) {
+        error? appendResult = sheet->appendRow(values);
     }
-    // Function to retrieve values in a row.
-    resource function getRowData(http:Caller caller, http:Request request, string spreadsheetId, string worksheetName,
-                                 int row) {
-        // Define new response.
-        http:Response backendResponse = new();
-        var spreadsheet = spreadsheetClient->openSpreadsheetById(spreadsheetId);
-        if (spreadsheet is sheets4:Spreadsheet) {
-            var sheet = spreadsheet.getSheetByName(worksheetName);
-            if (sheet is sheets4:Sheet) {
-                // Invoke getRowData remote function from spreadsheetClient.
-                var response = sheet->getRow(row);
-                if (response is error) {
-                    // Send the error response.
-                    createAndSendErrorResponse(caller, <@untainted> <string>response.detail()?.message,
-                                    ROW_DATA_RETRIEVAL_ERROR_MSG);
-                } else {
-                    // If there is no error, send the success response.
-                    backendResponse.statusCode = http:STATUS_OK;
-                    backendResponse.setJsonPayload(<@untainted> response, contentType = "application/json");
-                    respondAndHandleError(caller, backendResponse, RESPOND_ERROR_MSG);
-                }
-            }
-        }
-    }
-
-    @http:ResourceConfig {
-        methods: ["PUT"],
-        path: "/cell/{spreadsheetId}/{worksheetName}/{a1Notation}"
-    }
-    // Function to enter value into a cell.
-    resource function setCellData(http:Caller caller, http:Request request, string spreadsheetId, string worksheetName,
-                                  string a1Notation) {
-        // Define new response.
-        http:Response backendResponse = new();
-        // Invoke setCellData remote function from spreadsheetClient.
-        string|string[][]|error cellValue = extractRequestContent(request);
-        if (cellValue is string) {
-            var spreadsheet = spreadsheetClient->openSpreadsheetById(spreadsheetId);
-            if (spreadsheet is sheets4:Spreadsheet) {
-                var sheet = spreadsheet.getSheetByName(worksheetName);
-                if (sheet is sheets4:Sheet) {
-                    // Invoke getRowData remote function from spreadsheetClient.
-                    var response = sheet->setCell(a1Notation, <@untainted> cellValue);
-                    if (response is error) {
-                        // Send the error response.
-                        string payload = "Unable to enter the value into the cell in the worksheet" + worksheetName;
-                        backendResponse.statusCode = http:STATUS_BAD_REQUEST;
-                        backendResponse.setTextPayload(<@untainted> payload, contentType = "text/plain");
-                        respondAndHandleError(caller, backendResponse, RESPOND_ERROR_MSG);
-                    } else {
-                        // If the response is the boolean value 'true', send the success response.
-                        string payload = "The cell data has been added into the worksheet " + worksheetName;
-                        backendResponse.statusCode = http:STATUS_CREATED;
-                        backendResponse.setTextPayload(<@untainted> payload, contentType = "text/plain");
-                        respondAndHandleError(caller, backendResponse, RESPOND_ERROR_MSG);
-                    }
-                }
-            }
-        } else {
-            // Send the error response.
-            createAndSendErrorResponse(caller, "Invalid content. String payload is expected by this method.",
-                            INVALID_PAYLOAD_MSG);
-        }
-    }
-
-    @http:ResourceConfig {
-        methods: ["GET"],
-        path: "/cell/{spreadsheetId}/{worksheetName}/{a1Notation}"
-    }
-    // Function to retrieve value of a cell.
-    resource function getCellData(http:Caller caller, http:Request request, string spreadsheetId, string worksheetName,
-                                  string a1Notation) {
-        // Define new response.
-        http:Response backendResponse = new();
-        var spreadsheet = spreadsheetClient->openSpreadsheetById(spreadsheetId);
-        if (spreadsheet is sheets4:Spreadsheet) {
-            var sheet = spreadsheet.getSheetByName(worksheetName);
-            if (sheet is sheets4:Sheet) {
-                var response = sheet->getCell(a1Notation);
-                if (response is error) {
-                    // Send the error response.
-                    createAndSendErrorResponse(caller, <@untainted> <string>response.detail()?.message,
-                                    CELL_DATA_RETRIEVAL_ERROR_MSG);
-                } else {
-                    // If there is no error, send the success response.
-                    backendResponse.statusCode = http:STATUS_OK;
-                    backendResponse.setTextPayload(<@untainted> response.toString(), contentType = "text/plain");
-                    respondAndHandleError(caller, backendResponse, RESPOND_ERROR_MSG);
-                }
-            }
-        }
-    }
-
-    @http:ResourceConfig {
-        methods: ["DELETE"],
-        path: "/{spreadsheetId}/{worksheetId}"
-    }
-    // Function to delete worksheet.
-    resource function deleteSheet(http:Caller caller, http:Request request, string spreadsheetId, int worksheetId) {
-        // Define new response.
-        http:Response backendResponse = new();
-        var spreadsheet = spreadsheetClient->openSpreadsheetById(spreadsheetId);
-        if (spreadsheet is sheets4:Spreadsheet) {
-            var response = spreadsheet->removeSheet(worksheetId); 
-            if (response is error) {
-                // Else, send the failure response.
-                string payload = "Unable to delete the worksheet " + io:sprintf("%s", worksheetId);
-                backendResponse.statusCode = http:STATUS_BAD_REQUEST;
-                backendResponse.setTextPayload(payload, contentType = "text/plain");
-                respondAndHandleError(caller, backendResponse, RESPOND_ERROR_MSG);
-            } else {
-                // If the response is the boolean value 'true', send the success response.
-                string payload = "The worksheet " + io:sprintf("%s", worksheetId) + " has been deleted.";
-                backendResponse.statusCode = http:STATUS_NO_CONTENT;
-                backendResponse.setTextPayload(payload, contentType = "text/plain");
-                respondAndHandleError(caller, backendResponse, RESPOND_ERROR_MSG);
-            }
-        }
-    }
-}
-
-// Function to extract the object content from request payload
-function extractRequestContent(http:Request request) returns @tainted string|string[][]|error {
-    string contentTypeStr = request.getContentType();
-    if (equalsIgnoreCase(contentTypeStr, "application/json")) {
-        var jsonObjectContent = request.getJsonPayload();
-        if (jsonObjectContent is json[]) {
-            string[][] stringMDArray = convertToStringMDArray(jsonObjectContent);
-            return stringMDArray;
-        } else {
-            error err = error("Invalid payload content.", message = INVALID_PAYLOAD_MSG);
-            return err;
-        }
-    } else if (equalsIgnoreCase(contentTypeStr, "text/plain")) {
-        var textObjectContent = request.getTextPayload();
-        if (textObjectContent is string) {
-            return textObjectContent;
-        } else {
-            error err = error("Invalid payload content.",
-                              message = <@untainted> <string>textObjectContent.detail()?.message);
-            return err;
-        }
-    } else {
-        error err = error("Invalid content. The payload should be 'application/json or text/plain'.'",
-                          message = INVALID_PAYLOAD_MSG);
-        return err;
-    }
-}
-
-// Function to create the error response.
-function createAndSendErrorResponse(http:Caller caller, string errorMessage, string respondErrorMsg) {
-    http:Response response = new;
-    //Set 500 status code.
-    response.statusCode = 500;
-    //Set the error message to the error response payload.
-    response.setPayload(<string> errorMessage);
-    //log:printInfo("call respondAndHandleError func");
-    respondAndHandleError(caller, response, respondErrorMsg);
-}
-
-// Function to send the response back to the client and handle the error.
-function respondAndHandleError(http:Caller caller, http:Response response, string respondErrorMsg) {
-    // Send response to the caller.
-    var respond = caller->respond(response);
-    if (respond is error) {
-        log:printError(respondErrorMsg, err = respond);
-    }
-}
-
-function equalsIgnoreCase(string str1, string str2) returns boolean {
-    if (str1.toUpperAscii() == str2.toUpperAscii()) {
-        return true;
-    } else {
-        return false;
-    }
-}
-
-function convertSpreadsheetToJSON(sheets4:Spreadsheet spreadsheet) returns json {
-    json jsonSpreadsheet = {
-                                spreadsheetId: spreadsheet.spreadsheetId,
-                                properties: io:sprintf("%s", spreadsheet.getProperties()),
-                                sheets: io:sprintf("%s", spreadsheet.sheets),
-                                spreadsheetUrl: spreadsheet.spreadsheetUrl
-                           };
-    return jsonSpreadsheet;
-}
-
-function convertSheetPropertiesToJSON(sheets4:SheetProperties sheetProperties) returns json {
-    json jsonSheetProperties = {
-                                   title: sheetProperties.title,
-                                   sheetId: sheetProperties.sheetId,
-                                   index: sheetProperties.index,
-                                   sheetType: sheetProperties.sheetType,
-                                   hidden: sheetProperties.hidden,
-                                   rightToLeft: sheetProperties.rightToLeft,
-                                   gridProperties: io:sprintf("%s", sheetProperties.gridProperties)
-                               };
-    return jsonSheetProperties;
-}
-
-function convertToStringMDArray(json[] jsonObjectContent) returns string[][] {
-    string[][] stringArray = [];
-    int i = 0;
-    foreach var mainObj in jsonObjectContent {
-        int j = 0;
-        stringArray[i] = [];
-        if (mainObj is json[]) {
-            foreach var subObj in mainObj {
-                stringArray[i][j] = <string>subObj;
-                j += 1;
-            }
-            i += 1;
-        }
-    }
-    return stringArray;
-}
 ```
 
-## Testing
-
-First build the module. Navigate to the project root directory and execute the following command.
-
-```bash
-$ ballerina build googlespreadsheet_service
-```
-
-This creates the executables. Now run the `googlespreadsheet_service.jar` file created in the above step.
-
-```bash
-$ java -jar target/bin/googlespreadsheet_service.jar
-```
-
-You will see the following service log after successfully invoking the service.
-
-```log
-[ballerina/http] started HTTP/WS listener 0.0.0.0:9090
-```
-
-### 1. Creating a new spreadsheet
- ```bash
- curl -v -X POST http://localhost:9090/spreadsheets/<SPREADSHEET_NAME>
-```
-e.g.
-```bash
-curl -v -X POST http://localhost:9090/spreadsheets/firstSpreadsheet
-```
-### 2. Adding a new worksheet
-```bash
-curl -v -X POST http://localhost:9090/spreadsheets/<SPREADSHEET_ID>/<WORKSHEET_NAME>
-```
-e.g.
-```bash
-curl -v -X POST http://localhost:9090/spreadsheets/1AoOHLyn3Ds6do6UMq8t_pv20RrRwNV4aoqQVI_Z5xKY/firstWorksheet
-   ```
-
-### 3. Adding values into a worksheet
-```bash
-curl -H "Content-Type: application/json" -X PUT -d '<DATA>' http://localhost:9090/spreadsheets/<SPREADSHEET_ID>/<WORKSHEET_NAME>/<a1Notation>
-```
-e.g.
-```bash
-curl -H "Content-Type: application/json" -X PUT  -d '[["Name", "Score"], ["Keetz", "12"], ["Niro", "78"], ["Nisha", "98"], ["Kana", "86"]]' \ http://localhost:9090/spreadsheets/1AoOHLyn3Ds6do6UMq8t_pv20RrRwNV4aoqQVI_Z5xKY/firstWorksheet/A1:B5
-```
-
-### 4. Getting values from worksheet
-```bash\
-curl -X GET http://localhost:9090/spreadsheets/worksheet/<SPREADSHEET_ID>/<WORKSHEET_NAME>/<a1Notation>
-```
-e.g.
-```bash
-curl -X GET http://localhost:9090/spreadsheets/worksheet/1AoOHLyn3Ds6do6UMq8t_pv20RrRwNV4aoqQVI_Z5xKY/firstWorksheet/A1:B5
-```
-
-### 5. Retrieving values of a column
-```bash
-curl -X GET http://localhost:9090/spreadsheets/column/<SPREADSHEET_ID>/<WORKSHEET_NAME>/<COLUMN_NAME>
-```
-e.g.
-```bash
-curl -X GET http://localhost:9090/spreadsheets/column/1AoOHLyn3Ds6do6UMq8t_pv20RrRwNV4aoqQVI_Z5xKY/firstWorksheet/B
-```
-
-### 6. Retrieving values of a row
-```bash
-curl -X GET http://localhost:9090/spreadsheets/row/<SPREADSHEET_ID>/<WORKSHEET_NAME>/<ROW_NAME>
-```
-e.g.
-```bash
-curl -X GET http://localhost:9090/spreadsheets/row/1AoOHLyn3Ds6do6UMq8t_pv20RrRwNV4aoqQVI_Z5xKY/firstWorksheet/2
-```
-
-### 7. Adding value into a cell
-```bash
-curl -H "Content-Type: text/plain" -X PUT -d 'Test Value' http://localhost:9090/spreadsheets/cell/<SPREADSHEET_ID>/<WORKSHEET_NAME>/<a1Notation>
-```
-e.g.
-```bash
-curl -H "Content-Type: text/plain" -X PUT -d 'Test Value' http://localhost:9090/spreadsheets/cell/1AoOHLyn3Ds6do6UMq8t_pv20RrRwNV4aoqQVI_Z5xKY/firstWorksheet/C2
-```
-
-### 8. Retrieving value of a cell
-```bash
-curl -X GET http://localhost:9090/spreadsheets/cell/<SPREADSHEET_ID>/<WORKSHEET_NAME>/<a1Notation>
-```
-e.g.
-```bash
-curl -X GET http://localhost:9090/spreadsheets/cell/1AoOHLyn3Ds6do6UMq8t_pv20RrRwNV4aoqQVI_Z5xKY/firstWorksheet/C2
-```
-
-### 9. Deleting a worksheet
-```bash
-curl -X DELETE http://localhost:9090/spreadsheets/<SPREADSHEET_ID>/<WORKSHEET_ID>
-```
-e.g.
-```bash
- curl -X DELETE http://localhost:9090/spreadsheets/1AoOHLyn3Ds6do6UMq8t_pv20RrRwNV4aoqQVI_Z5xKY/1636241809
- ```
