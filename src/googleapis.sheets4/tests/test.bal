@@ -18,7 +18,7 @@ import ballerina/system;
 import ballerina/test;
 
 SpreadsheetConfiguration config = {
-    oAuthClientConfig: {
+    oauth2Config: {
         accessToken: "",
         refreshConfig: {
             clientId: system:getEnv("CLIENT_ID"),
