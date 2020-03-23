@@ -33,7 +33,7 @@ Alternatively, you can install Spreadsheet client from the source using the foll
 **Building the source**
 1. Clone this repository using the following command:
     ```shell
-    $ git clone https://github.com/wso2-ballerina/module-googlespreadsheet.git
+    $ git clone https://github.com/ballerina-platform/module-googlespreadsheet.git
     ```
 
 2. Run this command from the `module-googlespreadsheet` root directory:
@@ -141,6 +141,6 @@ public function main(string... args) {
 ### How you can contribute
 
 Clone the repository by running the following command
-`git clone https://github.com/wso2-ballerina/module-googlespreadsheet.git`
+`git clone https://github.com/ballerina-platform/module-googlespreadsheet.git`
 
 As an open source project, we welcome contributions from the community. Check the [issue tracker](https://github.com/wso2-ballerina/module-googlespreadsheet/issues) for open issues that interest you. We look forward to receiving your contributions.
