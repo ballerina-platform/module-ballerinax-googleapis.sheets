@@ -143,4 +143,4 @@ public function main(string... args) {
 Clone the repository by running the following command
 `git clone https://github.com/ballerina-platform/module-googlespreadsheet.git`
 
-As an open source project, we welcome contributions from the community. Check the [issue tracker](https://github.com/wso2-ballerina/module-googlespreadsheet/issues) for open issues that interest you. We look forward to receiving your contributions.
+As an open source project, we welcome contributions from the community. Check the [issue tracker](https://github.com/ballerina-platform/module-googlespreadsheet/issues) for open issues that interest you. We look forward to receiving your contributions.
