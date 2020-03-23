@@ -58,6 +58,12 @@ public type GridProperties record {|
     boolean hideGridlines = false;
 |};
 
+# Single cell or a group of adjacent cells in a sheet.
+#
+# + a1Notation - The column letter followed by the row number.
+#               For example for a single cell "A1" refers to the intersection of column "A" with row "1",
+#               and for a range of cells "A1:D5" refers to the top left cell and the bottom right cell of a range
+# + values - Values of the given range
 public type Range record {
    string a1Notation;
    (int|string|float)[][] values;
