@@ -59,7 +59,7 @@ function testCreateSpreadsheet() {
         test:assertNotEquals(spreadsheetRes.spreadsheetId, "", msg = "Failed to create spreadsheet");
         spreadsheetId = testSpreadsheet.spreadsheetId;
     } else {
-        test:assertFail(msg = <string>spreadsheetRes.detail()["message"]);
+        test:assertFail(spreadsheetRes.message());
     }
 }
 
@@ -72,7 +72,7 @@ function testOpenSpreadsheetById() {
         test:assertEquals(spreadsheetRes.spreadsheetId, spreadsheetId, msg = "Failed to open the spreadsheet");
         Spreadsheet testSpreadsheet = <@untainted>spreadsheetRes;
     } else {
-        test:assertFail(msg = <string>spreadsheetRes.detail()["message"]);
+        test:assertFail(spreadsheetRes.message());
     }
 }
 
@@ -99,7 +99,7 @@ function testGetProperties() {
         test:assertEquals(props.title, createSpreadsheetName, msg = "Failed to get properties of the spreadsheet");
         Spreadsheet testSpreadsheet = <@untainted>spreadsheetRes;
     } else {
-        test:assertFail(msg = <string>spreadsheetRes.detail()["message"]);
+        test:assertFail(spreadsheetRes.message());
     }
 }
 
@@ -114,10 +114,10 @@ function testAddSheet() {
             testSheetId = <@untainted>addSheetRes.properties.sheetId;
             test:assertNotEquals(addSheetRes.properties.sheetId, "", msg = "Failed to add a new sheet");
         } else {
-            test:assertFail(msg = <string>addSheetRes.detail()["message"]);
+            test:assertFail(addSheetRes.message());
         }
     } else {
-        test:assertFail(msg = <string>response.detail()["message"]);
+        test:assertFail(response.message());
 
     }
 }
@@ -133,10 +133,10 @@ function testGetSheets() {
             test:assertNotEquals(sheets.length(), 0, msg = "Failed to retrieve the sheets");
             test:assertEquals(sheets[0].parentId, spreadsheetId);
         } else {
-            test:assertFail(msg = <string>sheets.detail()["message"]);
+            test:assertFail(sheets.message());
         }
     } else {
-        test:assertFail(msg = <string>spreadsheetRes.detail()["message"]);
+        test:assertFail(spreadsheetRes.message());
     }
 }
 
@@ -150,10 +150,10 @@ function testGetSheetByName() {
         if (sheet is Sheet) {
             test:assertEquals(sheet.properties.title, testSheetName, msg = "Failed to get the sheet by name");
         } else {
-            test:assertFail(msg = <string>sheet.detail()["message"]);
+            test:assertFail(sheet.message());
         }
     } else {
-        test:assertFail(msg = <string>spreadsheetRes.detail()["message"]);
+        test:assertFail(spreadsheetRes.message());
     }
 }
 
@@ -170,10 +170,10 @@ function testRemoveSheet() {
             error? removeRes = spreadsheetRes->removeSheet(<@untainted>addSheetRes.id);
             test:assertEquals(removeRes, (), msg = "Failed to remove the sheet");
         } else {
-            test:assertFail(msg = <string>addSheetRes.detail()["message"]);
+            test:assertFail(addSheetRes.message());
         }
     } else {
-        test:assertFail(msg = <string>spreadsheetRes.detail()["message"]);
+        test:assertFail(spreadsheetRes.message());
     }
 }
 
@@ -191,10 +191,10 @@ function testRename() {
             createSpreadsheetName = newName;
             test:assertEquals(spreadsheetRes.getProperties().title, newName, msg = "Failed");
         } else {
-            test:assertFail(msg = <string>res.detail()["message"]);
+            test:assertFail(res.message());
         }
     } else {
-        test:assertFail(msg = <string>spreadsheetRes.detail()["message"]);
+        test:assertFail(spreadsheetRes.message());
     }
 }
 
@@ -213,13 +213,13 @@ function testSheetRename() {
             if (res is ()) {
                 test:assertEquals(sheet.getProperties().title, newName, msg = "Failed to rename the sheet");
             } else {
-                test:assertFail(msg = <string>res.detail()["message"]);
+                test:assertFail(res.message());
             }
         } else {
-            test:assertFail(msg = <string>sheets.detail()["message"]);
+            test:assertFail(sheets.message());
         }
     } else {
-        test:assertFail(msg = <string>spreadsheetRes.detail()["message"]);
+        test:assertFail(spreadsheetRes.message());
     }
 }
 
@@ -235,10 +235,10 @@ function testSetCell() {
             var setRes = sheet->setCell("A10", "ModifiedValue");
             test:assertEquals(setRes, (), msg = "Failed to set the cell value");
         } else {
-            test:assertFail(msg = <string>sheets.detail()["message"]);
+            test:assertFail(sheets.message());
         }
     } else {
-        test:assertFail(msg = <string>spreadsheetRes.detail()["message"]);
+        test:assertFail(spreadsheetRes.message());
     }
 }
 
@@ -254,10 +254,10 @@ function testGetCell() {
             var setRes = sheet->getCell("A10");
             test:assertEquals(setRes, "ModifiedValue", msg = "Failed to get the cell value");
         } else {
-            test:assertFail(msg = <string>sheets.detail()["message"]);
+            test:assertFail(sheets.message());
         }
     } else {
-        test:assertFail(msg = <string>spreadsheetRes.detail()["message"]);
+        test:assertFail(spreadsheetRes.message());
     }
 }
 
@@ -273,10 +273,10 @@ function testGetRow() {
             var res = sheet->getRow(2);
             test:assertEquals(res.toString(), "Keetz 12", msg = "Failed to get the row values");
         } else {
-            test:assertFail(msg = <string>sheets.detail()["message"]);
+            test:assertFail(sheets.message());
         }
     } else {
-        test:assertFail(msg = <string>spreadsheetRes.detail()["message"]);
+        test:assertFail(spreadsheetRes.message());
     }
 }
 
@@ -292,10 +292,10 @@ function testGetColumn() {
             var res = sheet->getColumn("B");
             test:assertEquals(res.toString(), "Score 12 78 98 86", msg = "Failed to get the column values");
         } else {
-            test:assertFail(msg = <string>sheets.detail()["message"]);
+            test:assertFail(sheets.message());
         }
     } else {
-        test:assertFail(msg = <string>spreadsheetRes.detail()["message"]);
+        test:assertFail(spreadsheetRes.message());
     }
 }
 
@@ -312,10 +312,10 @@ function testSetRange() {
             var setRes = sheet->setRange(<@untainted>range);
             test:assertEquals(setRes, (), msg = "Failed to set the values of the range");
         } else {
-            test:assertFail(msg = <string>sheets.detail()["message"]);
+            test:assertFail(sheets.message());
         }
     } else {
-        test:assertFail(msg = <string>spreadsheetRes.detail()["message"]);
+        test:assertFail(spreadsheetRes.message());
     }
 }
 
@@ -332,13 +332,13 @@ function testGetRange() {
             if (setRes is Range) {
                 test:assertEquals(setRes.values, entries, msg = "Failed to get the values of the range");
             } else {
-                test:assertFail(msg = <string>setRes.detail()["message"]);
+                test:assertFail(setRes.message());
             }
         } else {
-            test:assertFail(msg = <string>sheets.detail()["message"]);
+            test:assertFail(sheets.message());
         }
     } else {
-        test:assertFail(msg = <string>spreadsheetRes.detail()["message"]);
+        test:assertFail(spreadsheetRes.message());
     }
 }
 
@@ -354,10 +354,10 @@ function testAddRowsBefore() {
             var setRes = sheet->addRowsBefore(1, 2);
             test:assertEquals(setRes, (), msg = "Failed to add rows before the given index");
         } else {
-            test:assertFail(msg = <string>sheets.detail()["message"]);
+            test:assertFail(sheets.message());
         }
     } else {
-        test:assertFail(msg = <string>spreadsheetRes.detail()["message"]);
+        test:assertFail(spreadsheetRes.message());
     }
 }
 
@@ -373,10 +373,10 @@ function testAddRowsAfter() {
             var setRes = sheet->addRowsAfter(4, 2);
             test:assertEquals(setRes, (), msg = "Failed to add rows after the given index");
         } else {
-            test:assertFail(msg = <string>sheets.detail()["message"]);
+            test:assertFail(sheets.message());
         }
     } else {
-        test:assertFail(msg = <string>spreadsheetRes.detail()["message"]);
+        test:assertFail(spreadsheetRes.message());
     }
 }
 
@@ -392,10 +392,10 @@ function testAddColumnsBefore() {
             var setRes = sheet->addColumnsBefore(1, 2);
             test:assertEquals(setRes, (), msg = "Failed to add columns before the given index");
         } else {
-            test:assertFail(msg = <string>sheets.detail()["message"]);
+            test:assertFail(sheets.message());
         }
     } else {
-        test:assertFail(msg = <string>spreadsheetRes.detail()["message"]);
+        test:assertFail(spreadsheetRes.message());
     }
 }
 
@@ -411,10 +411,10 @@ function testAddColumnsAfter() {
             var setRes = sheet->addColumnsAfter(3, 2);
             test:assertEquals(setRes, (), msg = "Failed to add columns after the given index");
         } else {
-            test:assertFail(msg = <string>sheets.detail()["message"]);
+            test:assertFail(sheets.message());
         }
     } else {
-        test:assertFail(msg = <string>spreadsheetRes.detail()["message"]);
+        test:assertFail(spreadsheetRes.message());
     }
 }
 
@@ -430,10 +430,10 @@ function testDeleteColumns() {
             var res = sheet->deleteColumns(1, 2);
             test:assertEquals(res, (), msg = "Failed to delete columns");
         } else {
-            test:assertFail(msg = <string>sheets.detail()["message"]);
+            test:assertFail(sheets.message());
         }
     } else {
-        test:assertFail(msg = <string>spreadsheetRes.detail()["message"]);
+        test:assertFail(spreadsheetRes.message());
     }
 }
 
@@ -449,10 +449,10 @@ function testDeleteRows() {
             var res = sheet->deleteRows(5, 2);
             test:assertEquals(res, (), msg = "Failed to delete rows");
         } else {
-            test:assertFail(msg = <string>sheets.detail()["message"]);
+            test:assertFail(sheets.message());
         }
     } else {
-        test:assertFail(msg = <string>spreadsheetRes.detail()["message"]);
+        test:assertFail(spreadsheetRes.message());
     }
 }
 
@@ -470,13 +470,13 @@ function testCopyTo() {
                 var res = sheet->copyTo(<@untainted>copyToSpreadsheet);
                 test:assertEquals(res, (), msg = "Failed to copy the sheet");
             } else {
-                test:assertFail(msg = <string>sheets.detail()["message"]);
+                test:assertFail(sheets.message());
             }
         } else {
-            test:assertFail(msg = <string>spreadsheetRes.detail()["message"]);
+            test:assertFail(spreadsheetRes.message());
         }
     } else {
-        test:assertFail(msg = <string>copyToSpreadsheet.detail()["message"]);
+        test:assertFail(copyToSpreadsheet.message());
     }
 }
 
@@ -494,18 +494,18 @@ function testClearCell() {
                 var getRes = sheet->getCell("G1");
                 test:assertEquals(getRes, "TestValue", msg = "The set value didn't match the value of the cell");
             } else {
-                test:assertFail(msg = <string>setRes.detail()["message"]);
+                test:assertFail(setRes.message());
             }
             var clearRes = sheet->clearCell("G1");
             if (clearRes is ()) {
                 var getClearRes = sheet->getCell("G1");
                 test:assertEquals(getClearRes.toString(), "", msg = "Failed to clear the cell");
             } else {
-                test:assertFail(msg = <string>clearRes.detail()["message"]);
+                test:assertFail(clearRes.message());
             }
         }
     } else {
-        test:assertFail(msg = <string>spreadsheetRes.detail()["message"]);
+        test:assertFail(spreadsheetRes.message());
     }
 }
 
@@ -527,7 +527,7 @@ function testClearRange() {
                     "Name Score Performance Average Keetz 12 Niro 78 Nisha 98 Kana 86",
                     msg = "Failed to get the values of the range");
                 } else {
-                    test:assertFail(msg = <string>getRes.detail()["message"]);
+                    test:assertFail(getRes.message());
                 }
                 var clearRange = sheet->clearRange("A15:D19");
                 if (clearRange is ()) {
@@ -535,19 +535,19 @@ function testClearRange() {
                     if (getClear is Range) {
                         test:assertEquals(getClear.values.toString(), "", msg = "Failed to clear the range");
                     } else {
-                        test:assertFail(msg = <string>getClear.detail()["message"]);
+                        test:assertFail(getClear.message());
                     }
                 } else {
-                    test:assertFail(msg = <string>clearRange.detail()["message"]);
+                    test:assertFail(clearRange.message());
                 }
             } else {
-                test:assertFail(msg = <string>setRes.detail()["message"]);
+                test:assertFail(setRes.message());
             }
         } else {
-            test:assertFail(msg = <string>sheets.detail()["message"]);
+            test:assertFail(sheets.message());
         }
     } else {
-        test:assertFail(msg = <string>spreadsheetRes.detail()["message"]);
+        test:assertFail(spreadsheetRes.message());
     }
 }
 
@@ -566,16 +566,16 @@ function testClearAll() {
                 if (getRes is Range) {
                     test:assertEquals(getRes.values.toString(), "", msg = "Failed to clear the sheet");
                 } else {
-                    test:assertFail(msg = <string>getRes.detail()["message"]);
+                    test:assertFail(getRes.message());
                 }
             } else {
-                test:assertFail(msg = <string>clearAll.detail()["message"]);
+                test:assertFail(clearAll.message());
             }
         } else {
-            test:assertFail(msg = <string>sheets.detail()["message"]);
+            test:assertFail(sheets.message());
         }
     } else {
-        test:assertFail(msg = <string>spreadsheetRes.detail()["message"]);
+        test:assertFail(spreadsheetRes.message());
     }
 }
 
