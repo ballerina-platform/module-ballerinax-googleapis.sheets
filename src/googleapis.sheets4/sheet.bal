@@ -25,7 +25,7 @@ public type Sheet client object {
     string name;
     int id;
 
-    public function __init(SheetProperties sheetProperties, Client connectorClient, string spreadsheetId) {
+    public function init(SheetProperties sheetProperties, Client connectorClient, string spreadsheetId) {
         self.properties = sheetProperties;
         self.clientEp = connectorClient;
         self.httpClient = connectorClient.httpClient;

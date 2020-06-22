@@ -31,7 +31,7 @@ public type Spreadsheet client object {
     http:Client httpClient;
     public Sheet[] sheets;
 
-    public function __init(Client spreadsheetClient, string id, SpreadsheetProperties props, string url, Sheet[]
+    public function init(Client spreadsheetClient, string id, SpreadsheetProperties props, string url, Sheet[]
             sheets) {
         self.spreadsheetClient = spreadsheetClient;
         self.spreadsheetId = id;

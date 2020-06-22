@@ -14,6 +14,7 @@
 //specific language governing permissions and limitations
 //under the License.
 
+import ballerina/config;
 import ballerina/system;
 import ballerina/test;
 
@@ -21,10 +22,13 @@ SpreadsheetConfiguration config = {
     oauth2Config: {
         accessToken: "",
         refreshConfig: {
-            clientId: system:getEnv("CLIENT_ID"),
-            clientSecret: system:getEnv("CLIENT_SECRET"),
+            clientId: system:getEnv("CLIENT_ID") == "" ? config:getAsString("CLIENT_ID") :
+            system:getEnv("CLIENT_ID"),
+            clientSecret: system:getEnv("CLIENT_SECRET") == "" ? config:getAsString("CLIENT_SECRET") :
+            system:getEnv("CLIENT_SECRET"),
             refreshUrl: REFRESH_URL,
-            refreshToken: system:getEnv("REFRESH_TOKEN")
+            refreshToken: system:getEnv("REFRESH_TOKEN") == "" ? config:getAsString("REFRESH_TOKEN") :
+            system:getEnv("REFRESH_TOKEN")
         }
     }
 };
