@@ -99,6 +99,6 @@ function getSpreadsheetError(json|error errorResponse) returns error {
   if (errorResponse is json) {
         return error(SPREADSHEET_ERROR_CODE, message = errorResponse.toString());
   } else {
-        return error(SPREADSHEET_ERROR_CODE, message = <string>errorResponse.detail()?.message);
+        return error(SPREADSHEET_ERROR_CODE, errorResponse);
   }
 }

@@ -27,7 +27,7 @@ public type Client client object {
     # Initializes the Google spreadsheet connector client endpoint.
     #
     # +  spreadsheetConfig - Configurations required to initialize the `Client` endpoint
-    public function __init(SpreadsheetConfiguration spreadsheetConfig) {
+    public function init(SpreadsheetConfiguration spreadsheetConfig) {
         oauth2:OutboundOAuth2Provider oauth2Provider = new (spreadsheetConfig.oauth2Config);
         http:BearerAuthHandler bearerHandler = new (oauth2Provider);
         http:ClientSecureSocket? socketConfig = spreadsheetConfig?.secureSocketConfig;
