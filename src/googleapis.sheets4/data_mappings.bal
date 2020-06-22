@@ -66,8 +66,7 @@ function convertToInt(string stringVal) returns int {
         if (intVal is int) {
             return intVal;
         } else {
-            panic error(SPREADSHEET_ERROR_CODE, message = "Error occurred when converting "
-            + stringVal + " to int");
+            panic error("Error occurred when converting " + stringVal + " to int");
         }
     } else {
         return 0;

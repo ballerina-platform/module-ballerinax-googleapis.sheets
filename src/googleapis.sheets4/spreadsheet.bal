@@ -52,7 +52,7 @@ public type Spreadsheet client object {
     public function getSheets() returns Sheet[] | error {
         Sheet[] sheets = [];
         if (self.sheets.length() == 0) {
-            error err = error(SPREADSHEET_ERROR_CODE, message = "No sheets found");
+            error err = error("No sheets found");
             return err;
         }
         sheets = self.sheets;
@@ -69,7 +69,7 @@ public type Spreadsheet client object {
                 return sheet;
             }
         }
-        return error(SPREADSHEET_ERROR_CODE, message = "Sheet not found");
+        return error("Sheet not found");
     }
 
 

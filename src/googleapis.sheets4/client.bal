@@ -82,11 +82,11 @@ public type Client client object {
 
     function getIdFromUrl(string url) returns string | error {
         if (!url.startsWith(URL_START)) {
-            return error(SPREADSHEET_ERROR_CODE, message = "Invalid url: " + url);
+            return error("Invalid url: " + url);
         } else {
             int? endIndex = url.indexOf(URL_END);
             if (endIndex is ()) {
-                return error(SPREADSHEET_ERROR_CODE, message = "Invalid url: " + url);
+                return error("Invalid url: " + url);
             } else {
                 return url.substring(ID_START_INDEX, endIndex);
             }

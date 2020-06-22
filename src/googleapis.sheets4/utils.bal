@@ -97,8 +97,8 @@ function equalsIgnoreCase(string stringOne, string stringTwo) returns boolean {
 
 function getSpreadsheetError(json|error errorResponse) returns error {
   if (errorResponse is json) {
-        return error(SPREADSHEET_ERROR_CODE, message = errorResponse.toString());
+        return error(errorResponse.toString());
   } else {
-        return error(SPREADSHEET_ERROR_CODE, errorResponse);
+        return errorResponse;
   }
 }

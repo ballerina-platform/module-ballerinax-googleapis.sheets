@@ -49,7 +49,7 @@ public type Sheet client object {
         (string | int | float)[][] values = [];
         string notation = self.name;
         if (a1Notation == EMPTY_STRING) {
-            return error(SPREADSHEET_ERROR_CODE, message = "Invalid range");
+            return error("Invalid range");
         }
         notation = notation + EXCLAMATION_MARK + a1Notation;
         string getSheetValuesPath = SPREADSHEET_PATH + PATH_SEPARATOR + self.parentId + VALUES_PATH + notation;
@@ -75,7 +75,7 @@ public type Sheet client object {
         http:Request request = new;
         string notation = self.name;
         if (a1Notation == EMPTY_STRING) {
-            return error(SPREADSHEET_ERROR_CODE, message = "Invalid range notation");
+            return error("Invalid range notation");
         }
         notation = notation + EXCLAMATION_MARK + a1Notation;
         string setValuePath = SPREADSHEET_PATH + PATH_SEPARATOR + self.parentId + VALUES_PATH + notation
@@ -101,8 +101,7 @@ public type Sheet client object {
             if (jsonResponse is json) {
                 return setResponse(jsonResponse, statusCode);
             } else {
-                return error(SPREADSHEET_ERROR_CODE, message = "Error occurred while accessing"
-                + " the JSON payload of the response");
+                return error("Error occurred while accessing the JSON payload of the response");
             }
         } else {
             return getSpreadsheetError(httpResponse);
@@ -203,8 +202,7 @@ public type Sheet client object {
             if (jsonResponse is json) {
                 return setResponse(jsonResponse, statusCode);
             } else {
-                return error(SPREADSHEET_ERROR_CODE, message = "Error occurred while "
-                + "accessing the JSON payload of the response");
+                return error("Error occurred while accessing the JSON payload of the response");
             }
         } else {
             return getSpreadsheetError(httpResponse);
