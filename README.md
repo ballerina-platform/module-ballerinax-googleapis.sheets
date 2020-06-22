@@ -14,7 +14,7 @@ The following sections provide you with information on how to use the Ballerina 
 
 | Ballerina Language Versions  | Google Spreadsheet API Version |
 |:----------------------------:|:------------------------------:|
-|         1.1.x, 1.2.x         |   V4                           |
+|      Swan Lake Preview1      |   V4                           |
 
 ##### Prerequisites
 Download the ballerina [distribution](https://ballerinalang.org/downloads/).
