@@ -78,14 +78,13 @@ function testOpenSpreadsheetById() {
 
 @test:Config {}
 function testOpenSpreadsheetByUrl() {
-    string id = system:getEnv("URL_ID");
-    string url = "https://docs.google.com/spreadsheets/d/" + id + "/edit#gid=0";
+    string url = "https://docs.google.com/spreadsheets/d/" + spreadsheetId + "/edit#gid=0";
     var spreadsheetRes = spreadsheetClient->openSpreadsheetByUrl(url);
     if (spreadsheetRes is Spreadsheet) {
-        test:assertEquals(spreadsheetRes.spreadsheetId, id, msg = "Failed to open the spreadsheet");
+        test:assertEquals(spreadsheetRes.spreadsheetId, spreadsheetId, msg = "Failed to open the spreadsheet");
         Spreadsheet testSpreadsheet = <@untainted>spreadsheetRes;
     } else {
-        test:assertFail(msg = <string>spreadsheetRes.detail()["message"]);
+        test:assertFail(spreadsheetRes.message());
     }
 }
 
@@ -583,7 +582,7 @@ function testClearAll() {
 @test:Config {}
 function testAppendRow() {
     string[] values = ["Appending", "Some", "Values"];
-    var spreadsheetRes = spreadsheetClient->openSpreadsheetById(system:getEnv("URL_ID"));
+    var spreadsheetRes = spreadsheetClient->openSpreadsheetById(spreadsheetId);
     if (spreadsheetRes is Spreadsheet) {
         Sheet[] | error sheets = spreadsheetRes.getSheets();
         if (sheets is Sheet[]) {
@@ -592,6 +591,6 @@ function testAppendRow() {
             test:assertEquals(appendRes, (), msg = "Appending a row failed");
         }
     } else {
-        test:assertFail(msg = <string>spreadsheetRes.detail()["message"]);
+        test:assertFail(spreadsheetRes.message());
     }
 }
