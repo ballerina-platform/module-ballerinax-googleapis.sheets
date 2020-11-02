@@ -17,7 +17,7 @@
 import ballerina/http;
 
 # Ballerina public API to provide Google Spreadsheet - Sheet related functionality.
-public type Sheet client object {
+public client class Sheet {
     SheetProperties properties;
     Client clientEp;
     http:Client httpClient;
@@ -25,7 +25,7 @@ public type Sheet client object {
     string name;
     int id;
 
-    public function init(SheetProperties sheetProperties, Client connectorClient, string spreadsheetId) {
+    public isolated function init(SheetProperties sheetProperties, Client connectorClient, string spreadsheetId) {
         self.properties = sheetProperties;
         self.clientEp = connectorClient;
         self.httpClient = connectorClient.httpClient;
@@ -37,7 +37,7 @@ public type Sheet client object {
     # Gets the properties of the Sheet.
     #
     # + return - Properties of the Sheet
-    public function getProperties() returns SheetProperties {
+    public isolated function getProperties() returns SheetProperties {
         return self.properties;
     }
 
@@ -494,4 +494,4 @@ public type Sheet client object {
             return response;
         }
     }
-};
+}

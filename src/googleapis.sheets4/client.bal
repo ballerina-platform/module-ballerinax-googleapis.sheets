@@ -20,7 +20,7 @@ import ballerina/oauth2;
 # Google spreadsheet connector client endpoint.
 #
 # + httpClient - Connector http endpoint
-public type Client client object {
+public client class Client {
 
     public http:Client httpClient;
 
@@ -80,7 +80,7 @@ public type Client client object {
         }
     }
 
-    function getIdFromUrl(string url) returns string | error {
+    isolated function getIdFromUrl(string url) returns string | error {
         if (!url.startsWith(URL_START)) {
             return error("Invalid url: " + url);
         } else {

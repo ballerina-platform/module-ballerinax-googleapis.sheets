@@ -17,7 +17,7 @@
 import ballerina/lang.'int as ints;
 import ballerina/log;
 
-function convertToSpreadsheet(json jsonSpreadsheet, Client spreadsheetClient) returns Spreadsheet {
+isolated function convertToSpreadsheet(json jsonSpreadsheet, Client spreadsheetClient) returns Spreadsheet {
     string id = jsonSpreadsheet.spreadsheetId.toString();
     json | error spreadsheetProperties = jsonSpreadsheet.properties;
     SpreadsheetProperties properties = !(spreadsheetProperties is error)
@@ -34,7 +34,7 @@ function convertToSpreadsheet(json jsonSpreadsheet, Client spreadsheetClient) re
     return spreadsheet;
 }
 
-function convertToSheets(json[] jsonSheets, Client spreadsheetClient, string id) returns Sheet[] {
+isolated function convertToSheets(json[] jsonSheets, Client spreadsheetClient, string id) returns Sheet[] {
     int i = 0;
     Sheet[] sheets = [];
     foreach json jsonSheet in jsonSheets {
@@ -44,7 +44,7 @@ function convertToSheets(json[] jsonSheets, Client spreadsheetClient, string id)
     return sheets;
 }
 
-function convertToSheet(json jsonSheet, Client spreadsheetClient, string id) returns Sheet {
+isolated function convertToSheet(json jsonSheet, Client spreadsheetClient, string id) returns Sheet {
     json | error spreadsheetProperties = jsonSheet.properties;
     SheetProperties properties = !(spreadsheetProperties is error)
     ? convertToSheetProperties(spreadsheetProperties) : {};
@@ -52,7 +52,7 @@ function convertToSheet(json jsonSheet, Client spreadsheetClient, string id) ret
     return sheet;
 }
 
-function convertToSpreadsheetProperties(json jsonProperties) returns SpreadsheetProperties {
+isolated function convertToSpreadsheetProperties(json jsonProperties) returns SpreadsheetProperties {
     SpreadsheetProperties spreadsheetProperties = {};
     spreadsheetProperties.title = jsonProperties.title.toString();
     spreadsheetProperties.locale = jsonProperties.locale.toString();
@@ -60,7 +60,7 @@ function convertToSpreadsheetProperties(json jsonProperties) returns Spreadsheet
     return spreadsheetProperties;
 }
 
-function convertToInt(string stringVal) returns int {
+isolated function convertToInt(string stringVal) returns int {
     if (stringVal != "") {
         var intVal = ints:fromString(stringVal);
         if (intVal is int) {
@@ -73,11 +73,11 @@ function convertToInt(string stringVal) returns int {
     }
 }
 
-function convertToBoolean(string stringVal) returns boolean {
+isolated function convertToBoolean(string stringVal) returns boolean {
     return stringVal == "true";
 }
 
-function convertToSheetProperties(json jsonSheetProperties) returns SheetProperties {
+isolated function convertToSheetProperties(json jsonSheetProperties) returns SheetProperties {
     SheetProperties sheetProperties = {};
     sheetProperties.title = jsonSheetProperties.title.toString();
     sheetProperties.sheetId = convertToInt(jsonSheetProperties.sheetId.toString());
@@ -93,7 +93,7 @@ function convertToSheetProperties(json jsonSheetProperties) returns SheetPropert
     return sheetProperties;
 }
 
-function convertToGridProperties(json jsonProps) returns GridProperties {
+isolated function convertToGridProperties(json jsonProps) returns GridProperties {
     GridProperties gridProperties = {};
     gridProperties.rowCount = !(jsonProps.rowCount is error) ? convertToInt(jsonProps.rowCount.toString()) : 0;
     gridProperties.columnCount = !(jsonProps.columnCount is error) ? convertToInt(jsonProps.columnCount.toString()) : 0;
@@ -106,7 +106,7 @@ function convertToGridProperties(json jsonProps) returns GridProperties {
     return gridProperties;
 }
 
-function convertToArray(json jsonResponse) returns (string | int | float)[][] {
+isolated function convertToArray(json jsonResponse) returns (string | int | float)[][] {
     (string | int | float)[][] values = [];
     int i = 0;
     json[] jsonValues = <json[]>jsonResponse.values;

@@ -22,16 +22,16 @@ import ballerina/http;
 # + properties - Properties of a spreadsheet
 # + sheets - The sheets that are part of a spreadsheet
 # + spreadsheetUrl - The URL of the spreadsheet
-public type Spreadsheet client object {
+public client class Spreadsheet {
 
     public string spreadsheetId;
-    private SpreadsheetProperties properties;
+    SpreadsheetProperties properties;
     public string spreadsheetUrl;
     Client spreadsheetClient;
     http:Client httpClient;
     public Sheet[] sheets;
 
-    public function init(Client spreadsheetClient, string id, SpreadsheetProperties props, string url, Sheet[]
+    public isolated function init(Client spreadsheetClient, string id, SpreadsheetProperties props, string url, Sheet[]
             sheets) {
         self.spreadsheetClient = spreadsheetClient;
         self.spreadsheetId = id;
@@ -43,13 +43,13 @@ public type Spreadsheet client object {
 
     # Get the name of the spreadsheet.
     # + return - Name of the spreadsheet object on success and error on failure
-    public function getProperties() returns SpreadsheetProperties {
+    public isolated function getProperties() returns SpreadsheetProperties {
         return self.properties;
     }
 
     # Get sheets of the spreadsheet.
     # + return - Sheet array on success and error on failure
-    public function getSheets() returns Sheet[] | error {
+    public isolated function getSheets() returns Sheet[] | error {
         Sheet[] sheets = [];
         if (self.sheets.length() == 0) {
             error err = error("No sheets found");
@@ -62,7 +62,7 @@ public type Spreadsheet client object {
     # Get sheets of the spreadsheet.
     # + sheetName - Name of the sheet to retrieve
     # + return - Sheet object on success and error on failure
-    public function getSheetByName(string sheetName) returns Sheet | error {
+    public isolated function getSheetByName(string sheetName) returns Sheet | error {
         Sheet[] sheets = self.sheets;
         foreach var sheet in sheets {
             if (equalsIgnoreCase(sheet.properties.title, sheetName)) {
@@ -137,4 +137,4 @@ public type Spreadsheet client object {
             self.properties.title = name;
         }
     }
-};
+}

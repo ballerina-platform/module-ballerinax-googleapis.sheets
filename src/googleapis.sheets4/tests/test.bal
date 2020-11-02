@@ -20,7 +20,7 @@ import ballerina/test;
 
 SpreadsheetConfiguration config = {
     oauth2Config: {
-        accessToken: "",
+        accessToken: "<access token here>",
         refreshConfig: {
             clientId: system:getEnv("CLIENT_ID") == "" ? config:getAsString("CLIENT_ID") :
             system:getEnv("CLIENT_ID"),
@@ -270,8 +270,10 @@ function testGetRow() {
         Sheet[] | error sheets = spreadsheetRes.getSheets();
         if (sheets is Sheet[]) {
             Sheet sheet = sheets[0];
-            var res = sheet->getRow(2);
-            test:assertEquals(res.toString(), "Keetz 12", msg = "Failed to get the row values");
+            var valueReturned = sheet->getRow(2);
+            //var valueReturned contains (string | int | float)[]
+            (int|string|float)[] expectedValue = ["Keetz", "12"];
+            test:assertEquals(valueReturned.toString(), expectedValue.toString() , msg = "Failed to get the row values");
         } else {
             test:assertFail(sheets.message());
         }
@@ -289,8 +291,11 @@ function testGetColumn() {
         Sheet[] | error sheets = spreadsheetRes.getSheets();
         if (sheets is Sheet[]) {
             Sheet sheet = sheets[0];
-            var res = sheet->getColumn("B");
-            test:assertEquals(res.toString(), "Score 12 78 98 86", msg = "Failed to get the column values");
+            var valueReturned = sheet->getColumn("B");
+            //var valueReturned contains (string | int | float)[]
+            (int|string|float)[] expectedValue = ["Score", "12", "78", "98", "86"];
+            
+            test:assertEquals(valueReturned.toString(), expectedValue.toString(), msg = "Failed to get the column values");
         } else {
             test:assertFail(sheets.message());
         }
@@ -523,9 +528,8 @@ function testClearRange() {
             if (setRes is ()) {
                 var getRes = sheet->getRange("A15:D19");
                 if (getRes is Range) {
-                    test:assertEquals(getRes.values.toString(),
-                    "Name Score Performance Average Keetz 12 Niro 78 Nisha 98 Kana 86",
-                    msg = "Failed to get the values of the range");
+                    Range expectedValue={"a1Notation":"A15:D19","values":[["Name","Score","Performance","Average"],["Keetz","12"],["Niro","78"],["Nisha","98"],["Kana","86"]]};
+                    test:assertEquals(getRes.values.toString(), expectedValue.values.toString(), msg = "Failed to get the values of the range");
                 } else {
                     test:assertFail(getRes.message());
                 }
@@ -533,7 +537,8 @@ function testClearRange() {
                 if (clearRange is ()) {
                     var getClear = sheet->getRange("A15:D19");
                     if (getClear is Range) {
-                        test:assertEquals(getClear.values.toString(), "", msg = "Failed to clear the range");
+                        Range expectedValue={"a1Notation":"A15:D19","values":[]};
+                        test:assertEquals(getClear.values.toString(), expectedValue.values.toString() , msg = "Failed to clear the range");
                     } else {
                         test:assertFail(getClear.message());
                     }
@@ -564,7 +569,8 @@ function testClearAll() {
             if (clearAll is ()) {
                 var getRes = sheet->getRange("A1:H20");
                 if (getRes is Range) {
-                    test:assertEquals(getRes.values.toString(), "", msg = "Failed to clear the sheet");
+                    Range expectedValue={"a1Notation":"A15:D19","values":[]};
+                    test:assertEquals(getRes.values.toString(), expectedValue.values.toString() , msg = "Failed to clear the sheet");
                 } else {
                     test:assertFail(getRes.message());
                 }
