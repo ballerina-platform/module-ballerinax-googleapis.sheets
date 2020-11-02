@@ -20,7 +20,7 @@ import ballerina/test;
 
 SpreadsheetConfiguration config = {
     oauth2Config: {
-        accessToken: "<access token here>",
+        accessToken: "<Access token here>",
         refreshConfig: {
             clientId: system:getEnv("CLIENT_ID") == "" ? config:getAsString("CLIENT_ID") :
             system:getEnv("CLIENT_ID"),

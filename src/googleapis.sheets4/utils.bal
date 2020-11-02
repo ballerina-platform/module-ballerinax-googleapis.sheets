@@ -36,7 +36,7 @@ returns @tainted json | error {
             return getSpreadsheetError(jsonResponse);
         }
     } else {
-        return getSpreadsheetError(httpResponse);
+        return getSpreadsheetError(<json|error>httpResponse);
     }
 }
 
@@ -55,7 +55,7 @@ function sendRequest(http:Client httpClient, string path) returns @tainted json 
             return getSpreadsheetError(jsonResponse);
         }
     } else {
-        return getSpreadsheetError(httpResponse);
+        return getSpreadsheetError(<json|error>httpResponse);
     }
 }
 

@@ -104,7 +104,7 @@ public client class Sheet {
                 return error("Error occurred while accessing the JSON payload of the response");
             }
         } else {
-            return getSpreadsheetError(httpResponse);
+            return getSpreadsheetError(<json|error>httpResponse);
         }
     }
 
@@ -205,7 +205,7 @@ public client class Sheet {
                 return error("Error occurred while accessing the JSON payload of the response");
             }
         } else {
-            return getSpreadsheetError(httpResponse);
+            return getSpreadsheetError(<json|error>httpResponse);
         }
     }
 
