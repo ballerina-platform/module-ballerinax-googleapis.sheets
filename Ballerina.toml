@@ -4,4 +4,4 @@ version = "0.99.0"
 license= ["Apache-2.0"]
 authors = ["Ballerina"]
 keywords = ["sheets", "google", "spreadsheet"]
-repository = "https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets"
+repository = "https://github.com/ballerina-platform/module-googlespreadsheet"
