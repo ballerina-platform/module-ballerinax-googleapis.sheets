@@ -1,1 +1,0 @@
-{"ballerinax/googleapis.sheets4:0.99.0:Spreadsheet" : [{"function":{"name":"addSheet","requiredParams":[{"sheetName":"string"}],"returnType":"ballerinax/googleapis.sheets4:0.99.0:Sheet"}},{"function":{"name":"removeSheet","requiredParams":[{"sheetId":"int"}],"returnType":"()"}},{"function":{"name":"rename","requiredParams":[{"name":"string"}],"returnType":"()"}}]}
