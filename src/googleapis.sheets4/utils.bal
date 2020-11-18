@@ -36,7 +36,7 @@ returns @tainted json | error {
             return getSpreadsheetError(jsonResponse);
         }
     } else {
-        return getSpreadsheetError(httpResponse);
+        return getSpreadsheetError(<json|error>httpResponse);
     }
 }
 
@@ -55,11 +55,11 @@ function sendRequest(http:Client httpClient, string path) returns @tainted json 
             return getSpreadsheetError(jsonResponse);
         }
     } else {
-        return getSpreadsheetError(httpResponse);
+        return getSpreadsheetError(<json|error>httpResponse);
     }
 }
 
-function getConvertedValue(json value) returns string | int | float {
+isolated function getConvertedValue(json value) returns string | int | float {
     if (value is int) {
         return value;
     } else if (value is float) {
@@ -69,33 +69,33 @@ function getConvertedValue(json value) returns string | int | float {
     }
 }
 
-function validateResponse(json jsonResponse, int statusCode, Client cli) returns Spreadsheet | error {
+isolated function validateResponse(json jsonResponse, int statusCode, Client cli) returns Spreadsheet | error {
     if (statusCode == http:STATUS_OK) {
         return convertToSpreadsheet(jsonResponse, cli);
     }
     return getSpreadsheetError(jsonResponse);
 }
 
-function validateStatusCode(json response, int statusCode) returns error? {
+isolated function validateStatusCode(json response, int statusCode) returns error? {
     if (statusCode != http:STATUS_OK) {
         return getSpreadsheetError(response);
     }
 }
 
-function setResponse(json jsonResponse, int statusCode) returns error? {
+isolated function setResponse(json jsonResponse, int statusCode) returns error? {
     if (!(statusCode == http:STATUS_OK)) {
         return getSpreadsheetError(jsonResponse);
     }
 }
 
-function equalsIgnoreCase(string stringOne, string stringTwo) returns boolean {
+isolated function equalsIgnoreCase(string stringOne, string stringTwo) returns boolean {
     if (stringOne.toLowerAscii() == stringTwo.toLowerAscii()) {
         return true;
     }
     return false;
 }
 
-function getSpreadsheetError(json|error errorResponse) returns error {
+isolated function getSpreadsheetError(json|error errorResponse) returns error {
   if (errorResponse is json) {
         return error(errorResponse.toString());
   } else {
