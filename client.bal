@@ -92,7 +92,7 @@ public client class Client {
             }
         }
     }
-};
+}
 
 # Holds the parameters used to create a `Client`.
 #
