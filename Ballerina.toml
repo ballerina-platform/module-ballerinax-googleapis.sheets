@@ -1,6 +1,7 @@
-[project]
-org-name = "ballerinax"
-version = "0.99.1"
+[package]
+org = "ballerinax"
+name = "googleapis_sheets"
+version = "0.99.2"
 license= ["Apache-2.0"]
 authors = ["Ballerina"]
 keywords = ["sheets", "google", "spreadsheet"]
