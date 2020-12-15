@@ -13,7 +13,11 @@ jobs:
               uses: SanduDS/ballerina-action/@slp8ss
               with:
                   args:
+<<<<<<< HEAD
                       build -c --skip-tests
+=======
+                      build -c skip-tests
+>>>>>>> cef7fdd0b9019ea5525e607ffdce00c69e6b5112
               env:
                   CLIENT_ID: ${{ secrets.CLIENT_ID }}
                   CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
