@@ -5,7 +5,7 @@ Connects to Google Spreadsheets from Ballerina.
 
 |                             |       Versions              |
 |:---------------------------:|:---------------------------:|
-| Ballerina Language          |     Swan Lake Preview7      |
+| Ballerina Language          |     Swan Lake Preview8      |
 | Google Spreadsheet API      |             V4              |
 
 ## Sample
