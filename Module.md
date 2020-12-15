@@ -22,7 +22,7 @@ The `ballerinax/googleapis.sheets4` module allows you to perform following opera
 
 |                             |       Versions              |
 |:---------------------------:|:---------------------------:|
-| Ballerina Language          |     Swan Lake Preview7      |
+| Ballerina Language          |     Swan Lake Preview8      |
 | Google Spreadsheet API      |             V4              |
 
 ## Sample
