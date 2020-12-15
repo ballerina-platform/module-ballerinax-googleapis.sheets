@@ -2,7 +2,7 @@
 
 | Ballerina Language Version  | Google Spreadsheet API Version |
 | ----------------------------| -------------------------------|
-|    Swan Lake Preview7       |   V4                           |
+|    Swan Lake Preview8       |   V4                           |
 
 ### Prerequisites
 

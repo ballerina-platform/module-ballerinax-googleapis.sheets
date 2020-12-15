@@ -26,7 +26,7 @@ isolated function convertToSpreadsheet(json jsonSpreadsheet, Client spreadsheetC
     Sheet[] sheets = [];
     json | error sheetsJson = jsonSpreadsheet.sheets;
     if (sheetsJson is error) {
-        log:printError("Could not retrieve the sheets", sheetsJson);
+        log:print("Could not retrieve the sheets");
     } else {
         sheets = convertToSheets(<json[]>jsonSpreadsheet.sheets, spreadsheetClient, id);
     }

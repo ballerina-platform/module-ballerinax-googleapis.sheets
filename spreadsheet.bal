@@ -78,7 +78,7 @@ public client class Spreadsheet {
     # + sheetName - The name of the sheet. It is an optional parameter.
     #               If the title is empty, then sheet will be created with the default name.
     # + return - Sheet object on success and error on failure
-    public remote function addSheet(string sheetName) returns @tainted Sheet | error {
+    remote function addSheet(string sheetName) returns @tainted Sheet | error {
         map<json> payload = {"requests": [{"addSheet": {"properties": {}}}]};
         map<json> jsonSheetProperties = {};
         if (sheetName != EMPTY_STRING) {
@@ -105,7 +105,7 @@ public client class Spreadsheet {
     #
     # + sheetId - The ID of the sheet to delete
     # + return - Boolean value true on success and error on failure
-    public remote function removeSheet(int sheetId) returns @tainted error? {
+    remote function removeSheet(int sheetId) returns @tainted error? {
         json payload = {"requests": [{"deleteSheet": {"sheetId": sheetId}}]};
         string deleteSheetPath = SPREADSHEET_PATH + PATH_SEPARATOR + self.spreadsheetId + BATCH_UPDATE_REQUEST;
         json | error response = sendRequestWithPayload(self.httpClient, deleteSheetPath, payload);
@@ -118,7 +118,7 @@ public client class Spreadsheet {
     #
     # + name - New name for the Spreadsheet
     # + return - Nil on success, else returns an error
-    public remote function rename(string name) returns @tainted error? {
+    remote function rename(string name) returns @tainted error? {
         json payload = {
             "requests": [
                 {

@@ -45,7 +45,7 @@ public client class Sheet {
     #
     # + a1Notation - The required range in A1 notation
     # + return - The range on success, else returns an error
-    public remote function getRange(string a1Notation) returns @tainted Range | error {
+    remote function getRange(string a1Notation) returns @tainted Range | error {
         (string | int | float)[][] values = [];
         string notation = self.name;
         if (a1Notation == EMPTY_STRING) {
@@ -69,7 +69,7 @@ public client class Sheet {
     #
     # + range - The range to be set
     # + return - Nil on success, else returns an error
-    public remote function setRange(Range range) returns @tainted error? {
+    remote function setRange(Range range) returns @tainted error? {
         (string | int | float)[][] values = range.values;
         string a1Notation = range.a1Notation;
         http:Request request = new;
@@ -112,7 +112,7 @@ public client class Sheet {
     #
     # + column - Column number to retrieve the data
     # + return - Values of the given column in an array on success, else returns an error
-    public remote function getColumn(string column) returns @tainted (string | int | float)[] | error {
+    remote function getColumn(string column) returns @tainted (string | int | float)[] | error {
         (int | string | float)[] values = [];
         string a1Notation = self.name + EXCLAMATION_MARK + column + COLON + column;
         string getColumnDataPath = SPREADSHEET_PATH + PATH_SEPARATOR + self.parentId + VALUES_PATH + a1Notation;
@@ -141,7 +141,7 @@ public client class Sheet {
     #
     # + row - Row number to retrieve the data
     # + return - Values of the given row in an array on success, else returns an error
-    public remote function getRow(int row) returns @tainted (string | int | float)[] | error {
+    remote function getRow(int row) returns @tainted (string | int | float)[] | error {
         (int | string | float)[] values = [];
         string a1Notation = self.name + EXCLAMATION_MARK + row.toString() + COLON + row.toString();
         string getRowDataPath = SPREADSHEET_PATH + PATH_SEPARATOR + self.parentId + VALUES_PATH + a1Notation;
@@ -166,7 +166,7 @@ public client class Sheet {
     #
     # + a1Notation - The required cell in A1 notation
     # + return - Value of the given cell on success, else returns an error
-    public remote function getCell(string a1Notation) returns @tainted int | string | float | error {
+    remote function getCell(string a1Notation) returns @tainted int | string | float | error {
         int | string | float value = EMPTY_STRING;
         string notation = self.name + EXCLAMATION_MARK + a1Notation;
         string getCellDataPath = SPREADSHEET_PATH + PATH_SEPARATOR + self.parentId + VALUES_PATH + notation;
@@ -188,7 +188,7 @@ public client class Sheet {
     # + a1Notation - The required cell in A1 notation
     # + value - Value of the cell to be set
     # + return - Nil on success, else returns an error
-    public remote function setCell(string a1Notation, int | string | float value) returns @tainted error? {
+    remote function setCell(string a1Notation, int | string | float value) returns @tainted error? {
         http:Request request = new;
         json jsonPayload = {"values": [[value]]};
         string notatiob = self.name + EXCLAMATION_MARK + a1Notation;
@@ -213,7 +213,7 @@ public client class Sheet {
     #
     # + name - The new name for the sheet
     # + return - Nil on success, else returns an error
-    public remote function rename(string name) returns @tainted error? {
+    remote function rename(string name) returns @tainted error? {
         json payload = {
             "requests": [
                 {
@@ -235,7 +235,7 @@ public client class Sheet {
     # Clears the sheet content and formatting rules.
     #
     # + return - Nil on success, else returns an error
-    public remote function clearAll() returns @tainted error? {
+    remote function clearAll() returns @tainted error? {
         json payload = {
             "requests": [
                 {
@@ -259,7 +259,7 @@ public client class Sheet {
     #
     # + a1Notation - The required range in A1 notation
     # + return - Nil on success, else returns an error
-    public remote function clearRange(string a1Notation) returns @tainted error? {
+    remote function clearRange(string a1Notation) returns @tainted error? {
         string notation = self.name + EXCLAMATION_MARK + a1Notation;
         string deleteSheetPath = SPREADSHEET_PATH + PATH_SEPARATOR + self.parentId + VALUES_PATH +
         notation + CLEAR_REQUEST;
@@ -273,7 +273,7 @@ public client class Sheet {
     #
     # + a1Notation - The required cell in A1 notation
     # + return - Nil on success, else returns an error
-    public remote function clearCell(string a1Notation) returns @tainted error? {
+    remote function clearCell(string a1Notation) returns @tainted error? {
         return self->clearRange(a1Notation);
     }
 
@@ -281,7 +281,7 @@ public client class Sheet {
     #
     # + spreadsheet - Spreadsheet to copy the sheet to
     # + return - Nil on success, else returns an error
-    public remote function copyTo(Spreadsheet spreadsheet) returns @tainted error? {
+    remote function copyTo(Spreadsheet spreadsheet) returns @tainted error? {
         string destinationId = spreadsheet.spreadsheetId;
         json payload = {"destinationSpreadsheetId": destinationId};
         string notation = self.id.toString();
@@ -298,7 +298,7 @@ public client class Sheet {
     # + column - Starting position of the columns
     # + numberOfColumns - Number of columns from the starting position
     # + return - Nil on success, else returns an error
-    public remote function deleteColumns(int column, int numberOfColumns) returns @tainted error? {
+    remote function deleteColumns(int column, int numberOfColumns) returns @tainted error? {
         int startIndex = column - 1;
         int endIndex = startIndex + numberOfColumns;
         json payload = {
@@ -329,7 +329,7 @@ public client class Sheet {
     # + row - Starting position of the rows
     # + numberOfRows - Number of row from the starting position
     # + return - Nil on success, else returns an error
-    public remote function deleteRows(int row, int numberOfRows) returns @tainted error? {
+    remote function deleteRows(int row, int numberOfRows) returns @tainted error? {
         int startIndex = row - 1;
         int endIndex = startIndex + numberOfRows;
         json payload = {
@@ -358,7 +358,7 @@ public client class Sheet {
     # + index - The position of the column after which the new columns should be added
     # + numberOfColumns - Number of columns to be added
     # + return - Nil on success, else returns an error
-    public remote function addColumnsAfter(int index, int numberOfColumns) returns @tainted error? {
+    remote function addColumnsAfter(int index, int numberOfColumns) returns @tainted error? {
         int startIndex = index;
         int endIndex = startIndex + numberOfColumns;
         json payload = {
@@ -387,7 +387,7 @@ public client class Sheet {
     # + index - The position of the column before which the new columns should be added
     # + numberOfColumns - Number of columns to be added
     # + return - Nil on success, else returns an error
-    public remote function addColumnsBefore(int index, int numberOfColumns) returns @tainted error? {
+    remote function addColumnsBefore(int index, int numberOfColumns) returns @tainted error? {
         int startIndex = index - 1;
         int endIndex = startIndex + numberOfColumns;
         json payload = {
@@ -416,7 +416,7 @@ public client class Sheet {
     # + index - The position of the row before which the new rows should be added
     # + numberOfRows - The number of rows to be added
     # + return - Nil on success, else returns an error
-    public remote function addRowsBefore(int index, int numberOfRows) returns @tainted error? {
+    remote function addRowsBefore(int index, int numberOfRows) returns @tainted error? {
         int startIndex = index - 1;
         int endIndex = startIndex + numberOfRows;
         json payload = {
@@ -445,7 +445,7 @@ public client class Sheet {
     # + index - The row after which the new rows should be added.
     # + numberOfRows - The number of rows to be added
     # + return - Nil on success, else returns an error
-    public remote function addRowsAfter(int index, int numberOfRows) returns @tainted error? {
+    remote function addRowsAfter(int index, int numberOfRows) returns @tainted error? {
         int startIndex = index;
         int endIndex = startIndex + numberOfRows;
         json payload = {
@@ -473,7 +473,7 @@ public client class Sheet {
     #
     # + values - Array of values of the row to be added
     # + return - Nil on success, else returns an error
-    public remote function appendRow((int | string | float)[] values) returns @tainted error? {
+    remote function appendRow((int | string | float)[] values) returns @tainted error? {
         string setValuePath = SPREADSHEET_PATH + PATH_SEPARATOR + self.parentId + VALUES_PATH + self.name + APPEND_REQUEST;
         json[] jsonValues = [];
         int i = 0;
