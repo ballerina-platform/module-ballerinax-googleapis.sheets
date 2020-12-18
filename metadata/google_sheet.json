@@ -1,0 +1,473 @@
+{
+    "connector": {
+        "name": "googleapis.sheets4",
+        "displayName": "Google Sheet V4",
+        "module": "googleapis_sheets",
+        "icon": "sheets.png",
+        "clients": [
+            {
+                "name": "Client",
+                "displayName" : "Google Sheet Client",
+                "operations": [
+                    {
+                        "name": "createSpreadsheet",
+                        "displayName": "Create Spreadsheet",
+                        "parameters" : [
+                            {
+                                "name": "name",
+                                "displayName": "Spreadsheet Name"
+                            }
+                        ],
+                        "returnValue": {
+                            "name": "Spreadsheet",
+                            "displayName": "Spreadsheet Client"
+                        }
+        
+                    },
+                    {
+                        "name": "openSpreadsheetById",
+                        "displayName": "Open Spreadsheet By ID",
+                        "parameters" : [
+                            {
+                                "name": "id",
+                                "displayName": "Spreadsheet ID"
+                            }
+                        ],
+                        "returnValue": {
+                            "name": "Spreadsheet",
+                            "displayName": "Spreadsheet Client"
+                        }
+        
+                    },
+                    {
+                        "name": "openSpreadsheetByUrl",
+                        "displayName": "Open Spreadsheet By URL",
+                        "parameters" : [
+                            {
+                                "name": "url",
+                                "displayName": "Spreadsheet URL"
+                            }
+                        ],
+                        "returnValue": {
+                            "name": "Spreadsheet",
+                            "displayName": "Spreadsheet Client"
+                        }
+        
+                    },
+                    {
+                        "name": "getIdFromUrl",
+                        "displayName": "Get Spreadsheet ID From URL",
+                        "parameters" : [
+                            {
+                                "name": "url",
+                                "displayName": "Spreadsheet URL"
+                            }
+                        ],
+                        "returnValue": {
+                            "name": "string",
+                            "displayName": "Spreadsheet ID"
+                        }
+        
+                    }
+                ]
+            },
+            {
+                "name": "Spreadsheet",
+                "displayName" : "Spreadsheet Client",
+                "operations": [
+                    {
+                        "name": "getProperties",
+                        "displayName": "Get Spreadsheet Properties",
+                        "parameters" : [],
+                        "returnValue": {
+                            "name": "SpreadsheetProperties",
+                            "displayName": "Spreadsheet Properties"
+                        }
+        
+                    },
+                    {
+                        "name": "getSheets",
+                        "displayName": "Get Sheets",
+                        "parameters" : [],
+                        "returnValue": {
+                            "name": "Sheet[]",
+                            "displayName": "Sheets"
+                        }
+        
+                    },
+                    {
+                        "name": "getSheetByName",
+                        "displayName": "Get Sheet By Name",
+                        "parameters" : [
+                            {
+                                "name": "sheetName",
+                                "displayName": "Sheet Name"
+                            }
+                        ],
+                        "returnValue": {
+                            "name": "Sheet",
+                            "displayName": "Sheet"
+                        }
+        
+                    },
+                    {
+                        "name": "addSheet",
+                        "displayName": "Add New Sheet",
+                        "parameters" : [
+                            {
+                                "name": "sheetName",
+                                "displayName": "Sheet Name"
+                            }
+                        ],
+                        "returnValue": {
+                            "name": "Sheet",
+                            "displayName": "Sheet"
+                        }
+        
+                    },
+                    {
+                        "name": "removeSheet",
+                        "displayName": "Delete Specified Sheet",
+                        "parameters" : [
+                            {
+                                "name": "sheetId",
+                                "displayName": "Sheet ID"
+                            }
+                        ],
+                        "returnValue": {
+                            "name": "error?",
+                            "displayName": "Response"
+                        }
+        
+                    },
+                    {
+                        "name": "rename",
+                        "displayName": "Rename Spread Sheet",
+                        "parameters" : [
+                            {
+                                "name": "name",
+                                "displayName": "New Name For Spreadsheet"
+                            }
+                        ],
+                        "returnValue": {
+                            "name": "error?",
+                            "displayName": "Response"
+                        }
+        
+                    }
+                ]
+            },
+            {
+                "name": "Sheet",
+                "displayName" : "Sheet Client",
+                "operations": [
+                    {
+                        "name": "getProperties",
+                        "displayName": "Get Properties",
+                        "parameters" : [],
+                        "returnValue": {
+                            "name": "SheetProperties",
+                            "displayName": "Sheet Properties"
+                        }
+        
+                    },
+                    {
+                        "name": "getRange",
+                        "displayName": "Get Given Range of the Sheet",
+                        "parameters" : [
+                            {
+                                "name": "a1Notation",
+                                "displayName": "Required Range in A1 Notation"
+                            }
+                        ],
+                        "returnValue": {
+                            "name": "Range",
+                            "displayName": "Range"
+                        }
+        
+                    },
+                    {
+                        "name": "setRange",
+                        "displayName": "Set the Values of the Given Range of Cells",
+                        "parameters" : [
+                            {
+                                "name": "range",
+                                "displayName": "Range to be Set"
+                            }
+                        ],
+                        "returnValue": {
+                            "name": "error?",
+                            "displayName": "Response"
+                        }
+        
+                    },
+                    {
+                        "name": "getColumn",
+                        "displayName": "Get Values in Column",
+                        "parameters" : [
+                            {
+                                "name": "column",
+                                "displayName": "Column Number"
+                            }
+                        ],
+                        "returnValue": {
+                            "name": "(string | int | float)[]",
+                            "displayName": "Values in Column"
+                        }
+        
+                    },
+                    {
+                        "name": "getRow",
+                        "displayName": "Get Values in Row",
+                        "parameters" : [
+                            {
+                                "name": "row",
+                                "displayName": "Row Number"
+                            }
+                        ],
+                        "returnValue": {
+                            "name": "(string | int | float)[]",
+                            "displayName": "Values in Row"
+                        }
+        
+                    },
+                    {
+                        "name": "getCell",
+                        "displayName": "Get Value in Cell",
+                        "parameters" : [
+                            {
+                                "name": "a1Notation",
+                                "displayName": "Required Cell in A1 Notation"
+                            }
+                        ],
+                        "returnValue": {
+                            "name": "int | string | float",
+                            "displayName": "Values"
+                        }
+        
+                    },
+                    {
+                        "name": "setCell",
+                        "displayName": "Set Value to Cell",
+                        "parameters" : [
+                            {
+                                "name": "a1Notation",
+                                "displayName": "Required Cell in A1 Notation"
+                            },
+                            {
+                                "name": "value",
+                                "displayName": "Value of the Cell to Set"
+                            }
+                        ],
+                        "returnValue": {
+                            "name": "error?",
+                            "displayName": "Response"
+                        }
+        
+                    },
+                    {
+                        "name": "rename",
+                        "displayName": "Rename Sheet",
+                        "parameters" : [
+                            {
+                                "name": "name",
+                                "displayName": "New Sheet Name"
+                            }
+                        ],
+                        "returnValue": {
+                            "name": "error?",
+                            "displayName": "Response"
+                        }
+        
+                    },
+                    {
+                        "name": "clearAll",
+                        "displayName": "Clear Content and Formatting Rules in Sheet",
+                        "parameters" : [],
+                        "returnValue": {
+                            "name": "error?",
+                            "displayName": "Response"
+                        }
+        
+                    },
+                    {
+                        "name": "clearRange",
+                        "displayName": "Clear Contents, Formats, and Rules in Range",
+                        "parameters" : [
+                            {
+                                "name": "a1Notation",
+                                "displayName": "Required Range in A1 Notation"
+                            }
+                        ],
+                        "returnValue": {
+                            "name": "error?",
+                            "displayName": "Response"
+                        }
+        
+                    },
+                    {
+                        "name": "clearCell",
+                        "displayName": "Clear Contents, Formats, and Rules in Cell",
+                        "parameters" : [
+                            {
+                                "name": "a1Notation",
+                                "displayName": "Required Cell in A1 Notation"
+                            }
+                        ],
+                        "returnValue": {
+                            "name": "error?",
+                            "displayName": "Response"
+                        }
+        
+                    },
+                    {
+                        "name": "copyTo",
+                        "displayName": "Copy Sheet to Given Spreadsheet",
+                        "parameters" : [
+                            {
+                                "name": "spreadsheet",
+                                "displayName": "Destination Spreadsheet"
+                            }
+                        ],
+                        "returnValue": {
+                            "name": "error?",
+                            "displayName": "Response"
+                        }
+        
+                    },
+                    {
+                        "name": "deleteColumns",
+                        "displayName": "Delete Columns",
+                        "parameters" : [
+                            {
+                                "name": "column",
+                                "displayName": "Starting Column"
+                            },
+                            {
+                                "name": "numberOfColumns",
+                                "displayName": "Number of Columns to Delete"
+                            }
+                        ],
+                        "returnValue": {
+                            "name": "error?",
+                            "displayName": "Response"
+                        }
+        
+                    },
+                    {
+                        "name": "deleteRows",
+                        "displayName": "Delete Rows",
+                        "parameters" : [
+                            {
+                                "name": "row",
+                                "displayName": "Starting Rows"
+                            },
+                            {
+                                "name": "numberOfRows",
+                                "displayName": "Number of Rows to Delete"
+                            }
+                        ],
+                        "returnValue": {
+                            "name": "error?",
+                            "displayName": "Response"
+                        }
+        
+                    },
+                    {
+                        "name": "addColumnsAfter",
+                        "displayName": "Insert Columns After Given Column",
+                        "parameters" : [
+                            {
+                                "name": "index",
+                                "displayName": "Position of Given Column"
+                            },
+                            {
+                                "name": "numberOfColumns",
+                                "displayName": "Number of Columns to Insert"
+                            }
+                        ],
+                        "returnValue": {
+                            "name": "error?",
+                            "displayName": "Response"
+                        }
+        
+                    },
+                    {
+                        "name": "addColumnsBefore",
+                        "displayName": "Insert Columns Before Given Column",
+                        "parameters" : [
+                            {
+                                "name": "index",
+                                "displayName": "Position of Given Column"
+                            },
+                            {
+                                "name": "numberOfColumns",
+                                "displayName": "Number of Columns to Insert"
+                            }
+                        ],
+                        "returnValue": {
+                            "name": "error?",
+                            "displayName": "Response"
+                        }
+        
+                    },
+                    {
+                        "name": "addRowsBefore",
+                        "displayName": "Insert Rows Before Given Column",
+                        "parameters" : [
+                            {
+                                "name": "index",
+                                "displayName": "Position of Given Row"
+                            },
+                            {
+                                "name": "numberOfRows",
+                                "displayName": "Number of Rows to Insert"
+                            }
+                        ],
+                        "returnValue": {
+                            "name": "error?",
+                            "displayName": "Response"
+                        }
+        
+                    },
+                    {
+                        "name": "addRowsAfter",
+                        "displayName": "Insert Rows After Given Column",
+                        "parameters" : [
+                            {
+                                "name": "index",
+                                "displayName": "Position of Given Row"
+                            },
+                            {
+                                "name": "numberOfRows",
+                                "displayName": "Number of Rows to Insert"
+                            }
+                        ],
+                        "returnValue": {
+                            "name": "error?",
+                            "displayName": "Response"
+                        }
+        
+                    },
+                    {
+                        "name": "appendRow",
+                        "displayName": "Add New Row With Given Values in Sheet Bottom",
+                        "parameters" : [
+                            {
+                                "name": "(int | string | float)[]",
+                                "displayName": "Values for New Row"
+                            }
+                        ],
+                        "returnValue": {
+                            "name": "error?",
+                            "displayName": "Response"
+                        }
+        
+                    }
+                ]
+            }
+        ]
+    }
+}
+
+        
