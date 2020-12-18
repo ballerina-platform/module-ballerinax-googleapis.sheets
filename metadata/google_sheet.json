@@ -2,6 +2,7 @@
     "connector": {
         "name": "googleapis.sheets4",
         "displayName": "Google Sheet V4",
+        "organization":"ballerinax",
         "module": "googleapis_sheets",
         "icon": "sheets.png",
         "clients": [
@@ -464,10 +465,9 @@
                         }
         
                     }
-                ]
+                ],
+                "listener":{}
             }
         ]
     }
 }
-
-        
