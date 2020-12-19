@@ -123,3 +123,12 @@ isolated function convertToArray(json jsonResponse) returns (string | int | floa
     }
     return values;
 }
+
+isolated function convertToFiles(json payload) returns File[]|error {
+    FilesResponse|error res = payload.cloneWithType(FilesResponse);
+    if (res is FilesResponse) {
+        return res.files;
+    } else {
+        return res;
+    }
+}

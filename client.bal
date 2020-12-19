@@ -20,9 +20,11 @@ import ballerina/oauth2;
 # Google spreadsheet connector client endpoint.
 #
 # + httpClient - Connector http endpoint
+# + driveClient - Drive connector http endpoint
 public client class Client {
 
     public http:Client httpClient;
+    public http:Client driveClient;
 
     # Initializes the Google spreadsheet connector client endpoint.
     #
@@ -32,6 +34,12 @@ public client class Client {
         http:BearerAuthHandler bearerHandler = new (oauth2Provider);
         http:ClientSecureSocket? socketConfig = spreadsheetConfig?.secureSocketConfig;
         self.httpClient = new (BASE_URL, {
+            auth: {
+                authHandler: bearerHandler
+            },
+            secureSocket: socketConfig
+        });
+        self.driveClient = new (DRIVE_URL, {
             auth: {
                 authHandler: bearerHandler
             },
@@ -77,6 +85,19 @@ public client class Client {
             return self->openSpreadsheetById(id);
         } else {
             return getSpreadsheetError(id);
+        }
+    }
+
+    # Get all Spreadsheet files
+    # 
+    # + return - Array of files records on success, else returns an error
+    remote function getAllSpreadsheets() returns @tainted File[]|error {
+        string drivePath = DRIVE_PATH + FILES + QUESTION_MARK + Q + EQUAL + MIME_TYPE + EQUAL + APPLICATION;
+        json | error response = sendRequest(self.driveClient, drivePath);
+        if (response is json) {
+            return convertToFiles(response);
+        } else {
+            return response;
         }
     }
 
