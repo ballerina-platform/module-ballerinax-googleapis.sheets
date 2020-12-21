@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/ballerina-platform/module-ballerinax-googlespreadsheet.svg?branch=master)](https://travis-ci.org/ballerina-ballerinax-platform/module-googlespreadsheet)
+[![Build Status](https://travis-ci.org/ballerina-platform/module-ballerinax-googleapis.sheets.svg?branch=master)](https://travis-ci.org/ballerina-ballerinax-platform/module-ballerinax-googleapis.sheets)
 
 # Ballerina Google Spreadsheet Endpoint
 
