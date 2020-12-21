@@ -43,7 +43,7 @@ public client class Client {
     #
     # + name - Name of the spreadsheet
     # + return - A Spreadsheet client object on success, else returns an error
-    public remote function createSpreadsheet(string name) returns @tainted Spreadsheet | error {
+    remote function createSpreadsheet(string name) returns @tainted Spreadsheet | error {
         json jsonPayload = {"properties": {"title": name}};
         json | error response = sendRequestWithPayload(self.httpClient, SPREADSHEET_PATH, jsonPayload);
         if (response is json) {
@@ -57,7 +57,7 @@ public client class Client {
     #
     # + id - ID of the Spreadsheet
     # + return - A Spreadsheet client object on success, else returns an error
-    public remote function openSpreadsheetById(string id) returns @tainted Spreadsheet | error {
+    remote function openSpreadsheetById(string id) returns @tainted Spreadsheet | error {
         string spreadsheetPath = SPREADSHEET_PATH + PATH_SEPARATOR + id;
         json | error response = sendRequest(self.httpClient, spreadsheetPath);
         if (response is json) {
@@ -71,7 +71,7 @@ public client class Client {
     #
     # + url - URL of the Spreadsheet
     # + return - A Spreadsheet client object on success, else returns an error
-    public remote function openSpreadsheetByUrl(string url) returns @tainted Spreadsheet | error {
+    remote function openSpreadsheetByUrl(string url) returns @tainted Spreadsheet | error {
         string | error id = self.getIdFromUrl(url);
         if (id is string) {
             return self->openSpreadsheetById(id);

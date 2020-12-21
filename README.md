@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/ballerina-platform/module-googlespreadsheet.svg?branch=master)](https://travis-ci.org/ballerina-platform/module-googlespreadsheet)
+[![Build Status](https://travis-ci.org/ballerina-platform/module-ballerinax-googleapis.sheets.svg?branch=master)](https://travis-ci.org/ballerina-ballerinax-platform/module-ballerinax-googleapis.sheets)
 
 # Ballerina Google Spreadsheet Endpoint
 
@@ -14,7 +14,7 @@ The following sections provide you with information on how to use the Ballerina 
 
 | Ballerina Language Versions  | Google Spreadsheet API Version |
 |:----------------------------:|:------------------------------:|
-|      Swan Lake Preview7      |   V4                           |
+|      Swan Lake Preview8      |   V4                           |
 
 ##### Prerequisites
 Download the ballerina [distribution](https://ballerinalang.org/downloads/).
