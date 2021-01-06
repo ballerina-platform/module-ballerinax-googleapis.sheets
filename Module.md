@@ -86,6 +86,11 @@ Opening an existing spreadsheet
     sheets4:Spreadsheet|error spreadsheet = spreadsheetClient->openSpreadsheetById(<spreadsheetId>);
 ```
 
+Get all spreadsheet 
+```ballerina
+    sheets4:File[]|error files = spreadsheetClient->getAllSpreadsheets();
+```
+
 Adding values to a given range and retrieving values from a range
 ```ballerina
     string a1Notation = "A1:D5";

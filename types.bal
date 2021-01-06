@@ -68,3 +68,16 @@ public type Range record {
    string a1Notation;
    (int|string|float)[][] values;
 };
+
+public type FilesResponse record {|
+    string kind;
+    boolean incompleteSearch;
+    File[] files;
+|};
+
+public type File record {|
+    string kind;
+    string id;
+    string name;
+    string mimeType;
+|};

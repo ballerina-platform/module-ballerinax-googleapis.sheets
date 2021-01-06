@@ -600,3 +600,18 @@ function testAppendRow() {
         test:assertFail(spreadsheetRes.message());
     }
 }
+
+@test:Config { 
+    dependsOn: ["testCreateSpreadsheet"]
+}
+function testGetAllSpreadSheet() {
+    var response = spreadsheetClient->getAllSpreadsheets();
+    if (response is File[]) {
+        if (response.length() > 0) {
+            File file = response[0];
+            test:assertNotEquals(file.id, (), msg = "Found 0 files");
+        }
+    } else {
+        test:assertFail(response.message());
+    }
+}

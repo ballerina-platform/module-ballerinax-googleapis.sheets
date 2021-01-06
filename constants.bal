@@ -38,8 +38,17 @@ const string FORWARD_SLASH = "/";
 const string DASH_WITH_WHITE_SPACES_SYMBOL = " - ";
 const string COLON = ":";
 const string EXCLAMATION_MARK = "!";
+const string EQUAL = "=";
 
 // URL constants
 const string URL_START = "https://docs.google.com/spreadsheets/d/";
 const string URL_END = "/edit";
 const int ID_START_INDEX = 39;
+
+//Drive
+const string DRIVE_URL = "https://www.googleapis.com";
+const string DRIVE_PATH = "/drive/v3";
+const string FILES = "/files";
+const string Q = "q";
+const string MIME_TYPE = "mimeType";
+const string APPLICATION = "'application/vnd.google-apps.spreadsheet'";
