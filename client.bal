@@ -91,14 +91,9 @@ public client class Client {
     # Get all Spreadsheet files
     # 
     # + return - Array of files records on success, else returns an error
-    remote function getAllSpreadsheets() returns @tainted File[]|error {
-        string drivePath = DRIVE_PATH + FILES + QUESTION_MARK + Q + EQUAL + MIME_TYPE + EQUAL + APPLICATION;
-        json | error response = sendRequest(self.driveClient, drivePath);
-        if (response is json) {
-            return convertToFiles(response);
-        } else {
-            return response;
-        }
+    remote function getAllSpreadsheets() returns  @tainted stream<File>|error {
+        File[] files = [];
+        return getFilesStream(self.driveClient, files);
     }
 
     isolated function getIdFromUrl(string url) returns string | error {
