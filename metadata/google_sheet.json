@@ -56,6 +56,15 @@
         
                     },
                     {
+                        "name": "getAllSpreadsheets",
+                        "displayName": "Get All Spreadsheets",
+                        "parameters" : [],
+                        "returnValue": {
+                            "name": "stream<File>",
+                            "displayName": "Spreadsheets"
+                        }
+                    },
+                    {
                         "name": "getIdFromUrl",
                         "displayName": "Get Spreadsheet ID From URL",
                         "parameters" : [
