@@ -71,6 +71,7 @@ public type Range record {
 
 public type FilesResponse record {|
     string kind;
+    string nextPageToken?;
     boolean incompleteSearch;
     File[] files;
 |};

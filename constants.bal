@@ -52,3 +52,9 @@ const string FILES = "/files";
 const string Q = "q";
 const string MIME_TYPE = "mimeType";
 const string APPLICATION = "'application/vnd.google-apps.spreadsheet'";
+const string AND = "&";
+const string PAGE_TOKEN = "pageToken";
+
+// Error
+const string ERR_FILE_RESPONSE =  "Error occurred while constructing FileResponse record.";
+

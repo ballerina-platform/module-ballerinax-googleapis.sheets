@@ -606,11 +606,10 @@ function testAppendRow() {
 }
 function testGetAllSpreadSheet() {
     var response = spreadsheetClient->getAllSpreadsheets();
-    if (response is File[]) {
-        if (response.length() > 0) {
-            File file = response[0];
-            test:assertNotEquals(file.id, (), msg = "Found 0 files");
-        }
+    if (response is stream<File>) {
+        var file = response.next();
+        test:assertNotEquals(file?.value, "", msg = "Found 0 records");
+        
     } else {
         test:assertFail(response.message());
     }
