@@ -86,14 +86,14 @@ public client class Spreadsheet {
         }
         json[] requestsElement = <json[]>payload["requests"];
         map<json> firstRequestsElement = <map<json>>requestsElement[0];
-        map<json> sheetElement = <map<json>>firstRequestsElement.addSheet;
+        map<json> sheetElement = <map<json>> check firstRequestsElement.addSheet;
         sheetElement["properties"] = jsonSheetProperties;
         string addSheetPath = SPREADSHEET_PATH + PATH_SEPARATOR + self.spreadsheetId + BATCH_UPDATE_REQUEST;
         json | error response = sendRequestWithPayload(self.httpClient, addSheetPath, payload);
         if (response is error) {
             return response;
         } else {
-            json[] replies = <json[]>response.replies;
+            json[] replies = <json[]> check response.replies;
             json | error addSheet = replies[0].addSheet;
             Sheet newSheet = convertToSheet(!(addSheet is error) ? addSheet : {}, self.spreadsheetClient,
             self.spreadsheetId);

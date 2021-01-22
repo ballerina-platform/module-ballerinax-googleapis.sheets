@@ -14,26 +14,23 @@
 //specific language governing permissions and limitations
 //under the License.
 
-import ballerina/config;
-import ballerina/system;
+import ballerina/os;
 import ballerina/test;
+
+configurable string clientId = os:getEnv("CLIENT_ID");
+configurable string clientSecret = os:getEnv("CLIENT_SECRET");
+configurable string refreshToken = os:getEnv("REFRESH_TOKEN");
 
 SpreadsheetConfiguration config = {
     oauth2Config: {
-        accessToken: "<Access token here>",
-        refreshConfig: {
-            clientId: system:getEnv("CLIENT_ID") == "" ? config:getAsString("CLIENT_ID") :
-            system:getEnv("CLIENT_ID"),
-            clientSecret: system:getEnv("CLIENT_SECRET") == "" ? config:getAsString("CLIENT_SECRET") :
-            system:getEnv("CLIENT_SECRET"),
-            refreshUrl: REFRESH_URL,
-            refreshToken: system:getEnv("REFRESH_TOKEN") == "" ? config:getAsString("REFRESH_TOKEN") :
-            system:getEnv("REFRESH_TOKEN")
-        }
+        clientId: clientId,
+        clientSecret: clientSecret,
+        refreshUrl: REFRESH_URL,
+        refreshToken: refreshToken
     }
 };
 
-Client spreadsheetClient = new (config);
+Client spreadsheetClient = checkpanic new (config);
 
 string copyToSpreadsheet = "Copy To";
 string spreadsheetId = "";
@@ -64,7 +61,7 @@ function testCreateSpreadsheet() {
 }
 
 @test:Config {
-    dependsOn: ["testCreateSpreadsheet"]
+    dependsOn: [testCreateSpreadsheet]
 }
 function testOpenSpreadsheetById() {
     var spreadsheetRes = spreadsheetClient->openSpreadsheetById(spreadsheetId);
@@ -90,7 +87,7 @@ function testOpenSpreadsheetByUrl() {
 
 //Tests the Spreadsheet client actions
 @test:Config {
-    dependsOn: ["testCreateSpreadsheet"]
+    dependsOn: [testCreateSpreadsheet]
 }
 function testGetProperties() {
     var spreadsheetRes = spreadsheetClient->openSpreadsheetById(spreadsheetId);
@@ -104,7 +101,7 @@ function testGetProperties() {
 }
 
 @test:Config {
-    dependsOn: ["testCreateSpreadsheet"]
+    dependsOn: [testCreateSpreadsheet]
 }
 function testAddSheet() {
     var response = spreadsheetClient->openSpreadsheetById(spreadsheetId);
@@ -123,7 +120,7 @@ function testAddSheet() {
 }
 
 @test:Config {
-    dependsOn: ["testCreateSpreadsheet", "testAddSheet"]
+    dependsOn: [testCreateSpreadsheet, testAddSheet]
 }
 function testGetSheets() {
     var spreadsheetRes = spreadsheetClient->openSpreadsheetById(spreadsheetId);
@@ -141,7 +138,7 @@ function testGetSheets() {
 }
 
 @test:Config {
-    dependsOn: ["testCreateSpreadsheet", "testAddSheet"]
+    dependsOn: [testCreateSpreadsheet, testAddSheet]
 }
 function testGetSheetByName() {
     var spreadsheetRes = spreadsheetClient->openSpreadsheetById(spreadsheetId);
@@ -158,7 +155,7 @@ function testGetSheetByName() {
 }
 
 @test:Config {
-    dependsOn: ["testCreateSpreadsheet"]
+    dependsOn: [testCreateSpreadsheet]
 }
 function testRemoveSheet() {
     var spreadsheetRes = spreadsheetClient->openSpreadsheetById(spreadsheetId);
@@ -178,7 +175,7 @@ function testRemoveSheet() {
 }
 
 @test:Config {
-    dependsOn: ["testCreateSpreadsheet"]
+    dependsOn: [testCreateSpreadsheet]
 }
 function testRename() {
     string newName = createSpreadsheetName + " Renamed";
@@ -200,7 +197,7 @@ function testRename() {
 
 // Tests the Sheet client actions
 @test:Config {
-    dependsOn: ["testAddSheet"]
+    dependsOn: [testAddSheet]
 }
 function testSheetRename() {
     var spreadsheetRes = spreadsheetClient->openSpreadsheetById(spreadsheetId);
@@ -224,7 +221,7 @@ function testSheetRename() {
 }
 
 @test:Config {
-    dependsOn: ["testAddSheet", "testSetRange"]
+    dependsOn: [testAddSheet, testSetRange]
 }
 function testSetCell() {
     var spreadsheetRes = spreadsheetClient->openSpreadsheetById(spreadsheetId);
@@ -243,7 +240,7 @@ function testSetCell() {
 }
 
 @test:Config {
-    dependsOn: ["testAddSheet", "testSetCell"]
+    dependsOn: [testAddSheet, testSetCell]
 }
 function testGetCell() {
     var spreadsheetRes = spreadsheetClient->openSpreadsheetById(spreadsheetId);
@@ -262,7 +259,7 @@ function testGetCell() {
 }
 
 @test:Config {
-    dependsOn: ["testAddSheet", "testSetRange"]
+    dependsOn: [testAddSheet, testSetRange]
 }
 function testGetRow() {
     var spreadsheetRes = spreadsheetClient->openSpreadsheetById(spreadsheetId);
@@ -270,10 +267,15 @@ function testGetRow() {
         Sheet[] | error sheets = spreadsheetRes.getSheets();
         if (sheets is Sheet[]) {
             Sheet sheet = sheets[0];
-            var valueReturned = sheet->getRow(2);
+            (string | int | float)[] | error valueReturned = sheet->getRow(2);
             //var valueReturned contains (string | int | float)[]
             (int|string|float)[] expectedValue = ["Keetz", "12"];
-            test:assertEquals(valueReturned.toString(), expectedValue.toString() , msg = "Failed to get the row values");
+            if (valueReturned is error) {
+                test:assertFail("retrieving second row failed");
+            } else {
+                test:assertEquals(valueReturned.toString(), expectedValue.toString() , 
+                msg = "Failed to get the row values");
+            }
         } else {
             test:assertFail(sheets.message());
         }
@@ -283,7 +285,7 @@ function testGetRow() {
 }
 
 @test:Config {
-    dependsOn: ["testAddSheet", "testSetRange"]
+    dependsOn: [testAddSheet, testSetRange]
 }
 function testGetColumn() {
     var spreadsheetRes = spreadsheetClient->openSpreadsheetById(spreadsheetId);
@@ -291,11 +293,16 @@ function testGetColumn() {
         Sheet[] | error sheets = spreadsheetRes.getSheets();
         if (sheets is Sheet[]) {
             Sheet sheet = sheets[0];
-            var valueReturned = sheet->getColumn("B");
-            //var valueReturned contains (string | int | float)[]
+            (string|int|float)[] | error valueReturned = sheet->getColumn("B");
+            //var valueReturned contains (string | int | float)
             (int|string|float)[] expectedValue = ["Score", "12", "78", "98", "86"];
             
-            test:assertEquals(valueReturned.toString(), expectedValue.toString(), msg = "Failed to get the column values");
+            if (valueReturned is error) {
+                test:assertFail("retrieving column B failed");
+            } else {
+                test:assertEquals(valueReturned.toString(), expectedValue.toString(), 
+                msg = "Failed to get the column values");
+            }
         } else {
             test:assertFail(sheets.message());
         }
@@ -305,7 +312,7 @@ function testGetColumn() {
 }
 
 @test:Config {
-    dependsOn: ["testAddSheet"]
+    dependsOn: [testAddSheet]
 }
 function testSetRange() {
     var spreadsheetRes = spreadsheetClient->openSpreadsheetById(spreadsheetId);
@@ -325,7 +332,7 @@ function testSetRange() {
 }
 
 @test:Config {
-    dependsOn: ["testAddSheet", "testSetRange"]
+    dependsOn: [testAddSheet, testSetRange]
 }
 function testGetRange() {
     var spreadsheetRes = spreadsheetClient->openSpreadsheetById(spreadsheetId);
@@ -348,7 +355,7 @@ function testGetRange() {
 }
 
 @test:Config {
-    dependsOn: ["testSetRange", "testGetRange", "testGetColumn", "testGetCell", "testGetRow"]
+    dependsOn: [testSetRange, testGetRange, testGetColumn, testGetCell, testGetRow]
 }
 function testAddRowsBefore() {
     var spreadsheetRes = spreadsheetClient->openSpreadsheetById(spreadsheetId);
@@ -367,7 +374,7 @@ function testAddRowsBefore() {
 }
 
 @test:Config {
-    dependsOn: ["testAddRowsBefore"]
+    dependsOn: [testAddRowsBefore]
 }
 function testAddRowsAfter() {
     var spreadsheetRes = spreadsheetClient->openSpreadsheetById(spreadsheetId);
@@ -386,7 +393,7 @@ function testAddRowsAfter() {
 }
 
 @test:Config {
-    dependsOn: ["testAddRowsBefore"]
+    dependsOn: [testAddRowsBefore]
 }
 function testAddColumnsBefore() {
     var spreadsheetRes = spreadsheetClient->openSpreadsheetById(spreadsheetId);
@@ -405,7 +412,7 @@ function testAddColumnsBefore() {
 }
 
 @test:Config {
-    dependsOn: ["testAddColumnsBefore"]
+    dependsOn: [testAddColumnsBefore]
 }
 function testAddColumnsAfter() {
     var spreadsheetRes = spreadsheetClient->openSpreadsheetById(spreadsheetId);
@@ -424,7 +431,7 @@ function testAddColumnsAfter() {
 }
 
 @test:Config {
-    dependsOn: ["testAddColumnsAfter"]
+    dependsOn: [testAddColumnsAfter]
 }
 function testDeleteColumns() {
     var spreadsheetRes = spreadsheetClient->openSpreadsheetById(spreadsheetId);
@@ -443,7 +450,7 @@ function testDeleteColumns() {
 }
 
 @test:Config {
-    dependsOn: ["testAddRowsAfter"]
+    dependsOn: [testAddRowsAfter]
 }
 function testDeleteRows() {
     var spreadsheetRes = spreadsheetClient->openSpreadsheetById(spreadsheetId);
@@ -462,7 +469,7 @@ function testDeleteRows() {
 }
 
 @test:Config {
-    dependsOn: ["testDeleteRows"]
+    dependsOn: [testDeleteRows]
 }
 function testCopyTo() {
     var copyToSpreadsheet = spreadsheetClient->createSpreadsheet(copyToSpreadsheet);
@@ -486,7 +493,7 @@ function testCopyTo() {
 }
 
 @test:Config {
-    dependsOn: ["testCopyTo"]
+    dependsOn: [testCopyTo]
 }
 function testClearCell() {
     var spreadsheetRes = spreadsheetClient->openSpreadsheetById(spreadsheetId);
@@ -503,8 +510,12 @@ function testClearCell() {
             }
             var clearRes = sheet->clearCell("G1");
             if (clearRes is ()) {
-                var getClearRes = sheet->getCell("G1");
-                test:assertEquals(getClearRes.toString(), "", msg = "Failed to clear the cell");
+                int | string | float | error getClearRes = sheet->getCell("G1");
+                if (getClearRes is error) {
+                    test:assertFail("retrieving cell G1 failed");
+                } else {
+                    test:assertEquals(getClearRes.toString(), "", msg = "Failed to clear the cell");
+                }
             } else {
                 test:assertFail(clearRes.message());
             }
@@ -515,7 +526,7 @@ function testClearCell() {
 }
 
 @test:Config {
-    dependsOn: ["testDeleteRows"]
+    dependsOn: [testDeleteRows]
 }
 function testClearRange() {
     Range setRange = {a1Notation: "A15:D19", values: entries};
@@ -557,7 +568,7 @@ function testClearRange() {
 }
 
 @test:Config {
-    dependsOn: ["testClearRange"]
+    dependsOn: [testClearRange]
 }
 function testClearAll() {
     var spreadsheetRes = spreadsheetClient->openSpreadsheetById(spreadsheetId);
@@ -602,7 +613,7 @@ function testAppendRow() {
 }
 
 @test:Config { 
-    dependsOn: ["testCreateSpreadsheet"]
+    dependsOn: [testCreateSpreadsheet]
 }
 function testGetAllSpreadSheet() {
     var response = spreadsheetClient->getAllSpreadsheets();

@@ -18,17 +18,32 @@ import ballerina/lang.'int as ints;
 import ballerina/log;
 
 isolated function convertToSpreadsheet(json jsonSpreadsheet, Client spreadsheetClient) returns Spreadsheet {
-    string id = jsonSpreadsheet.spreadsheetId.toString();
+    json | error spreadsheetId = jsonSpreadsheet.spreadsheetId;
+    string id = "";
+    if (spreadsheetId is error) {
+        panic error("Could not retrieve spreadsheetId");
+    } else {
+        id = spreadsheetId.toString();
+    }
+
     json | error spreadsheetProperties = jsonSpreadsheet.properties;
     SpreadsheetProperties properties = !(spreadsheetProperties is error)
     ? convertToSpreadsheetProperties(spreadsheetProperties) : {};
-    string spreadsheetUrl = jsonSpreadsheet.spreadsheetUrl.toString();
+
+    json | error spreadsheetUrlJson = jsonSpreadsheet.spreadsheetUrl;
+    string spreadsheetUrl = "";
+    if (spreadsheetUrlJson is error) {
+        panic error("Could not retrieve spreadsheetUrl");
+    } else {
+        spreadsheetUrl = spreadsheetUrlJson.toString();
+    }
+
     Sheet[] sheets = [];
     json | error sheetsJson = jsonSpreadsheet.sheets;
     if (sheetsJson is error) {
         log:print("Could not retrieve the sheets");
     } else {
-        sheets = convertToSheets(<json[]>jsonSpreadsheet.sheets, spreadsheetClient, id);
+        sheets = convertToSheets(<json[]>sheetsJson, spreadsheetClient, id);
     }
     Spreadsheet spreadsheet = new (spreadsheetClient, id, properties, spreadsheetUrl, sheets);
     return spreadsheet;
@@ -54,9 +69,28 @@ isolated function convertToSheet(json jsonSheet, Client spreadsheetClient, strin
 
 isolated function convertToSpreadsheetProperties(json jsonProperties) returns SpreadsheetProperties {
     SpreadsheetProperties spreadsheetProperties = {};
-    spreadsheetProperties.title = jsonProperties.title.toString();
-    spreadsheetProperties.locale = jsonProperties.locale.toString();
-    spreadsheetProperties.timeZone = jsonProperties.timeZone.toString();
+    json | error title = jsonProperties.title;
+    json | error locale = jsonProperties.locale;
+    json | error timeZone = jsonProperties.timeZone;
+
+    if (title is error) {
+        panic error("Could not retrieve title");
+    } else {
+        spreadsheetProperties.title = title.toString();
+    }
+
+    if (locale is error) {
+        panic error("Could not retrieve locale");
+    } else {
+        spreadsheetProperties.locale = locale.toString();
+    }
+
+    if (timeZone is error) {
+        panic error("Could not retrieve timeZone");
+    } else {
+        spreadsheetProperties.timeZone = timeZone.toString();
+    }
+
     return spreadsheetProperties;
 }
 
@@ -79,14 +113,50 @@ isolated function convertToBoolean(string stringVal) returns boolean {
 
 isolated function convertToSheetProperties(json jsonSheetProperties) returns SheetProperties {
     SheetProperties sheetProperties = {};
-    sheetProperties.title = jsonSheetProperties.title.toString();
-    sheetProperties.sheetId = convertToInt(jsonSheetProperties.sheetId.toString());
-    sheetProperties.index = convertToInt(jsonSheetProperties.index.toString());
-    sheetProperties.sheetType = jsonSheetProperties.sheetType.toString();
-    sheetProperties.hidden = !(jsonSheetProperties.hidden is error)
-    ? convertToBoolean(jsonSheetProperties.hidden.toString()) : false;
-    sheetProperties.rightToLeft = !(jsonSheetProperties.rightToLeft is error)
-    ? convertToBoolean(jsonSheetProperties.rightToLeft.toString()) : false;
+
+    json | error title = jsonSheetProperties.title;
+    json | error sheetId = jsonSheetProperties.sheetId;
+    json | error index = jsonSheetProperties.index;
+    json | error sheetType = jsonSheetProperties.sheetType;
+    json | error hidden = jsonSheetProperties.hidden;
+    json | error rightToLeft = jsonSheetProperties.rightToLeft;
+
+    if (title is error) {
+        panic error("Could not retrieve title");
+    } else {
+        sheetProperties.title = title.toString();
+    }
+
+    if (sheetId is error) {
+        panic error("Could not retrieve sheetId");
+    } else {
+        sheetProperties.sheetId = convertToInt(sheetId.toString());
+    }
+
+    if (index is error) {
+        panic error("Could not retrieve index");
+    } else {
+        sheetProperties.index = convertToInt(index.toString());
+    }
+
+    if (sheetType is error) {
+        panic error("Could not retrieve sheetType");
+    } else {
+        sheetProperties.sheetType = sheetType.toString();
+    }
+
+    if (hidden is error) {
+        sheetProperties.hidden = false;
+    } else {
+        sheetProperties.hidden = convertToBoolean(hidden.toString());
+    }
+
+    if (rightToLeft is error) {
+        sheetProperties.rightToLeft = false;
+    } else {
+        sheetProperties.rightToLeft = convertToBoolean(rightToLeft.toString());
+    }
+
     json | error gridProperties = jsonSheetProperties.gridProperties;
     sheetProperties.gridProperties = !(jsonSheetProperties.gridProperties is error)
     ? convertToGridProperties(!(gridProperties is error) ? gridProperties : {}) : {};
@@ -95,21 +165,58 @@ isolated function convertToSheetProperties(json jsonSheetProperties) returns She
 
 isolated function convertToGridProperties(json jsonProps) returns GridProperties {
     GridProperties gridProperties = {};
-    gridProperties.rowCount = !(jsonProps.rowCount is error) ? convertToInt(jsonProps.rowCount.toString()) : 0;
-    gridProperties.columnCount = !(jsonProps.columnCount is error) ? convertToInt(jsonProps.columnCount.toString()) : 0;
-    gridProperties.frozenRowCount = !(jsonProps.frozenRowCount is error)
-    ? convertToInt(jsonProps.frozenRowCount.toString()) : 0;
-    gridProperties.frozenColumnCount = !(jsonProps.frozenColumnCount is error)
-    ? convertToInt(jsonProps.frozenColumnCount.toString()) : 0;
-    gridProperties.hideGridlines = !(jsonProps.hideGridlines is error)
-    ? convertToBoolean(jsonProps.hideGridlines.toString()) : false;
+
+    json | error rowCount = jsonProps.rowCount;
+    json | error columnCount = jsonProps.columnCount;
+    json | error frozenRowCount = jsonProps.frozenRowCount;
+    json | error frozenColumnCount = jsonProps.frozenColumnCount;
+    json | error hideGridlines = jsonProps.hideGridlines;
+
+    if (rowCount is error) {
+        gridProperties.rowCount = 0;
+    } else {
+        gridProperties.rowCount = convertToInt(rowCount.toString());
+    }
+
+    if (columnCount is error) {
+        gridProperties.columnCount = 0;
+    } else {
+        gridProperties.columnCount = convertToInt(columnCount.toString());
+    }
+
+    if (frozenRowCount is error) {
+        gridProperties.frozenRowCount = 0;
+    } else {
+        gridProperties.frozenRowCount = convertToInt(frozenRowCount.toString());
+    }
+
+    if (frozenColumnCount is error) {
+        gridProperties.frozenColumnCount = 0;
+    } else {
+        gridProperties.frozenColumnCount = convertToInt(frozenColumnCount.toString());
+    }
+
+    if (hideGridlines is error) {
+        gridProperties.hideGridlines = false;
+    } else {
+        gridProperties.hideGridlines = convertToBoolean(hideGridlines.toString());
+    }
+
     return gridProperties;
 }
 
 isolated function convertToArray(json jsonResponse) returns (string | int | float)[][] {
     (string | int | float)[][] values = [];
     int i = 0;
-    json[] jsonValues = <json[]>jsonResponse.values;
+
+    json[] jsonValues = [];
+    json | error valuesJson = jsonResponse.values;
+    if (valuesJson is error) {
+        panic error("Could not retrieve values");
+    } else {
+        jsonValues = <json[]>valuesJson;
+    }
+    
     foreach json value in jsonValues {
         json[] jsonValArray = <json[]>value;
         int j = 0;

@@ -122,7 +122,8 @@ public client class Sheet {
         } else {
             if (!(response.values is error)) {
                 int i = 0;
-                json[] jsonValues = <json[]>response.values;
+                json valuesJson = check response.values;
+                json[] jsonValues = <json[]>valuesJson;
                 foreach json value in jsonValues {
                     json[] jsonValArray = <json[]>value;
                     if (jsonValArray.length() > 0) {
@@ -151,7 +152,7 @@ public client class Sheet {
         } else {
             if (!(response.values is error)) {
                 int i = 0;
-                json[] jsonValues = <json[]>response.values;
+                json[] jsonValues = <json[]> check response.values;
                 json[] jsonArray = <json[]>jsonValues[0];
                 foreach json value in jsonArray {
                     values[i] = value.toString();
@@ -175,7 +176,7 @@ public client class Sheet {
             return response;
         } else {
             if (!(response.values is error)) {
-                json[] responseValues = <json[]>response.values;
+                json[] responseValues = <json[]> check response.values;
                 json[] firstResponseValue = <json[]>responseValues[0];
                 value = firstResponseValue[0].toString();
             }

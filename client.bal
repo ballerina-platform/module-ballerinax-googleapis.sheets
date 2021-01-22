@@ -15,7 +15,6 @@
 // under the License.
 
 import ballerina/http;
-import ballerina/oauth2;
 
 # Google spreadsheet connector client endpoint.
 #
@@ -29,20 +28,15 @@ public client class Client {
     # Initializes the Google spreadsheet connector client endpoint.
     #
     # +  spreadsheetConfig - Configurations required to initialize the `Client` endpoint
-    public function init(SpreadsheetConfiguration spreadsheetConfig) {
-        oauth2:OutboundOAuth2Provider oauth2Provider = new (spreadsheetConfig.oauth2Config);
-        http:BearerAuthHandler bearerHandler = new (oauth2Provider);
+    public function init(SpreadsheetConfiguration spreadsheetConfig) returns error? {
         http:ClientSecureSocket? socketConfig = spreadsheetConfig?.secureSocketConfig;
-        self.httpClient = new (BASE_URL, {
-            auth: {
-                authHandler: bearerHandler
-            },
+        self.httpClient = checkpanic new (BASE_URL, {
+            auth: spreadsheetConfig.oauth2Config,
             secureSocket: socketConfig
         });
-        self.driveClient = new (DRIVE_URL, {
-            auth: {
-                authHandler: bearerHandler
-            },
+
+        self.driveClient = checkpanic new (DRIVE_URL, {
+            auth: spreadsheetConfig.oauth2Config,
             secureSocket: socketConfig
         });
     }
@@ -115,6 +109,6 @@ public client class Client {
 # + oauth2Config - OAuth client configuration
 # + secureSocketConfig - Secure socket configuration
 public type SpreadsheetConfiguration record {
-    oauth2:DirectTokenConfig oauth2Config;
+    http:OAuth2DirectTokenConfig oauth2Config;
     http:ClientSecureSocket secureSocketConfig?;
 };
