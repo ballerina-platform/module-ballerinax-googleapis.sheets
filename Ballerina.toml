@@ -1,6 +1,6 @@
 [package]
 org = "ballerinax"
-name = "googleapis_sheets"
+name = "googleapis.sheets"
 version = "0.99.5"
 license= ["Apache-2.0"]
 authors = ["Ballerina"]
