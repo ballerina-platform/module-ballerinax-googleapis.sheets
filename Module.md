@@ -6,7 +6,7 @@ The Google Spreadsheet connector allows you to create and access Google Spreadsh
 
 **Spreadsheet Operations**
 
-The `ballerinax/googleapis.sheets4` module allows you to perform following operations.
+The `ballerinax/googleapis_sheets` module allows you to perform following operations.
 
 - Create a new spreadsheet
 - Create a new worksheet
@@ -56,12 +56,12 @@ REFRESH_URL = "<refresh_URL>"
 
 **Example Code**
 
-Creating a sheets4:Client by giving the HTTP client config details. 
+Creating a sheets:Client by giving the HTTP client config details. 
 ```ballerina
     import ballerina/config;   
-    import ballerinax/googleapis.sheets4;
+    import ballerinax/googleapis_sheets as sheets;
    
-    sheets4:SpreadsheetConfiguration spreadsheetConfig = {
+    sheets:SpreadsheetConfiguration spreadsheetConfig = {
         oauth2Config: {
             accessToken: config:getAsString("ACCESS_TOKEN"),
             refreshConfig: {
@@ -73,22 +73,22 @@ Creating a sheets4:Client by giving the HTTP client config details.
         }
     };
    
-    sheets4:Client spreadsheetClient = new (spreadsheetConfig);
+    sheets:Client spreadsheetClient = new (spreadsheetConfig);
 ```
 
 Creating a new spreadsheet
 ```ballerina
-    sheets4:Spreadsheet|error spreadsheet = spreadsheetClient->createSpreadsheet(<spreadsheet-name>);
+    sheets:Spreadsheet|error spreadsheet = spreadsheetClient->createSpreadsheet(<spreadsheet-name>);
 ```
 
 Opening an existing spreadsheet 
 ```ballerina
-    sheets4:Spreadsheet|error spreadsheet = spreadsheetClient->openSpreadsheetById(<spreadsheetId>);
+    sheets:Spreadsheet|error spreadsheet = spreadsheetClient->openSpreadsheetById(<spreadsheetId>);
 ```
 
 Get all spreadsheet 
 ```ballerina
-    sheets4:File[]|error files = spreadsheetClient->getAllSpreadsheets();
+    sheets:File[]|error files = spreadsheetClient->getAllSpreadsheets();
 ```
 
 Adding values to a given range and retrieving values from a range
@@ -101,18 +101,18 @@ Adding values to a given range and retrieving values from a range
         ["Nisha", "98"],
         ["Kana", "86"]
     ];
-    sheets4:Sheet|error sheet = spreadsheet.getSheetByName(<worksheet-name>);
-    if (sheet is sheets4:Sheet) {
+    sheets:Sheet|error sheet = spreadsheet.getSheetByName(<worksheet-name>);
+    if (sheet is sheets:Sheet) {
         Range range = {a1Notation: a1Notation, values: entries};
         error? setValuesResult = sheet->setRange(<@untainted>range);
-        sheets4:Range|error getValuesResult = sheet->getRange(a1Notation);
+        sheets:Range|error getValuesResult = sheet->getRange(a1Notation);
     } 
 ```
 
 Adding values to a cell and retrieving values from a cell
 ```ballerina
-    sheets4:Sheet|error sheet = spreadsheet.getSheetByName(<worksheet-name>);
-    if (sheet is sheets4:Sheet) {
+    sheets:Sheet|error sheet = spreadsheet.getSheetByName(<worksheet-name>);
+    if (sheet is sheets:Sheet) {
         error? setValueResult = sheet->setCell("A10", "Foo");
         int|string|float|error getValueResult = sheet->getCell("A10");
     }
@@ -120,16 +120,16 @@ Adding values to a cell and retrieving values from a cell
 
 Retrieving values from a column
 ```ballerina
-    sheets4:Sheet|error sheet = spreadsheet.getSheetByName(<worksheet-name>);
-    if (sheet is sheets4:Sheet) {
+    sheets:Sheet|error sheet = spreadsheet.getSheetByName(<worksheet-name>);
+    if (sheet is sheets:Sheet) {
         (string|int|float)[]|error getValueResult = sheet->getColumn("C");
     }
 ```
 
 Retrieving values from a row
 ```ballerina
-    sheets4:Sheet|error sheet = spreadsheet.getSheetByName(<worksheet-name>);
-    if (sheet is sheets4:Sheet) {
+    sheets:Sheet|error sheet = spreadsheet.getSheetByName(<worksheet-name>);
+    if (sheet is sheets:Sheet) {
         (string|int|float)[]|error getValueResult = sheet->getRow(3);
     }
 ```
@@ -137,8 +137,8 @@ Retrieving values from a row
 Appending values to a sheet
 ```ballerina
     string[] values = ["Appending", "Some", "Values"];
-    sheets4:Sheet|error sheet = spreadsheet.getSheetByName(<worksheet-name>);
-    if (sheet is sheets4:Sheet) {
+    sheets:Sheet|error sheet = spreadsheet.getSheetByName(<worksheet-name>);
+    if (sheet is sheets:Sheet) {
         error? appendResult = sheet->appendRow(values);
     }
 ```

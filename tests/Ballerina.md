@@ -32,5 +32,5 @@ You can use the `tests.bal` file to test all the connector actions by following 
 3. Navigate to the folder `module-googlespreadsheet`.
 4. Run the following commands to execute the tests.
     ```
-    ballerina test googleapis.sheets4 
+    ballerina test 
     ```

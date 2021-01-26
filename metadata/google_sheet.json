@@ -1,6 +1,6 @@
 {
     "connector": {
-        "name": "googleapis.sheets4",
+        "name": "googleapis.sheets",
         "displayName": "Google Sheet V4",
         "organization":"ballerinax",
         "module": "googleapis_sheets",

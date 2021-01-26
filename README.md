@@ -24,7 +24,7 @@ Download the ballerina [distribution](https://ballerinalang.org/downloads/).
 #### Pull the Module
 You can pull the Spreadsheet client from Ballerina Central:
 ```ballerina
-$ ballerina pull ballerinax/googleapis.sheets4
+$ ballerina pull ballerinax/googleapis_sheets
 ```
 
 #### Install from Source
@@ -33,20 +33,20 @@ Alternatively, you can install Spreadsheet client from the source using the foll
 **Building the source**
 1. Clone this repository using the following command:
     ```shell
-    $ git clone https://github.com/ballerina-platform/module-googlespreadsheet.git
+    $ git clone https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets
     ```
 
-2. Run this command from the `module-googlespreadsheet` root directory:
+2. Run this command from the `module-ballerinax-googleapis.sheets` root directory:
     ```shell
-    $ ballerina build googleapis.sheets4
+    $ ballerina build
     ```
 
 ### Working with GSheets Endpoint actions
 
-First, import the `ballerinax/googleapis.sheets4` module into the Ballerina project.
+First, import the `ballerinax/googleapis_sheets` module into the Ballerina project.
 
 ```ballerina
-import ballerinax/googleapis.sheets4;
+import ballerinax/googleapis_sheets;
 ```
 
 All the actions return valid response or error. If the action is a success, then the requested resource will
@@ -55,9 +55,9 @@ be returned. Else error will be returned.
 In order for you to use the GSheets Endpoint, first you need to create a GSheets Client endpoint.
 
 ```ballerina
-import ballerinax/googleapis.sheets4;
+import ballerinax/googleapis_sheets as sheets;
 
-sheets4:SpreadsheetConfiguration spreadsheetConfig = {
+sheets:SpreadsheetConfiguration spreadsheetConfig = {
     oauth2Config: {
         accessToken: "<accessToken>",
         refreshConfig: {
@@ -69,7 +69,7 @@ sheets4:SpreadsheetConfiguration spreadsheetConfig = {
     }
 };
 
-sheets4:Client spreadsheetClient = new (spreadsheetConfig);
+sheets:Client spreadsheetClient = new (spreadsheetConfig);
 ```
 
 Then the endpoint actions can be invoked as `var response = spreadsheetClient->actionName(arguments)`.
@@ -77,9 +77,9 @@ Then the endpoint actions can be invoked as `var response = spreadsheetClient->a
 #### Sample with default truststore
 ```ballerina
 import ballerina/io;
-import ballerinax/googleapis.sheets4;
+import ballerinax/googleapis_sheets as sheets;
 
-sheets4:SpreadsheetConfiguration spreadsheetConfig = {
+sheets:SpreadsheetConfiguration spreadsheetConfig = {
     oauth2Config: {
         accessToken: "<accessToken>",
         refreshConfig: {
@@ -91,11 +91,11 @@ sheets4:SpreadsheetConfiguration spreadsheetConfig = {
     }
 };
 
-sheets4:Client spreadsheetClient = new (spreadsheetConfig);
+sheets:Client spreadsheetClient = new (spreadsheetConfig);
 
 public function main(string... args) {
     var response = spreadsheetClient->openSpreadsheetById(<spreadsheet-id>);
-    if (response is sheets4:Spreadsheet) {
+    if (response is sheets:Spreadsheet) {
         io:println("Spreadsheet Details: ", response);
     } else {
         io:println("Error: ", response);
@@ -106,9 +106,9 @@ public function main(string... args) {
 #### Sample with custom truststore
 ```ballerina
 import ballerina/io;
-import ballerinax/googleapis.sheets4;
+import ballerinax/googleapis_sheets as sheets;
 
-sheets4:SpreadsheetConfiguration spreadsheetConfig = {
+sheets:SpreadsheetConfiguration spreadsheetConfig = {
     oauth2Config: {
         accessToken: "<accessToken>",
         refreshConfig: {
@@ -126,11 +126,11 @@ sheets4:SpreadsheetConfiguration spreadsheetConfig = {
     }
 };
 
-sheets4:Client spreadsheetClient = new (spreadsheetConfig);
+sheets:Client spreadsheetClient = new (spreadsheetConfig);
 
 public function main(string... args) {
     var response = spreadsheetClient->openSpreadsheetById(<spreadsheet-id>);
-    if (response is sheets4:Spreadsheet) {
+    if (response is sheets:Spreadsheet) {
         io:println("Spreadsheet Details: ", response);
     } else {
         io:println("Error: ", response);
