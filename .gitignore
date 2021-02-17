@@ -43,3 +43,5 @@ accessToken.bal
 temp.bal.ballerina/
 target/
 .DS_Store
+modules
+samples
