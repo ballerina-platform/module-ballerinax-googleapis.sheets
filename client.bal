@@ -392,6 +392,39 @@ public client class Client {
         }
     }
 
+    # Inserts the given number of columns before the given column position by worksheet name as input.
+    #
+    # + spreadsheetId - ID of the Spreadsheet
+    # + sheetName - The name of the Worksheet
+    # + index - The position of the column before which the new columns should be added
+    # + numberOfColumns - Number of columns to be added
+    # + return - Nil on success, else returns an error
+    remote function addColumnsBeforeBySheetName(string spreadsheetId, string sheetName, int index, int numberOfColumns) 
+            returns @tainted error? {
+        Sheet sheet = check self->getSheetByName(spreadsheetId, sheetName);
+        int startIndex = index - 1;
+        int endIndex = startIndex + numberOfColumns;
+        json payload = {
+            "requests": [
+                {
+                    "insertDimension": {
+                        "range": {
+                            "sheetId": sheet.properties.sheetId,
+                            "dimension": "COLUMNS",
+                            "startIndex": startIndex,
+                            "endIndex": endIndex
+                        }
+                    }
+                }
+            ]
+        };
+        string addColumnsPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + BATCH_UPDATE_REQUEST;
+        json | error response = sendRequestWithPayload(self.httpClient, addColumnsPath, payload);
+        if (response is error) {
+            return response;
+        }
+    }
+
     # Inserts the given number of columns after the given column position.
     #
     # + spreadsheetId - ID of the Spreadsheet
@@ -409,6 +442,39 @@ public client class Client {
                     "insertDimension": {
                         "range": {
                             "sheetId": sheetId,
+                            "dimension": "COLUMNS",
+                            "startIndex": startIndex,
+                            "endIndex": endIndex
+                        }
+                    }
+                }
+            ]
+        };
+        string addColumnsPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + BATCH_UPDATE_REQUEST;
+        json | error response = sendRequestWithPayload(self.httpClient, addColumnsPath, payload);
+        if (response is error) {
+            return response;
+        }
+    }
+
+    # Inserts the given number of columns after the given column position by worksheet name as input.
+    #
+    # + spreadsheetId - ID of the Spreadsheet
+    # + sheetName - The name of the Worksheet
+    # + index - The position of the column after which the new columns should be added
+    # + numberOfColumns - Number of columns to be added
+    # + return - Nil on success, else returns an error
+    remote function addColumnsAfterBySheetName(string spreadsheetId, string sheetName, int index, int numberOfColumns) 
+            returns @tainted error? {
+        Sheet sheet = check self->getSheetByName(spreadsheetId, sheetName);
+        int startIndex = index;
+        int endIndex = startIndex + numberOfColumns;
+        json payload = {
+            "requests": [
+                {
+                    "insertDimension": {
+                        "range": {
+                            "sheetId": sheet.properties.sheetId,
                             "dimension": "COLUMNS",
                             "startIndex": startIndex,
                             "endIndex": endIndex
@@ -521,6 +587,39 @@ public client class Client {
         }
     }
 
+    # Deletes the given number of columns starting at the given column position by worksheet name as input.
+    #
+    # + spreadsheetId - ID of the Spreadsheet
+    # + sheetName - The name of the Worksheet
+    # + column - Starting position of the columns
+    # + numberOfColumns - Number of columns from the starting position
+    # + return - Nil on success, else returns an error
+    remote function deleteColumnsBySheetName(string spreadsheetId, string sheetName, int column, int numberOfColumns) 
+            returns @tainted error? {
+        Sheet sheet = check self->getSheetByName(spreadsheetId, sheetName);
+        int startIndex = column - 1;
+        int endIndex = startIndex + numberOfColumns;
+        json payload = {
+            "requests": [
+                {
+                    "deleteDimension": {
+                        "range": {
+                            "sheetId": sheet.properties.sheetId,
+                            "dimension": "COLUMNS",
+                            "startIndex": startIndex,
+                            "endIndex": endIndex
+                        }
+                    }
+                }
+            ]
+        };
+        string deleteColumnsPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + BATCH_UPDATE_REQUEST;
+        json | error response = sendRequestWithPayload(self.httpClient, deleteColumnsPath, payload);
+        if (response is error) {
+            return response;
+        }
+    }
+
     # Inserts the given number of rows before the given row position.
     #
     # + spreadsheetId - ID of the Spreadsheet
@@ -553,6 +652,39 @@ public client class Client {
         }
     }
 
+    # Inserts the given number of rows before the given row position by worksheet name as input.
+    #
+    # + spreadsheetId - ID of the Spreadsheet
+    # + sheetName - The name of the Worksheet
+    # + index - The position of the row before which the new rows should be added
+    # + numberOfRows - The number of rows to be added
+    # + return - Nil on success, else returns an error
+    remote function addRowsBeforeBySheetName(string spreadsheetId, string sheetName, int index, int numberOfRows) 
+            returns @tainted error? {
+        Sheet sheet = check self->getSheetByName(spreadsheetId, sheetName);
+        int startIndex = index - 1;
+        int endIndex = startIndex + numberOfRows;
+        json payload = {
+            "requests": [
+                {
+                    "insertDimension": {
+                        "range": {
+                            "sheetId": sheet.properties.sheetId,
+                            "dimension": "ROWS",
+                            "startIndex": startIndex,
+                            "endIndex": endIndex
+                        }
+                    }
+                }
+            ]
+        };
+        string addRowsPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + BATCH_UPDATE_REQUEST;
+        json | error response = sendRequestWithPayload(self.httpClient, addRowsPath, payload);
+        if (response is error) {
+            return response;
+        }
+    }
+
     # Inserts a number of rows after the given row position.
     #
     # + spreadsheetId - ID of the Spreadsheet
@@ -570,6 +702,39 @@ public client class Client {
                     "insertDimension": {
                         "range": {
                             "sheetId": sheetId,
+                            "dimension": "ROWS",
+                            "startIndex": startIndex,
+                            "endIndex": endIndex
+                        }
+                    }
+                }
+            ]
+        };
+        string addRowsPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + BATCH_UPDATE_REQUEST;
+        json|error response = sendRequestWithPayload(self.httpClient, addRowsPath, payload);
+        if (response is error) {
+            return response;
+        }
+    }
+
+    # Inserts a number of rows after the given row position by worksheet name as input.
+    #
+    # + spreadsheetId - ID of the Spreadsheet
+    # + sheetName - The name of the Worksheet
+    # + index - The row after which the new rows should be added.
+    # + numberOfRows - The number of rows to be added
+    # + return - Nil on success, else returns an error
+    remote function addRowsAfterBySheetName(string spreadsheetId, string sheetName, int index, int numberOfRows) 
+            returns @tainted error? {
+        Sheet sheet = check self->getSheetByName(spreadsheetId, sheetName);
+        int startIndex = index;
+        int endIndex = startIndex + numberOfRows;
+        json payload = {
+            "requests": [
+                {
+                    "insertDimension": {
+                        "range": {
+                            "sheetId": sheet.properties.sheetId,
                             "dimension": "ROWS",
                             "startIndex": startIndex,
                             "endIndex": endIndex
@@ -664,6 +829,39 @@ public client class Client {
                     "deleteDimension": {
                         "range": {
                             "sheetId": sheetId,
+                            "dimension": "ROWS",
+                            "startIndex": startIndex,
+                            "endIndex": endIndex
+                        }
+                    }
+                }
+            ]
+        };
+        string deleteRowsPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + BATCH_UPDATE_REQUEST;
+        json | error response = sendRequestWithPayload(self.httpClient, deleteRowsPath, payload);
+        if (response is error) {
+            return response;
+        }
+    }
+
+    # Deletes the given number of rows starting at the given row position by worksheet name as input.
+    #
+    # + spreadsheetId - ID of the Spreadsheet
+    # + sheetName - The name of the Worksheet
+    # + row - Starting position of the rows
+    # + numberOfRows - Number of row from the starting position
+    # + return - Nil on success, else returns an error
+    remote function deleteRowsBySheetName(string spreadsheetId, string sheetName, int row, int numberOfRows) 
+            returns @tainted error? {
+        Sheet sheet = check self->getSheetByName(spreadsheetId, sheetName);
+        int startIndex = row - 1;
+        int endIndex = startIndex + numberOfRows;
+        json payload = {
+            "requests": [
+                {
+                    "deleteDimension": {
+                        "range": {
+                            "sheetId": sheet.properties.sheetId,
                             "dimension": "ROWS",
                             "startIndex": startIndex,
                             "endIndex": endIndex
@@ -840,6 +1038,26 @@ public client class Client {
     # + return - Nil on success, else returns an error
     remote function copyTo(string spreadsheetId, int sheetId, string destinationId) returns @tainted error? {
         json payload = {"destinationSpreadsheetId": destinationId};
+        string notation = sheetId.toString();
+        string copyToPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + SHEETS_PATH + notation +
+        COPY_TO_REQUEST;
+        json | error response = sendRequestWithPayload(self.httpClient, copyToPath, payload);
+        if (response is error) {
+            return response;
+        }
+    }
+
+    # Copies the Sheet to a given Spreadsheet by worksheet name as input.
+    #
+    # + spreadsheetId - ID of the Spreadsheet
+    # + sheetName - The name of the Worksheet
+    # + destinationId - ID of the Spreadsheet to copy the sheet to
+    # + return - Nil on success, else returns an error
+    remote function copyToBySheetName(string spreadsheetId, string sheetName, string destinationId) 
+            returns @tainted error? {
+        Sheet sheet = check self->getSheetByName(spreadsheetId, sheetName);
+        json payload = {"destinationSpreadsheetId": destinationId};
+        int sheetId = sheet.properties.sheetId;
         string notation = sheetId.toString();
         string copyToPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + SHEETS_PATH + notation +
         COPY_TO_REQUEST;

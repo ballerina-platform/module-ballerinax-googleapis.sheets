@@ -285,6 +285,21 @@ function testAddColumnsBefore() {
 }
 
 @test:Config {
+    dependsOn: ["testAddSheet", "testSetRange"],
+    enable: true
+}
+function testAddColumnsBeforeBySheetName() {
+    string newName = testSheetName + " Renamed";
+
+    Range range = {a1Notation: "A1:D5", values: entries};
+    var setRangeRes = spreadsheetClient->setRange(spreadsheetId, newName, range);
+    test:assertEquals(setRangeRes, (), msg = "Failed to set the values of the range");
+
+    var spreadsheetRes = spreadsheetClient->addColumnsBeforeBySheetName(spreadsheetId, newName, 3, 2);
+    test:assertEquals(spreadsheetRes, (), msg = "Failed to add columns before the given index");
+}
+
+@test:Config {
     dependsOn: ["testAddColumnsBefore"],
     enable: true
 }
@@ -299,6 +314,16 @@ function testAddColumnsAfter() {
     } else {
         test:assertFail(openRes.message());
     }
+}
+
+@test:Config {
+    dependsOn: ["testAddColumnsBeforeBySheetName"],
+    enable: true
+}
+function testAddColumnsAfterBySheetName() {
+    string newName = testSheetName + " Renamed";
+    var spreadsheetRes = spreadsheetClient->addColumnsAfterBySheetName(spreadsheetId, newName, 5, 2);
+    test:assertEquals(spreadsheetRes, (), msg = "Failed to add columns after the given index");
 }
 
 @test:Config {
@@ -331,7 +356,7 @@ function testGetColumn() {
 }
 
 @test:Config {
-    dependsOn: ["testAddColumnsBefore"],
+    dependsOn: ["testAddColumnsAfter"],
     enable: true
 }
 function testDeleteColumns() {
@@ -345,6 +370,16 @@ function testDeleteColumns() {
     } else {
         test:assertFail(openRes.message());
     }
+}
+
+@test:Config {
+    dependsOn: ["testAddColumnsAfterBySheetName"],
+    enable: true
+}
+function testDeleteColumnsBySheetName() {
+    string newName = testSheetName + " Renamed";
+    var spreadsheetRes = spreadsheetClient->deleteColumnsBySheetName(spreadsheetId, newName, 3, 2);
+    test:assertEquals(spreadsheetRes, (), msg = "Failed to delete columns");
 }
 
 @test:Config {
@@ -365,6 +400,16 @@ function testAddRowsBefore() {
 }
 
 @test:Config {
+    dependsOn: ["testDeleteColumnsBySheetName"],
+    enable: true
+}
+function testAddRowsBeforeBySheetName() {
+    string newName = testSheetName + " Renamed";
+    var spreadsheetRes = spreadsheetClient->addRowsBeforeBySheetName(spreadsheetId, newName, 4, 2);
+    test:assertEquals(spreadsheetRes, (), msg = "Failed to add rows before the given index");
+}
+
+@test:Config {
     dependsOn: ["testAddRowsBefore"],
     enable: true
 }
@@ -379,6 +424,16 @@ function testAddRowsAfter() {
     } else {
         test:assertFail(openRes.message());
     }
+}
+
+@test:Config {
+    dependsOn: ["testAddRowsBeforeBySheetName"],
+    enable: true
+}
+function testAddRowsAfterBySheetName() {
+    string newName = testSheetName + " Renamed";
+    var spreadsheetRes = spreadsheetClient->addRowsAfterBySheetName(spreadsheetId, newName, 6, 2);
+    test:assertEquals(spreadsheetRes, (), msg = "Failed to add rows after the given index");
 }
 
 @test:Config {
@@ -412,7 +467,7 @@ function testGetRow() {
 }
 
 @test:Config {
-    dependsOn: ["testAddRowsBefore"],
+    dependsOn: ["testAddRowsAfter"],
     enable: true
 }
 function testDeleteRows() {
@@ -426,6 +481,16 @@ function testDeleteRows() {
     } else {
         test:assertFail(openRes.message());
     }
+}
+
+@test:Config {
+    dependsOn: ["testAddRowsAfterBySheetName"],
+    enable: true
+}
+function testDeleteRowsBySheetName() {
+    string newName = testSheetName + " Renamed";
+    var spreadsheetRes = spreadsheetClient->deleteRowsBySheetName(spreadsheetId, newName, 4, 2);
+    test:assertEquals(spreadsheetRes, (), msg = "Failed to delete rows");
 }
 
 @test:Config {
@@ -525,6 +590,15 @@ function testCopyTo() {
     } else {
         test:assertFail(openRes.message());
     }
+}
+
+@test:Config {
+    dependsOn: ["testDeleteRowsBySheetName"],
+    enable: true
+}
+function testCopyToBySheetName() {
+    var spreadsheetRes = spreadsheetClient->copyToBySheetName(spreadsheetId, testSheetName, spreadsheetId);
+    test:assertEquals(spreadsheetRes, (), msg = "Failed to copy the sheet");
 }
 
 @test:Config {
