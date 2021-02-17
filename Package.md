@@ -79,45 +79,44 @@ Adding values to a given range and retrieving values from a range
         ["Nisha", "98"],
         ["Kana", "86"]
     ];
-    sheets:Sheet|error sheet = spreadsheet.getSheetByName(<worksheet-name>);
+    sheets:Sheet|error sheet = spreadsheetRes = spreadsheetClient->getSheetByName(<spreadsheetId>, <worksheet-name>);
     if (sheet is sheets:Sheet) {
         Range range = {a1Notation: a1Notation, values: entries};
-        error? setValuesResult = sheet->setRange(<@untainted>range);
-        sheets:Range|error getValuesResult = sheet->getRange(a1Notation);
+        error? response = spreadsheetClient->setRange(<spreadsheetId>, <worksheet-name>, range);
+        sheets:Range|error getValuesResult = spreadsheetClient->getRange(<spreadsheetId>, <worksheet-name>, a1Notation);
     } 
 ```
 
 Adding values to a cell and retrieving values from a cell
 ```ballerina
-    sheets:Sheet|error sheet = spreadsheet.getSheetByName(<worksheet-name>);
+    sheets:Sheet|error sheet = spreadsheetRes = spreadsheetClient->getSheetByName(<spreadsheetId>, <worksheet-name>);
     if (sheet is sheets:Sheet) {
-        error? setValueResult = sheet->setCell("A10", "Foo");
-        int|string|float|error getValueResult = sheet->getCell("A10");
+        error? setValueResult = spreadsheetClient->setCell(<spreadsheetId>, <worksheet-name>, "A10", "Foo");
+        int|string|float|error getValueResult = spreadsheetClient->getCell(<spreadsheetId>, <worksheet-name>, "A10");
     }
 ```
 
 Retrieving values from a column
 ```ballerina
-    sheets:Sheet|error sheet = spreadsheet.getSheetByName(<worksheet-name>);
+    sheets:Sheet|error sheet = spreadsheetRes = spreadsheetClient->getSheetByName(<spreadsheetId>, <worksheet-name>);
     if (sheet is sheets:Sheet) {
-        (string|int|float)[]|error getValueResult = sheet->getColumn("C");
+        (string|int|float)[]|error getValueResult = spreadsheetClient->getColumn(<spreadsheetId>, <worksheet-name>, "C");
     }
 ```
 
 Retrieving values from a row
 ```ballerina
-    sheets:Sheet|error sheet = spreadsheet.getSheetByName(<worksheet-name>);
+    sheets:Sheet|error sheet = spreadsheetRes = spreadsheetClient->getSheetByName(<spreadsheetId>, <worksheet-name>);
     if (sheet is sheets:Sheet) {
-        (string|int|float)[]|error getValueResult = sheet->getRow(3);
+        (string|int|float)[]|error getValueResult = spreadsheetClient->getRow(<spreadsheetId>, <worksheet-name>, 3);
     }
 ```
 
 Appending values to a sheet
 ```ballerina
     string[] values = ["Appending", "Some", "Values"];
-    sheets:Sheet|error sheet = spreadsheet.getSheetByName(<worksheet-name>);
+    sheets:Sheet|error sheet = spreadsheetRes = spreadsheetClient->getSheetByName(<spreadsheetId>, <worksheet-name>);
     if (sheet is sheets:Sheet) {
-        error? appendResult = sheet->appendRow(values);
+        error? appendResult = spreadsheetClient->appendRowToSheet(<spreadsheetId>, <worksheet-name>, values);
     }
 ```
-
