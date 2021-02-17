@@ -15,6 +15,8 @@
 // under the License.
 
 import ballerina/http;
+import ballerina/java;
+import ballerina/stringutils;
 
 function sendRequestWithPayload(http:Client httpClient, string path, json jsonPayload = ())
 returns @tainted json | error {
@@ -69,12 +71,12 @@ isolated function getConvertedValue(json value) returns string | int | float {
     }
 }
 
-isolated function validateResponse(json jsonResponse, int statusCode, Client cli) returns Spreadsheet | error {
-    if (statusCode == http:STATUS_OK) {
-        return convertToSpreadsheet(jsonResponse, cli);
-    }
-    return getSpreadsheetError(jsonResponse);
-}
+// isolated function validateResponse(json jsonResponse, int statusCode, Client cli) returns Spreadsheet | error {
+//     if (statusCode == http:STATUS_OK) {
+//         return convertToSpreadsheet(jsonResponse, cli);
+//     }
+//     return getSpreadsheetError(jsonResponse);
+// }
 
 isolated function validateStatusCode(json response, int statusCode) returns error? {
     if (statusCode != http:STATUS_OK) {
@@ -101,6 +103,16 @@ isolated function getSpreadsheetError(json|error errorResponse) returns error {
   } else {
         return errorResponse;
   }
+}
+
+
+# Get the error message from the response.
+#
+# + response - Received response.
+# + return - Returns module error with payload and response code.
+isolated function getErrorMessage(http:Response response) returns @tainted error {
+    return error("Invalid response from Google Sheet API. statuscode: " + response.statusCode.toString() + 
+        ", payload: " + response.getTextPayload().toString(), status = response.statusCode);
 }
 
 # Get files stream.
@@ -136,3 +148,21 @@ function getFilesStream(http:Client driveClient, @tainted File[] files, string? 
         return resp;
     }
 }
+
+# Create a random UUID removing the unnecessary hyphens which will interrupt querying opearations.
+# 
+# + return - A string UUID without hyphens
+public function createRandomUUIDWithoutHyphens() returns string {
+    string? stringUUID = java:toString(createRandomUUID());
+    if (stringUUID is string) {
+        stringUUID = stringutils:replace(stringUUID, "-", "");
+        return stringUUID;
+    } else {
+        return "";
+    }
+}
+
+function createRandomUUID() returns handle = @java:Method {
+    name: "randomUUID",
+    'class: "java.util.UUID"
+} external;
