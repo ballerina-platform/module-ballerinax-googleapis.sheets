@@ -21,7 +21,7 @@
                         ],
                         "returnValue": {
                             "name": "Spreadsheet",
-                            "displayName": "Spreadsheet Client"
+                            "displayName": "Spreadsheet"
                         }
         
                     },
@@ -30,13 +30,13 @@
                         "displayName": "Open Spreadsheet By ID",
                         "parameters" : [
                             {
-                                "name": "id",
+                                "name": "spreadsheetId",
                                 "displayName": "Spreadsheet ID"
                             }
                         ],
                         "returnValue": {
                             "name": "Spreadsheet",
-                            "displayName": "Spreadsheet Client"
+                            "displayName": "Spreadsheet"
                         }
         
                     },
@@ -51,7 +51,7 @@
                         ],
                         "returnValue": {
                             "name": "Spreadsheet",
-                            "displayName": "Spreadsheet Client"
+                            "displayName": "Spreadsheet"
                         }
         
                     },
@@ -78,27 +78,35 @@
                             "displayName": "Spreadsheet ID"
                         }
         
-                    }
-                ]
-            },
-            {
-                "name": "Spreadsheet",
-                "displayName" : "Spreadsheet Client",
-                "operations": [
+                    },
                     {
-                        "name": "getProperties",
-                        "displayName": "Get Spreadsheet Properties",
-                        "parameters" : [],
+                        "name": "renameSpreadsheet",
+                        "displayName": "Rename Spreadsheet",
+                        "parameters" : [
+                            {
+                                "name": "spreadsheetId",
+                                "displayName": "Spreadsheet ID"
+                            },
+                            {
+                                "name": "name",
+                                "displayName": "New Name For Spreadsheet"
+                            }
+                        ],
                         "returnValue": {
-                            "name": "SpreadsheetProperties",
-                            "displayName": "Spreadsheet Properties"
+                            "name": "error?",
+                            "displayName": "Response"
                         }
         
                     },
                     {
                         "name": "getSheets",
                         "displayName": "Get Sheets",
-                        "parameters" : [],
+                        "parameters" : [
+                            {
+                                "name": "spreadsheetId",
+                                "displayName": "Spreadsheet ID"
+                            }
+                        ],
                         "returnValue": {
                             "name": "Sheet[]",
                             "displayName": "Sheets"
@@ -109,6 +117,10 @@
                         "name": "getSheetByName",
                         "displayName": "Get Sheet By Name",
                         "parameters" : [
+                            {
+                                "name": "spreadsheetId",
+                                "displayName": "Spreadsheet ID"
+                            },
                             {
                                 "name": "sheetName",
                                 "displayName": "Sheet Name"
@@ -125,6 +137,10 @@
                         "displayName": "Add New Sheet",
                         "parameters" : [
                             {
+                                "name": "spreadsheetId",
+                                "displayName": "Spreadsheet ID"
+                            },
+                            {
                                 "name": "sheetName",
                                 "displayName": "Sheet Name"
                             }
@@ -137,8 +153,12 @@
                     },
                     {
                         "name": "removeSheet",
-                        "displayName": "Delete Specified Sheet",
+                        "displayName": "Delete Specified Sheet By ID",
                         "parameters" : [
+                            {
+                                "name": "spreadsheetId",
+                                "displayName": "Spreadsheet ID"
+                            },
                             {
                                 "name": "sheetId",
                                 "displayName": "Sheet ID"
@@ -151,12 +171,16 @@
         
                     },
                     {
-                        "name": "rename",
-                        "displayName": "Rename Spread Sheet",
+                        "name": "removeSheetByName",
+                        "displayName": "Delete Specified Sheet By Name",
                         "parameters" : [
                             {
-                                "name": "name",
-                                "displayName": "New Name For Spreadsheet"
+                                "name": "spreadsheetId",
+                                "displayName": "Spreadsheet ID"
+                            },
+                            {
+                                "name": "sheetName",
+                                "displayName": "Sheet Name"
                             }
                         ],
                         "returnValue": {
@@ -164,20 +188,46 @@
                             "displayName": "Response"
                         }
         
-                    }
-                ]
-            },
-            {
-                "name": "Sheet",
-                "displayName" : "Sheet Client",
-                "operations": [
+                    },
                     {
-                        "name": "getProperties",
-                        "displayName": "Get Properties",
-                        "parameters" : [],
+                        "name": "renameSheet",
+                        "displayName": "Rename Sheet",
+                        "parameters" : [
+                            {
+                                "name": "spreadsheetId",
+                                "displayName": "Spreadsheet ID"
+                            },
+                            {
+                                "name": "name",
+                                "displayName": "New Name For Sheet"
+                            }
+                        ],
                         "returnValue": {
-                            "name": "SheetProperties",
-                            "displayName": "Sheet Properties"
+                            "name": "error?",
+                            "displayName": "Response"
+                        }
+        
+                    },
+                    {
+                        "name": "setRange",
+                        "displayName": "Set the Values of the Given Range of Cells",
+                        "parameters" : [
+                            {
+                                "name": "spreadsheetId",
+                                "displayName": "Spreadsheet ID"
+                            },
+                            {
+                                "name": "sheetName",
+                                "displayName": "Sheet Name"
+                            },
+                            {
+                                "name": "range",
+                                "displayName": "Range to be Set"
+                            }
+                        ],
+                        "returnValue": {
+                            "name": "error?",
+                            "displayName": "Response"
                         }
         
                     },
@@ -185,6 +235,14 @@
                         "name": "getRange",
                         "displayName": "Get Given Range of the Sheet",
                         "parameters" : [
+                            {
+                                "name": "spreadsheetId",
+                                "displayName": "Spreadsheet ID"
+                            },
+                            {
+                                "name": "sheetName",
+                                "displayName": "Sheet Name"
+                            },
                             {
                                 "name": "a1Notation",
                                 "displayName": "Required Range in A1 Notation"
@@ -197,12 +255,155 @@
         
                     },
                     {
-                        "name": "setRange",
-                        "displayName": "Set the Values of the Given Range of Cells",
+                        "name": "clearRange",
+                        "displayName": "Clear Contents, Formats, and Rules in Range",
                         "parameters" : [
                             {
-                                "name": "range",
-                                "displayName": "Range to be Set"
+                                "name": "spreadsheetId",
+                                "displayName": "Spreadsheet ID"
+                            },
+                            {
+                                "name": "sheetName",
+                                "displayName": "Sheet Name"
+                            },
+                            {
+                                "name": "a1Notation",
+                                "displayName": "Required Range in A1 Notation"
+                            }
+                        ],
+                        "returnValue": {
+                            "name": "error?",
+                            "displayName": "Response"
+                        }
+        
+                    },
+                    {
+                        "name": "addColumnsBefore",
+                        "displayName": "Insert Columns Before Given Column By Sheet ID",
+                        "parameters" : [
+                            {
+                                "name": "spreadsheetId",
+                                "displayName": "Spreadsheet ID"
+                            },
+                            {
+                                "name": "sheetId",
+                                "displayName": "Sheet ID"
+                            },
+                            {
+                                "name": "index",
+                                "displayName": "Position of Given Column"
+                            },
+                            {
+                                "name": "numberOfColumns",
+                                "displayName": "Number of Columns to Insert"
+                            }
+                        ],
+                        "returnValue": {
+                            "name": "error?",
+                            "displayName": "Response"
+                        }
+        
+                    },
+                    {
+                        "name": "addColumnsBeforeBySheetName",
+                        "displayName": "Insert Columns Before Given Column By Sheet Name",
+                        "parameters" : [
+                            {
+                                "name": "spreadsheetId",
+                                "displayName": "Spreadsheet ID"
+                            },
+                            {
+                                "name": "sheetName",
+                                "displayName": "Sheet Name"
+                            },
+                            {
+                                "name": "index",
+                                "displayName": "Position of Given Column"
+                            },
+                            {
+                                "name": "numberOfColumns",
+                                "displayName": "Number of Columns to Insert"
+                            }
+                        ],
+                        "returnValue": {
+                            "name": "error?",
+                            "displayName": "Response"
+                        }
+        
+                    },
+                    {
+                        "name": "addColumnsAfter",
+                        "displayName": "Insert Columns After Given Column By Sheet ID",
+                        "parameters" : [
+                            {
+                                "name": "spreadsheetId",
+                                "displayName": "Spreadsheet ID"
+                            },
+                            {
+                                "name": "sheetId",
+                                "displayName": "Sheet ID"
+                            },
+                            {
+                                "name": "index",
+                                "displayName": "Position of Given Column"
+                            },
+                            {
+                                "name": "numberOfColumns",
+                                "displayName": "Number of Columns to Insert"
+                            }
+                        ],
+                        "returnValue": {
+                            "name": "error?",
+                            "displayName": "Response"
+                        }
+        
+                    },
+                    {
+                        "name": "addColumnsAfterBySheetName",
+                        "displayName": "Insert Columns After Given Column By Sheet Name",
+                        "parameters" : [
+                            {
+                                "name": "spreadsheetId",
+                                "displayName": "Spreadsheet ID"
+                            },
+                            {
+                                "name": "sheetName",
+                                "displayName": "Sheet Name"
+                            },
+                            {
+                                "name": "index",
+                                "displayName": "Position of Given Column"
+                            },
+                            {
+                                "name": "numberOfColumns",
+                                "displayName": "Number of Columns to Insert"
+                            }
+                        ],
+                        "returnValue": {
+                            "name": "error?",
+                            "displayName": "Response"
+                        }
+        
+                    },
+                    {
+                        "name": "createOrUpdateColumn",
+                        "displayName": "Create or Update New Column With Given Values",
+                        "parameters" : [
+                            {
+                                "name": "spreadsheetId",
+                                "displayName": "Spreadsheet ID"
+                            },
+                            {
+                                "name": "sheetName",
+                                "displayName": "Sheet Name"
+                            },
+                            {
+                                "name": "column",
+                                "displayName": "Column Number"
+                            },
+                            {
+                                "name": "(int | string | float)[]",
+                                "displayName": "Values for New Column"
                             }
                         ],
                         "returnValue": {
@@ -216,6 +417,14 @@
                         "displayName": "Get Values in Column",
                         "parameters" : [
                             {
+                                "name": "spreadsheetId",
+                                "displayName": "Spreadsheet ID"
+                            },
+                            {
+                                "name": "sheetName",
+                                "displayName": "Sheet Name"
+                            },
+                            {
                                 "name": "column",
                                 "displayName": "Column Number"
                             }
@@ -227,128 +436,17 @@
         
                     },
                     {
-                        "name": "getRow",
-                        "displayName": "Get Values in Row",
+                        "name": "deleteColumns",
+                        "displayName": "Delete Columns By Sheet ID",
                         "parameters" : [
                             {
-                                "name": "row",
-                                "displayName": "Row Number"
-                            }
-                        ],
-                        "returnValue": {
-                            "name": "(string | int | float)[]",
-                            "displayName": "Values in Row"
-                        }
-        
-                    },
-                    {
-                        "name": "getCell",
-                        "displayName": "Get Value in Cell",
-                        "parameters" : [
-                            {
-                                "name": "a1Notation",
-                                "displayName": "Required Cell in A1 Notation"
-                            }
-                        ],
-                        "returnValue": {
-                            "name": "int | string | float",
-                            "displayName": "Values"
-                        }
-        
-                    },
-                    {
-                        "name": "setCell",
-                        "displayName": "Set Value to Cell",
-                        "parameters" : [
-                            {
-                                "name": "a1Notation",
-                                "displayName": "Required Cell in A1 Notation"
+                                "name": "spreadsheetId",
+                                "displayName": "Spreadsheet ID"
                             },
                             {
-                                "name": "value",
-                                "displayName": "Value of the Cell to Set"
-                            }
-                        ],
-                        "returnValue": {
-                            "name": "error?",
-                            "displayName": "Response"
-                        }
-        
-                    },
-                    {
-                        "name": "rename",
-                        "displayName": "Rename Sheet",
-                        "parameters" : [
-                            {
-                                "name": "name",
-                                "displayName": "New Sheet Name"
-                            }
-                        ],
-                        "returnValue": {
-                            "name": "error?",
-                            "displayName": "Response"
-                        }
-        
-                    },
-                    {
-                        "name": "clearAll",
-                        "displayName": "Clear Content and Formatting Rules in Sheet",
-                        "parameters" : [],
-                        "returnValue": {
-                            "name": "error?",
-                            "displayName": "Response"
-                        }
-        
-                    },
-                    {
-                        "name": "clearRange",
-                        "displayName": "Clear Contents, Formats, and Rules in Range",
-                        "parameters" : [
-                            {
-                                "name": "a1Notation",
-                                "displayName": "Required Range in A1 Notation"
-                            }
-                        ],
-                        "returnValue": {
-                            "name": "error?",
-                            "displayName": "Response"
-                        }
-        
-                    },
-                    {
-                        "name": "clearCell",
-                        "displayName": "Clear Contents, Formats, and Rules in Cell",
-                        "parameters" : [
-                            {
-                                "name": "a1Notation",
-                                "displayName": "Required Cell in A1 Notation"
-                            }
-                        ],
-                        "returnValue": {
-                            "name": "error?",
-                            "displayName": "Response"
-                        }
-        
-                    },
-                    {
-                        "name": "copyTo",
-                        "displayName": "Copy Sheet to Given Spreadsheet",
-                        "parameters" : [
-                            {
-                                "name": "spreadsheet",
-                                "displayName": "Destination Spreadsheet"
-                            }
-                        ],
-                        "returnValue": {
-                            "name": "error?",
-                            "displayName": "Response"
-                        }
-        
-                    },
-                    {
-                        "name": "deleteColumns",
-                        "displayName": "Delete Columns",
-                        "parameters" : [
+                                "name": "sheetId",
+                                "displayName": "Sheet ID"
+                            },
                             {
                                 "name": "column",
                                 "displayName": "Starting Column"
@@ -365,54 +463,24 @@
         
                     },
                     {
-                        "name": "deleteRows",
-                        "displayName": "Delete Rows",
+                        "name": "deleteColumns",
+                        "displayName": "Delete Columns By Sheet Name",
                         "parameters" : [
                             {
-                                "name": "row",
-                                "displayName": "Starting Rows"
+                                "name": "spreadsheetId",
+                                "displayName": "Spreadsheet ID"
                             },
                             {
-                                "name": "numberOfRows",
-                                "displayName": "Number of Rows to Delete"
-                            }
-                        ],
-                        "returnValue": {
-                            "name": "error?",
-                            "displayName": "Response"
-                        }
-        
-                    },
-                    {
-                        "name": "addColumnsAfter",
-                        "displayName": "Insert Columns After Given Column",
-                        "parameters" : [
+                                "name": "sheetName",
+                                "displayName": "Sheet Name"
+                            },
                             {
-                                "name": "index",
-                                "displayName": "Position of Given Column"
+                                "name": "column",
+                                "displayName": "Starting Column"
                             },
                             {
                                 "name": "numberOfColumns",
-                                "displayName": "Number of Columns to Insert"
-                            }
-                        ],
-                        "returnValue": {
-                            "name": "error?",
-                            "displayName": "Response"
-                        }
-        
-                    },
-                    {
-                        "name": "addColumnsBefore",
-                        "displayName": "Insert Columns Before Given Column",
-                        "parameters" : [
-                            {
-                                "name": "index",
-                                "displayName": "Position of Given Column"
-                            },
-                            {
-                                "name": "numberOfColumns",
-                                "displayName": "Number of Columns to Insert"
+                                "displayName": "Number of Columns to Delete"
                             }
                         ],
                         "returnValue": {
@@ -423,8 +491,43 @@
                     },
                     {
                         "name": "addRowsBefore",
-                        "displayName": "Insert Rows Before Given Column",
+                        "displayName": "Insert Rows Before Given Column By Sheet ID",
                         "parameters" : [
+                            {
+                                "name": "spreadsheetId",
+                                "displayName": "Spreadsheet ID"
+                            },
+                            {
+                                "name": "sheetId",
+                                "displayName": "Sheet ID"
+                            },
+                            {
+                                "name": "index",
+                                "displayName": "Position of Given Row"
+                            },
+                            {
+                                "name": "numberOfRows",
+                                "displayName": "Number of Rows to Insert"
+                            }
+                        ],
+                        "returnValue": {
+                            "name": "error?",
+                            "displayName": "Response"
+                        }
+        
+                    },
+                    {
+                        "name": "addRowsBeforeBySheetName",
+                        "displayName": "Insert Rows Before Given Column By Sheet Name",
+                        "parameters" : [
+                            {
+                                "name": "spreadsheetId",
+                                "displayName": "Spreadsheet ID"
+                            },
+                            {
+                                "name": "sheetName",
+                                "displayName": "Sheet Name"
+                            },
                             {
                                 "name": "index",
                                 "displayName": "Position of Given Row"
@@ -442,8 +545,16 @@
                     },
                     {
                         "name": "addRowsAfter",
-                        "displayName": "Insert Rows After Given Column",
+                        "displayName": "Insert Rows After Given Column By Sheet ID",
                         "parameters" : [
+                            {
+                                "name": "spreadsheetId",
+                                "displayName": "Spreadsheet ID"
+                            },
+                            {
+                                "name": "sheetName",
+                                "displayName": "Sheet Name"
+                            },
                             {
                                 "name": "index",
                                 "displayName": "Position of Given Row"
@@ -460,9 +571,48 @@
         
                     },
                     {
-                        "name": "appendRow",
-                        "displayName": "Add New Row With Given Values in Sheet Bottom",
+                        "name": "addRowsAfterBySheetName",
+                        "displayName": "Insert Rows After Given Column By Sheet Name",
                         "parameters" : [
+                            {
+                                "name": "spreadsheetId",
+                                "displayName": "Spreadsheet ID"
+                            },
+                            {
+                                "name": "sheetId",
+                                "displayName": "Sheet ID"
+                            },
+                            {
+                                "name": "index",
+                                "displayName": "Position of Given Row"
+                            },
+                            {
+                                "name": "numberOfRows",
+                                "displayName": "Number of Rows to Insert"
+                            }
+                        ],
+                        "returnValue": {
+                            "name": "error?",
+                            "displayName": "Response"
+                        }
+        
+                    },
+                    {
+                        "name": "createOrUpdateRow",
+                        "displayName": "Create or Update New Row With Given Values",
+                        "parameters" : [
+                            {
+                                "name": "spreadsheetId",
+                                "displayName": "Spreadsheet ID"
+                            },
+                            {
+                                "name": "sheetName",
+                                "displayName": "Sheet Name"
+                            },
+                            {
+                                "name": "row",
+                                "displayName": "Row Number"
+                            },
                             {
                                 "name": "(int | string | float)[]",
                                 "displayName": "Values for New Row"
@@ -473,10 +623,321 @@
                             "displayName": "Response"
                         }
         
+                    },
+                    {
+                        "name": "getRow",
+                        "displayName": "Get Values in Row",
+                        "parameters" : [
+                            {
+                                "name": "spreadsheetId",
+                                "displayName": "Spreadsheet ID"
+                            },
+                            {
+                                "name": "sheetName",
+                                "displayName": "Sheet Name"
+                            },
+                            {
+                                "name": "row",
+                                "displayName": "Row Number"
+                            }
+                        ],
+                        "returnValue": {
+                            "name": "(string | int | float)[]",
+                            "displayName": "Values in Row"
+                        }
+        
+                    },
+                    {
+                        "name": "deleteRows",
+                        "displayName": "Delete Rows By Sheet ID",
+                        "parameters" : [
+                            {
+                                "name": "spreadsheetId",
+                                "displayName": "Spreadsheet ID"
+                            },
+                            {
+                                "name": "sheetId",
+                                "displayName": "Sheet ID"
+                            },
+                            {
+                                "name": "row",
+                                "displayName": "Starting Rows"
+                            },
+                            {
+                                "name": "numberOfRows",
+                                "displayName": "Number of Rows to Delete"
+                            }
+                        ],
+                        "returnValue": {
+                            "name": "error?",
+                            "displayName": "Response"
+                        }
+        
+                    },
+                    {
+                        "name": "deleteRowsBySheetName",
+                        "displayName": "Delete Rows By Sheet Name",
+                        "parameters" : [
+                            {
+                                "name": "spreadsheetId",
+                                "displayName": "Spreadsheet ID"
+                            },
+                            {
+                                "name": "sheetName",
+                                "displayName": "Sheet Name"
+                            },
+                            {
+                                "name": "row",
+                                "displayName": "Starting Rows"
+                            },
+                            {
+                                "name": "numberOfRows",
+                                "displayName": "Number of Rows to Delete"
+                            }
+                        ],
+                        "returnValue": {
+                            "name": "error?",
+                            "displayName": "Response"
+                        }
+        
+                    },
+                    {
+                        "name": "setCell",
+                        "displayName": "Set Value to Cell",
+                        "parameters" : [
+                            {
+                                "name": "spreadsheetId",
+                                "displayName": "Spreadsheet ID"
+                            },
+                            {
+                                "name": "sheetName",
+                                "displayName": "Sheet Name"
+                            },
+                            {
+                                "name": "a1Notation",
+                                "displayName": "Required Cell in A1 Notation"
+                            },
+                            {
+                                "name": "value",
+                                "displayName": "Value of the Cell to Set"
+                            }
+                        ],
+                        "returnValue": {
+                            "name": "error?",
+                            "displayName": "Response"
+                        }
+        
+                    },
+                    {
+                        "name": "getCell",
+                        "displayName": "Get Value in Cell",
+                        "parameters" : [
+                            {
+                                "name": "spreadsheetId",
+                                "displayName": "Spreadsheet ID"
+                            },
+                            {
+                                "name": "sheetName",
+                                "displayName": "Sheet Name"
+                            },
+                            {
+                                "name": "a1Notation",
+                                "displayName": "Required Cell in A1 Notation"
+                            }
+                        ],
+                        "returnValue": {
+                            "name": "int | string | float",
+                            "displayName": "Value"
+                        }
+        
+                    },
+                    {
+                        "name": "clearCell",
+                        "displayName": "Clear Contents, Formats, and Rules in Cell",
+                        "parameters" : [
+                            {
+                                "name": "spreadsheetId",
+                                "displayName": "Spreadsheet ID"
+                            },
+                            {
+                                "name": "sheetName",
+                                "displayName": "Sheet Name"
+                            },
+                            {
+                                "name": "a1Notation",
+                                "displayName": "Required Cell in A1 Notation"
+                            }
+                        ],
+                        "returnValue": {
+                            "name": "error?",
+                            "displayName": "Response"
+                        }
+        
+                    },
+                    {
+                        "name": "appendRowToSheet",
+                        "displayName": "Add New Row With Given Values to the Bottom of the Sheet",
+                        "parameters" : [
+                            {
+                                "name": "spreadsheetId",
+                                "displayName": "Spreadsheet ID"
+                            },
+                            {
+                                "name": "sheetName",
+                                "displayName": "Sheet Name"
+                            },
+                            {
+                                "name": "(int | string | float)[]",
+                                "displayName": "Values for New Row"
+                            }
+                        ],
+                        "returnValue": {
+                            "name": "error?",
+                            "displayName": "Response"
+                        }
+        
+                    },
+                    {
+                        "name": "appendRow",
+                        "displayName": "Add New Row With Given Values to the Bottom of the Given Range",
+                        "parameters" : [
+                            {
+                                "name": "spreadsheetId",
+                                "displayName": "Spreadsheet ID"
+                            },
+                            {
+                                "name": "sheetName",
+                                "displayName": "Sheet Name"
+                            },
+                            {
+                                "name": "a1Notation",
+                                "displayName": "Required Range in A1 Notation"
+                            },
+                            {
+                                "name": "(int | string | float)[]",
+                                "displayName": "Values for New Row"
+                            }
+                        ],
+                        "returnValue": {
+                            "name": "error?",
+                            "displayName": "Response"
+                        }
+        
+                    },
+                    {
+                        "name": "appendCell",
+                        "displayName": "Add New Cell With Given Value to the Bottom of the Given Range",
+                        "parameters" : [
+                            {
+                                "name": "spreadsheetId",
+                                "displayName": "Spreadsheet ID"
+                            },
+                            {
+                                "name": "sheetName",
+                                "displayName": "Sheet Name"
+                            },
+                            {
+                                "name": "a1Notation",
+                                "displayName": "Required Range in A1 Notation"
+                            },
+                            {
+                                "name": "(int | string | float)",
+                                "displayName": "Value for New Cell"
+                            }
+                        ],
+                        "returnValue": {
+                            "name": "error?",
+                            "displayName": "Response"
+                        }
+        
+                    },
+                    {
+                        "name": "copyTo",
+                        "displayName": "Copy Sheet to Given Spreadsheet By Sheet ID",
+                        "parameters" : [
+                            {
+                                "name": "spreadsheetId",
+                                "displayName": "Spreadsheet ID"
+                            },
+                            {
+                                "name": "sheetId",
+                                "displayName": "Sheet ID"
+                            },
+                            {
+                                "name": "destinationId",
+                                "displayName": "Destination Spreadsheet ID"
+                            }
+                        ],
+                        "returnValue": {
+                            "name": "error?",
+                            "displayName": "Response"
+                        }
+        
+                    },
+                    {
+                        "name": "copyToBySheetName",
+                        "displayName": "Copy Sheet to Given Spreadsheet By Sheet Name",
+                        "parameters" : [
+                            {
+                                "name": "spreadsheetId",
+                                "displayName": "Spreadsheet ID"
+                            },
+                            {
+                                "name": "sheetName",
+                                "displayName": "Sheet Name"
+                            },
+                            {
+                                "name": "destinationId",
+                                "displayName": "Destination Spreadsheet ID"
+                            }
+                        ],
+                        "returnValue": {
+                            "name": "error?",
+                            "displayName": "Response"
+                        }
+        
+                    },
+                    {
+                        "name": "clearAll",
+                        "displayName": "Clear Content and Formatting Rules in Sheet By Sheet ID",
+                        "parameters" : [
+                            {
+                                "name": "spreadsheetId",
+                                "displayName": "Spreadsheet ID"
+                            },
+                            {
+                                "name": "sheetId",
+                                "displayName": "Sheet ID"
+                            }
+                        ],
+                        "returnValue": {
+                            "name": "error?",
+                            "displayName": "Response"
+                        }
+        
+                    },
+                    {
+                        "name": "clearAllBySheetName",
+                        "displayName": "Clear Content and Formatting Rules in Sheet By Sheet Name",
+                        "parameters" : [
+                            {
+                                "name": "spreadsheetId",
+                                "displayName": "Spreadsheet ID"
+                            },
+                            {
+                                "name": "sheetName",
+                                "displayName": "Sheet Name"
+                            }
+                        ],
+                        "returnValue": {
+                            "name": "error?",
+                            "displayName": "Response"
+                        }
+        
                     }
-                ],
-                "listener":{}
+                ]
             }
-        ]
+        ],
+        "listener": {}
     }
 }
