@@ -19,30 +19,30 @@
 # + properties - Properties of a spreadsheet
 # + sheets - The sheets that are part of a spreadsheet
 # + spreadsheetUrl - The URL of the spreadsheet
-public type Spreadsheet record {|
+public type Spreadsheet record {
     string spreadsheetId = "";
     SpreadsheetProperties properties = {};
     Sheet[] sheets = [];
     string spreadsheetUrl = "";
-|};
+};
 
 # Sheet.
 # + properties - Properties of a sheet
-public type Sheet record {|
+public type Sheet record {
     SheetProperties properties = {};
-|};
+};
 
 # Spreadsheet properties.
 # + title - The title of the spreadsheet
 # + locale - The locale of the spreadsheet
 # + autoRecalc - The amount of time to wait before volatile functions are recalculated
 # + timeZone - The time zone of the spreadsheet
-public type SpreadsheetProperties record {|
+public type SpreadsheetProperties record {
     string title = "";
     string locale = "";
     string autoRecalc = "";
     string timeZone = "";
-|};
+};
 
 # Sheet properties.
 # + sheetId - The ID of the sheet
@@ -52,7 +52,7 @@ public type SpreadsheetProperties record {|
 # + gridProperties - Additional properties of the sheet if this sheet is a grid
 # + hidden - True if the sheet is hidden in the UI, false if it is visible
 # + rightToLeft - True if the sheet is an RTL sheet instead of an LTR sheet
-public type SheetProperties record {|
+public type SheetProperties record {
     int sheetId = 0;
     string title = "";
     int index = 0;
@@ -60,7 +60,7 @@ public type SheetProperties record {|
     GridProperties gridProperties = {};
     boolean hidden = false;
     boolean rightToLeft = false;
-|};
+};
 
 # Grid properties.
 # + rowCount - The number of rows in the grid
@@ -68,13 +68,13 @@ public type SheetProperties record {|
 # + frozenRowCount - The number of rows that are frozen in the grid
 # + frozenColumnCount - The number of columns that are frozen in the grid
 # + hideGridlines - True if the grid is not showing gridlines in the UI
-public type GridProperties record {|
+public type GridProperties record {
     int rowCount = 0;
     int columnCount = 0;
     int frozenRowCount = 0;
     int frozenColumnCount = 0;
     boolean hideGridlines = false;
-|};
+};
 
 # Single cell or a group of adjacent cells in a sheet.
 #
@@ -87,16 +87,16 @@ public type Range record {
    (int|string|float)[][] values;
 };
 
-public type FilesResponse record {|
+public type FilesResponse record {
     string kind;
     string nextPageToken?;
     boolean incompleteSearch;
     File[] files;
-|};
+};
 
-public type File record {|
+public type File record {
     string kind;
     string id;
     string name;
     string mimeType;
-|};
+};
