@@ -16,7 +16,6 @@
 
 import ballerina/lang.'int as ints;
 import ballerina/lang.array as arrlib;
-// import ballerina/log;
 
 isolated function convertJSONToSpreadsheet(json spreadsheetJsonObject) returns Spreadsheet|error {
     SpreadsheetProperties spreadsheetProperties = {};
@@ -77,49 +76,6 @@ isolated function convertToGridProperties(json jsonProps) returns GridProperties
     return gridProperties;
 }
 
-// isolated function convertToSpreadsheet(json jsonSpreadsheet, Client spreadsheetClient) returns Spreadsheet {
-//     string id = jsonSpreadsheet.spreadsheetId.toString();
-//     json | error spreadsheetProperties = jsonSpreadsheet.properties;
-//     SpreadsheetProperties properties = !(spreadsheetProperties is error)
-//     ? convertToSpreadsheetProperties(spreadsheetProperties) : {};
-//     string spreadsheetUrl = jsonSpreadsheet.spreadsheetUrl.toString();
-//     Sheet[] sheets = [];
-//     json | error sheetsJson = jsonSpreadsheet.sheets;
-//     if (sheetsJson is error) {
-//         log:print("Could not retrieve the sheets");
-//     } else {
-//         sheets = convertToSheets(<json[]>jsonSpreadsheet.sheets, spreadsheetClient, id);
-//     }
-//     Spreadsheet spreadsheet = new (spreadsheetClient, id, properties, spreadsheetUrl, sheets);
-//     return spreadsheet;
-// }
-
-// isolated function convertToSheets(json[] jsonSheets, Client spreadsheetClient, string id) returns Sheet[] {
-//     int i = 0;
-//     Sheet[] sheets = [];
-//     foreach json jsonSheet in jsonSheets {
-//         sheets[i] = convertToSheet(jsonSheet, spreadsheetClient, id);
-//         i = i + 1;
-//     }
-//     return sheets;
-// }
-
-// isolated function convertToSheet(json jsonSheet, Client spreadsheetClient, string id) returns Sheet {
-//     json | error spreadsheetProperties = jsonSheet.properties;
-//     SheetProperties properties = !(spreadsheetProperties is error)
-//     ? convertToSheetProperties(spreadsheetProperties) : {};
-//     Sheet sheet = new (properties, spreadsheetClient, id);
-//     return sheet;
-// }
-
-// isolated function convertToSpreadsheetProperties(json jsonProperties) returns SpreadsheetProperties {
-//     SpreadsheetProperties spreadsheetProperties = {};
-//     spreadsheetProperties.title = jsonProperties.title.toString();
-//     spreadsheetProperties.locale = jsonProperties.locale.toString();
-//     spreadsheetProperties.timeZone = jsonProperties.timeZone.toString();
-//     return spreadsheetProperties;
-// }
-
 isolated function convertToInt(string stringVal) returns int {
     if (stringVal != "") {
         var intVal = ints:fromString(stringVal);
@@ -136,22 +92,6 @@ isolated function convertToInt(string stringVal) returns int {
 isolated function convertToBoolean(string stringVal) returns boolean {
     return stringVal == "true";
 }
-
-// isolated function convertToSheetProperties(json jsonSheetProperties) returns SheetProperties {
-//     SheetProperties sheetProperties = {};
-//     sheetProperties.title = jsonSheetProperties.title.toString();
-//     sheetProperties.sheetId = convertToInt(jsonSheetProperties.sheetId.toString());
-//     sheetProperties.index = convertToInt(jsonSheetProperties.index.toString());
-//     sheetProperties.sheetType = jsonSheetProperties.sheetType.toString();
-//     sheetProperties.hidden = !(jsonSheetProperties.hidden is error)
-//     ? convertToBoolean(jsonSheetProperties.hidden.toString()) : false;
-//     sheetProperties.rightToLeft = !(jsonSheetProperties.rightToLeft is error)
-//     ? convertToBoolean(jsonSheetProperties.rightToLeft.toString()) : false;
-//     json | error gridProperties = jsonSheetProperties.gridProperties;
-//     sheetProperties.gridProperties = !(jsonSheetProperties.gridProperties is error)
-//     ? convertToGridProperties(!(gridProperties is error) ? gridProperties : {}) : {};
-//     return sheetProperties;
-// }
 
 isolated function convertToArray(json jsonResponse) returns (string | int | float)[][] {
     (string | int | float)[][] values = [];

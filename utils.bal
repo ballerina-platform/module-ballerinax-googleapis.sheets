@@ -1,4 +1,4 @@
-// Copyright (c) 2018 WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+// Copyright (c) 2021 WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 //
 // WSO2 Inc. licenses this file to you under the Apache License,
 // Version 2.0 (the "License"); you may not use this file except
@@ -70,13 +70,6 @@ isolated function getConvertedValue(json value) returns string | int | float {
         return value.toString();
     }
 }
-
-// isolated function validateResponse(json jsonResponse, int statusCode, Client cli) returns Spreadsheet | error {
-//     if (statusCode == http:STATUS_OK) {
-//         return convertToSpreadsheet(jsonResponse, cli);
-//     }
-//     return getSpreadsheetError(jsonResponse);
-// }
 
 isolated function validateStatusCode(json response, int statusCode) returns error? {
     if (statusCode != http:STATUS_OK) {
