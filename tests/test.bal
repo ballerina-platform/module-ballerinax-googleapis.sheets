@@ -165,7 +165,7 @@ function testGetSheetByName() {
 }
 function testRenameSheet() {
     string newName = testSheetName + " Renamed";
-    var spreadsheetRes = spreadsheetClient->renameSheet(spreadsheetId, newName);
+    var spreadsheetRes = spreadsheetClient->renameSheet(spreadsheetId, "Sheet1", newName);
     if (spreadsheetRes is ()) {
         var openRes = spreadsheetClient->getSheetByName(spreadsheetId, newName);
         if (openRes is Sheet) {
