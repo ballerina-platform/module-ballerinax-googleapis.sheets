@@ -250,14 +250,16 @@ public client class Client {
     # Renames the first sheet of the spreadsheet with the given name.
     #
     # + spreadsheetId - ID of the Spreadsheet
+    # + sheetName - The name of the Worksheet
     # + name - New name for the worksheet
     # + return - Nil on success, else returns an error
-    remote function renameSheet(string spreadsheetId, string name) returns @tainted error? {
+    remote function renameSheet(string spreadsheetId, string sheetName, string name) returns @tainted error? {
+        Sheet sheet = check self->getSheetByName(spreadsheetId, sheetName);
         json payload = {
             "requests": [
                 {
                     "updateSheetProperties": {
-                        "properties": {"title": name},
+                        "properties": {"sheetId": sheet.properties.sheetId, "title": name},
                         "fields": "title"
                     }
                 }
