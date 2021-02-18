@@ -1,6 +1,6 @@
 [![Build Status](https://travis-ci.org/ballerina-platform/module-ballerinax-googleapis.sheets.svg?branch=master)](https://travis-ci.org/ballerina-ballerinax-platform/module-ballerinax-googleapis.sheets)
 
-# Ballerina Google Spreadsheet Endpoint
+# Ballerina Google Spreadsheet Connector
 
 Google Sheets is an online spreadsheet that lets users create and format
 spreadsheets and simultaneously work with other people. The Google Spreadsheet endpoint allows you to access the Google Spreadsheet API Version v4 through Ballerina.
