@@ -518,8 +518,8 @@ public client class Client {
             ]
         };
         http:Request request = new();
-        request.setJsonPayload(jsonPayload);
-        http:Response httpResponse = <http:Response> check self.httpClient->put(requestPath, request);
+        request.setJsonPayload(<@untainted>jsonPayload);
+        http:Response httpResponse = <http:Response> check self.httpClient->put(<@untainted>requestPath, request);
         if (httpResponse.statusCode == http:STATUS_OK) {
             json jsonResponse = check httpResponse.getJsonPayload();
             return; 
@@ -778,8 +778,8 @@ public client class Client {
             ]
         };
         http:Request request = new();
-        request.setJsonPayload(jsonPayload);
-        http:Response httpResponse = <http:Response> check self.httpClient->put(requestPath, request);
+        request.setJsonPayload(<@untainted>jsonPayload);
+        http:Response httpResponse = <http:Response> check self.httpClient->put(<@untainted>requestPath, request);
         if (httpResponse.statusCode == http:STATUS_OK) {
             json jsonResponse = check httpResponse.getJsonPayload();
             return; 
