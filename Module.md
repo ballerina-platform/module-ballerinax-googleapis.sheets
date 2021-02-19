@@ -71,8 +71,6 @@ REFRESH_URL = "<refresh_URL>"
 
 # Quickstart(s):
 
-# Quickstart(s)
-
 ## Working with GSheets Endpoint Actions
 
 ### Step 1: Import the Google Sheets Ballerina Library

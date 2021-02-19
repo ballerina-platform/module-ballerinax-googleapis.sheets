@@ -1965,7 +1965,7 @@ All the contributors are encouraged to read the [Ballerina Code of Conduct](http
 * Chat live with us via our [Slack channel](https://ballerina.io/community/slack/).
 * Post all technical questions on Stack Overflow with the [#ballerina](https://stackoverflow.com/questions/tagged/ballerina) tag.
 
-### How you can contribute
+## How you can contribute
 
 Clone the repository by running the following command
 `git clone https://github.com/ballerina-platform/module-googlespreadsheet.git`
