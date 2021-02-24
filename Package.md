@@ -12,7 +12,7 @@ The Google Spreadsheet Ballerina Connector supports spreadsheet management opera
 
 |                             |       Versions              |
 |:---------------------------:|:---------------------------:|
-| Ballerina Language          |     Swan Lake Preview8      |
+| Ballerina Language          |     Swan Lake Alpha 2       |
 | Google Spreadsheet API      |             V4              |
 
 # Supported Operations

@@ -15,18 +15,15 @@
 // under the License.
 
 import ballerinax/googleapis_sheets as sheets;
-import ballerina/config;
+import ballerina/os;
 import ballerina/log;
 
 sheets:SpreadsheetConfiguration config = {
-    oauth2Config: {
-        accessToken: "<Access token here>",
-        refreshConfig: {
-            clientId: config:getAsString("CLIENT_ID"),
-            clientSecret: config:getAsString("CLIENT_SECRET"),
-            refreshUrl: config:getAsString("REFRESH_URL"),
-            refreshToken: config:getAsString("REFRESH_TOKEN")
-        }
+    oauthClientConfig: {
+            clientId: os:getEnv("CLIENT_ID"),
+            clientSecret: os:getEnv("CLIENT_SECRET"),
+            refreshUrl: os:getEnv("REFRESH_URL"),
+            refreshToken: os:getEnv("REFRESH_TOKEN")
     }
 };
 

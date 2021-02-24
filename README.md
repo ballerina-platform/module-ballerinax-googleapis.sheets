@@ -83,7 +83,7 @@ REFRESH_URL = "<refresh_URL>"
 |                                   | Version               |
 |:---------------------------------:|:---------------------:|
 | Google Sheets API Version         | V4                    |
-| Ballerina Language                | Swan-Lake-Preview8    |
+| Ballerina Language                | Swan Lake Alpha 2     |
 | Java Development Kit (JDK)        | 11                    |
 
 ## Limitations

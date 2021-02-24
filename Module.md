@@ -12,7 +12,7 @@ The Google Spreadsheet Ballerina Connector supports spreadsheet management opera
 
 |                             |       Versions              |
 |:---------------------------:|:---------------------------:|
-| Ballerina Language          |     Swan Lake Preview8      |
+| Ballerina Language          |     Swan Lake Alpha 2       |
 | Google Spreadsheet API      |             V4              |
 
 # Supported Operations
@@ -35,11 +35,10 @@ worksheet data level operations. It includes operations like setting, getting an
 * Java 11 Installed
 Java Development Kit (JDK) with version 11 is required.
 
-* Download the Ballerina [distribution](https://ballerinalang.org/downloads/) SLP8
-Ballerina Swan Lake Preview Version 8 is required.
+* Download the Ballerina [distribution](https://ballerinalang.org/downloads/)
+Ballerina Swan Swan Lake Alpha 2 is required.
 
-* Instantiate the connector by giving authentication details in the HTTP client config. The HTTP client config has built-in support for BasicAuth and OAuth 2.0. Google Spreadsheet uses OAuth 2.0 to authenticate and authorize requests. The Google Spreadsheet connector can be minimally instantiated in the HTTP client config using the access token or the client ID, client secret, and refresh token.
-    * Access Token
+* Instantiate the connector by giving authentication details in the HTTP client config. The HTTP client config has built-in support for BasicAuth and OAuth 2.0. Google Spreadsheet uses OAuth 2.0 to authenticate and authorize requests. The Google Spreadsheet connector can be minimally instantiated in the HTTP client config using the client ID, client secret, and refresh token.
     * Client ID
     * Client Secret
     * Refresh Token
@@ -84,15 +83,12 @@ All the actions return valid response or error. If the action is a success, then
 In order for you to use the GSheets Endpoint, first you need to create a GSheets Client endpoint.
 ```ballerina
 sheets:SpreadsheetConfiguration config = {
-    oauth2Config: {
-        accessToken: "<Access token here>",       
-        refreshConfig: {
-                clientId: "<CLIENT_ID>",
-                clientSecret: "<CLIENT_SECRET>",
-                refreshUrl: "<REFRESH_URL>",
-                refreshToken: "<REFRESH_TOKEN>"
-            }
-        }
+    oauthClientConfig: {
+        clientId: "<CLIENT_ID>",
+        clientSecret: "<CLIENT_SECRET>",
+        refreshUrl: "<REFRESH_URL>",
+        refreshToken: "<REFRESH_TOKEN>"
+    }
 };
  
 sheets:Client spreadsheetClient = new (config);
@@ -105,14 +101,11 @@ import ballerina/io;
 import ballerinax/googleapis_sheets as sheets;
 
 sheets:SpreadsheetConfiguration spreadsheetConfig = {
-    oauth2Config: {
-        accessToken: "<accessToken>",
-        refreshConfig: {
-            clientId: "<clientId>",
-            clientSecret: "<clientSecret>",
-            refreshUrl: "<refreshUrl>",
-            refreshToken: "<refreshToken>"
-        }
+    oauthClientConfig: {
+        clientId: "<CLIENT_ID>",
+        clientSecret: "<CLIENT_SECRET>",
+        refreshUrl: "<REFRESH_URL>",
+        refreshToken: "<REFRESH_TOKEN>"
     }
 };
 
@@ -134,15 +127,12 @@ import ballerina/io;
 import ballerinax/googleapis_sheets as sheets;
 
 sheets:SpreadsheetConfiguration spreadsheetConfig = {
-    oauth2Config: {
-        accessToken: "<accessToken>",
-        refreshConfig: {
-            clientId: "<clientId>",
-            clientSecret: "<clientSecret>",
-            refreshUrl: "<refreshUrl>",
-            refreshToken: "<refreshToken>"
-        }
-    },
+    oauthClientConfig: {
+        clientId: "<CLIENT_ID>",
+        clientSecret: "<CLIENT_SECRET>",
+        refreshUrl: "<REFRESH_URL>",
+        refreshToken: "<REFRESH_TOKEN>"
+    }
     secureSocketConfig: {
         trustStore: {
             path: "<fullQualifiedPathToTrustStore>",
@@ -176,15 +166,12 @@ In order for you to use the GSheets Endpoint, first you need to create a GSheets
 In order for you to use the GSheets Endpoint, first you need to create a GSheets Client endpoint.
 ```ballerina
 sheets:SpreadsheetConfiguration config = {
-    oauth2Config: {
-        accessToken: "<Access token here>",       
-        refreshConfig: {
-                clientId: "<CLIENT_ID>",
-                clientSecret: "<CLIENT_SECRET>",
-                refreshUrl: "<REFRESH_URL>",
-                refreshToken: "<REFRESH_TOKEN>"
-            }
-        }
+    oauthClientConfig: {
+        clientId: "<CLIENT_ID>",
+        clientSecret: "<CLIENT_SECRET>",
+        refreshUrl: "<REFRESH_URL>",
+        refreshToken: "<REFRESH_TOKEN>"
+    }
 };
  
 sheets:Client spreadsheetClient = new (config);
@@ -301,14 +288,11 @@ import ballerina/config;
 import ballerina/log;
 
 sheets:SpreadsheetConfiguration config = {
-    oauth2Config: {
-        accessToken: "<Access token here>",
-        refreshConfig: {
-            clientId: config:getAsString("CLIENT_ID"),
-            clientSecret: config:getAsString("CLIENT_SECRET"),
-            refreshUrl: config:getAsString("REFRESH_URL"),
-            refreshToken: config:getAsString("REFRESH_TOKEN")
-        }
+    oauthClientConfig: {
+        clientId: "<CLIENT_ID>",
+        clientSecret: "<CLIENT_SECRET>",
+        refreshUrl: "<REFRESH_URL>",
+        refreshToken: "<REFRESH_TOKEN>"
     }
 };
 
@@ -337,14 +321,11 @@ import ballerina/config;
 import ballerina/log;
 
 sheets:SpreadsheetConfiguration config = {
-    oauth2Config: {
-        accessToken: "<Access token here>",
-        refreshConfig: {
-            clientId: config:getAsString("CLIENT_ID"),
-            clientSecret: config:getAsString("CLIENT_SECRET"),
-            refreshUrl: config:getAsString("REFRESH_URL"),
-            refreshToken: config:getAsString("REFRESH_TOKEN")
-        }
+    oauthClientConfig: {
+        clientId: "<CLIENT_ID>",
+        clientSecret: "<CLIENT_SECRET>",
+        refreshUrl: "<REFRESH_URL>",
+        refreshToken: "<REFRESH_TOKEN>"
     }
 };
 
@@ -385,14 +366,11 @@ import ballerina/config;
 import ballerina/log;
 
 sheets:SpreadsheetConfiguration config = {
-    oauth2Config: {
-        accessToken: "<Access token here>",
-        refreshConfig: {
-            clientId: config:getAsString("CLIENT_ID"),
-            clientSecret: config:getAsString("CLIENT_SECRET"),
-            refreshUrl: config:getAsString("REFRESH_URL"),
-            refreshToken: config:getAsString("REFRESH_TOKEN")
-        }
+    oauthClientConfig: {
+        clientId: "<CLIENT_ID>",
+        clientSecret: "<CLIENT_SECRET>",
+        refreshUrl: "<REFRESH_URL>",
+        refreshToken: "<REFRESH_TOKEN>"
     }
 };
 
@@ -433,14 +411,11 @@ import ballerina/config;
 import ballerina/log;
 
 sheets:SpreadsheetConfiguration config = {
-    oauth2Config: {
-        accessToken: "<Access token here>",
-        refreshConfig: {
-            clientId: config:getAsString("CLIENT_ID"),
-            clientSecret: config:getAsString("CLIENT_SECRET"),
-            refreshUrl: config:getAsString("REFRESH_URL"),
-            refreshToken: config:getAsString("REFRESH_TOKEN")
-        }
+    oauthClientConfig: {
+        clientId: "<CLIENT_ID>",
+        clientSecret: "<CLIENT_SECRET>",
+        refreshUrl: "<REFRESH_URL>",
+        refreshToken: "<REFRESH_TOKEN>"
     }
 };
 
@@ -487,14 +462,11 @@ import ballerina/config;
 import ballerina/log;
 
 sheets:SpreadsheetConfiguration config = {
-    oauth2Config: {
-        accessToken: "<Access token here>",
-        refreshConfig: {
-            clientId: config:getAsString("CLIENT_ID"),
-            clientSecret: config:getAsString("CLIENT_SECRET"),
-            refreshUrl: config:getAsString("REFRESH_URL"),
-            refreshToken: config:getAsString("REFRESH_TOKEN")
-        }
+    oauthClientConfig: {
+        clientId: "<CLIENT_ID>",
+        clientSecret: "<CLIENT_SECRET>",
+        refreshUrl: "<REFRESH_URL>",
+        refreshToken: "<REFRESH_TOKEN>"
     }
 };
 
@@ -530,14 +502,11 @@ import ballerina/config;
 import ballerina/log;
 
 sheets:SpreadsheetConfiguration config = {
-    oauth2Config: {
-        accessToken: "<Access token here>",
-        refreshConfig: {
-            clientId: config:getAsString("CLIENT_ID"),
-            clientSecret: config:getAsString("CLIENT_SECRET"),
-            refreshUrl: config:getAsString("REFRESH_URL"),
-            refreshToken: config:getAsString("REFRESH_TOKEN")
-        }
+    oauthClientConfig: {
+        clientId: "<CLIENT_ID>",
+        clientSecret: "<CLIENT_SECRET>",
+        refreshUrl: "<REFRESH_URL>",
+        refreshToken: "<REFRESH_TOKEN>"
     }
 };
 
@@ -577,14 +546,11 @@ import ballerina/config;
 import ballerina/log;
 
 sheets:SpreadsheetConfiguration config = {
-    oauth2Config: {
-        accessToken: "<Access token here>",
-        refreshConfig: {
-            clientId: config:getAsString("CLIENT_ID"),
-            clientSecret: config:getAsString("CLIENT_SECRET"),
-            refreshUrl: config:getAsString("REFRESH_URL"),
-            refreshToken: config:getAsString("REFRESH_TOKEN")
-        }
+    oauthClientConfig: {
+        clientId: "<CLIENT_ID>",
+        clientSecret: "<CLIENT_SECRET>",
+        refreshUrl: "<REFRESH_URL>",
+        refreshToken: "<REFRESH_TOKEN>"
     }
 };
 
@@ -634,14 +600,11 @@ import ballerina/config;
 import ballerina/log;
 
 sheets:SpreadsheetConfiguration config = {
-    oauth2Config: {
-        accessToken: "<Access token here>",
-        refreshConfig: {
-            clientId: config:getAsString("CLIENT_ID"),
-            clientSecret: config:getAsString("CLIENT_SECRET"),
-            refreshUrl: config:getAsString("REFRESH_URL"),
-            refreshToken: config:getAsString("REFRESH_TOKEN")
-        }
+    oauthClientConfig: {
+        clientId: "<CLIENT_ID>",
+        clientSecret: "<CLIENT_SECRET>",
+        refreshUrl: "<REFRESH_URL>",
+        refreshToken: "<REFRESH_TOKEN>"
     }
 };
 
@@ -696,14 +659,11 @@ import ballerina/config;
 import ballerina/log;
 
 sheets:SpreadsheetConfiguration config = {
-    oauth2Config: {
-        accessToken: "<Access token here>",
-        refreshConfig: {
-            clientId: config:getAsString("CLIENT_ID"),
-            clientSecret: config:getAsString("CLIENT_SECRET"),
-            refreshUrl: config:getAsString("REFRESH_URL"),
-            refreshToken: config:getAsString("REFRESH_TOKEN")
-        }
+    oauthClientConfig: {
+        clientId: "<CLIENT_ID>",
+        clientSecret: "<CLIENT_SECRET>",
+        refreshUrl: "<REFRESH_URL>",
+        refreshToken: "<REFRESH_TOKEN>"
     }
 };
 
@@ -758,14 +718,11 @@ import ballerina/config;
 import ballerina/log;
 
 sheets:SpreadsheetConfiguration config = {
-    oauth2Config: {
-        accessToken: "<Access token here>",
-        refreshConfig: {
-            clientId: config:getAsString("CLIENT_ID"),
-            clientSecret: config:getAsString("CLIENT_SECRET"),
-            refreshUrl: config:getAsString("REFRESH_URL"),
-            refreshToken: config:getAsString("REFRESH_TOKEN")
-        }
+    oauthClientConfig: {
+        clientId: "<CLIENT_ID>",
+        clientSecret: "<CLIENT_SECRET>",
+        refreshUrl: "<REFRESH_URL>",
+        refreshToken: "<REFRESH_TOKEN>"
     }
 };
 
@@ -820,14 +777,11 @@ import ballerina/config;
 import ballerina/log;
 
 sheets:SpreadsheetConfiguration config = {
-    oauth2Config: {
-        accessToken: "<Access token here>",
-        refreshConfig: {
-            clientId: config:getAsString("CLIENT_ID"),
-            clientSecret: config:getAsString("CLIENT_SECRET"),
-            refreshUrl: config:getAsString("REFRESH_URL"),
-            refreshToken: config:getAsString("REFRESH_TOKEN")
-        }
+    oauthClientConfig: {
+        clientId: "<CLIENT_ID>",
+        clientSecret: "<CLIENT_SECRET>",
+        refreshUrl: "<REFRESH_URL>",
+        refreshToken: "<REFRESH_TOKEN>"
     }
 };
 
@@ -883,14 +837,11 @@ import ballerina/config;
 import ballerina/log;
 
 sheets:SpreadsheetConfiguration config = {
-    oauth2Config: {
-        accessToken: "<Access token here>",
-        refreshConfig: {
-            clientId: config:getAsString("CLIENT_ID"),
-            clientSecret: config:getAsString("CLIENT_SECRET"),
-            refreshUrl: config:getAsString("REFRESH_URL"),
-            refreshToken: config:getAsString("REFRESH_TOKEN")
-        }
+    oauthClientConfig: {
+        clientId: "<CLIENT_ID>",
+        clientSecret: "<CLIENT_SECRET>",
+        refreshUrl: "<REFRESH_URL>",
+        refreshToken: "<REFRESH_TOKEN>"
     }
 };
 
@@ -978,14 +929,11 @@ import ballerina/config;
 import ballerina/log;
 
 sheets:SpreadsheetConfiguration config = {
-    oauth2Config: {
-        accessToken: "<Access token here>",
-        refreshConfig: {
-            clientId: config:getAsString("CLIENT_ID"),
-            clientSecret: config:getAsString("CLIENT_SECRET"),
-            refreshUrl: config:getAsString("REFRESH_URL"),
-            refreshToken: config:getAsString("REFRESH_TOKEN")
-        }
+    oauthClientConfig: {
+        clientId: "<CLIENT_ID>",
+        clientSecret: "<CLIENT_SECRET>",
+        refreshUrl: "<REFRESH_URL>",
+        refreshToken: "<REFRESH_TOKEN>"
     }
 };
 
@@ -1101,14 +1049,11 @@ import ballerina/config;
 import ballerina/log;
 
 sheets:SpreadsheetConfiguration config = {
-    oauth2Config: {
-        accessToken: "<Access token here>",
-        refreshConfig: {
-            clientId: config:getAsString("CLIENT_ID"),
-            clientSecret: config:getAsString("CLIENT_SECRET"),
-            refreshUrl: config:getAsString("REFRESH_URL"),
-            refreshToken: config:getAsString("REFRESH_TOKEN")
-        }
+    oauthClientConfig: {
+        clientId: "<CLIENT_ID>",
+        clientSecret: "<CLIENT_SECRET>",
+        refreshUrl: "<REFRESH_URL>",
+        refreshToken: "<REFRESH_TOKEN>"
     }
 };
 
@@ -1223,14 +1168,11 @@ import ballerina/config;
 import ballerina/log;
 
 sheets:SpreadsheetConfiguration config = {
-    oauth2Config: {
-        accessToken: "<Access token here>",
-        refreshConfig: {
-            clientId: config:getAsString("CLIENT_ID"),
-            clientSecret: config:getAsString("CLIENT_SECRET"),
-            refreshUrl: config:getAsString("REFRESH_URL"),
-            refreshToken: config:getAsString("REFRESH_TOKEN")
-        }
+    oauthClientConfig: {
+        clientId: "<CLIENT_ID>",
+        clientSecret: "<CLIENT_SECRET>",
+        refreshUrl: "<REFRESH_URL>",
+        refreshToken: "<REFRESH_TOKEN>"
     }
 };
 
@@ -1311,14 +1253,11 @@ import ballerina/config;
 import ballerina/log;
 
 sheets:SpreadsheetConfiguration config = {
-    oauth2Config: {
-        accessToken: "<Access token here>",
-        refreshConfig: {
-            clientId: config:getAsString("CLIENT_ID"),
-            clientSecret: config:getAsString("CLIENT_SECRET"),
-            refreshUrl: config:getAsString("REFRESH_URL"),
-            refreshToken: config:getAsString("REFRESH_TOKEN")
-        }
+    oauthClientConfig: {
+        clientId: "<CLIENT_ID>",
+        clientSecret: "<CLIENT_SECRET>",
+        refreshUrl: "<REFRESH_URL>",
+        refreshToken: "<REFRESH_TOKEN>"
     }
 };
 
@@ -1393,14 +1332,11 @@ import ballerina/config;
 import ballerina/log;
 
 sheets:SpreadsheetConfiguration config = {
-    oauth2Config: {
-        accessToken: "<Access token here>",
-        refreshConfig: {
-            clientId: config:getAsString("CLIENT_ID"),
-            clientSecret: config:getAsString("CLIENT_SECRET"),
-            refreshUrl: config:getAsString("REFRESH_URL"),
-            refreshToken: config:getAsString("REFRESH_TOKEN")
-        }
+    oauthClientConfig: {
+        clientId: "<CLIENT_ID>",
+        clientSecret: "<CLIENT_SECRET>",
+        refreshUrl: "<REFRESH_URL>",
+        refreshToken: "<REFRESH_TOKEN>"
     }
 };
 
@@ -1477,14 +1413,11 @@ import ballerina/config;
 import ballerina/log;
 
 sheets:SpreadsheetConfiguration config = {
-    oauth2Config: {
-        accessToken: "<Access token here>",
-        refreshConfig: {
-            clientId: config:getAsString("CLIENT_ID"),
-            clientSecret: config:getAsString("CLIENT_SECRET"),
-            refreshUrl: config:getAsString("REFRESH_URL"),
-            refreshToken: config:getAsString("REFRESH_TOKEN")
-        }
+    oauthClientConfig: {
+        clientId: "<CLIENT_ID>",
+        clientSecret: "<CLIENT_SECRET>",
+        refreshUrl: "<REFRESH_URL>",
+        refreshToken: "<REFRESH_TOKEN>"
     }
 };
 
@@ -1560,14 +1493,11 @@ import ballerina/config;
 import ballerina/log;
 
 sheets:SpreadsheetConfiguration config = {
-    oauth2Config: {
-        accessToken: "<Access token here>",
-        refreshConfig: {
-            clientId: config:getAsString("CLIENT_ID"),
-            clientSecret: config:getAsString("CLIENT_SECRET"),
-            refreshUrl: config:getAsString("REFRESH_URL"),
-            refreshToken: config:getAsString("REFRESH_TOKEN")
-        }
+    oauthClientConfig: {
+        clientId: "<CLIENT_ID>",
+        clientSecret: "<CLIENT_SECRET>",
+        refreshUrl: "<REFRESH_URL>",
+        refreshToken: "<REFRESH_TOKEN>"
     }
 };
 
@@ -1641,14 +1571,11 @@ import ballerina/config;
 import ballerina/log;
 
 sheets:SpreadsheetConfiguration config = {
-    oauth2Config: {
-        accessToken: "<Access token here>",
-        refreshConfig: {
-            clientId: config:getAsString("CLIENT_ID"),
-            clientSecret: config:getAsString("CLIENT_SECRET"),
-            refreshUrl: config:getAsString("REFRESH_URL"),
-            refreshToken: config:getAsString("REFRESH_TOKEN")
-        }
+    oauthClientConfig: {
+        clientId: "<CLIENT_ID>",
+        clientSecret: "<CLIENT_SECRET>",
+        refreshUrl: "<REFRESH_URL>",
+        refreshToken: "<REFRESH_TOKEN>"
     }
 };
 
@@ -1722,14 +1649,11 @@ import ballerina/config;
 import ballerina/log;
 
 sheets:SpreadsheetConfiguration config = {
-    oauth2Config: {
-        accessToken: "<Access token here>",
-        refreshConfig: {
-            clientId: config:getAsString("CLIENT_ID"),
-            clientSecret: config:getAsString("CLIENT_SECRET"),
-            refreshUrl: config:getAsString("REFRESH_URL"),
-            refreshToken: config:getAsString("REFRESH_TOKEN")
-        }
+    oauthClientConfig: {
+        clientId: "<CLIENT_ID>",
+        clientSecret: "<CLIENT_SECRET>",
+        refreshUrl: "<REFRESH_URL>",
+        refreshToken: "<REFRESH_TOKEN>"
     }
 };
 
@@ -1801,14 +1725,11 @@ import ballerina/config;
 import ballerina/log;
 
 sheets:SpreadsheetConfiguration config = {
-    oauth2Config: {
-        accessToken: "<Access token here>",
-        refreshConfig: {
-            clientId: config:getAsString("CLIENT_ID"),
-            clientSecret: config:getAsString("CLIENT_SECRET"),
-            refreshUrl: config:getAsString("REFRESH_URL"),
-            refreshToken: config:getAsString("REFRESH_TOKEN")
-        }
+    oauthClientConfig: {
+        clientId: "<CLIENT_ID>",
+        clientSecret: "<CLIENT_SECRET>",
+        refreshUrl: "<REFRESH_URL>",
+        refreshToken: "<REFRESH_TOKEN>"
     }
 };
 
