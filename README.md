@@ -93,7 +93,7 @@ trustStorePassword = "enter a truststore password if required"
 
 The connector doesn't support some of the capabilities offered by Google Sheet API V4.
 
-# Quickstart(s)
+# Quickstart
 
 ## Working with GSheets Endpoint Actions
 
