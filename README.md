@@ -64,8 +64,8 @@ access token and refresh token).
 7. When you receive your authorization code, click **Exchange authorization code for tokens** to obtain the refresh token.
 
 ## Add project configurations file
-Add the project configuration file by creating a Config.toml configuration file under the root path of the project structure.
-This file should have following configurations. Add the token obtained in the previous step to the configuration file.
+Add the project configuration file by creating a `Config.toml` configuration file under the root path of the project structure.
+This file should have following configurations. Add the token obtained in the previous step to the `Config.toml` configuration file.
 
 #### Config.toml
 ```ballerina
@@ -112,7 +112,7 @@ access token and refresh token).
 ### Step 1: Import the Google Sheets Ballerina Library
 First, import the ballerinax/googleapis_sheets module into the Ballerina project.
 ```ballerina
-    import ballerinax/googleapis_sheets as sheets;
+import ballerinax/googleapis_sheets as sheets;
 ```
 All the actions return valid response or error. If the action is a success, then the requested resource will be returned. Else error will be returned.
 

@@ -57,14 +57,17 @@ access token and refresh token).
 7. When you receive your authorization code, click **Exchange authorization code for tokens** to obtain the refresh token and access token.
 
 ## Add project configurations file
-Add the project configuration file by creating a `ballerina.conf` file under the root path of the project structure.
-This file should have following configurations. Add the tokens obtained in the previous step to the `ballerina.conf` file.
+Add the project configuration file by creating a `Config.toml` file under the root path of the project structure.
+This file should have following configurations. Add the token obtained in the previous step to the `Config.toml` file.
 
 ```
-CLIENT_ID = "<client_id">
-CLIENT_SECRET = "<client_secret>"
-REFRESH_TOKEN = "<refresh_token>"
-REFRESH_URL = "<refresh_URL>"
+[ballerinax.googleapis_sheets]
+refreshToken = "enter your refresh token here"
+clientId = "enter your client id here"
+clientSecret = "enter your client secret here"
+trustStorePath = "enter a truststore path if required"
+trustStorePassword = "enter a truststore password if required"
+
 ```
 
 # Quickstart(s):
