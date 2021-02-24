@@ -17,16 +17,20 @@
 import ballerinax/googleapis_sheets as sheets;
 import ballerina/log;
 
-sheets:SpreadsheetConfiguration config = {
+configurable string refreshToken = ?;
+configurable string clientId = ?;
+configurable string clientSecret = ?;
+
+sheets:SpreadsheetConfiguration spreadsheetConfig = {
     oauthClientConfig: {
-        clientId: "<CLIENT_ID>",
-        clientSecret: "<CLIENT_SECRET>",
+        clientId: clientId,
+        clientSecret: clientSecret,
         refreshUrl: sheets:REFRESH_URL,
-        refreshToken: "<REFRESH_TOKEN>"
+        refreshToken: refreshToken
     }
 };
 
-sheets:Client spreadsheetClient = new (config);
+sheets:Client spreadsheetClient = checkpanic new (spreadsheetConfig);
 
 public function main() {
     string spreadsheetId = "";

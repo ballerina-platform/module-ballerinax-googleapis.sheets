@@ -21,7 +21,7 @@ Visit [here](https://developers.google.com/identity/protocols/OAuth2WebServer) f
 ## Running Samples
 You can use the `tests.bal` file to test all the connector actions by following the below steps:
 1. Create configration file in module-ballerinax-googleapis.sheets.
-2. Obtain the client Id, client secret, access token and refresh token as mentioned above and add those values in the configration file.
+2. Obtain the client Id, client secret and refresh token as mentioned above and add those values in the configration file.
 #### Config.toml
 ```ballerina
 

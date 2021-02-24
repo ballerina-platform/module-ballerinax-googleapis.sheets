@@ -43,7 +43,7 @@ The Google Spreadsheet Ballerina Connector supports spreadsheet management opera
 Java Development Kit (JDK) with version 11 is required.
 
 * Download the Ballerina [distribution](https://ballerinalang.org/downloads/) SLP8
-Ballerina Swan Lake Preview Version 8 is required.
+Ballerina Swan Lake Alpha 2 is required.
 
 * Instantiate the connector by giving authentication details in the HTTP client config. The HTTP client config has built-in support for BasicAuth and OAuth 2.0. Google Spreadsheet uses OAuth 2.0 to authenticate and authorize requests. The Google Spreadsheet connector can be minimally instantiated in the HTTP client config using the client ID, client secret, and refresh token.
     * Client ID
@@ -103,8 +103,7 @@ You must follow the following steps in order to obtain the tokens needed for the
 2. Go to **Credentials -> OAuth consent screen**, enter a product name to be shown to users, and click **Save**.
 3. On the **Credentials** tab, click **Create credentials** and select **OAuth client ID**. 
 4. Select an application type, enter a name for the application, and specify a redirect URI (enter https://developers.google.com/oauthplayground if you want to use 
-[OAuth 2.0 playground](https://developers.google.com/oauthplayground) to receive the authorization code and obtain the 
-access token and refresh token). 
+[OAuth 2.0 playground](https://developers.google.com/oauthplayground) to receive the authorization code and obtain the refresh token). 
 5. Click **Create**. Your client ID and client secret appear. 
 6. In a separate browser window or tab, visit [OAuth 2.0 playground](https://developers.google.com/oauthplayground), select the required Google Spreadsheet scopes, and then click **Authorize APIs**.
 7. When you receive your authorization code, click **Exchange authorization code for tokens** to obtain the refresh token.
@@ -203,11 +202,10 @@ This is the simplest scenario to use the Google Spreadsheet ballerina connector 
 2. Go to **Credentials -> OAuth consent screen**, enter a product name to be shown to users, and click **Save**.
 3. On the **Credentials** tab, click **Create credentials** and select **OAuth client ID**. 
 4. Select an application type, enter a name for the application, and specify a redirect URI (enter https://developers.google.com/oauthplayground if you want to use 
-[OAuth 2.0 playground](https://developers.google.com/oauthplayground) to receive the authorization code and obtain the 
-access token and refresh token). 
+[OAuth 2.0 playground](https://developers.google.com/oauthplayground) to receive the authorization code and obtain the refresh token). 
 5. Click **Create**. Your client ID and client secret appear. 
 6. In a separate browser window or tab, visit [OAuth 2.0 playground](https://developers.google.com/oauthplayground), select the required Google Spreadsheet scopes, and then click **Authorize APIs**.
-7. When you receive your authorization code, click **Exchange authorization code for tokens** to obtain the refresh token and access token.
+7. When you receive your authorization code, click **Exchange authorization code for tokens** to obtain the refresh token
 
 ### Step 1: Import the Google Sheets Ballerina Library
 ```ballerina

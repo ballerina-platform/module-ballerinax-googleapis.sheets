@@ -20,8 +20,6 @@ jobs:
                   CLIENT_ID: ${{ secrets.CLIENT_ID }}
                   CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
                   REFRESH_TOKEN: ${{ secrets.REFRESH_TOKEN }}
-                  URL: ${{ secrets.URL }}
-                  URL_ID: ${{ secrets.URL_ID }}
             - name: Ballerina Push
               uses: ballerina-platform/ballerina-action/@swan-lake-connector-release
               with:

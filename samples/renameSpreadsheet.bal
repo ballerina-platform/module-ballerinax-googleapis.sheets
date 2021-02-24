@@ -15,19 +15,22 @@
 // under the License.
 
 import ballerinax/googleapis_sheets as sheets;
-import ballerina/os;
 import ballerina/log;
 
-sheets:SpreadsheetConfiguration config = {
+configurable string refreshToken = ?;
+configurable string clientId = ?;
+configurable string clientSecret = ?;
+
+sheets:SpreadsheetConfiguration spreadsheetConfig = {
     oauthClientConfig: {
-            clientId: os:getEnv("CLIENT_ID"),
-            clientSecret: os:getEnv("CLIENT_SECRET"),
-            refreshUrl: sheets:REFRESH_URL,
-            refreshToken: os:getEnv("REFRESH_TOKEN")
+        clientId: clientId,
+        clientSecret: clientSecret,
+        refreshUrl: sheets:REFRESH_URL,
+        refreshToken: refreshToken
     }
 };
 
-sheets:Client spreadsheetClient = new (config);
+sheets:Client spreadsheetClient = checkpanic new (spreadsheetConfig);
 
 public function main() {
     string spreadsheetId = "";
