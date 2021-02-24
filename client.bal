@@ -15,7 +15,6 @@
 // under the License.
 
 import ballerina/http;
-import ballerina/oauth2;
 
 # Google spreadsheet connector client endpoint.
 #
@@ -28,24 +27,19 @@ public client class Client {
     # Initializes the Google spreadsheet connector client endpoint.
     #
     # +  spreadsheetConfig - Configurations required to initialize the `Client` endpoint
-    public function init(SpreadsheetConfiguration spreadsheetConfig) {
-        oauth2:OutboundOAuth2Provider oauth2Provider = new (spreadsheetConfig.oauth2Config);
-        http:BearerAuthHandler bearerHandler = new (oauth2Provider);
+    public function init(SpreadsheetConfiguration spreadsheetConfig) returns error? {
+
         http:ClientSecureSocket? socketConfig = spreadsheetConfig?.secureSocketConfig;
-        self.httpClient = new (BASE_URL, {
-            auth: {
-                authHandler: bearerHandler
-            },
+
+        self.httpClient = check new (BASE_URL, {
+            auth: spreadsheetConfig.oauthClientConfig,
             secureSocket: socketConfig
         });
-        self.driveClient = new (DRIVE_URL, {
-            auth: {
-                authHandler: bearerHandler
-            },
+        self.driveClient = check new (DRIVE_URL, {
+            auth: spreadsheetConfig.oauthClientConfig,
             secureSocket: socketConfig
         });
     }
-
     // Spreadsheet Management Operations
 
     # Creates a new spreadsheet.
@@ -189,25 +183,51 @@ public client class Client {
         }
         json[] requestsElement = <json[]>payload["requests"];
         map<json> firstRequestsElement = <map<json>>requestsElement[0];
-        map<json> sheetElement = <map<json>>firstRequestsElement.addSheet;
+        json|error value = firstRequestsElement.addSheet;
+        map<json> sheetElement = {};
+        if (value is json) {
+            sheetElement = <map<json>>value;
+        }
         sheetElement["properties"] = jsonSheetProperties;
         string addSheetPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + BATCH_UPDATE_REQUEST;
         json | error response = sendRequestWithPayload(self.httpClient, addSheetPath, payload);
         if (response is error) {
             return response;
         } else {
-            json[] replies = <json[]>response.replies;
+            json|error jsonResponseValues = response.replies;
+            json[] replies = [];
+            if (jsonResponseValues is json) {
+                replies = <json[]>jsonResponseValues;
+            }
             json | error addSheet = replies[0].addSheet;
 
             Sheet sheet = {};
             if (!(addSheet is error)) {
                 SheetProperties sheetProperties = {};
-                sheetProperties.sheetId = convertToInt(addSheet.properties.sheetId.toString());
-                sheetProperties.title = addSheet.properties.title.toString();
-                sheetProperties.index = convertToInt(addSheet.properties.index.toString());
-                sheetProperties.sheetType = addSheet.properties.sheetType.toString();
-                sheetProperties.hidden = convertToBoolean(addSheet.properties.hidden.toString());
-                sheetProperties.rightToLeft = convertToBoolean(addSheet.properties.rightToLeft.toString());
+                json|error sheetId = addSheet.properties.sheetId;
+                if (sheetId is json) {
+                    sheetProperties.sheetId = convertToInt(sheetId.toString());
+                }
+                json|error title = addSheet.properties.title;
+                if (title is json) {
+                    sheetProperties.title = title.toString();
+                }
+                json|error index = addSheet.properties.index;
+                if (index is json) {
+                    sheetProperties.index = convertToInt(index.toString());
+                }
+                json|error sheetType = addSheet.properties.sheetType;
+                if (sheetType is json) {
+                    sheetProperties.sheetType = sheetType.toString();
+                }
+                json|error hidden = addSheet.properties.hidden;
+                if (hidden is json) {
+                    sheetProperties.hidden = convertToBoolean(hidden.toString());
+                }
+                json|error rightToLeft = addSheet.properties.rightToLeft;
+                if (rightToLeft is json) {
+                    sheetProperties.rightToLeft = convertToBoolean(rightToLeft.toString());
+                }
                 sheetProperties.gridProperties = convertToGridProperties(check addSheet.properties.gridProperties);
 
                 sheet.properties = sheetProperties;
@@ -250,14 +270,16 @@ public client class Client {
     # Renames the first sheet of the spreadsheet with the given name.
     #
     # + spreadsheetId - ID of the Spreadsheet
+    # + sheetName - The name of the Worksheet
     # + name - New name for the worksheet
     # + return - Nil on success, else returns an error
-    remote function renameSheet(string spreadsheetId, string name) returns @tainted error? {
+    remote function renameSheet(string spreadsheetId, string sheetName, string name) returns @tainted error? {
+        Sheet sheet = check self->getSheetByName(spreadsheetId, sheetName);
         json payload = {
             "requests": [
                 {
                     "updateSheetProperties": {
-                        "properties": {"title": name},
+                        "properties": {"sheetId": sheet.properties.sheetId, "title": name},
                         "fields": "title"
                     }
                 }
@@ -516,8 +538,8 @@ public client class Client {
             ]
         };
         http:Request request = new();
-        request.setJsonPayload(jsonPayload);
-        http:Response httpResponse = <http:Response> check self.httpClient->put(requestPath, request);
+        request.setJsonPayload(<@untainted>jsonPayload);
+        http:Response httpResponse = <http:Response> check self.httpClient->put(<@untainted>requestPath, request);
         if (httpResponse.statusCode == http:STATUS_OK) {
             json jsonResponse = check httpResponse.getJsonPayload();
             return; 
@@ -540,7 +562,11 @@ public client class Client {
         } else {
             if (!(response.values is error)) {
                 int i = 0;
-                json[] jsonValues = <json[]>response.values;
+                json|error jsonResponseValues = response.values;
+                json[] jsonValues = [];
+                if (jsonResponseValues is json) {
+                    jsonValues = <json[]>jsonResponseValues;
+                }
                 foreach json value in jsonValues {
                     json[] jsonValArray = <json[]>value;
                     if (jsonValArray.length() > 0) {
@@ -776,8 +802,8 @@ public client class Client {
             ]
         };
         http:Request request = new();
-        request.setJsonPayload(jsonPayload);
-        http:Response httpResponse = <http:Response> check self.httpClient->put(requestPath, request);
+        request.setJsonPayload(<@untainted>jsonPayload);
+        http:Response httpResponse = <http:Response> check self.httpClient->put(<@untainted>requestPath, request);
         if (httpResponse.statusCode == http:STATUS_OK) {
             json jsonResponse = check httpResponse.getJsonPayload();
             return; 
@@ -802,7 +828,11 @@ public client class Client {
         } else {
             if (!(response.values is error)) {
                 int i = 0;
-                json[] jsonValues = <json[]>response.values;
+                json|error jsonResponseValues = response.values;
+                json[] jsonValues = [];
+                if (jsonResponseValues is json) {
+                    jsonValues = <json[]>jsonResponseValues;
+                }
                 json[] jsonArray = <json[]>jsonValues[0];
                 foreach json value in jsonArray {
                     values[i] = value.toString();
@@ -922,7 +952,11 @@ public client class Client {
             return response;
         } else {
             if (!(response.values is error)) {
-                json[] responseValues = <json[]>response.values;
+                json|error jsonResponseValues = response.values;
+                json[] responseValues = [];
+                if (jsonResponseValues is json) {
+                    responseValues = <json[]>jsonResponseValues;
+                }
                 json[] firstResponseValue = <json[]>responseValues[0];
                 value = firstResponseValue[0].toString();
             }
@@ -1121,9 +1155,9 @@ public client class Client {
 
 # Holds the parameters used to create a `Client`.
 #
-# + oauth2Config - OAuth client configuration
+# + oauthClientConfig - OAuth client configuration
 # + secureSocketConfig - Secure socket configuration
 public type SpreadsheetConfiguration record {
-    oauth2:DirectTokenConfig oauth2Config;
+    http:OAuth2DirectTokenConfig oauthClientConfig;
     http:ClientSecureSocket secureSocketConfig?;
 };

@@ -198,6 +198,10 @@
                                 "displayName": "Spreadsheet ID"
                             },
                             {
+                                "name": "sheetName",
+                                "displayName": "Sheet Name"
+                            },
+                            {
                                 "name": "name",
                                 "displayName": "New Name For Sheet"
                             }
