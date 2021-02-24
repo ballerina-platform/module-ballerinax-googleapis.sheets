@@ -35,7 +35,7 @@ worksheet data level operations. It includes operations like setting, getting an
 * Java 11 Installed
 Java Development Kit (JDK) with version 11 is required.
 
-* Download the Ballerina [distribution](https://ballerinalang.org/downloads/) SLP8
+* Download the Ballerina [distribution](https://ballerinalang.org/downloads/)
 Ballerina Swan Lake Alpha 2 is required.
 
 * Instantiate the connector by giving authentication details in the HTTP client config. The HTTP client config has built-in support for BasicAuth and OAuth 2.0. Google Spreadsheet uses OAuth 2.0 to authenticate and authorize requests. The Google Spreadsheet connector can be minimally instantiated in the HTTP client config using the client ID, client secret, and refresh token.
