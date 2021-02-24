@@ -35,8 +35,8 @@ worksheet data level operations. It includes operations like setting, getting an
 * Java 11 Installed
 Java Development Kit (JDK) with version 11 is required.
 
-* Download the Ballerina [distribution](https://ballerinalang.org/downloads/)
-Ballerina Swan Swan Lake Alpha 2 is required.
+* Download the Ballerina [distribution](https://ballerinalang.org/downloads/) SLP8
+Ballerina Swan Lake Alpha 2 is required.
 
 * Instantiate the connector by giving authentication details in the HTTP client config. The HTTP client config has built-in support for BasicAuth and OAuth 2.0. Google Spreadsheet uses OAuth 2.0 to authenticate and authorize requests. The Google Spreadsheet connector can be minimally instantiated in the HTTP client config using the client ID, client secret, and refresh token.
     * Client ID
@@ -61,7 +61,6 @@ Add the project configuration file by creating a `ballerina.conf` file under the
 This file should have following configurations. Add the tokens obtained in the previous step to the `ballerina.conf` file.
 
 ```
-ACCESS_TOKEN = "<access_token>"
 CLIENT_ID = "<client_id">
 CLIENT_SECRET = "<client_secret>"
 REFRESH_TOKEN = "<refresh_token>"
@@ -82,16 +81,20 @@ All the actions return valid response or error. If the action is a success, then
 ### Step 2: Initialize the Google Sheets Client
 In order for you to use the GSheets Endpoint, first you need to create a GSheets Client endpoint.
 ```ballerina
-sheets:SpreadsheetConfiguration config = {
+configurable string refreshToken = ?;
+configurable string clientId = ?;
+configurable string clientSecret = ?;
+
+sheets:SpreadsheetConfiguration spreadsheetConfig = {
     oauthClientConfig: {
-        clientId: "<CLIENT_ID>",
-        clientSecret: "<CLIENT_SECRET>",
-        refreshUrl: "<REFRESH_URL>",
-        refreshToken: "<REFRESH_TOKEN>"
+        clientId: clientId,
+        clientSecret: clientSecret,
+        refreshUrl: sheets:REFRESH_URL,
+        refreshToken: refreshToken,
     }
 };
  
-sheets:Client spreadsheetClient = new (config);
+sheets:Client spreadsheetClient = checkpanic new (spreadsheetConfig);
 ```
 Then the endpoint actions can be invoked as `var response = spreadsheetClient->actionName(arguments)`.
 
@@ -104,12 +107,12 @@ sheets:SpreadsheetConfiguration spreadsheetConfig = {
     oauthClientConfig: {
         clientId: "<CLIENT_ID>",
         clientSecret: "<CLIENT_SECRET>",
-        refreshUrl: "<REFRESH_URL>",
+        refreshUrl: sheets:REFRESH_URL,
         refreshToken: "<REFRESH_TOKEN>"
     }
 };
 
-sheets:Client spreadsheetClient = new (spreadsheetConfig);
+sheets:Client spreadsheetClient = checkpanic new (spreadsheetConfig);
 
 public function main(string... args) {
     var response = spreadsheetClient->openSpreadsheetById(<spreadsheet-id>);
@@ -130,9 +133,9 @@ sheets:SpreadsheetConfiguration spreadsheetConfig = {
     oauthClientConfig: {
         clientId: "<CLIENT_ID>",
         clientSecret: "<CLIENT_SECRET>",
-        refreshUrl: "<REFRESH_URL>",
+        refreshUrl: sheets:REFRESH_URL,
         refreshToken: "<REFRESH_TOKEN>"
-    }
+    },
     secureSocketConfig: {
         trustStore: {
             path: "<fullQualifiedPathToTrustStore>",
@@ -141,7 +144,7 @@ sheets:SpreadsheetConfiguration spreadsheetConfig = {
     }
 };
 
-sheets:Client spreadsheetClient = new (spreadsheetConfig);
+sheets:Client spreadsheetClient = checkpanic new (spreadsheetConfig);
 
 public function main(string... args) {
     var response = spreadsheetClient->openSpreadsheetById(<spreadsheet-id>);
@@ -165,16 +168,16 @@ All the actions return valid response or error. If the action is a success, then
 In order for you to use the GSheets Endpoint, first you need to create a GSheets Client endpoint.
 In order for you to use the GSheets Endpoint, first you need to create a GSheets Client endpoint.
 ```ballerina
-sheets:SpreadsheetConfiguration config = {
+sheets:SpreadsheetConfiguration spreadsheetConfig = {
     oauthClientConfig: {
         clientId: "<CLIENT_ID>",
         clientSecret: "<CLIENT_SECRET>",
-        refreshUrl: "<REFRESH_URL>",
+        refreshUrl: sheets:REFRESH_URL,
         refreshToken: "<REFRESH_TOKEN>"
     }
 };
  
-sheets:Client spreadsheetClient = new (config);
+sheets:Client spreadsheetClient = checkpanic new (spreadsheetConfig);
 ```
 
 ### Step 3: Create Spreadsheet with given name
@@ -284,19 +287,18 @@ https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/blob/m
 
 ```ballerina
 import ballerinax/googleapis_sheets as sheets;
-import ballerina/config;
 import ballerina/log;
 
-sheets:SpreadsheetConfiguration config = {
+sheets:SpreadsheetConfiguration spreadsheetConfig = {
     oauthClientConfig: {
         clientId: "<CLIENT_ID>",
         clientSecret: "<CLIENT_SECRET>",
-        refreshUrl: "<REFRESH_URL>",
+        refreshUrl: sheets:REFRESH_URL,
         refreshToken: "<REFRESH_TOKEN>"
     }
 };
 
-sheets:Client spreadsheetClient = new (config);
+sheets:Client spreadsheetClient = checkpanic new (spreadsheetConfig);
 
 public function main() {
     // Create Spreadsheet with given name
@@ -317,19 +319,18 @@ https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/blob/m
 
 ```ballerina
 import ballerinax/googleapis_sheets as sheets;
-import ballerina/config;
 import ballerina/log;
 
-sheets:SpreadsheetConfiguration config = {
+sheets:SpreadsheetConfiguration spreadsheetConfig = {
     oauthClientConfig: {
         clientId: "<CLIENT_ID>",
         clientSecret: "<CLIENT_SECRET>",
-        refreshUrl: "<REFRESH_URL>",
+        refreshUrl: sheets:REFRESH_URL,
         refreshToken: "<REFRESH_TOKEN>"
     }
 };
 
-sheets:Client spreadsheetClient = new (config);
+sheets:Client spreadsheetClient = checkpanic new (spreadsheetConfig);
 
 public function main() {
     string spreadsheetId = "";
@@ -362,19 +363,18 @@ https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/blob/m
 
 ```ballerina
 import ballerinax/googleapis_sheets as sheets;
-import ballerina/config;
 import ballerina/log;
 
-sheets:SpreadsheetConfiguration config = {
+sheets:SpreadsheetConfiguration spreadsheetConfig = {
     oauthClientConfig: {
         clientId: "<CLIENT_ID>",
         clientSecret: "<CLIENT_SECRET>",
-        refreshUrl: "<REFRESH_URL>",
+        refreshUrl: sheets:REFRESH_URL,
         refreshToken: "<REFRESH_TOKEN>"
     }
 };
 
-sheets:Client spreadsheetClient = new (config);
+sheets:Client spreadsheetClient = checkpanic new (spreadsheetConfig);
 
 public function main() {
     string spreadsheetId = "";
@@ -407,19 +407,18 @@ https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/blob/m
 
 ```ballerina
 import ballerinax/googleapis_sheets as sheets;
-import ballerina/config;
 import ballerina/log;
 
-sheets:SpreadsheetConfiguration config = {
+sheets:SpreadsheetConfiguration spreadsheetConfig = {
     oauthClientConfig: {
         clientId: "<CLIENT_ID>",
         clientSecret: "<CLIENT_SECRET>",
-        refreshUrl: "<REFRESH_URL>",
+        refreshUrl: sheets:REFRESH_URL,
         refreshToken: "<REFRESH_TOKEN>"
     }
 };
 
-sheets:Client spreadsheetClient = new (config);
+sheets:Client spreadsheetClient = checkpanic new (spreadsheetConfig);
 
 public function main() {
     string spreadsheetId = "";
@@ -458,19 +457,18 @@ https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/blob/m
 
 ```ballerina
 import ballerinax/googleapis_sheets as sheets;
-import ballerina/config;
 import ballerina/log;
 
-sheets:SpreadsheetConfiguration config = {
+sheets:SpreadsheetConfiguration spreadsheetConfig = {
     oauthClientConfig: {
         clientId: "<CLIENT_ID>",
         clientSecret: "<CLIENT_SECRET>",
-        refreshUrl: "<REFRESH_URL>",
+        refreshUrl: sheets:REFRESH_URL,
         refreshToken: "<REFRESH_TOKEN>"
     }
 };
 
-sheets:Client spreadsheetClient = new (config);
+sheets:Client spreadsheetClient = checkpanic new (spreadsheetConfig);
 
 public function main() {
 
@@ -498,19 +496,18 @@ https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/blob/m
 
 ```ballerina
 import ballerinax/googleapis_sheets as sheets;
-import ballerina/config;
 import ballerina/log;
 
-sheets:SpreadsheetConfiguration config = {
+sheets:SpreadsheetConfiguration spreadsheetConfig = {
     oauthClientConfig: {
         clientId: "<CLIENT_ID>",
         clientSecret: "<CLIENT_SECRET>",
-        refreshUrl: "<REFRESH_URL>",
+        refreshUrl: sheets:REFRESH_URL,
         refreshToken: "<REFRESH_TOKEN>"
     }
 };
 
-sheets:Client spreadsheetClient = new (config);
+sheets:Client spreadsheetClient = checkpanic new (spreadsheetConfig);
 
 public function main() {
     string spreadsheetId = "";
@@ -542,19 +539,18 @@ https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/blob/m
 
 ```ballerina
 import ballerinax/googleapis_sheets as sheets;
-import ballerina/config;
 import ballerina/log;
 
-sheets:SpreadsheetConfiguration config = {
+sheets:SpreadsheetConfiguration spreadsheetConfig = {
     oauthClientConfig: {
         clientId: "<CLIENT_ID>",
         clientSecret: "<CLIENT_SECRET>",
-        refreshUrl: "<REFRESH_URL>",
+        refreshUrl: sheets:REFRESH_URL,
         refreshToken: "<REFRESH_TOKEN>"
     }
 };
 
-sheets:Client spreadsheetClient = new (config);
+sheets:Client spreadsheetClient = checkpanic new (spreadsheetConfig);
 
 public function main() {
     string spreadsheetId = "";
@@ -596,19 +592,18 @@ https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/blob/m
 
 ```ballerina
 import ballerinax/googleapis_sheets as sheets;
-import ballerina/config;
 import ballerina/log;
 
-sheets:SpreadsheetConfiguration config = {
+sheets:SpreadsheetConfiguration spreadsheetConfig = {
     oauthClientConfig: {
         clientId: "<CLIENT_ID>",
         clientSecret: "<CLIENT_SECRET>",
-        refreshUrl: "<REFRESH_URL>",
+        refreshUrl: sheets:REFRESH_URL,
         refreshToken: "<REFRESH_TOKEN>"
     }
 };
 
-sheets:Client spreadsheetClient = new (config);
+sheets:Client spreadsheetClient = checkpanic new (spreadsheetConfig);
 
 public function main() {
     string spreadsheetId = "";
@@ -655,19 +650,18 @@ https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/blob/m
 
 ```ballerina
 import ballerinax/googleapis_sheets as sheets;
-import ballerina/config;
 import ballerina/log;
 
-sheets:SpreadsheetConfiguration config = {
+sheets:SpreadsheetConfiguration spreadsheetConfig = {
     oauthClientConfig: {
         clientId: "<CLIENT_ID>",
         clientSecret: "<CLIENT_SECRET>",
-        refreshUrl: "<REFRESH_URL>",
+        refreshUrl: sheets:REFRESH_URL,
         refreshToken: "<REFRESH_TOKEN>"
     }
 };
 
-sheets:Client spreadsheetClient = new (config);
+sheets:Client spreadsheetClient = checkpanic new (spreadsheetConfig);
 
 public function main() {
     string spreadsheetId = "";
@@ -714,19 +708,18 @@ https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/blob/m
 
 ```ballerina
 import ballerinax/googleapis_sheets as sheets;
-import ballerina/config;
 import ballerina/log;
 
-sheets:SpreadsheetConfiguration config = {
+sheets:SpreadsheetConfiguration spreadsheetConfig = {
     oauthClientConfig: {
         clientId: "<CLIENT_ID>",
         clientSecret: "<CLIENT_SECRET>",
-        refreshUrl: "<REFRESH_URL>",
+        refreshUrl: sheets:REFRESH_URL,
         refreshToken: "<REFRESH_TOKEN>"
     }
 };
 
-sheets:Client spreadsheetClient = new (config);
+sheets:Client spreadsheetClient = checkpanic new (spreadsheetConfig);
 
 public function main() {
     string spreadsheetId = "";
@@ -773,19 +766,18 @@ https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/blob/m
 
 ```ballerina
 import ballerinax/googleapis_sheets as sheets;
-import ballerina/config;
 import ballerina/log;
 
-sheets:SpreadsheetConfiguration config = {
+sheets:SpreadsheetConfiguration spreadsheetConfig = {
     oauthClientConfig: {
         clientId: "<CLIENT_ID>",
         clientSecret: "<CLIENT_SECRET>",
-        refreshUrl: "<REFRESH_URL>",
+        refreshUrl: sheets:REFRESH_URL,
         refreshToken: "<REFRESH_TOKEN>"
     }
 };
 
-sheets:Client spreadsheetClient = new (config);
+sheets:Client spreadsheetClient = checkpanic new (spreadsheetConfig);
 
 public function main() {
     string spreadsheetId = "";
@@ -833,19 +825,18 @@ https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/blob/m
 
 ```ballerina
 import ballerinax/googleapis_sheets as sheets;
-import ballerina/config;
 import ballerina/log;
 
-sheets:SpreadsheetConfiguration config = {
+sheets:SpreadsheetConfiguration spreadsheetConfig = {
     oauthClientConfig: {
         clientId: "<CLIENT_ID>",
         clientSecret: "<CLIENT_SECRET>",
-        refreshUrl: "<REFRESH_URL>",
+        refreshUrl: sheets:REFRESH_URL,
         refreshToken: "<REFRESH_TOKEN>"
     }
 };
 
-sheets:Client spreadsheetClient = new (config);
+sheets:Client spreadsheetClient = checkpanic new (spreadsheetConfig);
 
 public function main() {
     string spreadsheetId = "";
@@ -925,19 +916,18 @@ https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/blob/m
 
 ```ballerina
 import ballerinax/googleapis_sheets as sheets;
-import ballerina/config;
 import ballerina/log;
 
-sheets:SpreadsheetConfiguration config = {
+sheets:SpreadsheetConfiguration spreadsheetConfig = {
     oauthClientConfig: {
         clientId: "<CLIENT_ID>",
         clientSecret: "<CLIENT_SECRET>",
-        refreshUrl: "<REFRESH_URL>",
+        refreshUrl: sheets:REFRESH_URL,
         refreshToken: "<REFRESH_TOKEN>"
     }
 };
 
-sheets:Client spreadsheetClient = new (config);
+sheets:Client spreadsheetClient = checkpanic new (spreadsheetConfig);
 
 public function main() {
     string spreadsheetId = "";
@@ -1045,19 +1035,18 @@ https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/blob/m
 
 ```ballerina
 import ballerinax/googleapis_sheets as sheets;
-import ballerina/config;
 import ballerina/log;
 
-sheets:SpreadsheetConfiguration config = {
+sheets:SpreadsheetConfiguration spreadsheetConfig = {
     oauthClientConfig: {
         clientId: "<CLIENT_ID>",
         clientSecret: "<CLIENT_SECRET>",
-        refreshUrl: "<REFRESH_URL>",
+        refreshUrl: sheets:REFRESH_URL,
         refreshToken: "<REFRESH_TOKEN>"
     }
 };
 
-sheets:Client spreadsheetClient = new (config);
+sheets:Client spreadsheetClient = checkpanic new (spreadsheetConfig);
 
 public function main() {
     string spreadsheetId = "";
@@ -1164,19 +1153,18 @@ https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/blob/m
 
 ```ballerina
 import ballerinax/googleapis_sheets as sheets;
-import ballerina/config;
 import ballerina/log;
 
-sheets:SpreadsheetConfiguration config = {
+sheets:SpreadsheetConfiguration spreadsheetConfig = {
     oauthClientConfig: {
         clientId: "<CLIENT_ID>",
         clientSecret: "<CLIENT_SECRET>",
-        refreshUrl: "<REFRESH_URL>",
+        refreshUrl: sheets:REFRESH_URL,
         refreshToken: "<REFRESH_TOKEN>"
     }
 };
 
-sheets:Client spreadsheetClient = new (config);
+sheets:Client spreadsheetClient = checkpanic new (spreadsheetConfig);
 
 public function main() {
     string spreadsheetId = "";
@@ -1249,19 +1237,18 @@ https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/blob/m
 
 ```ballerina
 import ballerinax/googleapis_sheets as sheets;
-import ballerina/config;
 import ballerina/log;
 
-sheets:SpreadsheetConfiguration config = {
+sheets:SpreadsheetConfiguration spreadsheetConfig = {
     oauthClientConfig: {
         clientId: "<CLIENT_ID>",
         clientSecret: "<CLIENT_SECRET>",
-        refreshUrl: "<REFRESH_URL>",
+        refreshUrl: sheets:REFRESH_URL,
         refreshToken: "<REFRESH_TOKEN>"
     }
 };
 
-sheets:Client spreadsheetClient = new (config);
+sheets:Client spreadsheetClient = checkpanic new (spreadsheetConfig);
 
 public function main() {
     string spreadsheetId = "";
@@ -1328,19 +1315,18 @@ https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/blob/m
 
 ```ballerina
 import ballerinax/googleapis_sheets as sheets;
-import ballerina/config;
 import ballerina/log;
 
-sheets:SpreadsheetConfiguration config = {
+sheets:SpreadsheetConfiguration spreadsheetConfig = {
     oauthClientConfig: {
         clientId: "<CLIENT_ID>",
         clientSecret: "<CLIENT_SECRET>",
-        refreshUrl: "<REFRESH_URL>",
+        refreshUrl: sheets:REFRESH_URL,
         refreshToken: "<REFRESH_TOKEN>"
     }
 };
 
-sheets:Client spreadsheetClient = new (config);
+sheets:Client spreadsheetClient = checkpanic new (spreadsheetConfig);
 
 public function main() {
     string spreadsheetId = "";
@@ -1409,19 +1395,18 @@ https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/blob/m
 
 ```ballerina
 import ballerinax/googleapis_sheets as sheets;
-import ballerina/config;
 import ballerina/log;
 
-sheets:SpreadsheetConfiguration config = {
+sheets:SpreadsheetConfiguration spreadsheetConfig = {
     oauthClientConfig: {
         clientId: "<CLIENT_ID>",
         clientSecret: "<CLIENT_SECRET>",
-        refreshUrl: "<REFRESH_URL>",
+        refreshUrl: sheets:REFRESH_URL,
         refreshToken: "<REFRESH_TOKEN>"
     }
 };
 
-sheets:Client spreadsheetClient = new (config);
+sheets:Client spreadsheetClient = checkpanic new (spreadsheetConfig);
 
 public function main() {
     string spreadsheetId = "";
@@ -1489,19 +1474,18 @@ https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/blob/m
 
 ```ballerina
 import ballerinax/googleapis_sheets as sheets;
-import ballerina/config;
 import ballerina/log;
 
-sheets:SpreadsheetConfiguration config = {
+sheets:SpreadsheetConfiguration spreadsheetConfig = {
     oauthClientConfig: {
         clientId: "<CLIENT_ID>",
         clientSecret: "<CLIENT_SECRET>",
-        refreshUrl: "<REFRESH_URL>",
+        refreshUrl: sheets:REFRESH_URL,
         refreshToken: "<REFRESH_TOKEN>"
     }
 };
 
-sheets:Client spreadsheetClient = new (config);
+sheets:Client spreadsheetClient = checkpanic new (spreadsheetConfig);
 
 public function main() {
     string spreadsheetId = "";
@@ -1567,19 +1551,18 @@ https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/blob/m
 
 ```ballerina
 import ballerinax/googleapis_sheets as sheets;
-import ballerina/config;
 import ballerina/log;
 
-sheets:SpreadsheetConfiguration config = {
+sheets:SpreadsheetConfiguration spreadsheetConfig = {
     oauthClientConfig: {
         clientId: "<CLIENT_ID>",
         clientSecret: "<CLIENT_SECRET>",
-        refreshUrl: "<REFRESH_URL>",
+        refreshUrl: sheets:REFRESH_URL,
         refreshToken: "<REFRESH_TOKEN>"
     }
 };
 
-sheets:Client spreadsheetClient = new (config);
+sheets:Client spreadsheetClient = checkpanic new (spreadsheetConfig);
 
 public function main() {
     string spreadsheetId = "";
@@ -1645,19 +1628,18 @@ https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/blob/m
 
 ```ballerina
 import ballerinax/googleapis_sheets as sheets;
-import ballerina/config;
 import ballerina/log;
 
-sheets:SpreadsheetConfiguration config = {
+sheets:SpreadsheetConfiguration spreadsheetConfig = {
     oauthClientConfig: {
         clientId: "<CLIENT_ID>",
         clientSecret: "<CLIENT_SECRET>",
-        refreshUrl: "<REFRESH_URL>",
+        refreshUrl: sheets:REFRESH_URL,
         refreshToken: "<REFRESH_TOKEN>"
     }
 };
 
-sheets:Client spreadsheetClient = new (config);
+sheets:Client spreadsheetClient = checkpanic new (spreadsheetConfig);
 
 public function main() {
     string spreadsheetId = "";
@@ -1721,19 +1703,18 @@ https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/blob/m
 
 ```ballerina
 import ballerinax/googleapis_sheets as sheets;
-import ballerina/config;
 import ballerina/log;
 
-sheets:SpreadsheetConfiguration config = {
+sheets:SpreadsheetConfiguration spreadsheetConfig = {
     oauthClientConfig: {
         clientId: "<CLIENT_ID>",
         clientSecret: "<CLIENT_SECRET>",
-        refreshUrl: "<REFRESH_URL>",
+        refreshUrl: sheets:REFRESH_URL,
         refreshToken: "<REFRESH_TOKEN>"
     }
 };
 
-sheets:Client spreadsheetClient = new (config);
+sheets:Client spreadsheetClient = checkpanic new (spreadsheetConfig);
 
 public function main() {
     string spreadsheetId = "";

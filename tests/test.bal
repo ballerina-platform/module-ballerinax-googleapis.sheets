@@ -27,7 +27,7 @@ SpreadsheetConfiguration spreadsheetConfig = {
     }
 };
 
-Client spreadsheetClient = checkpanic new(spreadsheetConfig);
+Client spreadsheetClient = checkpanic new (spreadsheetConfig);
 
 var randomString = createRandomUUIDWithoutHyphens();
 
