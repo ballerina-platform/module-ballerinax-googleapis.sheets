@@ -14,27 +14,20 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import ballerina/config;
-import ballerina/system;
+import ballerina/os;
 import ballerina/test;
 import ballerina/log;
 
-SpreadsheetConfiguration config = {
-    oauth2Config: {
-        accessToken: "<Access token here>",
-        refreshConfig: {
-            clientId: system:getEnv("CLIENT_ID") == "" ? config:getAsString("CLIENT_ID") :
-            system:getEnv("CLIENT_ID"),
-            clientSecret: system:getEnv("CLIENT_SECRET") == "" ? config:getAsString("CLIENT_SECRET") :
-            system:getEnv("CLIENT_SECRET"),
-            refreshUrl: REFRESH_URL,
-            refreshToken: system:getEnv("REFRESH_TOKEN") == "" ? config:getAsString("REFRESH_TOKEN") :
-            system:getEnv("REFRESH_TOKEN")
-        }
+SpreadsheetConfiguration spreadsheetConfig = {
+    oauthClientConfig: {
+        refreshUrl: REFRESH_URL,
+        refreshToken: os:getEnv("REFRESH_TOKEN"),
+        clientId: os:getEnv("CLIENT_ID"),
+        clientSecret: os:getEnv("CLIENT_SECRET")
     }
 };
 
-Client spreadsheetClient = new (config);
+Client spreadsheetClient = checkpanic new (spreadsheetConfig);
 
 var randomString = createRandomUUIDWithoutHyphens();
 
@@ -67,7 +60,7 @@ function testCreateSpreadsheet() {
 }
 
 @test:Config {
-    dependsOn: ["testCreateSpreadsheet"],
+    dependsOn: [ testCreateSpreadsheet ],
     enable: true
 }
 function testOpenSpreadsheetById() {
@@ -81,7 +74,7 @@ function testOpenSpreadsheetById() {
 }
 
 @test:Config {
-    dependsOn: ["testCreateSpreadsheet"],
+    dependsOn: [ testCreateSpreadsheet ],
     enable: true
 }
 function testOpenSpreadsheetByUrl() {
@@ -96,7 +89,7 @@ function testOpenSpreadsheetByUrl() {
 }
 
 @test:Config {
-    dependsOn: ["testCreateSpreadsheet"],
+    dependsOn: [ testCreateSpreadsheet ],
     enable: true
 }
 function testRenameSpreadsheet() {
@@ -114,17 +107,16 @@ function testRenameSpreadsheet() {
     }
 }
 
-
 @test:Config { 
-    dependsOn: ["testCreateSpreadsheet"],
+    dependsOn: [ testCreateSpreadsheet ],
     enable: true
 }
 function testGetAllSpreadSheets() {
+    log:print("testGetAllSpreadSheets");    
     var response = spreadsheetClient->getAllSpreadsheets();
     if (response is stream<File>) {
         var file = response.next();
         test:assertNotEquals(file?.value, "", msg = "Found 0 records");
-        
     } else {
         test:assertFail(response.message());
     }
@@ -146,7 +138,7 @@ function testAddSheet() {
 }
 
 @test:Config {
-    dependsOn: ["testCreateSpreadsheet", "testAddSheet"],
+    dependsOn: [ testCreateSpreadsheet, testAddSheet ],
     enable: true
 }
 function testGetSheetByName() {
@@ -160,12 +152,12 @@ function testGetSheetByName() {
 }
 
 @test:Config {
-    dependsOn: ["testCreateSpreadsheet", "testAddSheet"],
+    dependsOn: [ testCreateSpreadsheet, testAddSheet ],
     enable: true
 }
 function testRenameSheet() {
     string newName = testSheetName + " Renamed";
-    var spreadsheetRes = spreadsheetClient->renameSheet(spreadsheetId, newName);
+    var spreadsheetRes = spreadsheetClient->renameSheet(spreadsheetId, "Sheet1", newName);
     if (spreadsheetRes is ()) {
         var openRes = spreadsheetClient->getSheetByName(spreadsheetId, newName);
         if (openRes is Sheet) {
@@ -179,7 +171,7 @@ function testRenameSheet() {
 }
 
 @test:Config {
-    dependsOn: ["testCreateSpreadsheet", "testAddSheet"],
+    dependsOn: [ testCreateSpreadsheet, testAddSheet ],
     enable: true
 }
 function testRemoveSheet() {
@@ -196,7 +188,7 @@ function testRemoveSheet() {
 }
 
 @test:Config {
-    dependsOn: ["testCreateSpreadsheet", "testAddSheet"],
+    dependsOn: [ testCreateSpreadsheet, testAddSheet ],
     enable: true
 }
 function testRemoveSheetByName() {
@@ -212,7 +204,7 @@ function testRemoveSheetByName() {
 }
 
 @test:Config {
-    dependsOn: ["testCreateSpreadsheet", "testAddSheet"],
+    dependsOn: [ testCreateSpreadsheet, testAddSheet ],
     enable: true
 }
 function testGetSheets() {
@@ -228,7 +220,7 @@ function testGetSheets() {
 // Sheet Service Operations
 
 @test:Config {
-    dependsOn: ["testAddSheet"],
+    dependsOn: [ testAddSheet ],
     enable: true
 }
 function testSetRange() {
@@ -238,21 +230,29 @@ function testSetRange() {
 }
 
 @test:Config {
-    dependsOn: ["testAddSheet", "testSetRange"],
+    dependsOn: [ testAddSheet ],
     enable: true
 }
 function testGetRange() {
     var spreadsheetRes = spreadsheetClient->getRange(spreadsheetId, testSheetName, "A1:D5");
+    string[][] getEntries = [
+        ["Name", "Score", "Performance", "Average"],
+        ["Keetz", "12"],
+        ["Niro", "78"],
+        ["Nisha", "98"]
+    ];
     if (spreadsheetRes is Range) {
+        log:print("testGetRange");
         log:print(spreadsheetRes.toString());
-        test:assertEquals(spreadsheetRes.values, entries, msg = "Failed to get the values of the range");
+        log:print(getEntries.toString());
+        test:assertEquals(spreadsheetRes.values, getEntries, msg = "Failed to get the values of the range");
     } else {
         test:assertFail(spreadsheetRes.message());
     }
 }
 
 @test:Config {
-    dependsOn: ["testAddSheet", "testSetRange"],
+    dependsOn: [ testAddSheet, testSetRange ],
     enable: true
 }
 function testClearRange() {
@@ -268,7 +268,7 @@ function testClearRange() {
 }
 
 @test:Config {
-    dependsOn: ["testAddSheet", "testSetRange"],
+    dependsOn: [ testAddSheet, testSetRange ],
     enable: true
 }
 function testAddColumnsBefore() {
@@ -285,7 +285,7 @@ function testAddColumnsBefore() {
 }
 
 @test:Config {
-    dependsOn: ["testAddSheet", "testSetRange"],
+    dependsOn: [ testAddSheet, testSetRange ],
     enable: true
 }
 function testAddColumnsBeforeBySheetName() {
@@ -300,7 +300,7 @@ function testAddColumnsBeforeBySheetName() {
 }
 
 @test:Config {
-    dependsOn: ["testAddColumnsBefore"],
+    dependsOn: [ testAddColumnsBefore ],
     enable: true
 }
 function testAddColumnsAfter() {
@@ -317,7 +317,7 @@ function testAddColumnsAfter() {
 }
 
 @test:Config {
-    dependsOn: ["testAddColumnsBeforeBySheetName"],
+    dependsOn: [ testAddColumnsBeforeBySheetName ],
     enable: true
 }
 function testAddColumnsAfterBySheetName() {
@@ -327,7 +327,7 @@ function testAddColumnsAfterBySheetName() {
 }
 
 @test:Config {
-    dependsOn: ["testAddSheet"],
+    dependsOn: [ testAddSheet ],
     enable: true
 }
 function testCreateOrUpdateColumn() {
@@ -341,7 +341,7 @@ function testCreateOrUpdateColumn() {
 }
 
 @test:Config {
-    dependsOn: ["testCreateOrUpdateColumn"],
+    dependsOn: [ testCreateOrUpdateColumn ],
     enable: true
 }
 function testGetColumn() {
@@ -356,7 +356,7 @@ function testGetColumn() {
 }
 
 @test:Config {
-    dependsOn: ["testAddColumnsAfter"],
+    dependsOn: [ testAddColumnsAfter ],
     enable: true
 }
 function testDeleteColumns() {
@@ -373,7 +373,7 @@ function testDeleteColumns() {
 }
 
 @test:Config {
-    dependsOn: ["testAddColumnsAfterBySheetName"],
+    dependsOn: [ testAddColumnsAfterBySheetName ],
     enable: true
 }
 function testDeleteColumnsBySheetName() {
@@ -383,7 +383,7 @@ function testDeleteColumnsBySheetName() {
 }
 
 @test:Config {
-    dependsOn: ["testAddSheet", "testSetRange"],
+    dependsOn: [ testAddSheet, testSetRange ],
     enable: true
 }
 function testAddRowsBefore() {
@@ -400,7 +400,7 @@ function testAddRowsBefore() {
 }
 
 @test:Config {
-    dependsOn: ["testDeleteColumnsBySheetName"],
+    dependsOn: [ testDeleteColumnsBySheetName ],
     enable: true
 }
 function testAddRowsBeforeBySheetName() {
@@ -410,7 +410,7 @@ function testAddRowsBeforeBySheetName() {
 }
 
 @test:Config {
-    dependsOn: ["testAddRowsBefore"],
+    dependsOn: [ testAddRowsBefore ],
     enable: true
 }
 function testAddRowsAfter() {
@@ -427,7 +427,7 @@ function testAddRowsAfter() {
 }
 
 @test:Config {
-    dependsOn: ["testAddRowsBeforeBySheetName"],
+    dependsOn: [ testAddRowsBeforeBySheetName ],
     enable: true
 }
 function testAddRowsAfterBySheetName() {
@@ -437,7 +437,7 @@ function testAddRowsAfterBySheetName() {
 }
 
 @test:Config {
-    dependsOn: ["testAddSheet"],
+    dependsOn: [ testAddSheet ],
     enable: true
 }
 function testCreateOrUpdateRow() {
@@ -452,7 +452,7 @@ function testCreateOrUpdateRow() {
 
 
 @test:Config {
-    dependsOn: ["testCreateOrUpdateRow"],
+    dependsOn: [ testCreateOrUpdateRow ],
     enable: true
 }
 function testGetRow() {
@@ -467,7 +467,7 @@ function testGetRow() {
 }
 
 @test:Config {
-    dependsOn: ["testAddRowsAfter"],
+    dependsOn: [ testAddRowsAfter ],
     enable: true
 }
 function testDeleteRows() {
@@ -484,7 +484,7 @@ function testDeleteRows() {
 }
 
 @test:Config {
-    dependsOn: ["testAddRowsAfterBySheetName"],
+    dependsOn: [ testAddRowsAfterBySheetName ],
     enable: true
 }
 function testDeleteRowsBySheetName() {
@@ -494,7 +494,7 @@ function testDeleteRowsBySheetName() {
 }
 
 @test:Config {
-    dependsOn: ["testAddSheet"],
+    dependsOn: [ testAddSheet ],
     enable: true
 }
 function testSetCell() {
@@ -507,7 +507,7 @@ function testSetCell() {
 }
 
 @test:Config {
-    dependsOn: ["testSetCell"],
+    dependsOn: [ testSetCell ],
     enable: true
 }
 function testGetCell() {
@@ -521,7 +521,7 @@ function testGetCell() {
 }
 
 @test:Config {
-    dependsOn: ["testSetCell", "testGetCell"],
+    dependsOn: [ testSetCell, testGetCell ],
     enable: true
 }
 function testClearCell() {
@@ -534,7 +534,7 @@ function testClearCell() {
 }
 
 @test:Config {
-    dependsOn: ["testDeleteRows"],
+    dependsOn: [ testDeleteRows ],
     enable: true
 }
 function testAppendRowToSheet() {
@@ -548,7 +548,7 @@ function testAppendRowToSheet() {
 }
 
 @test:Config {
-    dependsOn: ["testAppendRowToSheet"],
+    dependsOn: [ testAppendRowToSheet ],
     enable: true
 }
 function testAppendRow() {
@@ -562,7 +562,7 @@ function testAppendRow() {
 }
 
 @test:Config {
-    dependsOn: ["testAppendRow"],
+    dependsOn: [ testAppendRow ],
     enable: true
 }
 function testAppendCell() {
@@ -576,7 +576,7 @@ function testAppendCell() {
 }
 
 @test:Config {
-    dependsOn: ["testAddSheet"],
+    dependsOn: [ testAddSheet ],
     enable: true
 }
 function testCopyTo() {
@@ -593,7 +593,7 @@ function testCopyTo() {
 }
 
 @test:Config {
-    dependsOn: ["testDeleteRowsBySheetName"],
+    dependsOn: [ testDeleteRowsBySheetName ],
     enable: true
 }
 function testCopyToBySheetName() {
@@ -602,7 +602,7 @@ function testCopyToBySheetName() {
 }
 
 @test:Config {
-    dependsOn: ["testCopyTo"],
+    dependsOn: [ testCopyTo ],
     enable: true
 }
 function testClearAll() {
@@ -620,7 +620,7 @@ function testClearAll() {
 }
 
 @test:Config {
-    dependsOn: ["testClearAll"],
+    dependsOn: [ testClearAll, testGetRange ],
     enable: true
 }
 function testClearAllBySheetName() {

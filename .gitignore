@@ -44,4 +44,9 @@ temp.bal.ballerina/
 target/
 .DS_Store
 modules
-samples
+
+#Config file
+Config.toml
+
+# Modules
+/modules

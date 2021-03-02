@@ -15,8 +15,8 @@
 // under the License.
 
 import ballerina/http;
-import ballerina/java;
-import ballerina/stringutils;
+import ballerina/jballerina.java as java;
+import ballerina/regex;
 
 function sendRequestWithPayload(http:Client httpClient, string path, json jsonPayload = ())
 returns @tainted json | error {
@@ -46,7 +46,7 @@ function sendRequest(http:Client httpClient, string path) returns @tainted json 
     var httpResponse = httpClient->get(<@untainted>path);
     if (httpResponse is http:Response) {
         int statusCode = httpResponse.statusCode;
-        json | http:ClientError jsonResponse = httpResponse.getJsonPayload();
+        json | error jsonResponse = httpResponse.getJsonPayload();
         if (jsonResponse is json) {
             error? validateStatusCodeRes = validateStatusCode(jsonResponse, statusCode);
             if (validateStatusCodeRes is error) {
@@ -72,7 +72,7 @@ isolated function getConvertedValue(json value) returns string | int | float {
 }
 
 isolated function validateStatusCode(json response, int statusCode) returns error? {
-    if (statusCode != http:STATUS_OK) {
+    if (!(statusCode == http:STATUS_OK)) {
         return getSpreadsheetError(response);
     }
 }
@@ -104,8 +104,13 @@ isolated function getSpreadsheetError(json|error errorResponse) returns error {
 # + response - Received response.
 # + return - Returns module error with payload and response code.
 isolated function getErrorMessage(http:Response response) returns @tainted error {
+    json|error payload = response.getTextPayload();
+    string payloadString = "";
+    if (payload is json) {
+        payloadString = payload.toString();
+    }
     return error("Invalid response from Google Sheet API. statuscode: " + response.statusCode.toString() + 
-        ", payload: " + response.getTextPayload().toString(), status = response.statusCode);
+        ", payload: " + payloadString, status = response.statusCode);
 }
 
 # Get files stream.
@@ -119,8 +124,8 @@ function getFilesStream(http:Client driveClient, @tainted File[] files, string? 
     if (pageToken is string) {
         drivePath = DRIVE_PATH + FILES + QUESTION_MARK + Q + EQUAL + MIME_TYPE + EQUAL + APPLICATION + AND + PAGE_TOKEN + EQUAL + pageToken;
     }
-    json | error resp = sendRequest(driveClient, drivePath);
-    if resp is json {
+    json|error resp = sendRequest(driveClient, drivePath);
+    if (resp is json) {
         FilesResponse|error res = resp.cloneWithType(FilesResponse);
         if (res is FilesResponse) {
             int i = files.length();
@@ -148,7 +153,7 @@ function getFilesStream(http:Client driveClient, @tainted File[] files, string? 
 public function createRandomUUIDWithoutHyphens() returns string {
     string? stringUUID = java:toString(createRandomUUID());
     if (stringUUID is string) {
-        stringUUID = stringutils:replace(stringUUID, "-", "");
+        stringUUID = regex:replaceAll(stringUUID, "-", "");
         return stringUUID;
     } else {
         return "";
