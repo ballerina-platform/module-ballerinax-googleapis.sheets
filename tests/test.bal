@@ -14,20 +14,42 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import ballerina/os;
+// import ballerina/os;
 import ballerina/test;
 import ballerina/log;
+
+configurable string refreshToken = ?;
+configurable string clientId = ?;
+configurable string clientSecret = ?;
+configurable string accessToken = ?;
+
+// SpreadsheetConfiguration spreadsheetConfig = {
+//     oauthClientConfig: {
+//         refreshUrl: REFRESH_URL,
+//         refreshToken: os:getEnv("REFRESH_TOKEN"),
+//         clientId: os:getEnv("CLIENT_ID"),
+//         clientSecret: os:getEnv("CLIENT_SECRET")
+//     }
+// };
 
 SpreadsheetConfiguration spreadsheetConfig = {
     oauthClientConfig: {
         refreshUrl: REFRESH_URL,
-        refreshToken: os:getEnv("REFRESH_TOKEN"),
-        clientId: os:getEnv("CLIENT_ID"),
-        clientSecret: os:getEnv("CLIENT_SECRET")
+        refreshToken: refreshToken,
+        clientId: clientId,
+        clientSecret: clientSecret
     }
 };
 
 Client spreadsheetClient = checkpanic new (spreadsheetConfig);
+
+SpreadsheetConfiguration spreadsheetConfigWithBearerToken = {
+    oauthClientConfig: {
+        token: accessToken
+    }
+};
+
+Client spreadsheetClientWithBearerToken = checkpanic new (spreadsheetConfigWithBearerToken);
 
 var randomString = createRandomUUIDWithoutHyphens();
 
@@ -627,6 +649,20 @@ function testClearAllBySheetName() {
     var spreadsheetRes = spreadsheetClient->clearAllBySheetName(spreadsheetId, testSheetName);
     if (spreadsheetRes is ()) {
         test:assertEquals(spreadsheetRes, (), msg = "Failed to clear the sheet");
+    } else {
+        test:assertFail(spreadsheetRes.message());
+    }
+}
+
+@test:Config {
+    dependsOn: [testClearAllBySheetName],
+    enable: true
+}
+function testCreateSpreadsheetWithBearerToken() {
+    var spreadsheetRes = spreadsheetClientWithBearerToken->createSpreadsheet(createSpreadsheetName);
+    if (spreadsheetRes is Spreadsheet) {
+        log:print(spreadsheetRes.toString());
+        test:assertNotEquals(spreadsheetRes.spreadsheetId, "", msg = "Failed to create spreadsheet");
     } else {
         test:assertFail(spreadsheetRes.message());
     }

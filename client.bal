@@ -1158,6 +1158,6 @@ public client class Client {
 # + oauthClientConfig - OAuth client configuration
 # + secureSocketConfig - Secure socket configuration
 public type SpreadsheetConfiguration record {
-    http:OAuth2DirectTokenConfig oauthClientConfig;
+    http:BearerTokenConfig|http:OAuth2DirectTokenConfig oauthClientConfig;
     http:ClientSecureSocket secureSocketConfig?;
 };
