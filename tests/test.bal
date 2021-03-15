@@ -44,13 +44,14 @@ SpreadsheetConfiguration spreadsheetConfig = {
 
 Client spreadsheetClient = checkpanic new (spreadsheetConfig);
 
-SpreadsheetConfiguration spreadsheetConfigWithBearerToken = {
-    oauthClientConfig: {
-        token: os:getEnv("ACCESS_TOKEN")
-    }
-};
+// Configuration to test access token support
+// SpreadsheetConfiguration spreadsheetConfigWithBearerToken = {
+//     oauthClientConfig: {
+//         token: os:getEnv("ACCESS_TOKEN")
+//     }
+// };
 
-Client spreadsheetClientWithBearerToken = checkpanic new (spreadsheetConfigWithBearerToken);
+// Client spreadsheetClientWithBearerToken = checkpanic new (spreadsheetConfigWithBearerToken);
 
 var randomString = createRandomUUIDWithoutHyphens();
 
@@ -655,16 +656,17 @@ function testClearAllBySheetName() {
     }
 }
 
-@test:Config {
-    dependsOn: [testClearAllBySheetName],
-    enable: true
-}
-function testCreateSpreadsheetWithBearerToken() {
-    var spreadsheetRes = spreadsheetClientWithBearerToken->createSpreadsheet(createSpreadsheetName);
-    if (spreadsheetRes is Spreadsheet) {
-        log:print(spreadsheetRes.toString());
-        test:assertNotEquals(spreadsheetRes.spreadsheetId, "", msg = "Failed to create spreadsheet");
-    } else {
-        test:assertFail(spreadsheetRes.message());
-    }
-}
+// Disable Access Token Unit Test
+// @test:Config {
+//     dependsOn: [testClearAllBySheetName],
+//     enable: true
+// }
+// function testCreateSpreadsheetWithBearerToken() {
+//     var spreadsheetRes = spreadsheetClientWithBearerToken->createSpreadsheet(createSpreadsheetName);
+//     if (spreadsheetRes is Spreadsheet) {
+//         log:print(spreadsheetRes.toString());
+//         test:assertNotEquals(spreadsheetRes.spreadsheetId, "", msg = "Failed to create spreadsheet");
+//     } else {
+//         test:assertFail(spreadsheetRes.message());
+//     }
+// }
