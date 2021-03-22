@@ -20,7 +20,7 @@ import ballerina/http;
 #
 # + httpClient - Connector http endpoint
 # + driveClient - Drive connector http endpoint
-@display {label: "Google Sheet Client"}
+@display {label: "Google Sheet Client", iconPath: "GoogleSheetsLogo.png"}
 public client class Client {
     public http:Client httpClient;
     public http:Client driveClient;
