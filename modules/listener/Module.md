@@ -190,17 +190,17 @@ Then you need to create the Event Trigger Class with the implementations for the
 ```ballerina
 # Event Trigger class
 public class sheetsListener:EventTrigger {
-    public function onNewSheetCreatedEvent(string fileId) {
+    public isolated function onNewSheetCreatedEvent(string fileId) {
         log:print("New File was created : " + fileId);
         // Write your logic here.....
     }
 
-    public function onSheetDeletedEvent(string fileId) {
+    public isolated function onSheetDeletedEvent(string fileId) {
         log:print("This File was removed to the trash : " + fileId);
         // Write your logic here.....
     }
 
-    public function onFileUpdateEvent(string fileId) {
+    public isolated function onFileUpdateEvent(string fileId) {
         log:print("The File was updated : " + fileId);
         // Write your logic here.....
     }
@@ -305,14 +305,14 @@ import ballerinax/googleapis_sheets.'listener as sheetsListener;
 
 # Event Trigger class
 public class EventTrigger {
-    public function onNewSheetCreatedEvent(string fileId) {
+    public isolated function onNewSheetCreatedEvent(string fileId) {
         log:print("New File was created : " + fileId);
         // Write your logic here.....
     }
 
-    public function onSheetDeletedEvent(string fileId) {}
+    public isolated function onSheetDeletedEvent(string fileId) {}
 
-    public function onFileUpdateEvent(string fileId) {}
+    public isolated function onFileUpdateEvent(string fileId) {}
 }
 
 configurable int port = ?;
@@ -358,14 +358,14 @@ import ballerinax/googleapis_sheets.'listener as sheetsListener;
 
 # Event Trigger class
 public class EventTrigger {
-    public function onNewSheetCreatedEvent(string fileId) {}
+    public isolated function onNewSheetCreatedEvent(string fileId) {}
 
-    public function onSheetDeletedEvent(string fileId) {
+    public isolated function onSheetDeletedEvent(string fileId) {
         log:print("This File was removed to the trash : " + fileId);
         // Write your logic here.....
     }
 
-    public function onFileUpdateEvent(string fileId) {}
+    public isolated function onFileUpdateEvent(string fileId) {}
 }
 
 configurable int port = ?;
@@ -413,11 +413,11 @@ import ballerinax/googleapis_sheets.'listener as sheetsListener;
 
 # Event Trigger class
 public class EventTrigger {
-    public function onNewSheetCreatedEvent(string fileId) {}
+    public isolated function onNewSheetCreatedEvent(string fileId) {}
 
-    public function onSheetDeletedEvent(string fileId) {}
+    public isolated function onSheetDeletedEvent(string fileId) {}
 
-    public function onFileUpdateEvent(string fileId) {}
+    public isolated function onFileUpdateEvent(string fileId) {}
 }
 
 configurable int port = ?;
@@ -469,11 +469,11 @@ import ballerinax/googleapis_sheets.'listener as sheetsListener;
 
 # Event Trigger class
 public class EventTrigger {
-    public function onNewSheetCreatedEvent(string fileId) {}
+    public isolated function onNewSheetCreatedEvent(string fileId) {}
 
-    public function onSheetDeletedEvent(string fileId) {}
+    public isolated function onSheetDeletedEvent(string fileId) {}
 
-    public function onFileUpdateEvent(string fileId) {}
+    public isolated function onFileUpdateEvent(string fileId) {}
 }
 
 configurable int port = ?;
@@ -523,11 +523,11 @@ import ballerinax/googleapis_sheets.'listener as sheetsListener;
 
 # Event Trigger class
 public class EventTrigger {
-    public function onNewSheetCreatedEvent(string fileId) {}
+    public isolated function onNewSheetCreatedEvent(string fileId) {}
 
-    public function onSheetDeletedEvent(string fileId) {}
+    public isolated function onSheetDeletedEvent(string fileId) {}
 
-    public function onFileUpdateEvent(string fileId) {}
+    public isolated function onFileUpdateEvent(string fileId) {}
 }
 
 configurable int port = ?;
@@ -577,11 +577,11 @@ import ballerinax/googleapis_sheets.'listener as sheetsListener;
 
 # Event Trigger class
 public class EventTrigger {
-    public function onNewSheetCreatedEvent(string fileId) {}
+    public isolated function onNewSheetCreatedEvent(string fileId) {}
 
-    public function onSheetDeletedEvent(string fileId) {}
+    public isolated function onSheetDeletedEvent(string fileId) {}
 
-    public function onFileUpdateEvent(string fileId) {}
+    public isolated function onFileUpdateEvent(string fileId) {}
 }
 
 configurable int port = ?;
@@ -631,11 +631,11 @@ import ballerinax/googleapis_sheets.'listener as sheetsListener;
 
 # Event Trigger class
 public class EventTrigger {
-    public function onNewSheetCreatedEvent(string fileId) {}
+    public isolated function onNewSheetCreatedEvent(string fileId) {}
 
-    public function onSheetDeletedEvent(string fileId) {}
+    public isolated function onSheetDeletedEvent(string fileId) {}
 
-    public function onFileUpdateEvent(string fileId) {}
+    public isolated function onFileUpdateEvent(string fileId) {}
 }
 
 
@@ -686,11 +686,11 @@ import ballerinax/googleapis_sheets.'listener as sheetsListener;
 
 # Event Trigger class
 public class EventTrigger {
-    public function onNewSheetCreatedEvent(string fileId) {}
+    public isolated function onNewSheetCreatedEvent(string fileId) {}
 
-    public function onSheetDeletedEvent(string fileId) {}
+    public isolated function onSheetDeletedEvent(string fileId) {}
 
-    public function onFileUpdateEvent(string fileId) {}
+    public isolated function onFileUpdateEvent(string fileId) {}
 }
 
 configurable int port = ?;
@@ -740,11 +740,11 @@ import ballerinax/googleapis_sheets.'listener as sheetsListener;
 
 # Event Trigger class
 public class EventTrigger {
-    public function onNewSheetCreatedEvent(string fileId) {}
+    public isolated function onNewSheetCreatedEvent(string fileId) {}
 
-    public function onSheetDeletedEvent(string fileId) {}
+    public isolated function onSheetDeletedEvent(string fileId) {}
 
-    public function onFileUpdateEvent(string fileId) {}
+    public isolated function onFileUpdateEvent(string fileId) {}
 }
 
 configurable int port = ?;

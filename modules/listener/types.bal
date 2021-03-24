@@ -70,9 +70,9 @@ public type changeResponse record {
 
 # This type object 'OnEventService' with all Event funtions.
 public type OnEventService object {
-    public function onNewSheetCreatedEvent(string folderId);
-    public function onSheetDeletedEvent(string fileId);
-    public function onFileUpdateEvent(string fileId);
+    public isolated function onNewSheetCreatedEvent(string folderId);
+    public isolated function onSheetDeletedEvent(string fileId);
+    public isolated function onFileUpdateEvent(string fileId);
 };
 
 

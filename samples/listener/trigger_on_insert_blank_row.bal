@@ -21,11 +21,11 @@ import ballerinax/googleapis_sheets.'listener as sheetsListener;
 
 # Event Trigger class
 public class EventTrigger {
-    public function onNewSheetCreatedEvent(string fileId) {}
+    public isolated function onNewSheetCreatedEvent(string fileId) {}
 
-    public function onSheetDeletedEvent(string fileId) {}
+    public isolated function onSheetDeletedEvent(string fileId) {}
 
-    public function onFileUpdateEvent(string fileId) {}
+    public isolated function onFileUpdateEvent(string fileId) {}
 }
 
 configurable int port = ?;
