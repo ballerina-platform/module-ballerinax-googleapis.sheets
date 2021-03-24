@@ -4,7 +4,7 @@ Listen to Google sheets events using Ballerina.
 
 # Module Overview
 
-The Google Spreadsheet Listener Ballerina Module provides the capability to listen the push notifications for changes to the spreadsheet resource through the [Drive API](https://developers.google.com/drive/api/v3/push). The underline google sheets API does not directly support this feature. Whenever a watched spreadsheet resource changes, the Drive API notifies the application and the Google sheet listener gets triggered. The Google sheet listener can listen to management related changes of a spreadsheet (using the `/onManage` service endpoint) such as creation of a new spreadsheet and deletion of a spreadsheet with the following trigger methods: `onNewSheetCreatedEvent`, `onSheetDeletedEvent`. The Google Spreadsheet Listener Ballerina Module provides the capability to listen to simple events using the triggers via [App Scripts](https://developers.google.com/apps-script/guides/triggers). App Scripts run a function automatically whenever a certain event, like user changes a value in a spreadsheet. When a trigger fires, Apps Script passes the function an event object as an argument, typically called `e`. The event object contains information about the context that caused the trigger to fire. Using App Script [Installable triggers](https://developers.google.com/apps-script/guides/triggers/installable) we can call services that require authorization and pass these event information. The Google sheet listener can listen to these events triggered for different type of changes such as editing a spreadsheet, inserting a blank row, removing a row, inserting a blank column, removing a column, inserting a new grid, removing a new grid from a spreadsheet with the service endpoint `/onChange` that capture change event types `EDIT`, `INSERT_ROW`, `REMOVE_ROW`, `INSERT_COLUMN`, `REMOVE_COLUMN`, `INSERT_GRID`, `REMOVE_GRID`, `OTHER` etc. and execute the user logic when an event with one of the above change event type is received. By using the `/onEdit` service endpoint, the google sheets listener gets triggered when a spreadsheet is edited and can get more information about the edit event such as the `spreadsheet ID, spreadsheet name, worksheet ID, worksheet name, range updated, starting row position, end row position, starting column position, end column position, new values, last row with content, last column with content`etc.
+The Google Spreadsheet Listener Ballerina Module provides the capability to listen the push notifications for changes to the spreadsheet resource through the [Drive API](https://developers.google.com/drive/api/v3/push). The underline google sheets API does not directly support this feature. Whenever a watched spreadsheet resource changes, the Drive API notifies the application and the Google sheet listener gets triggered. The Google sheet listener can listen to management related changes of a spreadsheet (using the `/onManage` service endpoint) such as creation of a new spreadsheet and deletion of a spreadsheet with the following trigger methods: `onNewSheetCreatedEvent`, `onSheetDeletedEvent`. The Google Spreadsheet Listener Ballerina Module provides the capability to listen to simple events using the triggers via [App Scripts](https://developers.google.com/apps-script/guides/triggers). App Scripts run a function automatically whenever a certain event, like user changes a value in a spreadsheet. When a trigger fires, Apps Script passes the function an event object as an argument, typically called `e`. The event object contains information about the context that caused the trigger to fire. Using App Script [Installable triggers](https://developers.google.com/apps-script/guides/triggers/installable) we can call services that require authorization and pass these event information. The Google sheet listener can listen to these events triggered for different type of changes such as editing a spreadsheet, inserting a blank row, removing a row, inserting a blank column, removing a column, inserting a new grid, removing a new grid from a spreadsheet with the service endpoint `/onChange` that capture change event types `EDIT`, `INSERT_ROW`, `REMOVE_ROW`, `INSERT_COLUMN`, `REMOVE_COLUMN`, `INSERT_GRID`, `REMOVE_GRID`, `OTHER` etc. and execute the user logic when an event with one of the above change event type is received. By using the `/onEdit` service endpoint that capture edit event types `APPEND_ROW`, `UPDATE_ROW`, the google sheets listener gets triggered when a spreadsheet is edited and can get more information about the edit event such as the `spreadsheet ID, spreadsheet name, worksheet ID, worksheet name, range updated, starting row position, end row position, starting column position, end column position, new values, last row with content, last column with content`etc.
 
 # Compatibility
 
@@ -35,7 +35,12 @@ The `/onChange` service endpoint can listen to events triggered for different ty
 
 
 ## On Edit Trigger Endpoint
-The `/onEdit` service endpoint, can listen to events triggered  when a spreadsheet is edited and can get more information about the edit event such as the 
+The `/onEdit` service endpoint, can listen to events triggered  when a spreadsheet is edited such as when a row is appended to a spreadsheet or when a row is updated in a spreadsheet that capture change event types.
+
+* `APPEND_ROW`
+* `UPDATE_ROW`
+
+We can get more information about the edit event such as the 
 * `spreadsheet ID` 
 * `spreadsheet name` 
 * `worksheet ID` 
@@ -244,13 +249,16 @@ listener sheetsListener:GoogleSheetEventListener gSheetListener = new (congifura
 The Google Sheets Listener supports 3 service endpoints `/onManage`, `/onChange` and `/onEdit` respectively.
 * The `/onManage` service endpoint can listen to management related changes of a spreadsheet such as creation of a new spreadsheet and deletion of a spreadsheet with the following trigger methods: `onNewSheetCreatedEvent`, `onSheetDeletedEvent`.
 * The `/onChange` service endpoint can listen to events triggered for different type of changes such as editing a spreadsheet, inserting a blank row, removing a row, inserting a blank column, removing a column, inserting a new grid (worksheet), removing a new grid (worksheet) from a spreadsheet that capture change event types `EDIT`, `INSERT_ROW`, `REMOVE_ROW`, `INSERT_COLUMN`, `REMOVE_COLUMN`, `INSERT_GRID`, `REMOVE_GRID`, `OTHER` etc.
-* The `/onEdit` service endpoint, can listen to events triggered  when a spreadsheet is edited and can get more information about the edit event such as the `spreadsheet ID, spreadsheet name, worksheet ID, worksheet name, range updated, starting row position, end row position, starting column position, end column position, new values, last row with content, last column with content` etc.
+* The `/onEdit` service endpoint, can listen to events triggered when a spreadsheet is edited that capture edit event types `APPEND_ROW`, `UPDATE_ROW`. We can get more information about the edit event such as the `spreadsheet ID, spreadsheet name, worksheet ID, worksheet name, range updated, starting row position, end row position, starting column position, end column position, new values, last row with content, last column with content` etc.
 ```ballerina
 service / on gSheetListener {
     resource function post [string eventType] (http:Caller caller, http:Request request) returns error? {
         if (eventType == sheetsListener:ON_EDIT) {  
-            EventInfo eventInfo = check gSheetListener.getOnEditEventType(caller, request);
-            if (eventInfo?.eventType == sheetsListener:EDIT && eventInfo?.editEventInfo != ()) {
+            sheetsListener:EventInfo eventInfo = check gSheetListener.getOnEditEventType(caller, request);
+            if (eventInfo?.eventType == sheetsListener:APPEND_ROW && eventInfo?.editEventInfo != ()) {
+                log:print(eventInfo?.editEventInfo.toString());
+                // Write your logic here.....
+            } else if (eventInfo?.eventType == sheetsListener:UPDATE_ROW && eventInfo?.editEventInfo != ()) {
                 log:print(eventInfo?.editEventInfo.toString());
                 // Write your logic here.....
             }
@@ -448,13 +456,125 @@ listener sheetsListener:GoogleSheetEventListener gSheetListener = new (congifura
 service / on gSheetListener {
     resource function post onEdit (http:Caller caller, http:Request request) returns error? {
         sheetsListener:EventInfo eventInfo = check gSheetListener.getOnEditEventType(caller, request);
-        if (eventInfo?.eventType == sheetsListener:EDIT && eventInfo?.editEventInfo != ()) {
+        if (eventInfo?.eventType == sheetsListener:APPEND_ROW && eventInfo?.editEventInfo != ()) {
+            log:print(eventInfo?.editEventInfo.toString());
+            // Write your logic here.....
+        } else if (eventInfo?.eventType == sheetsListener:UPDATE_ROW && eventInfo?.editEventInfo != ()) {
             log:print(eventInfo?.editEventInfo.toString());
             // Write your logic here.....
         }
     }
 }
 ```
+
+### Trigger On Append Row
+Triggers when a new row is appended to a spreadsheet.
+
+```ballerina
+import ballerina/http;
+import ballerina/log;
+import ballerinax/googleapis_drive as drive;
+import ballerinax/googleapis_sheets.'listener as sheetsListener;
+
+# Event Trigger class
+public class EventTrigger {
+    public isolated function onNewSheetCreatedEvent(string fileId) {}
+
+    public isolated function onSheetDeletedEvent(string fileId) {}
+
+    public isolated function onFileUpdateEvent(string fileId) {}
+}
+
+configurable int port = ?;
+configurable string callbackURL = ?;
+configurable string clientId = ?;
+configurable string clientSecret = ?;
+configurable string refreshUrl = ?;
+configurable string refreshToken = ?;
+
+drive:Configuration clientConfiguration = {
+    clientConfig: {
+        clientId: clientId,
+        clientSecret: clientSecret,
+        refreshUrl: refreshUrl,
+        refreshToken: refreshToken
+    }
+};
+
+sheetsListener:SheetListenerConfiguration congifuration = {
+    port: port,
+    callbackURL: callbackURL,
+    driveClientConfiguration: clientConfiguration,
+    eventService: new EventTrigger()
+};
+
+listener sheetsListener:GoogleSheetEventListener gSheetListener = new (congifuration);
+
+service / on gSheetListener {
+    resource function post onEdit (http:Caller caller, http:Request request) returns error? {
+        sheetsListener:EventInfo eventInfo = check gSheetListener.getOnEditEventType(caller, request);
+        if (eventInfo?.eventType == sheetsListener:APPEND_ROW && eventInfo?.editEventInfo != ()) {
+            log:print(eventInfo?.editEventInfo.toString());
+            // Write your logic here.....
+        }
+    }
+}
+```
+
+### Trigger On Update Row
+Triggers when a row is updated in a spreadsheet.
+
+```ballerina
+import ballerina/http;
+import ballerina/log;
+import ballerinax/googleapis_drive as drive;
+import ballerinax/googleapis_sheets.'listener as sheetsListener;
+
+# Event Trigger class
+public class EventTrigger {
+    public isolated function onNewSheetCreatedEvent(string fileId) {}
+
+    public isolated function onSheetDeletedEvent(string fileId) {}
+
+    public isolated function onFileUpdateEvent(string fileId) {}
+}
+
+configurable int port = ?;
+configurable string callbackURL = ?;
+configurable string clientId = ?;
+configurable string clientSecret = ?;
+configurable string refreshUrl = ?;
+configurable string refreshToken = ?;
+
+drive:Configuration clientConfiguration = {
+    clientConfig: {
+        clientId: clientId,
+        clientSecret: clientSecret,
+        refreshUrl: refreshUrl,
+        refreshToken: refreshToken
+    }
+};
+
+sheetsListener:SheetListenerConfiguration congifuration = {
+    port: port,
+    callbackURL: callbackURL,
+    driveClientConfiguration: clientConfiguration,
+    eventService: new EventTrigger()
+};
+
+listener sheetsListener:GoogleSheetEventListener gSheetListener = new (congifuration);
+
+service / on gSheetListener {
+    resource function post onEdit (http:Caller caller, http:Request request) returns error? {
+        sheetsListener:EventInfo eventInfo = check gSheetListener.getOnEditEventType(caller, request);
+        if (eventInfo?.eventType == sheetsListener:UPDATE_ROW && eventInfo?.editEventInfo != ()) {
+            log:print(eventInfo?.editEventInfo.toString());
+            // Write your logic here.....
+        }
+    }
+}
+```
+
 
 ## On Change Trigger Endpoint
 

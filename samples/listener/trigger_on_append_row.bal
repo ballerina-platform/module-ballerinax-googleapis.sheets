@@ -59,9 +59,6 @@ service / on gSheetListener {
         if (eventInfo?.eventType == sheetsListener:APPEND_ROW && eventInfo?.editEventInfo != ()) {
             log:print(eventInfo?.editEventInfo.toString());
             // Write your logic here.....
-        } else if (eventInfo?.eventType == sheetsListener:UPDATE_ROW && eventInfo?.editEventInfo != ()) {
-            log:print(eventInfo?.editEventInfo.toString());
-            // Write your logic here.....
         }
     }
 }

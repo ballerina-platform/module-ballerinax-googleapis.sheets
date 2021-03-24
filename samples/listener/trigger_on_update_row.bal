@@ -56,10 +56,7 @@ listener sheetsListener:GoogleSheetEventListener gSheetListener = new (congifura
 service / on gSheetListener {
     resource function post onEdit (http:Caller caller, http:Request request) returns error? {
         sheetsListener:EventInfo eventInfo = check gSheetListener.getOnEditEventType(caller, request);
-        if (eventInfo?.eventType == sheetsListener:APPEND_ROW && eventInfo?.editEventInfo != ()) {
-            log:print(eventInfo?.editEventInfo.toString());
-            // Write your logic here.....
-        } else if (eventInfo?.eventType == sheetsListener:UPDATE_ROW && eventInfo?.editEventInfo != ()) {
+        if (eventInfo?.eventType == sheetsListener:UPDATE_ROW && eventInfo?.editEventInfo != ()) {
             log:print(eventInfo?.editEventInfo.toString());
             // Write your logic here.....
         }

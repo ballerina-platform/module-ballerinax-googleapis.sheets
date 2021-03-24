@@ -49,6 +49,10 @@ public const string ON_EDIT = "onEdit";
 public const string ON_CHANGE = "onChange";
 public const string ON_MANAGE = "onManage";
 
+// Edit Event Types
+public const string APPEND_ROW = "appendRow";
+public const string UPDATE_ROW = "updateRow";
+
 // Trigger log
 const string TRIGGER_LOG = ">>>>> INCOMING TRIGGER >>>>> ";
 

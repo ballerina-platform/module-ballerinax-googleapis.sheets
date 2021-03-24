@@ -151,8 +151,13 @@ public class GoogleSheetEventListener {
         EventInfo info = {};
         json payload = check request.getJsonPayload();
         check caller->respond(http:STATUS_OK); 
+        json eventType = check payload.eventType;
+        if (APPEND_ROW.equalsIgnoreCaseAscii(eventType.toString())) {
+            info.eventType = APPEND_ROW;
+        } else if (UPDATE_ROW.equalsIgnoreCaseAscii(eventType.toString())) {
+            info.eventType = UPDATE_ROW;
+        }
         EditEventInfo editEventInfo = check payload.cloneWithType(EditEventInfo);
-        info.eventType = EDIT;
         info.editEventInfo = editEventInfo;
         return info;
     }
