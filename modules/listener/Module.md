@@ -109,47 +109,87 @@ We need to enable the app script trigger if we want to listen to internal change
 4. Remove all the code that is currently in the Code.gs file, and replace it with this:
     ```
     function atChange(e){
-    var formData = {
-        'changeType': e.changeType,
-    };
-    var payload = JSON.stringify(formData);
+        var formData = {
+            'changeType': e.changeType
+        };
+        var payload = JSON.stringify(formData);
 
-    var options = {
-        'method' : 'post',
-        'contentType': 'application/json',
-        'payload' : payload
-    };
+        if (e.changeType == "REMOVE_ROW") {
+            saveDeleteStatus(1);
+        }
 
-    UrlFetchApp.fetch('<BASE_URL>/onChange/', options);
+        var options = {
+            'method' : 'post',
+            'contentType': 'application/json',
+            'payload' : payload
+        };
+
+        UrlFetchApp.fetch('<BASE_URL>/onChange/', options);
     }
 
     function atEdit(e){
-    var source = e.source;
-    var range = e.range;
-    
-    var formData = {
-            'spreadsheetId' : source.getId(),
-            'spreadsheetName' : source.getName(),
-            'worksheetId' : range.getSheet().getSheetId(),
-            'worksheetName' : range.getSheet().getName(),
-            'rangeUpdated' : range.getA1Notation(),
-            'startingRowPosition' : range.getRow(),
-            'startingColumnPosition' : range.getColumn(),
-            'endRowPosition' : range.getLastRow(),
-            'endColumnPosition' : range.getLastColumn(),
-            'newValues' : range.getValues(),
-            'lastRowWithContent' : range.getSheet().getLastRow(),
-            'lastColumnWithContent' : range.getSheet().getLastColumn()
-    };
-    var payload = JSON.stringify(formData);
+        var source = e.source;
+        var range = e.range;
 
-    var options = {
-        'method' : 'post',
-        'contentType': 'application/json',
-        'payload' : payload
-    };
+        var a = range.getRow();
+        var b = range.getSheet().getLastRow();
+        var previousLastRow = Number(getValue());
+        var deleteStatus = Number(getDeleteStatus());
+        var eventType = "edit";
 
-    UrlFetchApp.fetch('<BASE_URL>/onEdit/', options);
+        if ((a == b && b != previousLastRow) || (a == b && b == previousLastRow && deleteStatus == 1)) {
+            eventType = "appendRow";
+        }
+        else if ((a != b) || (a == b && b == previousLastRow && deleteStatus == 0)) {
+            eventType = "updateRow";
+        }
+        
+        var formData = {
+                'spreadsheetId' : source.getId(),
+                'spreadsheetName' : source.getName(),
+                'worksheetId' : range.getSheet().getSheetId(),
+                'worksheetName' : range.getSheet().getName(),
+                'rangeUpdated' : range.getA1Notation(),
+                'startingRowPosition' : range.getRow(),
+                'startingColumnPosition' : range.getColumn(),
+                'endRowPosition' : range.getLastRow(),
+                'endColumnPosition' : range.getLastColumn(),
+                'newValues' : range.getValues(),
+                'lastRowWithContent' : range.getSheet().getLastRow(),
+                'lastColumnWithContent' : range.getSheet().getLastColumn(),
+                'previousLastRow' : previousLastRow,
+                'eventType' : eventType
+        };
+        var payload = JSON.stringify(formData);
+
+        var options = {
+            'method' : 'post',
+            'contentType': 'application/json',
+            'payload' : payload
+        };
+
+        UrlFetchApp.fetch('<BASE_URL>/onEdit/', options);
+
+        saveValue(range.getSheet().getLastRow());
+        saveDeleteStatus(0);
+    }
+
+    var properties = PropertiesService.getScriptProperties();
+
+    function saveValue(lastRow) {
+        properties.setProperty('PREVIOUS_LAST_ROW', lastRow);
+    }
+
+    function getValue() {
+        return properties.getProperty('PREVIOUS_LAST_ROW');
+    }
+
+    function saveDeleteStatus(deleteStatus) {
+        properties.setProperty('DELETE_STATUS', deleteStatus);
+    }
+
+    function getDeleteStatus() {
+        return properties.getProperty('DELETE_STATUS');
     }
     ```
     We’re using the UrlFetchApp class to communicate with other applications on the internet.
