@@ -18,21 +18,6 @@ import ballerina/os;
 import ballerina/test;
 import ballerina/log;
 
-// Local Testing Configuration from Config.toml
-// configurable string refreshToken = ?;
-// configurable string clientId = ?;
-// configurable string clientSecret = ?;
-// configurable string accessToken = ?;
-
-// SpreadsheetConfiguration spreadsheetConfig = {
-//     oauthClientConfig: {
-//         refreshUrl: REFRESH_URL,
-//         refreshToken: refreshToken,
-//         clientId: clientId,
-//         clientSecret: clientSecret
-//     }
-// };
-
 SpreadsheetConfiguration spreadsheetConfig = {
     oauthClientConfig: {
         refreshUrl: REFRESH_URL,
@@ -43,15 +28,6 @@ SpreadsheetConfiguration spreadsheetConfig = {
 };
 
 Client spreadsheetClient = checkpanic new (spreadsheetConfig);
-
-// Configuration to test access token support
-// SpreadsheetConfiguration spreadsheetConfigWithBearerToken = {
-//     oauthClientConfig: {
-//         token: os:getEnv("ACCESS_TOKEN")
-//     }
-// };
-
-// Client spreadsheetClientWithBearerToken = checkpanic new (spreadsheetConfigWithBearerToken);
 
 var randomString = createRandomUUIDWithoutHyphens();
 
@@ -655,18 +631,3 @@ function testClearAllBySheetName() {
         test:assertFail(spreadsheetRes.message());
     }
 }
-
-// Disable Access Token Unit Test
-// @test:Config {
-//     dependsOn: [testClearAllBySheetName],
-//     enable: true
-// }
-// function testCreateSpreadsheetWithBearerToken() {
-//     var spreadsheetRes = spreadsheetClientWithBearerToken->createSpreadsheet(createSpreadsheetName);
-//     if (spreadsheetRes is Spreadsheet) {
-//         log:print(spreadsheetRes.toString());
-//         test:assertNotEquals(spreadsheetRes.spreadsheetId, "", msg = "Failed to create spreadsheet");
-//     } else {
-//         test:assertFail(spreadsheetRes.message());
-//     }
-// }
