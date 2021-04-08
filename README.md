@@ -45,11 +45,32 @@ Java Development Kit (JDK) with version 11 is required.
 * Download the Ballerina [distribution](https://ballerinalang.org/downloads/)
 Ballerina Swan Lake Alpha 2 is required.
 
-* Instantiate the connector by giving authentication details in the HTTP client config. The HTTP client config has built-in support for BasicAuth and OAuth 2.0. Google Spreadsheet uses OAuth 2.0 to authenticate and authorize requests. The Google Spreadsheet connector can be minimally instantiated in the HTTP client config using the client ID, client secret, and refresh token.
+* Instantiate the connector by giving authentication details in the HTTP client config. The HTTP client config has built-in support for Bearer Token Authentication and OAuth 2.0. Google Spreadsheet uses OAuth 2.0 to authenticate and authorize requests. It uses the Direct Token Grant Type. The Google Spreadsheet connector can be minimally instantiated in the HTTP client config using the OAuth 2.0 access token.
+    * Access Token 
+    ``` 
+    sheets:SpreadsheetConfiguration spreadsheetConfig = {
+        oauthClientConfig: {
+            token: <access token>
+        }
+    }
+    ```
+
+    The Google Spreadsheet connector can also be instantiated in the HTTP client config without the access token using the client ID, client secret, and refresh token.
     * Client ID
     * Client Secret
     * Refresh Token
     * Refresh URL
+    ```
+    sheets:SpreadsheetConfiguration spreadsheetConfig = {
+        oauthClientConfig: {
+            clientId: <clientId>,
+            clientSecret: <clientSecret>,
+            refreshToken: <refreshToken>,
+            refreshUrl: <sheets:REFRESH_URL>
+        }
+    }
+    ```
+
 
 ## Obtaining Tokens
 
@@ -61,7 +82,7 @@ Ballerina Swan Lake Alpha 2 is required.
 access token and refresh token). 
 5. Click **Create**. Your client ID and client secret appear. 
 6. In a separate browser window or tab, visit [OAuth 2.0 playground](https://developers.google.com/oauthplayground), select the required Google Spreadsheet scopes, and then click **Authorize APIs**.
-7. When you receive your authorization code, click **Exchange authorization code for tokens** to obtain the refresh token.
+7. When you receive your authorization code, click **Exchange authorization code for tokens** to obtain the access token and refresh token.
 
 ## Add project configurations file
 Add the project configuration file by creating a `Config.toml` configuration file under the root path of the project structure.
