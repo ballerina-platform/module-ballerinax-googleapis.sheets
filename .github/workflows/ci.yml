@@ -27,8 +27,8 @@ jobs:
 
             - name: Build with Gradle
               env:
-                packageUser: ${{ secrets.GITHUB_USERNAME }}
-                packagePAT: ${{ secrets.GITHUB_PAT_TOKEN }}
+                packageUser: ${{ secrets.BALLERINA_BOT_USERNAME }}
+                packagePAT: ${{ secrets.BALLERINA_BOT_TOKEN }}
               run: |
                 ./gradlew build
 
