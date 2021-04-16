@@ -18,12 +18,12 @@ import ballerina/jballerina.java;
 
 isolated function callOnAppendRowMethod(SimpleHttpService httpService, EventInfo event)
                                 returns error? = @java:Method {
-    'class: "io.ballerinax.webhook.WebhookNativeOperationHandler"
+    'class: "org.ballerinalang.googleapis.sheets.HttpNativeOperationHandler"
 } external;
 
 isolated function callOnUpdateRowMethod(SimpleHttpService httpService, EventInfo event)
                                 returns error? = @java:Method {
-    'class: "io.ballerinax.webhook.WebhookNativeOperationHandler"
+    'class: "org.ballerinalang.googleapis.sheets.HttpNativeOperationHandler"
 } external;
 
 # Invoke native method to retrieve implemented method names in the subscriber service
@@ -31,5 +31,5 @@ isolated function callOnUpdateRowMethod(SimpleHttpService httpService, EventInfo
 # + httpService - current http service
 # + return - {@code string[]} containing the method-names in current implementation
 isolated function getServiceMethodNames(SimpleHttpService httpService) returns string[] = @java:Method {
-    'class: "io.ballerinax.webhook.WebhookNativeOperationHandler"
+    'class: "org.ballerinalang.googleapis.sheets.HttpNativeOperationHandler"
 } external;

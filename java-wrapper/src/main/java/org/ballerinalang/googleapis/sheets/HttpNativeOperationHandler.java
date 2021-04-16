@@ -14,7 +14,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package io.ballerinax.webhook;
+package org.ballerinalang.googleapis.sheets;
 
 import io.ballerina.runtime.api.Environment;
 import io.ballerina.runtime.api.Future;
@@ -36,7 +36,7 @@ import java.util.concurrent.CountDownLatch;
 
 import static io.ballerina.runtime.api.utils.StringUtils.fromString;
 
-public class WebhookNativeOperationHandler {
+public class HttpNativeOperationHandler {
     public static Object callOnAppendRowMethod(Environment env, BObject bWebhookService,
                                                BMap<BString, Object> message) {
         return invokeRemoteFunction(env, bWebhookService, message, "callOnAppendRowMethod",

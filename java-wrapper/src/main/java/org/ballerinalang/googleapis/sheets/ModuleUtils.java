@@ -14,7 +14,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package io.ballerinax.webhook;
+package org.ballerinalang.googleapis.sheets;
 
 import io.ballerina.runtime.api.Environment;
 import io.ballerina.runtime.api.Module;
