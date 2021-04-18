@@ -28,7 +28,7 @@ sheetsListener:SheetListenerConfiguration congifuration = {
 listener sheetsListener:Listener gSheetListener = new (congifuration);
 
 service / on gSheetListener {
-    remote function onUpdateRow(sheetsListener:EventInfo event) returns error? {
+    remote function onUpdateRow(sheetsListener:GSheetEvent event) returns error? {
         log:printInfo("Received onUpdateRow-message ", eventMsg = event);
         // Write your logic here.....
     }

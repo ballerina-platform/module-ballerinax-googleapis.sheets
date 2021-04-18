@@ -16,12 +16,12 @@
 
 import ballerina/jballerina.java;
 
-isolated function callOnAppendRowMethod(SimpleHttpService httpService, EventInfo event)
+isolated function callOnAppendRowMethod(SimpleHttpService httpService, GSheetEvent event)
                                 returns error? = @java:Method {
     'class: "org.ballerinalang.googleapis.sheets.HttpNativeOperationHandler"
 } external;
 
-isolated function callOnUpdateRowMethod(SimpleHttpService httpService, EventInfo event)
+isolated function callOnUpdateRowMethod(SimpleHttpService httpService, GSheetEvent event)
                                 returns error? = @java:Method {
     'class: "org.ballerinalang.googleapis.sheets.HttpNativeOperationHandler"
 } external;

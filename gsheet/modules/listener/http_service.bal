@@ -15,65 +15,36 @@
 // under the License.
 
 import ballerina/http;
-import ballerina/log;
 
 service class HttpService {
-    private boolean isOnAppendRowAvailable = false;
-    private boolean isOnUpdateRowAvailable = false;
-
-    private SimpleHttpService httpService;
+    private EventDispatcher eventDispatcher;
     private string spreadsheetId;
 
     public isolated function init(SimpleHttpService httpService, string spreadsheetId) {
-        self.httpService = httpService;
+        self.eventDispatcher = new (httpService);
         self.spreadsheetId = spreadsheetId;
-
-        string[] methodNames = getServiceMethodNames(httpService);
-
-        foreach var methodName in methodNames {
-            match methodName {
-                ON_APPEND_ROW => {
-                    self.isOnAppendRowAvailable = true;
-                }
-                ON_UPDATE_ROW => {
-                    self.isOnUpdateRowAvailable = true;
-                }
-                _ => {
-                    log:printError("Unrecognized method [" + methodName + "] found in the implementation");
-                }
-            }
-        }
     }
 
     isolated resource function post onEdit(http:Caller caller, http:Request request) returns error? {
-        EventInfo info = {};
         json payload = check request.getJsonPayload();
-        check caller->respond(http:STATUS_OK); 
         json spreadsheetId = check payload.spreadsheetId;
-        if (self.spreadsheetId == spreadsheetId.toString()) {
-            EditEventInfo editEventInfo = check payload.cloneWithType(EditEventInfo);
-            info.editEventInfo = editEventInfo; 
-            json eventType = check payload.eventType;
-            match eventType.toString() {
-                APPEND_ROW => {
-                    if (self.isOnAppendRowAvailable) {
-                        info.eventType = APPEND_ROW;
-                        check callOnAppendRowMethod(self.httpService, info);
-                    }
-                }
-                UPDATE_ROW => {
-                    if (self.isOnUpdateRowAvailable) {
-                        info.eventType = UPDATE_ROW;
-                        check callOnUpdateRowMethod(self.httpService, info);
-                    }
-                }
-                _ => {
-                        log:printError("Unrecognized event type [" + eventType.toString() 
-                            + "] found in the response payload");
-                }
+        json eventType = check payload.eventType;
+        check caller->respond(http:STATUS_OK); 
+        if (self.isEventFromMatchingGSheet(spreadsheetId)) {
+            GSheetEvent event = {};
+            EventInfo eventInfo = check payload.cloneWithType(EventInfo);
+            event.eventInfo = eventInfo; 
+            error? dispatchResult = self.eventDispatcher.dispatch(eventType.toString(), event);
+            if (dispatchResult is error) {
+                return error("Failed to dispatch event : ", 'error = dispatchResult);
             }
             return;
         }
-        return error("Diffrent spreadsheet IDs found");
+        return error("Diffrent spreadsheet IDs found : ", configuredSpreadsheetID = self.spreadsheetId, 
+            requestSpreadsheetID = spreadsheetId.toString());
+    }
+
+    isolated function isEventFromMatchingGSheet(json spreadsheetId) returns boolean {
+        return (self.spreadsheetId == spreadsheetId.toString());
     }
 }

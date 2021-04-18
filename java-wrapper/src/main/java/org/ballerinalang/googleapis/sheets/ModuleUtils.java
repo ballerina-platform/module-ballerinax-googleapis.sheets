@@ -26,15 +26,15 @@ import io.ballerina.runtime.api.Module;
  */
 public class ModuleUtils {
 
-    private static Module websubModule;
+    private static Module httpListenerModule;
 
     private ModuleUtils() {}
 
     public static void setModule(Environment environment) {
-        websubModule = environment.getCurrentModule();
+        httpListenerModule = environment.getCurrentModule();
     }
 
     public static Module getModule() {
-        return websubModule;
+        return httpListenerModule;
     }
 }

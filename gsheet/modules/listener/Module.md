@@ -181,12 +181,12 @@ The Google Sheets Listener supports the service endpoint `/onEdit`.
 * The `/onEdit` service endpoint, can listen to events triggered when a spreadsheet is edited such as when a new row is appended or when a row is updated with the following trigger methods: `onAppendRow`, `onUpdateRow`. We can get more information about the edit event such as the `spreadsheet ID, spreadsheet name, worksheet ID, worksheet name, range updated, starting row position, end row position, starting column position, end column position, new values, last row with content, last column with content` etc.
 ```ballerina
 service / on gSheetListener {
-    remote function onAppendRow(sheetsListener:EventInfo event) returns error? {
+    remote function onAppendRow(sheetsListener:GSheetEvent event) returns error? {
         log:printInfo("Received onAppendRow-message ", eventMsg = event);
         // Write your logic here.....
     }
 
-    remote function onUpdateRow(sheetsListener:EventInfo event) returns error? {
+    remote function onUpdateRow(sheetsListener:GSheetEvent event) returns error? {
         log:printInfo("Received onUpdateRow-message ", eventMsg = event);
         // Write your logic here.....
     }
@@ -217,7 +217,7 @@ sheetsListener:SheetListenerConfiguration congifuration = {
 listener sheetsListener:Listener gSheetListener = new (congifuration);
 
 service / on gSheetListener {
-    remote function onAppendRow(sheetsListener:EventInfo event) returns error? {
+    remote function onAppendRow(sheetsListener:GSheetEvent event) returns error? {
         log:printInfo("Received onAppendRow-message ", eventMsg = event);
         // Write your logic here.....
     }
@@ -242,7 +242,7 @@ sheetsListener:SheetListenerConfiguration congifuration = {
 listener sheetsListener:Listener gSheetListener = new (congifuration);
 
 service / on gSheetListener {
-    remote function onUpdateRow(sheetsListener:EventInfo event) returns error? {
+    remote function onUpdateRow(sheetsListener:GSheetEvent event) returns error? {
         log:printInfo("Received onUpdateRow-message ", eventMsg = event);
         // Write your logic here.....
     }

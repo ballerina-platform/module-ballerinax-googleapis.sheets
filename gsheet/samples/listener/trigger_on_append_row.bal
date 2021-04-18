@@ -28,7 +28,7 @@ sheetsListener:SheetListenerConfiguration congifuration = {
 listener sheetsListener:Listener gSheetListener = new (congifuration);
 
 service / on gSheetListener {
-    remote function onAppendRow(sheetsListener:EventInfo event) returns error? {
+    remote function onAppendRow(sheetsListener:GSheetEvent event) returns error? {
         log:printInfo("Received onAppendRow-message ", eventMsg = event);
         // Write your logic here.....
     }

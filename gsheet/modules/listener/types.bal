@@ -25,11 +25,11 @@ public type SheetListenerConfiguration record {
 
 # Define event information.
 #
-# + editEventInfo - Edit event information
+# + eventInfo - Event information
 # + eventType - Type of the event  
-public type EventInfo record {
+public type GSheetEvent record {
     string eventType?;
-    EditEventInfo editEventInfo?;
+    EventInfo eventInfo?;
 };
 
 # Define edit event Information.
@@ -47,7 +47,7 @@ public type EventInfo record {
 # + endColumnPosition - End column position for the range edited 
 # + endRowPosition - End row position for the range edited  
 # + eventData - App Script Event Object
-public type EditEventInfo record {
+public type EventInfo record {
     string spreadsheetId?;
     string spreadsheetName?;
     int worksheetId?;
