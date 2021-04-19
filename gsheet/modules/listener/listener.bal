@@ -17,6 +17,7 @@
 import ballerina/http;
 
 # Listener for the Google Sheets connector
+@display {label: "Google Sheets Listener"}
 public class Listener {
     private http:Listener httpListener;
     private SheetListenerConfiguration config; 
