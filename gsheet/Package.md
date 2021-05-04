@@ -13,22 +13,22 @@ The Google Spreadsheet Ballerina Connector supports spreadsheet management opera
 |                                   | Version               |
 |:---------------------------------:|:---------------------:|
 | Google Sheets API Version         | V4                    |
-| Ballerina Language                | Swan Lake Alpha 4     |
+| Ballerina Language                | Swan Lake Alpha 5     |
 | Java Development Kit (JDK)        | 11                    |
 
 # Supported Operations
 
 ## Spreadsheet Management Operations
-The `ballerinax/googleapis_sheets` module contains operations related to accessing the Google sheets API to perform 
+The `ballerinax/googleapis.sheets` module contains operations related to accessing the Google sheets API to perform 
 spreadsheet management operations. It includes operations like creating a spreadsheet, opening a spreadsheet, listing all the spreadsheets available in a user account, renaming a spreadsheet.
 
 ## Worksheet Management Operations
-The `ballerinax/googleapis_sheets` module contains operations related to accessing the Google sheets API to perform 
+The `ballerinax/googleapis.sheets` module contains operations related to accessing the Google sheets API to perform 
 worksheet management operations. It includes operations like getting all the worksheets available in a spreadsheet, opening a worksheet, adding a new worksheet, removing a worksheet and renaming a worksheet.
 
 
 ## Worksheet Service Operations
-The `ballerinax/googleapis_sheets` module contains operations related to accessing the Google sheets API to perform 
+The `ballerinax/googleapis.sheets` module contains operations related to accessing the Google sheets API to perform 
 worksheet data level operations. It includes operations like setting, getting and clearing a range of data, inserting columns/rows before and after a given position, creating or updating, getting and deleting columns/rows, setting, getting and clearing cell data, appending a row to a sheet, appending a row to a range of data, appending a cell to a range of data, copying a worksheet to a destination spreadsheet, and clearing worksheets.
 
 # Prerequisites:
@@ -37,7 +37,7 @@ worksheet data level operations. It includes operations like setting, getting an
 Java Development Kit (JDK) with version 11 is required.
 
 * Download the Ballerina [distribution](https://ballerinalang.org/downloads/)
-Ballerina Swan Lake Alpha 4 is required.
+Ballerina Swan Lake Alpha 5 is required.
 
 * Instantiate the connector by giving authentication details in the HTTP client config. The HTTP client config has built-in support for Bearer Token Authentication and OAuth 2.0. Google Spreadsheet uses OAuth 2.0 to authenticate and authorize requests. It uses the Direct Token Grant Type. The Google Spreadsheet connector can be minimally instantiated in the HTTP client config using the OAuth 2.0 access token.
     * Access Token 
@@ -81,7 +81,7 @@ Add the project configuration file by creating a `Config.toml` file under the ro
 This file should have following configurations. Add the token obtained in the previous step to the `Config.toml` file.
 
 ```
-[ballerinax.googleapis_sheets]
+[ballerinax.googleapis.sheets]
 refreshToken = "enter your refresh token here"
 clientId = "enter your client id here"
 clientSecret = "enter your client secret here"
@@ -95,9 +95,9 @@ trustStorePassword = "enter a truststore password if required"
 ## Working with GSheets Endpoint Actions
 
 ### Step 1: Import the Google Sheets Ballerina Library
-First, import the ballerinax/googleapis_sheets module into the Ballerina project.
+First, import the ballerinax/googleapis.sheets module into the Ballerina project.
 ```ballerina
-    import ballerinax/googleapis_sheets as sheets;
+    import ballerinax/googleapis.sheets as sheets;
 ```
 All the actions return valid response or error. If the action is a success, then the requested resource will be returned. Else error will be returned.
 
@@ -124,7 +124,7 @@ Then the endpoint actions can be invoked as `var response = spreadsheetClient->a
 ### Step 3: Initialize the Google Sheets Client with default truststore
 ```ballerina
 import ballerina/io;
-import ballerinax/googleapis_sheets as sheets;
+import ballerinax/googleapis.sheets as sheets;
 
 sheets:SpreadsheetConfiguration spreadsheetConfig = {
     oauthClientConfig: {
@@ -150,7 +150,7 @@ public function main(string... args) {
 ### Step 4: Initialize the Google Sheets Client with custom truststore
 ```ballerina
 import ballerina/io;
-import ballerinax/googleapis_sheets as sheets;
+import ballerinax/googleapis.sheets as sheets;
 
 sheets:SpreadsheetConfiguration spreadsheetConfig = {
     oauthClientConfig: {

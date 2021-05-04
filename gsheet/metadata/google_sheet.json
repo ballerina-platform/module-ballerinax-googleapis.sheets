@@ -3,7 +3,7 @@
         "name": "googleapis.sheets",
         "displayName": "Google Sheet V4",
         "organization":"ballerinax",
-        "module": "googleapis_sheets",
+        "module": "googleapis.sheets",
         "icon": "sheets.png",
         "clients": [
             {

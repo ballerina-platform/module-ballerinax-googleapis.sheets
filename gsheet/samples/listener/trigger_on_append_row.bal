@@ -15,7 +15,7 @@
 // under the License.
 
 import ballerina/log;
-import ballerinax/googleapis_sheets.'listener as sheetsListener;
+import ballerinax/googleapis.sheets.'listener as sheetsListener;
 
 configurable int port = ?;
 configurable string spreadsheetId = ?;

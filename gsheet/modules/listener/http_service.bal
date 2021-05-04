@@ -25,7 +25,7 @@ service class HttpService {
         self.spreadsheetId = spreadsheetId;
     }
 
-    isolated resource function post onEdit(http:Caller caller, http:Request request) returns error? {
+    isolated resource function post onEdit(http:Caller caller, http:Request request) returns @tainted error? {
         json payload = check request.getJsonPayload();
         json spreadsheetId = check payload.spreadsheetId;
         json eventType = check payload.eventType;

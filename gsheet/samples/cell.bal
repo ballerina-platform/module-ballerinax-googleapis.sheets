@@ -14,7 +14,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import ballerinax/googleapis_sheets as sheets;
+import ballerinax/googleapis.sheets as sheets;
 import ballerina/log;
 
 configurable string refreshToken = ?;

@@ -43,7 +43,7 @@ The Google Spreadsheet Ballerina Connector supports spreadsheet management opera
 Java Development Kit (JDK) with version 11 is required.
 
 * Download the Ballerina [distribution](https://ballerinalang.org/downloads/)
-Ballerina Swan Lake Alpha 4 is required.
+Ballerina Swan Lake Alpha 5 is required.
 
 * Instantiate the connector by giving authentication details in the HTTP client config. The HTTP client config has built-in support for Bearer Token Authentication and OAuth 2.0. Google Spreadsheet uses OAuth 2.0 to authenticate and authorize requests. It uses the Direct Token Grant Type. The Google Spreadsheet connector can be minimally instantiated in the HTTP client config using the OAuth 2.0 access token.
     * Access Token 
@@ -91,7 +91,7 @@ This file should have following configurations. Add the token obtained in the pr
 #### Config.toml
 ```ballerina
 
-[ballerinax.googleapis_sheets]
+[ballerinax.googleapis.sheets]
 refreshToken = "enter your refresh token here"
 clientId = "enter your client id here"
 clientSecret = "enter your client secret here"
@@ -107,7 +107,7 @@ trustStorePassword = "enter a truststore password if required"
 |                                   | Version               |
 |:---------------------------------:|:---------------------:|
 | Google Sheets API Version         | V4                    |
-| Ballerina Language                | Swan Lake Alpha 4     |
+| Ballerina Language                | Swan Lake Alpha 5     |
 | Java Development Kit (JDK)        | 11                    |
 
 ## Limitations
@@ -130,9 +130,9 @@ You must follow the following steps in order to obtain the tokens needed for the
 7. When you receive your authorization code, click **Exchange authorization code for tokens** to obtain the refresh token.
 
 ### Step 1: Import the Google Sheets Ballerina Library
-First, import the ballerinax/googleapis_sheets module into the Ballerina project.
+First, import the ballerinax/googleapis.sheets module into the Ballerina project.
 ```ballerina
-import ballerinax/googleapis_sheets as sheets;
+import ballerinax/googleapis.sheets as sheets;
 ```
 All the actions return valid response or error. If the action is a success, then the requested resource will be returned. Else error will be returned.
 
@@ -160,7 +160,7 @@ Then the endpoint actions can be invoked as `var response = spreadsheetClient->a
 ### Step 3: Sample with default truststore
 ```ballerina
 import ballerina/io;
-import ballerinax/googleapis_sheets as sheets;
+import ballerinax/googleapis.sheets as sheets;
 
 sheets:SpreadsheetConfiguration spreadsheetConfig = {
     oauthClientConfig: {
@@ -186,7 +186,7 @@ public function main(string... args) {
 ### Step 4: Sample with custom truststore
 ```ballerina
 import ballerina/io;
-import ballerinax/googleapis_sheets as sheets;
+import ballerinax/googleapis.sheets as sheets;
 
 sheets:SpreadsheetConfiguration spreadsheetConfig = {
     oauthClientConfig: {
@@ -230,7 +230,7 @@ This is the simplest scenario to use the Google Spreadsheet ballerina connector 
 
 ### Step 1: Import the Google Sheets Ballerina Library
 ```ballerina
-    import ballerinax/googleapis_sheets as sheets;
+    import ballerinax/googleapis.sheets as sheets;
 ```
 All the actions return valid response or error. If the action is a success, then the requested resource will be returned. Else error will be returned.
 
@@ -356,7 +356,7 @@ Sample is available at:
 https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/blob/master/samples/createSpreadsheet.bal
 
 ```ballerina
-import ballerinax/googleapis_sheets as sheets;
+import ballerinax/googleapis.sheets as sheets;
 import ballerina/log;
 
 sheets:SpreadsheetConfiguration spreadsheetConfig = {
@@ -388,7 +388,7 @@ Sample is available at:
 https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/blob/master/samples/openSpreadsheetById.bal
 
 ```ballerina
-import ballerinax/googleapis_sheets as sheets;
+import ballerinax/googleapis.sheets as sheets;
 import ballerina/log;
 
 sheets:SpreadsheetConfiguration spreadsheetConfig = {
@@ -432,7 +432,7 @@ Sample is available at:
 https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/blob/master/samples/openSpreadsheetByUrl.bal
 
 ```ballerina
-import ballerinax/googleapis_sheets as sheets;
+import ballerinax/googleapis.sheets as sheets;
 import ballerina/log;
 
 sheets:SpreadsheetConfiguration spreadsheetConfig = {
@@ -476,7 +476,7 @@ Sample is available at:
 https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/blob/master/samples/renameSpreadsheet.bal
 
 ```ballerina
-import ballerinax/googleapis_sheets as sheets;
+import ballerinax/googleapis.sheets as sheets;
 import ballerina/log;
 
 sheets:SpreadsheetConfiguration spreadsheetConfig = {
@@ -526,7 +526,7 @@ Sample is available at:
 https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/blob/master/samples/getAllSpreadsheets.bal
 
 ```ballerina
-import ballerinax/googleapis_sheets as sheets;
+import ballerinax/googleapis.sheets as sheets;
 import ballerina/log;
 
 sheets:SpreadsheetConfiguration spreadsheetConfig = {
@@ -565,7 +565,7 @@ Sample is available at:
 https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/blob/master/samples/addSheet.bal
 
 ```ballerina
-import ballerinax/googleapis_sheets as sheets;
+import ballerinax/googleapis.sheets as sheets;
 import ballerina/log;
 
 sheets:SpreadsheetConfiguration spreadsheetConfig = {
@@ -608,7 +608,7 @@ Sample is available at:
 https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/blob/master/samples/getSheetByName.bal
 
 ```ballerina
-import ballerinax/googleapis_sheets as sheets;
+import ballerinax/googleapis.sheets as sheets;
 import ballerina/log;
 
 sheets:SpreadsheetConfiguration spreadsheetConfig = {
@@ -661,7 +661,7 @@ Sample is available at:
 https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/blob/master/samples/renameSheet.bal
 
 ```ballerina
-import ballerinax/googleapis_sheets as sheets;
+import ballerinax/googleapis.sheets as sheets;
 import ballerina/log;
 
 sheets:SpreadsheetConfiguration spreadsheetConfig = {
@@ -719,7 +719,7 @@ Sample is available at:
 https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/blob/master/samples/removeSheetById.bal
 
 ```ballerina
-import ballerinax/googleapis_sheets as sheets;
+import ballerinax/googleapis.sheets as sheets;
 import ballerina/log;
 
 sheets:SpreadsheetConfiguration spreadsheetConfig = {
@@ -777,7 +777,7 @@ Sample is available at:
 https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/blob/master/samples/removeSheetByName.bal
 
 ```ballerina
-import ballerinax/googleapis_sheets as sheets;
+import ballerinax/googleapis.sheets as sheets;
 import ballerina/log;
 
 sheets:SpreadsheetConfiguration spreadsheetConfig = {
@@ -835,7 +835,7 @@ Sample is available at:
 https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/blob/master/samples/getSheets.bal
 
 ```ballerina
-import ballerinax/googleapis_sheets as sheets;
+import ballerinax/googleapis.sheets as sheets;
 import ballerina/log;
 
 sheets:SpreadsheetConfiguration spreadsheetConfig = {
@@ -894,7 +894,7 @@ Sample is available at:
 https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/blob/master/samples/range.bal
 
 ```ballerina
-import ballerinax/googleapis_sheets as sheets;
+import ballerinax/googleapis.sheets as sheets;
 import ballerina/log;
 
 sheets:SpreadsheetConfiguration spreadsheetConfig = {
@@ -985,7 +985,7 @@ Sample is available at:
 https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/blob/master/samples/column.bal
 
 ```ballerina
-import ballerinax/googleapis_sheets as sheets;
+import ballerinax/googleapis.sheets as sheets;
 import ballerina/log;
 
 sheets:SpreadsheetConfiguration spreadsheetConfig = {
@@ -1104,7 +1104,7 @@ Sample is available at:
 https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/blob/master/samples/rows.bal
 
 ```ballerina
-import ballerinax/googleapis_sheets as sheets;
+import ballerinax/googleapis.sheets as sheets;
 import ballerina/log;
 
 sheets:SpreadsheetConfiguration spreadsheetConfig = {
@@ -1222,7 +1222,7 @@ Sample is available at:
 https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/blob/master/samples/cell.bal
 
 ```ballerina
-import ballerinax/googleapis_sheets as sheets;
+import ballerinax/googleapis.sheets as sheets;
 import ballerina/log;
 
 sheets:SpreadsheetConfiguration spreadsheetConfig = {
@@ -1306,7 +1306,7 @@ Sample is available at:
 https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/blob/master/samples/appendRowToSheet.bal
 
 ```ballerina
-import ballerinax/googleapis_sheets as sheets;
+import ballerinax/googleapis.sheets as sheets;
 import ballerina/log;
 
 sheets:SpreadsheetConfiguration spreadsheetConfig = {
@@ -1384,7 +1384,7 @@ Sample is available at:
 https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/blob/master/samples/appendRowToRange.bal
 
 ```ballerina
-import ballerinax/googleapis_sheets as sheets;
+import ballerinax/googleapis.sheets as sheets;
 import ballerina/log;
 
 sheets:SpreadsheetConfiguration spreadsheetConfig = {
@@ -1464,7 +1464,7 @@ Sample is available at:
 https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/blob/master/samples/appendCellToRange.bal
 
 ```ballerina
-import ballerinax/googleapis_sheets as sheets;
+import ballerinax/googleapis.sheets as sheets;
 import ballerina/log;
 
 sheets:SpreadsheetConfiguration spreadsheetConfig = {
@@ -1543,7 +1543,7 @@ Sample is available at:
 https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/blob/master/samples/copyToById.bal
 
 ```ballerina
-import ballerinax/googleapis_sheets as sheets;
+import ballerinax/googleapis.sheets as sheets;
 import ballerina/log;
 
 sheets:SpreadsheetConfiguration spreadsheetConfig = {
@@ -1620,7 +1620,7 @@ Sample is available at:
 https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/blob/master/samples/copyToByName.bal
 
 ```ballerina
-import ballerinax/googleapis_sheets as sheets;
+import ballerinax/googleapis.sheets as sheets;
 import ballerina/log;
 
 sheets:SpreadsheetConfiguration spreadsheetConfig = {
@@ -1697,7 +1697,7 @@ Sample is available at:
 https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/blob/master/samples/clearAllById.bal
 
 ```ballerina
-import ballerinax/googleapis_sheets as sheets;
+import ballerinax/googleapis.sheets as sheets;
 import ballerina/log;
 
 sheets:SpreadsheetConfiguration spreadsheetConfig = {
@@ -1772,7 +1772,7 @@ Sample is available at:
 https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/blob/master/samples/clearAllByName.bal
 
 ```ballerina
-import ballerinax/googleapis_sheets as sheets;
+import ballerinax/googleapis.sheets as sheets;
 import ballerina/log;
 
 sheets:SpreadsheetConfiguration spreadsheetConfig = {
@@ -1856,14 +1856,14 @@ public function main() {
 
 ### Building the Source
 
-Execute the commands below to build from the source after installing Ballerina SLAlpha4 version.
+Execute the commands below to build from the source after installing Ballerina SLAlpha5 version.
 
 1. To clone the repository:
 Clone this repository using the following command:
 ```shell
     git clone https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets
 ```
-Execute the commands below to build from the source after installing Ballerina SLAlpha4 version.
+Execute the commands below to build from the source after installing Ballerina SLAlpha5 version.
 
 2. To build the library:
 Run this command from the module-ballerinax-googleapis.sheets root directory:
