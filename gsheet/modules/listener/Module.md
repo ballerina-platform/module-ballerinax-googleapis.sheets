@@ -10,7 +10,7 @@ The Google Spreadsheet Listener Ballerina Module provides the capability to list
 
 | Ballerina Language Versions  | GSheet API Version |
 |:----------------------------:|:------------------:|
-|  Swan Lake Alpha 4 SNAPSHOT  |   v4               |
+|  Swan Lake Alpha 5           |   v4               |
 
 
 # Supported Trigger Operations
@@ -43,7 +43,7 @@ We can get more information about the edit event such as the
 Java Development Kit (JDK) with version 11 is required.
 
 * Download the Ballerina [distribution](https://ballerinalang.org/downloads/)
-Ballerina Swan Lake Alpha 4 is required.
+Ballerina Swan Lake Alpha 5 is required.
 
 ## Enable Google App Script Trigger
 We need to enable the app script trigger if we want to listen to internal changes of a spreadsheet. Follow the following steps to enable the trigger.
@@ -152,10 +152,10 @@ spreadsheetId = "Identifier of the specific spreadsheet"
 ## Working with GSheets listener
 
 ### Step 1: Import the Google sheets listener Ballerina libraries
-First, import the ballerinax/googleapis_sheets.'listener module into the Ballerina project.
+First, import the ballerinax/googleapis.sheets.'listener module into the Ballerina project.
 ```ballerina
     import ballerinax/googleapis_drive as drive;
-    import ballerinax/googleapis_sheets.'listener as sheetsListener;
+    import ballerinax/googleapis.sheets.'listener as sheetsListener;
 ```
 
 ### Step 2: Enable Google App Script Trigger
@@ -204,7 +204,7 @@ Triggers when a new row is appended to a spreadsheet.
 
 ```ballerina
 import ballerina/log;
-import ballerinax/googleapis_sheets.'listener as sheetsListener;
+import ballerinax/googleapis.sheets.'listener as sheetsListener;
 
 configurable int port = ?;
 configurable string spreadsheetId = ?;
@@ -229,7 +229,7 @@ Triggers when a row is updated in a spreadsheet.
 
 ```ballerina
 import ballerina/log;
-import ballerinax/googleapis_sheets.'listener as sheetsListener;
+import ballerinax/googleapis.sheets.'listener as sheetsListener;
 
 configurable int port = ?;
 configurable string spreadsheetId = ?;

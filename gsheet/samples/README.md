@@ -10,7 +10,7 @@ Sample is available at:
 https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/blob/master/samples/createSpreadsheet.bal
 
 ```ballerina
-import ballerinax/googleapis_sheets as sheets;
+import ballerinax/googleapis.sheets as sheets;
 import ballerina/log;
 
 configurable string refreshToken = ?;
@@ -47,7 +47,7 @@ Sample is available at:
 https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/blob/master/samples/openSpreadsheetById.bal
 
 ```ballerina
-import ballerinax/googleapis_sheets as sheets;
+import ballerinax/googleapis.sheets as sheets;
 import ballerina/log;
 
 configurable string refreshToken = ?;
@@ -95,7 +95,7 @@ Sample is available at:
 https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/blob/master/samples/openSpreadsheetByUrl.bal
 
 ```ballerina
-import ballerinax/googleapis_sheets as sheets;
+import ballerinax/googleapis.sheets as sheets;
 import ballerina/log;
 
 configurable string refreshToken = ?;
@@ -143,7 +143,7 @@ Sample is available at:
 https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/blob/master/samples/renameSpreadsheet.bal
 
 ```ballerina
-import ballerinax/googleapis_sheets as sheets;
+import ballerinax/googleapis.sheets as sheets;
 import ballerina/log;
 
 configurable string refreshToken = ?;
@@ -197,7 +197,7 @@ Sample is available at:
 https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/blob/master/samples/getAllSpreadsheets.bal
 
 ```ballerina
-import ballerinax/googleapis_sheets as sheets;
+import ballerinax/googleapis.sheets as sheets;
 import ballerina/log;
 
 configurable string refreshToken = ?;
@@ -241,7 +241,7 @@ Sample is available at:
 https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/blob/master/samples/addSheet.bal
 
 ```ballerina
-import ballerinax/googleapis_sheets as sheets;
+import ballerinax/googleapis.sheets as sheets;
 import ballerina/log;
 
 configurable string refreshToken = ?;
@@ -288,7 +288,7 @@ Sample is available at:
 https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/blob/master/samples/getSheetByName.bal
 
 ```ballerina
-import ballerinax/googleapis_sheets as sheets;
+import ballerinax/googleapis.sheets as sheets;
 import ballerina/log;
 
 configurable string refreshToken = ?;
@@ -345,7 +345,7 @@ Sample is available at:
 https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/blob/master/samples/renameSheet.bal
 
 ```ballerina
-import ballerinax/googleapis_sheets as sheets;
+import ballerinax/googleapis.sheets as sheets;
 import ballerina/log;
 
 configurable string refreshToken = ?;
@@ -407,7 +407,7 @@ Sample is available at:
 https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/blob/master/samples/removeSheetById.bal
 
 ```ballerina
-import ballerinax/googleapis_sheets as sheets;
+import ballerinax/googleapis.sheets as sheets;
 import ballerina/log;
 
 configurable string refreshToken = ?;
@@ -469,7 +469,7 @@ Sample is available at:
 https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/blob/master/samples/removeSheetByName.bal
 
 ```ballerina
-import ballerinax/googleapis_sheets as sheets;
+import ballerinax/googleapis.sheets as sheets;
 import ballerina/log;
 
 configurable string refreshToken = ?;
@@ -531,7 +531,7 @@ Sample is available at:
 https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/blob/master/samples/getSheets.bal
 
 ```ballerina
-import ballerinax/googleapis_sheets as sheets;
+import ballerinax/googleapis.sheets as sheets;
 import ballerina/log;
 
 configurable string refreshToken = ?;
@@ -593,7 +593,7 @@ Sample is available at:
 https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/blob/master/samples/range.bal
 
 ```ballerina
-import ballerinax/googleapis_sheets as sheets;
+import ballerinax/googleapis.sheets as sheets;
 import ballerina/log;
 
 configurable string refreshToken = ?;
@@ -688,7 +688,7 @@ Sample is available at:
 https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/blob/master/samples/column.bal
 
 ```ballerina
-import ballerinax/googleapis_sheets as sheets;
+import ballerinax/googleapis.sheets as sheets;
 import ballerina/log;
 
 configurable string refreshToken = ?;
@@ -811,7 +811,7 @@ Sample is available at:
 https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/blob/master/samples/rows.bal
 
 ```ballerina
-import ballerinax/googleapis_sheets as sheets;
+import ballerinax/googleapis.sheets as sheets;
 import ballerina/log;
 
 configurable string refreshToken = ?;
@@ -933,7 +933,7 @@ Sample is available at:
 https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/blob/master/samples/cell.bal
 
 ```ballerina
-import ballerinax/googleapis_sheets as sheets;
+import ballerinax/googleapis.sheets as sheets;
 import ballerina/log;
 
 configurable string refreshToken = ?;
@@ -1021,7 +1021,7 @@ Sample is available at:
 https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/blob/master/samples/appendRowToSheet.bal
 
 ```ballerina
-import ballerinax/googleapis_sheets as sheets;
+import ballerinax/googleapis.sheets as sheets;
 import ballerina/log;
 
 configurable string refreshToken = ?;
@@ -1103,7 +1103,7 @@ Sample is available at:
 https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/blob/master/samples/appendRowToRange.bal
 
 ```ballerina
-import ballerinax/googleapis_sheets as sheets;
+import ballerinax/googleapis.sheets as sheets;
 import ballerina/log;
 
 configurable string refreshToken = ?;
@@ -1187,7 +1187,7 @@ Sample is available at:
 https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/blob/master/samples/appendCellToRange.bal
 
 ```ballerina
-import ballerinax/googleapis_sheets as sheets;
+import ballerinax/googleapis.sheets as sheets;
 import ballerina/log;
 
 configurable string refreshToken = ?;
@@ -1270,7 +1270,7 @@ Sample is available at:
 https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/blob/master/samples/copyToById.bal
 
 ```ballerina
-import ballerinax/googleapis_sheets as sheets;
+import ballerinax/googleapis.sheets as sheets;
 import ballerina/log;
 
 configurable string refreshToken = ?;
@@ -1351,7 +1351,7 @@ Sample is available at:
 https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/blob/master/samples/copyToByName.bal
 
 ```ballerina
-import ballerinax/googleapis_sheets as sheets;
+import ballerinax/googleapis.sheets as sheets;
 import ballerina/log;
 
 configurable string refreshToken = ?;
@@ -1432,7 +1432,7 @@ Sample is available at:
 https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/blob/master/samples/clearAllById.bal
 
 ```ballerina
-import ballerinax/googleapis_sheets as sheets;
+import ballerinax/googleapis.sheets as sheets;
 import ballerina/log;
 
 configurable string refreshToken = ?;
@@ -1511,7 +1511,7 @@ Sample is available at:
 https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/blob/master/samples/clearAllByName.bal
 
 ```ballerina
-import ballerinax/googleapis_sheets as sheets;
+import ballerinax/googleapis.sheets as sheets;
 import ballerina/log;
 
 configurable string refreshToken = ?;
