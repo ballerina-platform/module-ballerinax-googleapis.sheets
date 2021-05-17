@@ -94,9 +94,8 @@ public client class Client {
     # 
     # + return - Array of files records on success, else returns an error
     @display {label: "Get all spreadsheets"}
-    remote function getAllSpreadsheets() returns @tainted @display {label: "Spreadsheets"} stream<File>|error {
-        File[] files = [];
-        return getFilesStream(self.driveClient, files);
+    remote isolated function getAllSpreadsheets() returns @tainted @display {label: "Spreadsheets"} stream<File,error>|error {
+        return new stream<File,error>(new SpreadsheetStream(self.driveClient));
     }
 
     isolated function getIdFromUrl(string url) returns string|error {
