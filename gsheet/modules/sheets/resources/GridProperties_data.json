@@ -1,0 +1,25 @@
+{
+    "ballerinax/googleapis.sheets:0.99.8:GridProperties": [
+        {
+            "frozenRowCount": "int",
+            "frozenColumnCount": "int",
+            "hideGridlines": "boolean",
+            "rowCount": "int",
+            "columnCount": "int"
+        },
+        {
+            "frozenRowCount": "int",
+            "frozenColumnCount": "int",
+            "hideGridlines": "boolean",
+            "rowCount": "int",
+            "columnCount": "int"
+        },
+        {
+            "frozenRowCount": "int",
+            "frozenColumnCount": "int",
+            "hideGridlines": "boolean",
+            "rowCount": "int",
+            "columnCount": "int"
+        }
+    ]
+}
