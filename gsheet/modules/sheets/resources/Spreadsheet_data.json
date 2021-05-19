@@ -1,0 +1,22 @@
+{
+    "ballerinax/googleapis.sheets:0.99.8:Spreadsheet": [
+        {
+            "sheets": "ballerinax/googleapis.sheets:0.99.8:Sheet[]",
+            "spreadsheetUrl": "https://docs.google.com/spreadsheets/d/1L_NyYDvvoQBvf711PzgPL2VIik71tIsBauL3LxPE4wM/",
+            "spreadsheetId": "1L_NyYDvvoQBvf711PzgPL2VIik71tIsBauL3LxPE4wM",
+            "properties": "ballerinax/googleapis.sheets:0.99.8:SpreadsheetProperties"
+        },
+        {
+            "sheets": "ballerinax/googleapis.sheets:0.99.8:Sheet[]",
+            "spreadsheetUrl": "https://docs.google.com/spreadsheets/d/1zRc5Sgbq6o5TihaJ6jqsMdP4AT3uwGuFqo85h9iVLZw",
+            "spreadsheetId": "1zRc5Sgbq6o5TihaJ6jqsMdP4AT3uwGuFqo85h9iVLZw",
+            "properties": "ballerinax/googleapis.sheets:0.99.8:SpreadsheetProperties"
+        },
+        {
+            "sheets": "ballerinax/googleapis.sheets:0.99.8:Sheet[]",
+            "spreadsheetUrl": "https://docs.google.com/spreadsheets/d/13vV_7zhgxgYBawekNXA6fYT4hU-E6TgXoKCQl2PEF6o/",
+            "spreadsheetId": "13vV_7zhgxgYBawekNXA6fYT4hU-E6TgXoKCQl2PEF6o",
+            "properties": "ballerinax/googleapis.sheets:0.99.8:SpreadsheetProperties"
+        }
+    ]
+}

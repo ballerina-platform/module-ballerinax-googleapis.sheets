@@ -1,0 +1,22 @@
+{
+    "ballerinax/googleapis.sheets:0.99.8:SpreadsheetProperties": [
+        {
+            "title": "Copy of Sample Data for Modeling Google Spreadsheet Budgets",
+            "locale": "en_US",
+            "autoRecalc": "ON_CHANGE",
+            "timeZone": "America/New_York"
+        },
+        {
+            "title": "Ballerina test",
+            "locale": "en_US",
+            "autoRecalc": "ON_CHANGE",
+            "timeZone": "America/New_York"
+        },
+        {
+            "title": "Test 0111",
+            "locale": "en_US",
+            "autoRecalc": "ON_CHANGE",
+            "timeZone": "America/New_York"
+        }
+    ]
+}
