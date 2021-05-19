@@ -35,8 +35,8 @@ sheets:Client spreadsheetClient = checkpanic new (spreadsheetConfig);
 public function main() {
 
     // Get All Spreadsheets associated with the user account
-    stream<sheets:File>|error response = spreadsheetClient->getAllSpreadsheets();
-    if (response is stream<sheets:File>) {
+    stream<sheets:File,error>|error response = spreadsheetClient->getAllSpreadsheets();
+    if (response is stream<sheets:File, error>) {
         error? e = response.forEach(function (sheets:File spreadsheet) {
             log:printInfo("Spreadsheet Name: " + spreadsheet.name.toString() + " | Spreadsheet ID: " 
                 + spreadsheet.id.toString());
