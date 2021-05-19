@@ -29,7 +29,8 @@ Config.toml
 /target
 
 #json files created inside resources folder
-**/resources
+**/resources/*.json
+!**/resources/*_data.json
 
 # IDEA file
 .idea

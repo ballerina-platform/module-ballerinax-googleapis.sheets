@@ -1,0 +1,5 @@
+{
+    "ballerinax/googleapis.sheets:0.99.8:Sheet": {
+        "properties": "ballerinax/googleapis.sheets:0.99.8:SheetProperties"
+    }
+}
