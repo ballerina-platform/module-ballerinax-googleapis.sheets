@@ -114,9 +114,13 @@ function testRenameSpreadsheet() {
 function testGetAllSpreadSheets() {
     log:printInfo("testGetAllSpreadSheets");    
     var response = spreadsheetClient->getAllSpreadsheets();
-    if (response is stream<File>) {
-        var file = response.next();
-        test:assertNotEquals(file?.value, "", msg = "Found 0 records");
+    if (response is stream<File,error>) {
+        record {|File value;|}|error? fileResponse = response.next();
+        if (fileResponse is record {|File value;|}) {
+            test:assertNotEquals(fileResponse.value["id"], "", msg = "Found 0 records");
+        } else if (fileResponse is error) {
+            test:assertFail(fileResponse.message());
+        }
     } else {
         test:assertFail(response.message());
     }

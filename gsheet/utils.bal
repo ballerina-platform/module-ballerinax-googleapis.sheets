@@ -119,10 +119,13 @@ isolated function getErrorMessage(http:Response response) returns @tainted error
 # + files - File array
 # + pageToken - Token for retrieving next page
 # + return - File stream on success, else an error
-function getFilesStream(http:Client driveClient, @tainted File[] files, string? pageToken = ()) returns @tainted stream<File>|error {
-    string drivePath = DRIVE_PATH + FILES + QUESTION_MARK + Q + EQUAL + MIME_TYPE + EQUAL + APPLICATION;
+function getFilesStream(http:Client driveClient, @tainted File[] files, string? pageToken = ()) 
+                        returns @tainted stream<File>|error {
+    string drivePath = DRIVE_PATH + FILES + QUESTION_MARK + Q + EQUAL + MIME_TYPE + EQUAL + APPLICATION + 
+        AND_SIGN + TRASH_FALSE;
     if (pageToken is string) {
-        drivePath = DRIVE_PATH + FILES + QUESTION_MARK + Q + EQUAL + MIME_TYPE + EQUAL + APPLICATION + AND + PAGE_TOKEN + EQUAL + pageToken;
+        drivePath = DRIVE_PATH + FILES + QUESTION_MARK + Q + EQUAL + MIME_TYPE + EQUAL + APPLICATION + 
+            AND_SIGN + TRASH_FALSE + AND + PAGE_TOKEN + EQUAL + pageToken;
     }
     json|error resp = sendRequest(driveClient, drivePath);
     if (resp is json) {
@@ -145,6 +148,22 @@ function getFilesStream(http:Client driveClient, @tainted File[] files, string? 
     } else {
         return resp;
     }
+}
+
+# Get the drive url path to get a list of files.
+# 
+# + pageToken - Token for retrieving next page (Optional)
+# + return - drive url on success, else an error
+isolated function prepareDriveUrl(string? pageToken = ()) returns string {
+    string drivePath;
+    if (pageToken is string) {
+        drivePath = DRIVE_PATH + FILES + QUESTION_MARK + Q + EQUAL + MIME_TYPE + EQUAL + APPLICATION + 
+            AND_SIGN + TRASH_FALSE + AND + PAGE_TOKEN + EQUAL + pageToken;
+        return drivePath;
+    }
+    drivePath = DRIVE_PATH + FILES + QUESTION_MARK + Q + EQUAL + MIME_TYPE + EQUAL + APPLICATION + AND_SIGN + 
+        TRASH_FALSE;
+    return drivePath;
 }
 
 # Create a random UUID removing the unnecessary hyphens which will interrupt querying opearations.
