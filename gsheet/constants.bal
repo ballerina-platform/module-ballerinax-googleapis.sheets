@@ -53,6 +53,8 @@ const string Q = "q";
 const string MIME_TYPE = "mimeType";
 const string APPLICATION = "'application/vnd.google-apps.spreadsheet'";
 const string AND = "&";
+const string AND_SIGN = "and";
+const string TRASH_FALSE ="trashed=false";
 const string PAGE_TOKEN = "pageToken";
 
 // Error
