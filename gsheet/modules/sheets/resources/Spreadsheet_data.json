@@ -1,22 +1,125 @@
 {
     "ballerinax/googleapis.sheets:0.99.8:Spreadsheet": [
         {
-            "sheets": "ballerinax/googleapis.sheets:0.99.8:Sheet[]",
-            "spreadsheetUrl": "https://docs.google.com/spreadsheets/d/1L_NyYDvvoQBvf711PzgPL2VIik71tIsBauL3LxPE4wM/",
-            "spreadsheetId": "1L_NyYDvvoQBvf711PzgPL2VIik71tIsBauL3LxPE4wM",
-            "properties": "ballerinax/googleapis.sheets:0.99.8:SpreadsheetProperties"
+            "spreadsheetId": "14sjpSLfNTmIdPzUhx4pY9d9SHqI4yG9MS3Jc6HAAOjk",
+            "properties": {
+                "title": "Copy of Sample Data for Modeling Google Spreadsheet Budgets",
+                "locale": "en_US",
+                "autoRecalc": "ON_CHANGE",
+                "timeZone": "America/New_York"
+            },
+            "sheets": [
+                {
+                    "properties": {
+                        "sheetId": 0,
+                        "title": "Test1",
+                        "index": 0,
+                        "sheetType": "GRID",
+                        "gridProperties": {
+                            "rowCount": 1000,
+                            "columnCount": 15,
+                            "frozenRowCount": 0,
+                            "frozenColumnCount": 0,
+                            "hideGridlines": false
+                        },
+                        "hidden": false,
+                        "rightToLeft": false
+                    }
+                },
+                {
+                    "properties": {
+                        "sheetId": 1536883278,
+                        "title": "Test2",
+                        "index": 1,
+                        "sheetType": "GRID",
+                        "gridProperties": {
+                            "rowCount": 1000,
+                            "columnCount": 26,
+                            "frozenRowCount": 0,
+                            "frozenColumnCount": 0,
+                            "hideGridlines": false
+                        },
+                        "hidden": false,
+                        "rightToLeft": false
+                    }
+                },
+                {
+                    "properties": {
+                        "sheetId": 879150330,
+                        "title": "Test3",
+                        "index": 2,
+                        "sheetType": "GRID",
+                        "gridProperties": {
+                            "rowCount": 1000,
+                            "columnCount": 26,
+                            "frozenRowCount": 0,
+                            "frozenColumnCount": 0,
+                            "hideGridlines": false
+                        },
+                        "hidden": false,
+                        "rightToLeft": false
+                    }
+                }
+            ],
+            "spreadsheetUrl": "https://docs.google.com/spreadsheets/d/14sjpSLfNTmIdPzUhx4pY9d9SHqI4yG9MS3Jc6HAAOjk/edit"
         },
         {
-            "sheets": "ballerinax/googleapis.sheets:0.99.8:Sheet[]",
-            "spreadsheetUrl": "https://docs.google.com/spreadsheets/d/1zRc5Sgbq6o5TihaJ6jqsMdP4AT3uwGuFqo85h9iVLZw",
-            "spreadsheetId": "1zRc5Sgbq6o5TihaJ6jqsMdP4AT3uwGuFqo85h9iVLZw",
-            "properties": "ballerinax/googleapis.sheets:0.99.8:SpreadsheetProperties"
+            "spreadsheetId": "1vMBRjyOT0eI_BJBSVIdNEA5tLSnCdLhAqhtbJP2agl0",
+            "properties": {
+                "title": "Ballerina Connector New",
+                "locale": "en_US",
+                "autoRecalc": "ON_CHANGE",
+                "timeZone": "Etc/GMT"
+            },
+            "sheets": [
+                {
+                    "properties": {
+                        "sheetId": 0,
+                        "title": "Sheet1",
+                        "index": 0,
+                        "sheetType": "GRID",
+                        "gridProperties": {
+                            "rowCount": 1000,
+                            "columnCount": 26,
+                            "frozenRowCount": 0,
+                            "frozenColumnCount": 0,
+                            "hideGridlines": false
+                        },
+                        "hidden": false,
+                        "rightToLeft": false
+                    }
+                }
+            ],
+            "spreadsheetUrl": "https://docs.google.com/spreadsheets/d/1vMBRjyOT0eI_BJBSVIdNEA5tLSnCdLhAqhtbJP2agl0/edit"
         },
         {
-            "sheets": "ballerinax/googleapis.sheets:0.99.8:Sheet[]",
-            "spreadsheetUrl": "https://docs.google.com/spreadsheets/d/13vV_7zhgxgYBawekNXA6fYT4hU-E6TgXoKCQl2PEF6o/",
-            "spreadsheetId": "13vV_7zhgxgYBawekNXA6fYT4hU-E6TgXoKCQl2PEF6o",
-            "properties": "ballerinax/googleapis.sheets:0.99.8:SpreadsheetProperties"
+            "spreadsheetId": "1MjADFswLCGb5U4SE4fQ-sgpbCl2h_HKREDsx03s-pB0",
+            "properties": {
+                "title": "Ballerina Connector New",
+                "locale": "en_US",
+                "autoRecalc": "ON_CHANGE",
+                "timeZone": "Etc/GMT"
+            },
+            "sheets": [
+                {
+                    "properties": {
+                        "sheetId": 0,
+                        "title": "Sheet1",
+                        "index": 0,
+                        "sheetType": "GRID",
+                        "gridProperties": {
+                            "rowCount": 1000,
+                            "columnCount": 26,
+                            "frozenRowCount": 0,
+                            "frozenColumnCount": 0,
+                            "hideGridlines": false
+                        },
+                        "hidden": false,
+                        "rightToLeft": false
+                    }
+                }
+            ],
+            "spreadsheetUrl": "https://docs.google.com/spreadsheets/d/1MjADFswLCGb5U4SE4fQ-sgpbCl2h_HKREDsx03s-pB0/edit"
         }
     ]
 }
