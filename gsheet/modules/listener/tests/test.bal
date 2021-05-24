@@ -36,7 +36,7 @@ function testOnAppendRowTrigger() returns @tainted error? {
         "triggerUid":"6785380","user":{"email":"rolandh@wso2.com","nickname":"rolandh"}}};
     request.setPayload(payload);
 
-    var response = httpClient->post("/", request);
+    http:Response|error response = httpClient->post("/", request);
     if (response is http:Response) {
         test:assertEquals(response.statusCode, 200);
     } else {
@@ -55,7 +55,7 @@ function testOnUpdateRowTrigger() returns @tainted error? {
         "user":{"email":"rolandh@wso2.com","nickname":"rolandh"},"value":"a"}};
     request.setPayload(payload);
 
-    var response = httpClient->post("/", request);
+    http:Response|error response = httpClient->post("/", request);
     if (response is http:Response) {
         test:assertEquals(response.statusCode, 200);
     } else {

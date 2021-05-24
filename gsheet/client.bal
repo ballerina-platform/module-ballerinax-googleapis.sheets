@@ -356,7 +356,7 @@ public client class Client {
         }
         json jsonPayload = {"values": jsonValues};
         request.setJsonPayload(<@untainted>jsonPayload);
-        var httpResponse = self.httpClient->put(<@untainted>setValuePath, request);
+        http:Response|error httpResponse = self.httpClient->put(<@untainted>setValuePath, request);
         if (httpResponse is http:Response) {
             int statusCode = httpResponse.statusCode;
             var jsonResponse = httpResponse.getJsonPayload();
@@ -1032,7 +1032,7 @@ public client class Client {
         string setCellDataPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + notatiob
         + QUESTION_MARK + VALUE_INPUT_OPTION;
         request.setJsonPayload(jsonPayload);
-        var httpResponse = self.httpClient->put(<@untainted>setCellDataPath, request);
+        http:Response|error httpResponse = self.httpClient->put(<@untainted>setCellDataPath, request);
         if (httpResponse is http:Response) {
             int statusCode = httpResponse.statusCode;
             var jsonResponse = httpResponse.getJsonPayload();
