@@ -1,5 +1,55 @@
 {
-    "ballerinax/googleapis.sheets:0.99.8:Sheet": {
-        "properties": "ballerinax/googleapis.sheets:0.99.8:SheetProperties"
-    }
+    "ballerinax/googleapis.sheets:0.99.8:Sheet": [
+        {
+            "properties": {
+                "sheetId": 0,
+                "title": "Test1",
+                "index": 0,
+                "sheetType": "GRID",
+                "gridProperties": {
+                    "rowCount": 1000,
+                    "columnCount": 15,
+                    "frozenRowCount": 0,
+                    "frozenColumnCount": 0,
+                    "hideGridlines": false
+                },
+                "hidden": false,
+                "rightToLeft": false
+            }
+        },
+        {
+            "properties": {
+                "sheetId": 0,
+                "title": "Ballerinatest",
+                "index": 0,
+                "sheetType": "GRID",
+                "gridProperties": {
+                    "rowCount": 341,
+                    "columnCount": 22,
+                    "frozenRowCount": 0,
+                    "frozenColumnCount": 0,
+                    "hideGridlines": false
+                },
+                "hidden": false,
+                "rightToLeft": false
+            }
+        },
+        {
+            "properties": {
+                "sheetId": 0,
+                "title": "Wso2",
+                "index": 0,
+                "sheetType": "GRID",
+                "gridProperties": {
+                    "rowCount": 124,
+                    "columnCount": 12,
+                    "frozenRowCount": 0,
+                    "frozenColumnCount": 0,
+                    "hideGridlines": false
+                },
+                "hidden": false,
+                "rightToLeft": false
+            }
+        }
+    ]
 }

@@ -1,19 +1,175 @@
 {
     "ballerinax/googleapis.sheets:0.99.8:Spreadsheet": [
         {
-            "sheets": "ballerinax/googleapis.sheets:0.99.8:Sheet[]",
+            "sheets": [
+                {
+                    "properties": {
+                        "sheetId": 0,
+                        "title": "Test1",
+                        "index": 0,
+                        "sheetType": "GRID",
+                        "gridProperties": {
+                            "rowCount": 1000,
+                            "columnCount": 15,
+                            "frozenRowCount": 0,
+                            "frozenColumnCount": 0,
+                            "hideGridlines": false
+                        },
+                        "hidden": false,
+                        "rightToLeft": false
+                    }
+                },
+                {
+                    "properties": {
+                        "sheetId": 0,
+                        "title": "Test2",
+                        "index": 0,
+                        "sheetType": "GRID",
+                        "gridProperties": {
+                            "rowCount": 1000,
+                            "columnCount": 15,
+                            "frozenRowCount": 0,
+                            "frozenColumnCount": 0,
+                            "hideGridlines": false
+                        },
+                        "hidden": false,
+                        "rightToLeft": false
+                    }
+                },
+                {
+                    "properties": {
+                        "sheetId": 0,
+                        "title": "Test3",
+                        "index": 0,
+                        "sheetType": "GRID",
+                        "gridProperties": {
+                            "rowCount": 1000,
+                            "columnCount": 15,
+                            "frozenRowCount": 0,
+                            "frozenColumnCount": 0,
+                            "hideGridlines": false
+                        },
+                        "hidden": false,
+                        "rightToLeft": false
+                    }
+                }
+            ],
             "spreadsheetUrl": "https://docs.google.com/spreadsheets/d/1L_NyYDvvoQBvf711PzgPL2VIik71tIsBauL3LxPE4wM/",
             "spreadsheetId": "1L_NyYDvvoQBvf711PzgPL2VIik71tIsBauL3LxPE4wM",
             "properties": "ballerinax/googleapis.sheets:0.99.8:SpreadsheetProperties"
         },
         {
-            "sheets": "ballerinax/googleapis.sheets:0.99.8:Sheet[]",
+            "sheets": [
+                {
+                    "properties": {
+                        "sheetId": 0,
+                        "title": "Test1",
+                        "index": 0,
+                        "sheetType": "GRID",
+                        "gridProperties": {
+                            "rowCount": 1000,
+                            "columnCount": 15,
+                            "frozenRowCount": 0,
+                            "frozenColumnCount": 0,
+                            "hideGridlines": false
+                        },
+                        "hidden": false,
+                        "rightToLeft": false
+                    }
+                },
+                {
+                    "properties": {
+                        "sheetId": 0,
+                        "title": "Test2",
+                        "index": 0,
+                        "sheetType": "GRID",
+                        "gridProperties": {
+                            "rowCount": 1000,
+                            "columnCount": 15,
+                            "frozenRowCount": 0,
+                            "frozenColumnCount": 0,
+                            "hideGridlines": false
+                        },
+                        "hidden": false,
+                        "rightToLeft": false
+                    }
+                },
+                {
+                    "properties": {
+                        "sheetId": 0,
+                        "title": "Test3",
+                        "index": 0,
+                        "sheetType": "GRID",
+                        "gridProperties": {
+                            "rowCount": 1000,
+                            "columnCount": 15,
+                            "frozenRowCount": 0,
+                            "frozenColumnCount": 0,
+                            "hideGridlines": false
+                        },
+                        "hidden": false,
+                        "rightToLeft": false
+                    }
+                }
+            ],
             "spreadsheetUrl": "https://docs.google.com/spreadsheets/d/1zRc5Sgbq6o5TihaJ6jqsMdP4AT3uwGuFqo85h9iVLZw",
             "spreadsheetId": "1zRc5Sgbq6o5TihaJ6jqsMdP4AT3uwGuFqo85h9iVLZw",
             "properties": "ballerinax/googleapis.sheets:0.99.8:SpreadsheetProperties"
         },
         {
-            "sheets": "ballerinax/googleapis.sheets:0.99.8:Sheet[]",
+            "sheets": [
+                {
+                    "properties": {
+                        "sheetId": 0,
+                        "title": "Test1",
+                        "index": 0,
+                        "sheetType": "GRID",
+                        "gridProperties": {
+                            "rowCount": 1000,
+                            "columnCount": 15,
+                            "frozenRowCount": 0,
+                            "frozenColumnCount": 0,
+                            "hideGridlines": false
+                        },
+                        "hidden": false,
+                        "rightToLeft": false
+                    }
+                },
+                {
+                    "properties": {
+                        "sheetId": 0,
+                        "title": "Test2",
+                        "index": 0,
+                        "sheetType": "GRID",
+                        "gridProperties": {
+                            "rowCount": 1000,
+                            "columnCount": 15,
+                            "frozenRowCount": 0,
+                            "frozenColumnCount": 0,
+                            "hideGridlines": false
+                        },
+                        "hidden": false,
+                        "rightToLeft": false
+                    }
+                },
+                {
+                    "properties": {
+                        "sheetId": 0,
+                        "title": "Test3",
+                        "index": 0,
+                        "sheetType": "GRID",
+                        "gridProperties": {
+                            "rowCount": 1000,
+                            "columnCount": 15,
+                            "frozenRowCount": 0,
+                            "frozenColumnCount": 0,
+                            "hideGridlines": false
+                        },
+                        "hidden": false,
+                        "rightToLeft": false
+                    }
+                }
+            ],
             "spreadsheetUrl": "https://docs.google.com/spreadsheets/d/13vV_7zhgxgYBawekNXA6fYT4hU-E6TgXoKCQl2PEF6o/",
             "spreadsheetId": "13vV_7zhgxgYBawekNXA6fYT4hU-E6TgXoKCQl2PEF6o",
             "properties": "ballerinax/googleapis.sheets:0.99.8:SpreadsheetProperties"
