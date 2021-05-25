@@ -24,7 +24,7 @@ returns @tainted json | error {
     if (jsonPayload != ()) {
         httpRequest.setJsonPayload(<@untainted>jsonPayload);
     }
-    var httpResponse = httpClient->post(<@untainted>path, httpRequest);
+    http:Response|error httpResponse = httpClient->post(<@untainted>path, httpRequest);
     if (httpResponse is http:Response) {
         int statusCode = httpResponse.statusCode;
         json | http:ClientError jsonResponse = httpResponse.getJsonPayload();
@@ -43,7 +43,7 @@ returns @tainted json | error {
 }
 
 isolated function sendRequest(http:Client httpClient, string path) returns @tainted json | error {
-    var httpResponse = httpClient->get(<@untainted>path);
+    http:Response|error httpResponse = httpClient->get(<@untainted>path);
     if (httpResponse is http:Response) {
         int statusCode = httpResponse.statusCode;
         json | error jsonResponse = httpResponse.getJsonPayload();

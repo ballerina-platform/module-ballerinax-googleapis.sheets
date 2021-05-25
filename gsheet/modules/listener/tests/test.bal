@@ -1,10 +1,9 @@
 import ballerina/http;
 import ballerina/log;
 import ballerina/test;
-import ballerina/os;
 
-configurable int port = 9090;
-configurable string spreadsheetId = os:getEnv("SPREADSHEET_ID");
+int port = 9090;
+string spreadsheetId = "1cBz31FboLUNyoyO_MK6vwGr6CJ9QDABbTAzIPsfyuqA";
 
 SheetListenerConfiguration congifuration = {
     port: port,
@@ -14,19 +13,26 @@ SheetListenerConfiguration congifuration = {
 listener Listener gsheetListener = new (congifuration);
 
 service / on gsheetListener {
-    isolated remote function onAppendRow(GSheetEvent event) returns error? {
+    isolated remote function onAppendRow(GSheetEvent event) {
         log:printInfo("Received onAppendRow-message ", eventMsg = event);
+        string? receivedData = event?.eventInfo?.spreadsheetName;
+        if (event?.eventInfo?.spreadsheetName != "TestListener") {
+            log:printError("Received event data doesn't match");
+        }
     }
 
-    isolated remote function onUpdateRow(GSheetEvent event) returns error? {
+    isolated remote function onUpdateRow(GSheetEvent event) {
         log:printInfo("Received onUpdateRow-message ", eventMsg = event);
+        if (event?.eventInfo?.spreadsheetName != "TestListener") {
+            log:printError("Received event data doesn't match");
+        }
     }
 }
 
 http:Client httpClient = checkpanic new("http://localhost:9090/onEdit");
 
 @test:Config {}
-function testOnAppendRowTrigger() returns @tainted error? {
+function testOnAppendRowTrigger() {
     http:Request request = new;
     json payload =  {"spreadsheetId":"1cBz31FboLUNyoyO_MK6vwGr6CJ9QDABbTAzIPsfyuqA","spreadsheetName":"TestListener",
         "worksheetId":0,"worksheetName":"Sheet1","rangeUpdated":"A6:C6","startingRowPosition":6,
@@ -36,7 +42,7 @@ function testOnAppendRowTrigger() returns @tainted error? {
         "triggerUid":"6785380","user":{"email":"rolandh@wso2.com","nickname":"rolandh"}}};
     request.setPayload(payload);
 
-    var response = httpClient->post("/", request);
+    http:Response|error response = httpClient->post("/", request);
     if (response is http:Response) {
         test:assertEquals(response.statusCode, 200);
     } else {
@@ -45,7 +51,7 @@ function testOnAppendRowTrigger() returns @tainted error? {
 }
 
 @test:Config {}
-function testOnUpdateRowTrigger() returns @tainted error? {
+function testOnUpdateRowTrigger() {
     http:Request request = new;
     json payload =  {"spreadsheetId":"1cBz31FboLUNyoyO_MK6vwGr6CJ9QDABbTAzIPsfyuqA","spreadsheetName":"TestListener",
         "worksheetId":0,"worksheetName":"Sheet1","rangeUpdated":"B4","startingRowPosition":4,"startingColumnPosition":2,
@@ -55,7 +61,7 @@ function testOnUpdateRowTrigger() returns @tainted error? {
         "user":{"email":"rolandh@wso2.com","nickname":"rolandh"},"value":"a"}};
     request.setPayload(payload);
 
-    var response = httpClient->post("/", request);
+    http:Response|error response = httpClient->post("/", request);
     if (response is http:Response) {
         test:assertEquals(response.statusCode, 200);
     } else {
