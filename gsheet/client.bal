@@ -97,7 +97,8 @@ public client class Client {
     @display {label: "Get All Spreadsheets"}
     remote isolated function getAllSpreadsheets() returns @tainted 
                                                 @display {label: "Stream of Files"} stream<File,error>|error {
-        return new stream<File,error>(new SpreadsheetStream(self.driveClient));
+        SpreadsheetStream spreadsheetStream = check new SpreadsheetStream(self.driveClient);
+        return new stream<File,error>(spreadsheetStream);
     }
 
     # Renames the spreadsheet with the given name.
