@@ -82,7 +82,7 @@ public client class Client {
     @display {label: "Open spreadsheet by URL"}
     remote isolated function openSpreadsheetByUrl(@display {label: "Spreadsheet URL"} string url) 
                                                   returns @tainted @display {label: "Spreadsheet"} Spreadsheet|error {
-        string|error spreadsheetId = self.getIdFromUrl(url);
+        string|error spreadsheetId = getIdFromUrl(url);
         if (spreadsheetId is string) {
             return self->openSpreadsheetById(spreadsheetId);
         } else {
@@ -96,19 +96,6 @@ public client class Client {
     @display {label: "Get all spreadsheets"}
     remote isolated function getAllSpreadsheets() returns @tainted @display {label: "Spreadsheets"} stream<File,error>|error {
         return new stream<File,error>(new SpreadsheetStream(self.driveClient));
-    }
-
-    isolated function getIdFromUrl(string url) returns string|error {
-        if (!url.startsWith(URL_START)) {
-            return error("Invalid url: " + url);
-        } else {
-            int? endIndex = url.indexOf(URL_END);
-            if (endIndex is ()) {
-                return error("Invalid url: " + url);
-            } else {
-                return url.substring(ID_START_INDEX, endIndex);
-            }
-        }
     }
 
     # Renames the Spreadsheet with the given name.
