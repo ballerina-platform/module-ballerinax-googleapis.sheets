@@ -14,65 +14,93 @@
 // specific language governing permissions and limitations
 // under the License.
 
-# Spreadsheet.
+# Spreadsheet information.
+# 
 # + spreadsheetId - Id of the spreadsheet
 # + properties - Properties of a spreadsheet
 # + sheets - The sheets that are part of a spreadsheet
-# + spreadsheetUrl - The URL of the spreadsheet
+# + spreadsheetUrl - The Url of the spreadsheet
+@display {label: "Spreadsheet"}
 public type Spreadsheet record {
+    @display {label: "Spreadsheet Id"}
     string spreadsheetId = "";
     SpreadsheetProperties properties = {};
+    @display {label: "Array of Worksheets"}
     Sheet[] sheets = [];
+    @display {label: "Spreadsheet Url"}
     string spreadsheetUrl = "";
 };
 
-# Sheet.
-# + properties - Properties of a sheet
+# Worksheet information.
+# 
+# + properties - Properties of a worksheet
+@display {label: "Worksheet"}
 public type Sheet record {
     SheetProperties properties = {};
 };
 
 # Spreadsheet properties.
+# 
 # + title - The title of the spreadsheet
 # + locale - The locale of the spreadsheet
 # + autoRecalc - The amount of time to wait before volatile functions are recalculated
 # + timeZone - The time zone of the spreadsheet
+@display {label: "Spreadsheet Properties"}
 public type SpreadsheetProperties record {
+    @display {label: "Spreadsheet Title"}
     string title = "";
+    @display {label: "Spreadsheet Locale"}
     string locale = "";
+    @display {label: "Auto Recalculate Time"}
     string autoRecalc = "";
+    @display {label: "Spreadsheet Timezone"}
     string timeZone = "";
 };
 
-# Sheet properties.
-# + sheetId - The ID of the sheet
-# + title - The name of the sheet
-# + index - The index of the sheet within the spreadsheet
-# + sheetType - The type of sheet
-# + gridProperties - Additional properties of the sheet if this sheet is a grid
-# + hidden - True if the sheet is hidden in the UI, false if it is visible
-# + rightToLeft - True if the sheet is an RTL sheet instead of an LTR sheet
+# Worksheet properties.
+# 
+# + sheetId - The ID of the worksheet
+# + title - The name of the worksheet
+# + index - The index of the worksheet within the spreadsheet
+# + sheetType - The type of worksheet
+# + gridProperties - Additional properties of the worksheet if this worksheet is a grid
+# + hidden - True if the worksheet is hidden in the UI, false if it is visible
+# + rightToLeft - True if the worksheet is an RTL worksheet instead of an LTR worksheet
+@display {label: "Worksheet Properties"}
 public type SheetProperties record {
+    @display {label: "Worksheet ID"}
     int sheetId = 0;
+    @display {label: "Worksheet Title"}
     string title = "";
+    @display {label: "Worksheet Index"}
     int index = 0;
+    @display {label: "Worksheet Type"}
     string sheetType = "";
     GridProperties gridProperties = {};
+    @display {label: "Hidden"}
     boolean hidden = false;
+    @display {label: "Right To Left"}
     boolean rightToLeft = false;
 };
 
 # Grid properties.
+# 
 # + rowCount - The number of rows in the grid
 # + columnCount - The number of columns in the grid
 # + frozenRowCount - The number of rows that are frozen in the grid
 # + frozenColumnCount - The number of columns that are frozen in the grid
 # + hideGridlines - True if the grid is not showing gridlines in the UI
+@display {label: "Grid Properties"}
 public type GridProperties record {
+    @display {label: "Row Count"}
     int rowCount = 0;
+    @display {label: "Column Count"}
     int columnCount = 0;
+    @display {label: "Frozen Row Count"}
     int frozenRowCount = 0;
+    @display {label: "Frozen Column Count"}
     int frozenColumnCount = 0;
+    @display {label: "Hide Grid Lines"}
     boolean hideGridlines = false;
 };
 
@@ -82,21 +110,54 @@ public type GridProperties record {
 #               For example for a single cell "A1" refers to the intersection of column "A" with row "1",
 #               and for a range of cells "A1:D5" refers to the top left cell and the bottom right cell of a range
 # + values - Values of the given range
+@display {label: "Range"}
 public type Range record {
-   string a1Notation;
-   (int|string|float)[][] values;
+    @display {label: "A1 Notation"}
+    string a1Notation;
+    @display {label: "Values"}
+    (int|string|float)[][] values;
 };
 
+# Response from File search 
+#
+# + kind - Identifies what kind of resource is this. Value: the fixed string "drive#fileList".
+# + nextPageToken - The page token for the next page of files. 
+#                   This will be absent if the end of the files list has been reached.
+#                   If the token is rejected for any reason, it should be discarded, 
+#                   and pagination should be restarted from the first page of results.
+# + files - The list of files. 
+#           If nextPageToken is populated, 
+#           then this list may be incomplete and an additional page of results should be fetched. 
+# + incompleteSearch - Whether the search process was incomplete. If true, then some search results may be missing, 
+#                      Since all documents were not searched. This may occur when searching multiple drives with the 
+#                      "allDrives" corpora, but all corpora could not be searched. When this happens, it is suggested 
+#                      that clients narrow their query by choosing a different corpus such as "user" or "drive".  
+@display {label: "Files Response"}
 public type FilesResponse record {
+    @display {label: "Kind"}
     string kind;
+    @display {label: "Next Page Token"}
     string nextPageToken?;
+    @display {label: "Incomplete Search"}
     boolean incompleteSearch;
+    @display {label: "Array of Files"}
     File[] files;
 };
 
+# File information
+#
+# + kind - Identifies what kind of resource is this. Value: the fixed string "drive#file".   
+# + id - The Id of the file
+# + name - The name of the file
+# + mimeType - The MIME type of the file
+@display {label: "File"}
 public type File record {
+    @display {label: "Kind"}
     string kind;
+    @display {label: "Id"}
     string id;
+    @display {label: "Name"}
     string name;
+    @display {label: "Mime Type"}
     string mimeType;
 };

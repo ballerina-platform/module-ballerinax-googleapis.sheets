@@ -20,7 +20,7 @@ import ballerina/http;
 #
 # + httpClient - Connector http endpoint
 # + driveClient - Drive connector http endpoint
-@display {label: "Google Sheets Client", iconPath: "GoogleSheetsLogo.png"}
+@display {label: "Google Sheets", iconPath: "GoogleSheetsLogo.png"}
 public client class Client {
     public http:Client httpClient;
     public http:Client driveClient;
@@ -41,6 +41,7 @@ public client class Client {
             secureSocket: socketConfig
         });
     }
+
     // Spreadsheet Management Operations
 
     # Creates a new spreadsheet.
@@ -48,8 +49,8 @@ public client class Client {
     # + name - Name of the spreadsheet
     # + return - A Spreadsheet record type on success, else returns an error
     @display {label: "Create Spreadsheet"}
-    remote isolated function createSpreadsheet(@display {label: "Spreadsheet name"} string name) 
-                                               returns @tainted @display {label: "Spreadsheet"} Spreadsheet|error {
+    remote isolated function createSpreadsheet(@display {label: "Spreadsheet Name"} string name) 
+                                               returns @tainted Spreadsheet|error {
         json jsonPayload = {"properties": {"title": name}};
         json|error response = sendRequestWithPayload(self.httpClient, SPREADSHEET_PATH, jsonPayload);
         if (response is json) {
@@ -59,13 +60,13 @@ public client class Client {
         }
     }
 
-    # Opens a Spreadsheet by the given ID.
+    # Opens a spreadsheet by the given Id.
     #
-    # + spreadsheetId - ID of the Spreadsheet
+    # + spreadsheetId - Id of the spreadsheet
     # + return - A Spreadsheet record type on success, else returns an error
-    @display {label: "Open spreadsheet by ID"}
-    remote isolated function openSpreadsheetById(@display {label: "Spreadsheet ID"} string spreadsheetId) 
-                                                 returns @tainted @display {label: "Spreadsheet"} Spreadsheet|error {
+    @display {label: "Open Spreadsheet By Id"}
+    remote isolated function openSpreadsheetById(@display {label: "Spreadsheet Id"} string spreadsheetId) 
+                                                 returns @tainted Spreadsheet|error {
         string spreadsheetPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId;
         json|error response = sendRequest(self.httpClient, spreadsheetPath);
         if (response is json) {
@@ -75,13 +76,13 @@ public client class Client {
         }
     }
 
-    # Opens a Spreadsheet by the given URL.
+    # Opens a spreadsheet by the given Url.
     #
-    # + url - URL of the Spreadsheet
+    # + url - Url of the spreadsheet
     # + return - A Spreadsheet record type on success, else returns an error
-    @display {label: "Open spreadsheet by URL"}
-    remote isolated function openSpreadsheetByUrl(@display {label: "Spreadsheet URL"} string url) 
-                                                  returns @tainted @display {label: "Spreadsheet"} Spreadsheet|error {
+    @display {label: "Open Spreadsheet By Url"}
+    remote isolated function openSpreadsheetByUrl(@display {label: "Spreadsheet Url"} string url) 
+                                                  returns @tainted Spreadsheet|error {
         string|error spreadsheetId = getIdFromUrl(url);
         if (spreadsheetId is string) {
             return self->openSpreadsheetById(spreadsheetId);
@@ -90,22 +91,23 @@ public client class Client {
         }
     }
 
-    # Get all Spreadsheet files.
+    # Get all spreadsheet files.
     # 
-    # + return - Array of files records on success, else returns an error
-    @display {label: "Get all spreadsheets"}
-    remote isolated function getAllSpreadsheets() returns @tainted @display {label: "Spreadsheets"} stream<File,error>|error {
+    # + return - Stream of File records on success, else returns an error
+    @display {label: "Get All Spreadsheets"}
+    remote isolated function getAllSpreadsheets() returns @tainted 
+                                                @display {label: "Stream of Files"} stream<File,error>|error {
         return new stream<File,error>(new SpreadsheetStream(self.driveClient));
     }
 
-    # Renames the Spreadsheet with the given name.
+    # Renames the spreadsheet with the given name.
     #
-    # + spreadsheetId - ID of the Spreadsheet
-    # + name - New name for the Spreadsheet
+    # + spreadsheetId - Id of the spreadsheet
+    # + name - New name for the spreadsheet
     # + return - Nil on success, else returns an error
-    @display {label: "Rename spreadsheet"}
-    remote isolated function renameSpreadsheet(@display {label: "Spreadsheet ID"} string spreadsheetId, 
-                                               @display {label: "New name for Spreadsheet"} string name) 
+    @display {label: "Rename Spreadsheet"}
+    remote isolated function renameSpreadsheet(@display {label: "Spreadsheet Id"} string spreadsheetId, 
+                                               @display {label: "New Name for Spreadsheet"} string name) 
                                                returns @tainted error? {
         json payload = {
             "requests": [
@@ -129,11 +131,11 @@ public client class Client {
 
     # Get worksheets of the spreadsheet.
     # 
-    # + spreadsheetId - ID of the Spreadsheet
-    # + return - Worksheet array on success and error on failure
-    @display {label: "Get worksheets"}
-    remote isolated function getSheets(@display {label: "Spreadsheet ID"} string spreadsheetId) 
-                                       returns @tainted @display {label: "Spreadsheets"} Sheet[]|error {
+    # + spreadsheetId - Id of the spreadsheet
+    # + return - Array of Sheet records on success and error on failure
+    @display {label: "Get Worksheets"}
+    remote isolated function getSheets(@display {label: "Spreadsheet Id"} string spreadsheetId) 
+                                       returns @tainted @display {label: "Array of Worksheets"} Sheet[]|error {
         string spreadsheetPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId;
         json|error response = sendRequest(self.httpClient, spreadsheetPath);
         Spreadsheet spreadsheet = {};
@@ -147,13 +149,13 @@ public client class Client {
 
     # Get a worksheet of the spreadsheet.
     # 
-    # + spreadsheetId - ID of the Spreadsheet
+    # + spreadsheetId - Id of the spreadsheet
     # + sheetName - Name of the worksheet to retrieve
     # + return - Sheet record type on success and error on failure
-    @display {label: "Get worksheet by name"}
-    remote isolated function getSheetByName(@display {label: "Spreadsheet ID"} string spreadsheetId, 
-                                            @display {label: "Worksheet name"} string sheetName) 
-                                            returns @tainted @display {label: "Worksheet"} Sheet|error {
+    @display {label: "Get Worksheet By Name"}
+    remote isolated function getSheetByName(@display {label: "Spreadsheet Id"} string spreadsheetId, 
+                                            @display {label: "Worksheet Name"} string sheetName) 
+                                            returns @tainted Sheet|error {
         string spreadsheetPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId;
         json|error response = sendRequest(self.httpClient, spreadsheetPath);
         Spreadsheet spreadsheet = {};
@@ -173,14 +175,13 @@ public client class Client {
 
     # Add a new worksheet.
     #
-    # + spreadsheetId - ID of the Spreadsheet
-    # + sheetName - The name of the worksheet. It is an optional parameter.
-    #               If the title is empty, then sheet will be created with the default name.
+    # + spreadsheetId - Id of the spreadsheet
+    # + sheetName - The name of the worksheet
     # + return - Sheet record type on success and error on failure
-    @display {label: "Add new worksheet"}
-    remote isolated function addSheet(@display {label: "Spreadsheet ID"} string spreadsheetId, 
-                                      @display {label: "Worksheet name"} string sheetName) 
-                                      returns @tainted @display {label: "Worksheet"} Sheet|error {
+    @display {label: "Add New Worksheet"}
+    remote isolated function addSheet(@display {label: "Spreadsheet Id"} string spreadsheetId, 
+                                      @display {label: "Worksheet Name"} string sheetName) 
+                                      returns @tainted Sheet|error {
         map<json> payload = {"requests": [{"addSheet": {"properties": {}}}]};
         map<json> jsonSheetProperties = {};
         if (sheetName != EMPTY_STRING) {
@@ -243,12 +244,12 @@ public client class Client {
 
     # Delete specified worksheet by worksheet Id.
     #
-    # + spreadsheetId - ID of the Spreadsheet
-    # + sheetId - The ID of the worksheet to delete
+    # + spreadsheetId - Id of the spreadsheet
+    # + sheetId - The Id of the worksheet to delete
     # + return - Nil on success and error on failure
-    @display {label: "Delete a worksheet by ID"}
-    remote isolated function removeSheet(@display {label: "Spreadsheet ID"} string spreadsheetId, 
-                                         @display {label: "Worksheet ID"} int sheetId) returns @tainted error? {
+    @display {label: "Remove Worksheet By Id"}
+    remote isolated function removeSheet(@display {label: "Spreadsheet Id"} string spreadsheetId, 
+                                         @display {label: "Worksheet Id"} int sheetId) returns @tainted error? {
         json payload = {"requests": [{"deleteSheet": {"sheetId": sheetId}}]};
         string deleteSheetPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + BATCH_UPDATE_REQUEST;
         json|error response = sendRequestWithPayload(self.httpClient, deleteSheetPath, payload);
@@ -258,14 +259,14 @@ public client class Client {
         return;
     }
 
-    # Delete specified worksheet by sheet name.
+    # Delete specified worksheet by worksheet name.
     #
-    # + spreadsheetId - ID of the Spreadsheet
+    # + spreadsheetId - Id of the spreadsheet
     # + sheetName - The name of the worksheet to delete
     # + return - Nil on success and error on failure
-    @display {label: "Delete a worksheet by name"}
-    remote isolated function removeSheetByName(@display {label: "Spreadsheet ID"} string spreadsheetId, 
-                                               @display {label: "Worksheet name"} string sheetName) 
+    @display {label: "Remove Worksheet By Name"}
+    remote isolated function removeSheetByName(@display {label: "Spreadsheet Id"} string spreadsheetId, 
+                                               @display {label: "Worksheet Name"} string sheetName) 
                                                returns @tainted error? {
         Sheet sheet = check self->getSheetByName(spreadsheetId, sheetName);
         json payload = {"requests": [{"deleteSheet": {"sheetId": sheet.properties.sheetId}}]};
@@ -277,16 +278,16 @@ public client class Client {
         return;
     }
 
-    # Renames the worksheet of the spreadsheet with the given name.
+    # Renames the worksheet of a given spreadsheet with the given name.
     #
-    # + spreadsheetId - ID of the Spreadsheet
-    # + sheetName - The name of the Worksheet
+    # + spreadsheetId - Id of the spreadsheet
+    # + sheetName - The existing name of the worksheet
     # + name - New name for the worksheet
     # + return - Nil on success, else returns an error
-    @display {label: "Rename worksheet"}
-    remote isolated function renameSheet(@display {label: "Spreadsheet ID"} string spreadsheetId, 
-                                         @display {label: "Existing name for worksheet"} string sheetName, 
-                                         @display {label: "New name for worksheet"} string name) 
+    @display {label: "Rename Worksheet"}
+    remote isolated function renameSheet(@display {label: "Spreadsheet Id"} string spreadsheetId, 
+                                         @display {label: "Existing Name for Worksheet"} string sheetName, 
+                                         @display {label: "New Name for Worksheet"} string name) 
                                          returns @tainted error? {
         Sheet sheet = check self->getSheetByName(spreadsheetId, sheetName);
         json payload = {
@@ -309,16 +310,16 @@ public client class Client {
 
     // Sheet Service Operations
 
-    # Sets the values of the given range of cells of the Sheet.
+    # Sets the values of the given range of cells of the worksheet.
     #
-    # + spreadsheetId - ID of the Spreadsheet
+    # + spreadsheetId - Id of the Spreadsheet
     # + sheetName - The name of the Worksheet
-    # + range - The range to be set
+    # + range - The Range record to be set
     # + return - Nil on success, else returns an error
-    @display {label: "Set the values of a given range of cells"}
-    remote isolated function setRange(@display {label: "Spreadsheet ID"} string spreadsheetId, 
-                                      @display {label: "Worksheet name"} string sheetName, 
-                                      @display {label: "Range to set"} Range range) returns @tainted error? {
+    @display {label: "Set Range"}
+    remote isolated function setRange(@display {label: "Spreadsheet Id"} string spreadsheetId, 
+                                      @display {label: "Worksheet Name"} string sheetName, 
+                                      Range range) returns @tainted error? {
         (string | int | float)[][] values = range.values;
         string a1Notation = range.a1Notation;
         http:Request request = new;
@@ -357,17 +358,17 @@ public client class Client {
         }
     }
 
-    # Gets the given range of the Sheet.
+    # Gets the given range of the worksheet.
     #
-    # + spreadsheetId - ID of the Spreadsheet
-    # + sheetName - The name of the Worksheet
+    # + spreadsheetId - Id of the spreadsheet
+    # + sheetName - The name of the worksheet
     # + a1Notation - The required range in A1 notation
-    # + return - The range on success, else returns an error
-    @display {label: "Get a given range of a worksheet"}
-    remote isolated function getRange(@display {label: "Spreadsheet ID"} string spreadsheetId, 
-                                      @display {label: "Worksheet name"} string sheetName, 
-                                      @display {label: "Required range in A1 notation"} string a1Notation) 
-                                      returns @tainted @display {label: "Range"} Range|error {
+    # + return - The Range record on success, else returns an error
+    @display {label: "Get Range"}
+    remote isolated function getRange(@display {label: "Spreadsheet Id"} string spreadsheetId, 
+                                      @display {label: "Worksheet Name"} string sheetName, 
+                                      @display {label: "Required Range A1 Notation"} string a1Notation) 
+                                      returns @tainted Range|error {
         (string | int | float)[][] values = [];
         string notation = sheetName;
         if (a1Notation == EMPTY_STRING) {
@@ -389,14 +390,14 @@ public client class Client {
 
     # Clears the range of contents, formats, and data validation rules.
     #
-    # + spreadsheetId - ID of the Spreadsheet
-    # + sheetName - The name of the Worksheet
+    # + spreadsheetId - Id of the spreadsheet
+    # + sheetName - The name of the worksheet
     # + a1Notation - The required range in A1 notation
     # + return - Nil on success, else returns an error
-    @display {label: "Clear contents, formats and rules in a range"}
-    remote isolated function clearRange(@display {label: "Spreadsheet ID"} string spreadsheetId, 
-                                        @display {label: "Worksheet name"} string sheetName, 
-                                        @display {label: "Required range in A1 notation"} string a1Notation) 
+    @display {label: "Clear Range"}
+    remote isolated function clearRange(@display {label: "Spreadsheet Id"} string spreadsheetId, 
+                                        @display {label: "Worksheet Name"} string sheetName, 
+                                        @display {label: "Required Range A1 Notation"} string a1Notation) 
                                         returns @tainted error? {
         string notation = sheetName + EXCLAMATION_MARK + a1Notation;
         string deleteSheetPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH +
@@ -407,18 +408,18 @@ public client class Client {
         }
     }
 
-    # Inserts the given number of columns before the given column position.
+    # Inserts the given number of columns before the given column position by worksheet Id.
     #
-    # + spreadsheetId - ID of the Spreadsheet
-    # + sheetId - ID of the Worksheet
+    # + spreadsheetId - Id of the spreadsheet
+    # + sheetId - Id of the worksheet
     # + index - The position of the column before which the new columns should be added
     # + numberOfColumns - Number of columns to be added
     # + return - Nil on success, else returns an error
-    @display {label: "Insert columns before given column position by worksheet ID"}
-    remote isolated function addColumnsBefore(@display {label: "Spreadsheet ID"} string spreadsheetId, 
-                                              @display {label: "Worksheet ID"} int sheetId, 
-                                              @display {label: "Position of given column"} int index, 
-                                              @display {label: "Number of columns to insert"} int numberOfColumns) 
+    @display {label: "Add Columns Before By Sheet Id"}
+    remote isolated function addColumnsBefore(@display {label: "Spreadsheet Id"} string spreadsheetId, 
+                                              @display {label: "Worksheet Id"} int sheetId, 
+                                              @display {label: "Position of Given Column"} int index, 
+                                              @display {label: "Number of Columns to Insert"} int numberOfColumns) 
                                               returns @tainted error? {
         int startIndex = index - 1;
         int endIndex = startIndex + numberOfColumns;
@@ -443,18 +444,18 @@ public client class Client {
         }
     }
 
-    # Inserts the given number of columns before the given column position by worksheet name as input.
+    # Inserts the given number of columns before the given column position by worksheet name.
     #
-    # + spreadsheetId - ID of the Spreadsheet
+    # + spreadsheetId - Id of the Spreadsheet
     # + sheetName - The name of the Worksheet
     # + index - The position of the column before which the new columns should be added
     # + numberOfColumns - Number of columns to be added
     # + return - Nil on success, else returns an error
-    @display {label: "Insert columns before a given column position by worksheet name"}
-    remote isolated function addColumnsBeforeBySheetName(@display {label: "Spreadsheet ID"} string spreadsheetId, 
-                                                         @display {label: "Worksheet name"} string sheetName, 
-                                                         @display {label: "Position of column"} int index, 
-                                                         @display {label: "Number of columns to insert"} 
+    @display {label: "Add Columns Before"}
+    remote isolated function addColumnsBeforeBySheetName(@display {label: "Spreadsheet Id"} string spreadsheetId, 
+                                                         @display {label: "Worksheet Name"} string sheetName, 
+                                                         @display {label: "Position of Column"} int index, 
+                                                         @display {label: "Number of Columns to Insert"} 
                                                          int numberOfColumns) 
                                                          returns @tainted error? {
         Sheet sheet = check self->getSheetByName(spreadsheetId, sheetName);
@@ -481,18 +482,18 @@ public client class Client {
         }
     }
 
-    # Inserts the given number of columns after the given column position.
+    # Inserts the given number of columns after the given column position by worksheet Id.
     #
-    # + spreadsheetId - ID of the Spreadsheet
-    # + sheetId - ID of the Worksheet
+    # + spreadsheetId - Id of the spreadsheet
+    # + sheetId - Id of the worksheet
     # + index - The position of the column after which the new columns should be added
     # + numberOfColumns - Number of columns to be added
     # + return - Nil on success, else returns an error
-    @display {label: "Insert columns after given column position by worksheet ID"}
-    remote isolated function addColumnsAfter(@display {label: "Spreadsheet ID"} string spreadsheetId, 
-                                             @display {label: "Worksheet ID"} int sheetId, 
-                                             @display {label: "Position of column"} int index, 
-                                             @display {label: "Number of columns to insert"} int numberOfColumns) 
+    @display {label: "Add Columns After By Sheet Id"}
+    remote isolated function addColumnsAfter(@display {label: "Spreadsheet Id"} string spreadsheetId, 
+                                             @display {label: "Worksheet Id"} int sheetId, 
+                                             @display {label: "Position of Column"} int index, 
+                                             @display {label: "Number of Columns to Insert"} int numberOfColumns) 
                                              returns @tainted error? {
         int startIndex = index;
         int endIndex = startIndex + numberOfColumns;
@@ -517,18 +518,18 @@ public client class Client {
         }
     }
 
-    # Inserts the given number of columns after the given column position by worksheet name as input.
+    # Inserts the given number of columns after the given column position by worksheet name.
     #
-    # + spreadsheetId - ID of the Spreadsheet
-    # + sheetName - The name of the Worksheet
+    # + spreadsheetId - Id of the spreadsheet
+    # + sheetName - The name of the worksheet
     # + index - The position of the column after which the new columns should be added
     # + numberOfColumns - Number of columns to be added
     # + return - Nil on success, else returns an error
-    @display {label: "Insert columns after given column position by worksheet name"}
-    remote isolated function addColumnsAfterBySheetName(@display {label: "Spreadsheet ID"} string spreadsheetId, 
-                                                        @display {label: "Worksheet name"} string sheetName, 
-                                                        @display {label: "Position of column"} int index, 
-                                                        @display {label: "Number of columns to insert"} 
+    @display {label: "Add Columns After"}
+    remote isolated function addColumnsAfterBySheetName(@display {label: "Spreadsheet Id"} string spreadsheetId, 
+                                                        @display {label: "Worksheet Name"} string sheetName, 
+                                                        @display {label: "Position of Column"} int index, 
+                                                        @display {label: "Number of Columns to Insert"} 
                                                         int numberOfColumns) 
                                                         returns @tainted error? {
         Sheet sheet = check self->getSheetByName(spreadsheetId, sheetName);
@@ -557,16 +558,16 @@ public client class Client {
 
     # Create or Update a Column.
     # 
-    # + spreadsheetId - ID of the Spreadsheet
-    # + sheetName - The name of the Worksheet
-    # + column - Column number to set the data
+    # + spreadsheetId - Id of the spreadsheet
+    # + sheetName - The name of the worksheet
+    # + column - Position of column (string notation) to set the data
     # + values - Array of values of the column to be added
     # + return - Nil on success, else returns an error
-    @display {label: "Create or update new column with given values"}
-    remote isolated function createOrUpdateColumn(@display {label: "Spreadsheet ID"} string spreadsheetId, 
-                                                  @display {label: "Worksheet name"} string sheetName, 
-                                                  @display {label: "Column number"} string column, 
-                                                  @display {label: "Values for new column"} (int|string|float)[] values) 
+    @display {label: "Create or Update Column"}
+    remote isolated function createOrUpdateColumn(@display {label: "Spreadsheet Id"} string spreadsheetId, 
+                                                  @display {label: "Worksheet Name"} string sheetName, 
+                                                  @display {label: "Position of Column"} string column, 
+                                                  @display {label: "Values for the Column"} (int|string|float)[] values) 
                                                   returns @tainted error? {
         string notation = sheetName + EXCLAMATION_MARK + column + COLON + column;
         string requestPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + notation 
@@ -594,16 +595,16 @@ public client class Client {
         return getErrorMessage(httpResponse);
     }
 
-    # Gets the values in the given column of the sheet.
+    # Gets the values in the given column of the worksheet.
     #
-    # + spreadsheetId - ID of the Spreadsheet
-    # + sheetName - The name of the Worksheet
-    # + column - Column number to retrieve the data
+    # + spreadsheetId - Id of the spreadsheet
+    # + sheetName - The name of the worksheet
+    # + column - Position of Column (string notation) to retrieve the data
     # + return - Values of the given column in an array on success, else returns an error
-    @display {label: "Get values from a column"}
-    remote isolated function getColumn(@display {label: "Spreadsheet ID"} string spreadsheetId, 
-                                       @display {label: "Worksheet name"} string sheetName, 
-                                       @display {label: "Column number"} string column) 
+    @display {label: "Get Column"}
+    remote isolated function getColumn(@display {label: "Spreadsheet Id"} string spreadsheetId, 
+                                       @display {label: "Worksheet Name"} string sheetName, 
+                                       @display {label: "Position of Column"} string column) 
                                        returns @tainted @display {label: "Values"} (string|int|float)[]|error {
         (int | string | float)[] values = [];
         string a1Notation = sheetName + EXCLAMATION_MARK + column + COLON + column;
@@ -633,18 +634,18 @@ public client class Client {
         }
     }
 
-    # Deletes the given number of columns starting at the given column position.
+    # Deletes the given number of columns starting at the given column position by worksheet Id.
     #
-    # + spreadsheetId - ID of the Spreadsheet
-    # + sheetId - ID of the Worksheet
+    # + spreadsheetId - Id of the spreadsheet
+    # + sheetId - Id of the worksheet
     # + column - Starting position of the columns
     # + numberOfColumns - Number of columns from the starting position
     # + return - Nil on success, else returns an error
-    @display {label: "Delete columns by worksheet ID"}
-    remote isolated function deleteColumns(@display {label: "Spreadsheet ID"} string spreadsheetId, 
-                                           @display {label: "Worksheet ID"} int sheetId, 
-                                           @display {label: "Starting column"} int column, 
-                                           @display {label: "Number of columns to delete"} int numberOfColumns) 
+    @display {label: "Delete Columns By Sheet Id"}
+    remote isolated function deleteColumns(@display {label: "Spreadsheet Id"} string spreadsheetId, 
+                                           @display {label: "Worksheet Id"} int sheetId, 
+                                           @display {label: "Starting Column Position"} int column, 
+                                           @display {label: "Number of Columns to Delete"} int numberOfColumns) 
                                            returns @tainted error? {
         int startIndex = column - 1;
         int endIndex = startIndex + numberOfColumns;
@@ -669,18 +670,18 @@ public client class Client {
         }
     }
 
-    # Deletes the given number of columns starting at the given column position by worksheet name as input.
+    # Deletes the given number of columns starting at the given column position by worksheet name.
     #
-    # + spreadsheetId - ID of the Spreadsheet
-    # + sheetName - The name of the Worksheet
+    # + spreadsheetId - Id of the spreadsheet
+    # + sheetName - The name of the worksheet
     # + column - Starting position of the columns
     # + numberOfColumns - Number of columns from the starting position
     # + return - Nil on success, else returns an error
-    @display {label: "Delete columns by worksheet name"}
-    remote isolated function deleteColumnsBySheetName(@display {label: "Spreadsheet ID"} string spreadsheetId, 
-                                                      @display {label: "Worksheet name"} string sheetName, 
-                                                      @display {label: "Starting column"} int column, 
-                                                      @display {label: "Number of columns to Delete"} 
+    @display {label: "Delete Columns By Sheet Name"}
+    remote isolated function deleteColumnsBySheetName(@display {label: "Spreadsheet Id"} string spreadsheetId, 
+                                                      @display {label: "Worksheet Name"} string sheetName, 
+                                                      @display {label: "Starting Column Position"} int column, 
+                                                      @display {label: "Number of Columns to Delete"} 
                                                       int numberOfColumns) 
                                                       returns @tainted error? {
         Sheet sheet = check self->getSheetByName(spreadsheetId, sheetName);
@@ -707,18 +708,18 @@ public client class Client {
         }
     }
 
-    # Inserts the given number of rows before the given row position.
+    # Inserts the given number of rows before the given row position by worksheet Id.
     #
-    # + spreadsheetId - ID of the Spreadsheet
-    # + sheetId - ID of the Worksheet
+    # + spreadsheetId - Id of the spreadsheet
+    # + sheetId - Id of the worksheet
     # + index - The position of the row before which the new rows should be added
     # + numberOfRows - The number of rows to be added
     # + return - Nil on success, else returns an error
-    @display {label: "Insert rows before a given row position by worksheet ID"}
-    remote isolated function addRowsBefore(@display {label: "Spreadsheet ID"} string spreadsheetId, 
-                                           @display {label: "Worksheet ID"} int sheetId, 
-                                           @display {label: "Position of a given row"} int index, 
-                                           @display {label: "Number of rows to insert"} int numberOfRows) 
+    @display {label: "Add Rows Before By Sheet Id"}
+    remote isolated function addRowsBefore(@display {label: "Spreadsheet Id"} string spreadsheetId, 
+                                           @display {label: "Worksheet Id"} int sheetId, 
+                                           @display {label: "Position of a Given Row"} int index, 
+                                           @display {label: "Number of Rows to Insert"} int numberOfRows) 
                                            returns @tainted error? {
         int startIndex = index - 1;
         int endIndex = startIndex + numberOfRows;
@@ -743,18 +744,18 @@ public client class Client {
         }
     }
 
-    # Inserts the given number of rows before the given row position by worksheet name as input.
+    # Inserts the given number of rows before the given row position by worksheet name.
     #
-    # + spreadsheetId - ID of the Spreadsheet
-    # + sheetName - The name of the Worksheet
+    # + spreadsheetId - Id of the spreadsheet
+    # + sheetName - The name of the worksheet
     # + index - The position of the row before which the new rows should be added
     # + numberOfRows - The number of rows to be added
     # + return - Nil on success, else returns an error
-    @display {label: "Insert rows before given row position by worksheet name"}
-    remote isolated function addRowsBeforeBySheetName(@display {label: "Spreadsheet ID"} string spreadsheetId, 
-                                                      @display {label: "Worksheet name"} string sheetName, 
-                                                      @display {label: "Position of a given row"} int index, 
-                                                      @display {label: "Number of rows to insert"} int numberOfRows) 
+    @display {label: "Add Rows Before By Sheet Name"}
+    remote isolated function addRowsBeforeBySheetName(@display {label: "Spreadsheet Id"} string spreadsheetId, 
+                                                      @display {label: "Worksheet Name"} string sheetName, 
+                                                      @display {label: "Position of a Given Row"} int index, 
+                                                      @display {label: "Number of Rows to Insert"} int numberOfRows) 
                                                       returns @tainted error? {
         Sheet sheet = check self->getSheetByName(spreadsheetId, sheetName);
         int startIndex = index - 1;
@@ -780,18 +781,18 @@ public client class Client {
         }
     }
 
-    # Inserts a number of rows after the given row position.
+    # Inserts a number of rows after the given row position by worksheet Id.
     #
-    # + spreadsheetId - ID of the Spreadsheet
-    # + sheetId - ID of the Worksheet
+    # + spreadsheetId - Id of the spreadsheet
+    # + sheetId - Id of the worksheet
     # + index - The row after which the new rows should be added.
     # + numberOfRows - The number of rows to be added
     # + return - Nil on success, else returns an error
-    @display {label: "Insert rows after given row position by worksheet ID"}
-    remote isolated function addRowsAfter(@display {label: "Spreadsheet ID"} string spreadsheetId, 
-                                          @display {label: "Worksheet ID"} int sheetId, 
-                                          @display {label: "Position of a given row"} int index, 
-                                          @display {label: "Number of rows to insert"} int numberOfRows) 
+    @display {label: "Add Rows After By Sheet Id"}
+    remote isolated function addRowsAfter(@display {label: "Spreadsheet Id"} string spreadsheetId, 
+                                          @display {label: "Worksheet Id"} int sheetId, 
+                                          @display {label: "Position of a Given Row"} int index, 
+                                          @display {label: "Number of Rows to Insert"} int numberOfRows) 
                                           returns @tainted error? {
         int startIndex = index;
         int endIndex = startIndex + numberOfRows;
@@ -816,18 +817,18 @@ public client class Client {
         }
     }
 
-    # Inserts a number of rows after the given row position by worksheet name as input.
+    # Inserts a number of rows after the given row position by worksheet name.
     #
-    # + spreadsheetId - ID of the Spreadsheet
-    # + sheetName - The name of the Worksheet
+    # + spreadsheetId - Id of the spreadsheet
+    # + sheetName - The name of the worksheet
     # + index - The row after which the new rows should be added.
     # + numberOfRows - The number of rows to be added
     # + return - Nil on success, else returns an error
-    @display {label: "Insert rows after given row position by worksheet name"}
-    remote isolated function addRowsAfterBySheetName(@display {label: "Spreadsheet ID"} string spreadsheetId, 
-                                                     @display {label: "Worksheet name"} string sheetName, 
-                                                     @display {label: "Position of a given row"} int index, 
-                                                     @display {label: "Number of rows to insert"} int numberOfRows) 
+    @display {label: "Add Rows After"}
+    remote isolated function addRowsAfterBySheetName(@display {label: "Spreadsheet Id"} string spreadsheetId, 
+                                                     @display {label: "Worksheet Name"} string sheetName, 
+                                                     @display {label: "Position of a Given Row"} int index, 
+                                                     @display {label: "Number of Rows to Insert"} int numberOfRows) 
                                                      returns @tainted error? {
         Sheet sheet = check self->getSheetByName(spreadsheetId, sheetName);
         int startIndex = index;
@@ -855,16 +856,16 @@ public client class Client {
 
     # Create or Update a Row.
     # 
-    # + spreadsheetId - ID of the Spreadsheet
-    # + sheetName - The name of the Worksheet
-    # + row - Row number to set the data
+    # + spreadsheetId - Id of the spreadsheet
+    # + sheetName - The name of the worksheet
+    # + row - Position of row (integer notation) to set the data
     # + values - Array of values of the row to be added
     # + return - Nil on success, else returns an error
-    @display {label: "Create or update a row with given values"}
-    remote isolated function createOrUpdateRow(@display {label: "Spreadsheet ID"} string spreadsheetId, 
-                                               @display {label: "Worksheet name"} string sheetName, 
-                                               @display {label: "Row number"} int row, 
-                                               @display {label: "Values for new row"} (int|string|float)[] values) 
+    @display {label: "Create or Update Row"}
+    remote isolated function createOrUpdateRow(@display {label: "Spreadsheet Id"} string spreadsheetId, 
+                                               @display {label: "Worksheet Name"} string sheetName, 
+                                               @display {label: "Position of Row"} int row, 
+                                               @display {label: "Values for the Row"} (int|string|float)[] values) 
                                                returns @tainted error? {
         string notation = sheetName + EXCLAMATION_MARK + row.toString() + COLON + row.toString();
         string requestPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + notation 
@@ -892,17 +893,17 @@ public client class Client {
         return getErrorMessage(httpResponse);
     }
 
-    # Gets the values in the given row of the Sheet.
+    # Gets the values in the given row of the worksheet.
     #
-    # + spreadsheetId - ID of the Spreadsheet
-    # + sheetName - The name of the Worksheet
+    # + spreadsheetId - Id of the spreadsheet
+    # + sheetName - The name of the worksheet
     # + row - Row number to retrieve the data
     # + return - Values of the given row in an array on success, else returns an error
-    @display {label: "Get values in a row"}
-    remote isolated function getRow(@display {label: "Spreadsheet ID"} string spreadsheetId, 
-                                    @display {label: "Worksheet name"} string sheetName, 
-                                    @display {label: "Row number"} int row) 
-                                    returns @tainted @display {label: "Values in row"} (string|int|float)[]|error {
+    @display {label: "Get Row"}
+    remote isolated function getRow(@display {label: "Spreadsheet Id"} string spreadsheetId, 
+                                    @display {label: "Worksheet Name"} string sheetName, 
+                                    @display {label: "Position of Row"} int row) 
+                                    returns @tainted @display {label: "Row Values"} (string|int|float)[]|error {
         (int | string | float)[] values = [];
         string a1Notation = sheetName + EXCLAMATION_MARK + row.toString() + COLON + row.toString();
         string getRowDataPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + a1Notation;
@@ -927,18 +928,18 @@ public client class Client {
         }
     }
 
-    # Deletes the given number of rows starting at the given row position.
+    # Deletes the given number of rows starting at the given row position by worksheet Id.
     #
-    # + spreadsheetId - ID of the Spreadsheet
-    # + sheetId - ID of the Worksheet
+    # + spreadsheetId - Id of the spreadsheet
+    # + sheetId - Id of the worksheet
     # + row - Starting position of the rows
-    # + numberOfRows - Number of row from the starting position
+    # + numberOfRows - Number of rows from the starting position
     # + return - Nil on success, else returns an error
-    @display {label: "Delete rows by sheet ID"}
-    remote isolated function deleteRows(@display {label: "Spreadsheet ID"} string spreadsheetId, 
-                                        @display {label: "Worksheet ID"} int sheetId, 
-                                        @display {label: "Starting row"} int row, 
-                                        @display {label: "Number of rows to delete"} int numberOfRows) 
+    @display {label: "Delete Rows By Sheet Id"}
+    remote isolated function deleteRows(@display {label: "Spreadsheet Id"} string spreadsheetId, 
+                                        @display {label: "Worksheet Id"} int sheetId, 
+                                        @display {label: "Starting Row Position"} int row, 
+                                        @display {label: "Number of Rows to Delete"} int numberOfRows) 
                                         returns @tainted error? {
         int startIndex = row - 1;
         int endIndex = startIndex + numberOfRows;
@@ -963,18 +964,18 @@ public client class Client {
         }
     }
 
-    # Deletes the given number of rows starting at the given row position by worksheet name as input.
+    # Deletes the given number of rows starting at the given row position by worksheet name.
     #
-    # + spreadsheetId - ID of the Spreadsheet
-    # + sheetName - The name of the Worksheet
+    # + spreadsheetId - Id of the spreadsheet
+    # + sheetName - The name of the worksheet
     # + row - Starting position of the rows
-    # + numberOfRows - Number of row from the starting position
+    # + numberOfRows - Number of rows from the starting position
     # + return - Nil on success, else returns an error
-    @display {label: "Delete rows by sheet name"}
-    remote isolated function deleteRowsBySheetName(@display {label: "Spreadsheet ID"} string spreadsheetId, 
-                                                   @display {label: "Worksheet name"} string sheetName, 
-                                                   @display {label: "Starting row"} int row, 
-                                                   @display {label: "Number of rows to delete"} int numberOfRows) 
+    @display {label: "Delete Rows By Sheet Name"}
+    remote isolated function deleteRowsBySheetName(@display {label: "Spreadsheet Id"} string spreadsheetId, 
+                                                   @display {label: "Worksheet Name"} string sheetName, 
+                                                   @display {label: "Starting Row Position"} int row, 
+                                                   @display {label: "Number of Rows to Delete"} int numberOfRows) 
                                                    returns @tainted error? {
         Sheet sheet = check self->getSheetByName(spreadsheetId, sheetName);
         int startIndex = row - 1;
@@ -1000,18 +1001,18 @@ public client class Client {
         }
     }
 
-    # Sets the value of the given cell of the sheet.
+    # Sets the value of the given cell of the worksheet.
     #
-    # + spreadsheetId - ID of the Spreadsheet
-    # + sheetName - The name of the Worksheet
+    # + spreadsheetId - Id of the spreadsheet
+    # + sheetName - The name of the worksheet
     # + a1Notation - The required cell in A1 notation
     # + value - Value of the cell to be set
     # + return - Nil on success, else returns an error
-    @display {label: "Set value to a cell"}
-    remote isolated function setCell(@display {label: "Spreadsheet ID"} string spreadsheetId, 
-                                     @display {label: "Worksheet name"} string sheetName, 
-                                     @display {label: "Required cell in A1 notation"} string a1Notation, 
-                                     @display {label: "Value of the cell to set"} int|string|float value) 
+    @display {label: "Set Cell"}
+    remote isolated function setCell(@display {label: "Spreadsheet Id"} string spreadsheetId, 
+                                     @display {label: "Worksheet Name"} string sheetName, 
+                                     @display {label: "Required Cell in A1 Notation"} string a1Notation, 
+                                     @display {label: "Value of the Cell"} int|string|float value) 
                                      returns @tainted error? {
         http:Request request = new;
         json jsonPayload = {"values": [[value]]};
@@ -1033,16 +1034,16 @@ public client class Client {
         }
     }
 
-    # Gets the value of the given cell of the Sheet.
+    # Gets the value of the given cell of the sheet.
     #
-    # + spreadsheetId - ID of the Spreadsheet
-    # + sheetName - The name of the Worksheet
+    # + spreadsheetId - Id of the spreadsheet
+    # + sheetName - The name of the worksheet
     # + a1Notation - The required cell in A1 notation
     # + return - Value of the given cell on success, else returns an error
-    @display {label: "Get value in a cell"}
-    remote isolated function getCell(@display {label: "Spreadsheet ID"} string spreadsheetId, 
-                                     @display {label: "Worksheet name"} string sheetName, 
-                                     @display {label: "Required cell in A1 notation"} string a1Notation) 
+    @display {label: "Get Cell"}
+    remote isolated function getCell(@display {label: "Spreadsheet Id"} string spreadsheetId, 
+                                     @display {label: "Worksheet Name"} string sheetName, 
+                                     @display {label: "Required Cell A1 Notation"} string a1Notation) 
                                      returns @tainted @display {label: "Value"} int|string|float|error {
         int | string | float value = EMPTY_STRING;
         string notation = sheetName + EXCLAMATION_MARK + a1Notation;
@@ -1066,28 +1067,28 @@ public client class Client {
 
     # Clears the given cell of contents, formats, and data validation rules.
     #
-    # + spreadsheetId - ID of the Spreadsheet
-    # + sheetName - The name of the Worksheet
+    # + spreadsheetId - Id of the spreadsheet
+    # + sheetName - The name of the worksheet
     # + a1Notation - The required cell in A1 notation
     # + return - Nil on success, else returns an error
-    @display {label: "Clear contents, formats and rules in cell"}
-    remote isolated function clearCell(@display {label: "Spreadsheet ID"} string spreadsheetId, 
+    @display {label: "Clear Cell"}
+    remote isolated function clearCell(@display {label: "Spreadsheet Id"} string spreadsheetId, 
                                        @display {label: "Worksheet name"} string sheetName, 
-                                       @display {label: "Required cell in A1 notation"} string a1Notation) 
+                                       @display {label: "Required Cell A1 Notation"} string a1Notation) 
                                        returns @tainted error? {
         return self->clearRange(spreadsheetId, sheetName, a1Notation);
     }
 
-    # Adds a new row with the given values to the bottom of the sheet.
+    # Adds a new row with the given values to the bottom of the worksheet.
     #
-    # + spreadsheetId - ID of the Spreadsheet
-    # + sheetName - The name of the Worksheet
+    # + spreadsheetId - Id of the spreadsheet
+    # + sheetName - The name of the worksheet
     # + values - Array of values of the row to be added
     # + return - Nil on success, else returns an error
-        @display {label: "Add new row with given values to the bottom of the worksheet"}
-    remote isolated function appendRowToSheet(@display {label: "Spreadsheet ID"} string spreadsheetId, 
-                                              @display {label: "Worksheet name"} string sheetName, 
-                                              @display {label: "Values for new row"} (int|string|float)[] values) 
+        @display {label: "Append Row To Sheet"}
+    remote isolated function appendRowToSheet(@display {label: "Spreadsheet Id"} string spreadsheetId, 
+                                              @display {label: "Worksheet Name"} string sheetName, 
+                                              @display {label: "Values for the Row"} (int|string|float)[] values) 
                                               returns @tainted error? {
         string setValuePath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + sheetName 
             + APPEND_REQUEST;
@@ -1113,16 +1114,16 @@ public client class Client {
 
     # Adds a new row with the given values to the bottom of the given range.
     #
-    # + spreadsheetId - ID of the Spreadsheet
-    # + sheetName - The name of the Worksheet
+    # + spreadsheetId - Id of the spreadsheet
+    # + sheetName - The name of the worksheet
     # + a1Notation - The required range in A1 notation
     # + values - Array of values of the row to be added
     # + return - Nil on success, else returns an error
-    @display {label: "Add new row with values to the bottom of a given range"}
-    remote isolated function appendRow(@display {label: "Spreadsheet ID"} string spreadsheetId, 
-                                       @display {label: "Worksheet name"} string sheetName, 
-                                       @display {label: "Required range in A1 notation"} string a1Notation, 
-                                       @display {label: "Values for new row"} (int|string|float)[] values) 
+    @display {label: "Append Row To Range"}
+    remote isolated function appendRow(@display {label: "Spreadsheet Id"} string spreadsheetId, 
+                                       @display {label: "Worksheet Name"} string sheetName, 
+                                       @display {label: "Required Range A1 Notation"} string a1Notation, 
+                                       @display {label: "Values for the Row"} (int|string|float)[] values) 
                                        returns @tainted error? {
         string notatiob = sheetName + EXCLAMATION_MARK + a1Notation;
         string setValuePath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + notatiob 
@@ -1149,16 +1150,16 @@ public client class Client {
 
     # Adds a new cell with the given value to the bottom of the given range.
     #
-    # + spreadsheetId - ID of the Spreadsheet
-    # + sheetName - The name of the Worksheet
+    # + spreadsheetId - Id of the spreadsheet
+    # + sheetName - The name of the worksheet
     # + a1Notation - The required range in A1 notation
     # + value - Value of the cell to be added
     # + return - Nil on success, else returns an error
-    @display {label: "Add new cell with values to the bottom of a given range"}
-    remote isolated function appendCell(@display {label: "Spreadsheet ID"} string spreadsheetId, 
-                                        @display {label: "Worksheet name"} string sheetName, 
-                                        @display {label: "Required range in A1 notation"} string a1Notation, 
-                                        @display {label: "Value for new cell"} (int|string|float) value) 
+    @display {label: "Append Cell To Range"}
+    remote isolated function appendCell(@display {label: "Spreadsheet Id"} string spreadsheetId, 
+                                        @display {label: "Worksheet Name"} string sheetName, 
+                                        @display {label: "Required Range A1 Notation"} string a1Notation, 
+                                        @display {label: "Value for New Cell"} (int|string|float) value) 
                                         returns @tainted error? {
         string notatiob = sheetName + EXCLAMATION_MARK + a1Notation;
         string setValuePath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + notatiob 
@@ -1179,16 +1180,16 @@ public client class Client {
         }
     }
 
-    # Copies the Sheet to a given Spreadsheet.
+    # Copies the sheet to a given spreadsheet by worksheet Id.
     #
-    # + spreadsheetId - ID of the Spreadsheet
-    # + sheetId - ID of the Worksheet
-    # + destinationId - ID of the Spreadsheet to copy the sheet to
+    # + spreadsheetId - Id of the spreadsheet
+    # + sheetId - Id of the worksheet
+    # + destinationId - Id of the spreadsheet to copy the sheet to
     # + return - Nil on success, else returns an error
-    @display {label: "Copy sheet to a given spreadsheet by worksheet ID"}
-    remote isolated function copyTo(@display {label: "Spreadsheet ID"} string spreadsheetId, 
-                                    @display {label: "Worksheet ID"} int sheetId, 
-                                    @display {label: "Destination spreadsheet ID"} string destinationId) 
+    @display {label: "Copy Sheet By Sheet Id"}
+    remote isolated function copyTo(@display {label: "Spreadsheet Id"} string spreadsheetId, 
+                                    @display {label: "Worksheet Id"} int sheetId, 
+                                    @display {label: "Destination Spreadsheet Id"} string destinationId) 
                                     returns @tainted error? {
         json payload = {"destinationSpreadsheetId": destinationId};
         string notation = sheetId.toString();
@@ -1200,16 +1201,16 @@ public client class Client {
         }
     }
 
-    # Copies the Sheet to a given Spreadsheet by worksheet name as input.
+    # Copies the sheet to a given spreadsheet by worksheet name.
     #
-    # + spreadsheetId - ID of the Spreadsheet
-    # + sheetName - The name of the Worksheet
-    # + destinationId - ID of the Spreadsheet to copy the sheet to
+    # + spreadsheetId - Id of the spreadsheet
+    # + sheetName - The name of the worksheet
+    # + destinationId - Id of the spreadsheet to copy the sheet to
     # + return - Nil on success, else returns an error
-    @display {label: "Copy sheet to given spreadsheet by worksheet name"}
-    remote isolated function copyToBySheetName(@display {label: "Spreadsheet ID"} string spreadsheetId, 
-                                               @display {label: "Worksheet name"} string sheetName, 
-                                               @display {label: "Destination spreadsheet ID"} string destinationId) 
+    @display {label: "Copy Sheet By Sheet Name"}
+    remote isolated function copyToBySheetName(@display {label: "Spreadsheet Id"} string spreadsheetId, 
+                                               @display {label: "Worksheet Name"} string sheetName, 
+                                               @display {label: "Destination Spreadsheet Id"} string destinationId) 
                                                returns @tainted error? {
         Sheet sheet = check self->getSheetByName(spreadsheetId, sheetName);
         json payload = {"destinationSpreadsheetId": destinationId};
@@ -1223,14 +1224,14 @@ public client class Client {
         }
     }
 
-    # Clears the sheet content and formatting rules by sheet Id.
+    # Clears the worksheet content and formatting rules by worksheet Id.
     #
-    # + spreadsheetId - ID of the Spreadsheet
-    # + sheetId - ID of the Worksheet
+    # + spreadsheetId - Id of the spreadsheet
+    # + sheetId - Id of the worksheet
     # + return - Nil on success, else returns an error
-    @display {label: "Clear content and formatting rules in a worksheet by worksheet ID"}
-    remote isolated function clearAll(@display {label: "Spreadsheet ID"} string spreadsheetId, 
-                                      @display {label: "Worksheet ID"} int sheetId) returns @tainted error? {
+    @display {label: "Clear All By Sheet Id"}
+    remote isolated function clearAll(@display {label: "Spreadsheet Id"} string spreadsheetId, 
+                                      @display {label: "Worksheet Id"} int sheetId) returns @tainted error? {
         json payload = {
             "requests": [
                 {
@@ -1250,14 +1251,14 @@ public client class Client {
         }
     }
 
-    # Clears the sheet content and formatting rules by sheet name.
+    # Clears the worksheet content and formatting rules by worksheet name.
     #
-    # + spreadsheetId - ID of the Spreadsheet
-    # + sheetName - The name of the Worksheet
+    # + spreadsheetId - Id of the spreadsheet
+    # + sheetName - The name of the worksheet
     # + return - Nil on success, else returns an error
-    @display {label: "Clear content and formatting rules in a worksheet by worksheet name"}
-    remote isolated function clearAllBySheetName(@display {label: "Spreadsheet ID"} string spreadsheetId, 
-                                                 @display {label: "Worksheet name"} string sheetName) 
+    @display {label: "Clear All By Sheet Name"}
+    remote isolated function clearAllBySheetName(@display {label: "Spreadsheet Id"} string spreadsheetId, 
+                                                 @display {label: "Worksheet Name"} string sheetName) 
                                                  returns @tainted error? {
         Sheet sheet = check self->getSheetByName(spreadsheetId, sheetName);
         json payload = {
@@ -1284,7 +1285,10 @@ public client class Client {
 #
 # + oauthClientConfig - OAuth client configuration
 # + secureSocketConfig - Secure socket configuration
+@display {label: "Connection Config"}
 public type SpreadsheetConfiguration record {
+    @display {label: "Auth Config"}
     http:BearerTokenConfig|http:OAuth2RefreshTokenGrantConfig oauthClientConfig;
+    @display {label: "SSL Config"}
     http:ClientSecureSocket secureSocketConfig?;
 };
