@@ -24,7 +24,7 @@ returns @tainted json | error {
     if (jsonPayload != ()) {
         httpRequest.setJsonPayload(<@untainted>jsonPayload);
     }
-    var httpResponse = httpClient->post(<@untainted>path, httpRequest);
+    http:Response|error httpResponse = httpClient->post(<@untainted>path, httpRequest);
     if (httpResponse is http:Response) {
         int statusCode = httpResponse.statusCode;
         json | http:ClientError jsonResponse = httpResponse.getJsonPayload();
@@ -43,7 +43,7 @@ returns @tainted json | error {
 }
 
 isolated function sendRequest(http:Client httpClient, string path) returns @tainted json | error {
-    var httpResponse = httpClient->get(<@untainted>path);
+    http:Response|error httpResponse = httpClient->get(<@untainted>path);
     if (httpResponse is http:Response) {
         int statusCode = httpResponse.statusCode;
         json | error jsonResponse = httpResponse.getJsonPayload();
@@ -98,6 +98,18 @@ isolated function getSpreadsheetError(json|error errorResponse) returns error {
   }
 }
 
+isolated function getIdFromUrl(string url) returns string|error {
+    if (!url.startsWith(URL_START)) {
+        return error("Invalid url: " + url);
+    } else {
+        int? endIndex = url.indexOf(URL_END);
+        if (endIndex is ()) {
+            return error("Invalid url: " + url);
+        } else {
+            return url.substring(ID_START_INDEX, endIndex);
+        }
+    }
+}
 
 # Get the error message from the response.
 #
