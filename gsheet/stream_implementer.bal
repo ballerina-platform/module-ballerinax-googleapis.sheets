@@ -22,10 +22,10 @@ class SpreadsheetStream {
     private File[] currentEntries = [];
     int index = 0;   
 
-    isolated function init(http:Client httpClient) {
+    isolated function init(http:Client httpClient) returns error? {
         self.httpClient = httpClient;
         self.pageToken = EMPTY_STRING;
-        self.currentEntries = checkpanic self.fetchFiles();
+        self.currentEntries = check self.fetchFiles();
     }
 
     public isolated function next() returns @tainted record {|File value;|}|error? {
