@@ -239,7 +239,7 @@ function testSetRange() {
     enable: true
 }
 function testGetRange() {
-    var spreadsheetRes = spreadsheetClient->getRange(spreadsheetId, testSheetName, "A1:D5");
+    var spreadsheetRes = spreadsheetClient->getRange(spreadsheetId, testSheetName, "A1:D5", "FORMULA");
     if (spreadsheetRes is Range) {
         log:printInfo(spreadsheetRes.toString());
         test:assertEquals(spreadsheetRes.values, entries, msg = "Failed to get the values of the range");
@@ -328,7 +328,7 @@ function testAddColumnsAfterBySheetName() {
     enable: true
 }
 function testCreateOrUpdateColumn() {
-    string[] values = ["Update", "Column", "Values"];
+    (string|int|decimal)[] values = ["Update", "Column", "Values"];
     var spreadsheetRes = spreadsheetClient->createOrUpdateColumn(spreadsheetId, testSheetName, "I", values);
     if (spreadsheetRes is ()) {
         test:assertEquals(spreadsheetRes, (), msg = "Failed to create or update column");
@@ -342,11 +342,11 @@ function testCreateOrUpdateColumn() {
     enable: true
 }
 function testGetColumn() {
-    var spreadsheetRes = spreadsheetClient->getColumn(spreadsheetId, testSheetName, "I");
-    if (spreadsheetRes is (string|int|float)[]) {
+    var spreadsheetRes = spreadsheetClient->getColumn(spreadsheetId, testSheetName, "I", "FORMULA");
+    if (spreadsheetRes is (string|int|decimal)[]) {
         log:printInfo(spreadsheetRes.toString());
-        (int|string|float)[] expectedValue = ["Update", "Column", "Values"];
-        test:assertEquals(spreadsheetRes.toString(), expectedValue.toString(), msg = "Failed to get the column values");
+        (int|string|decimal)[] expectedValue = ["Update", "Column", "Values"];
+        test:assertEquals(spreadsheetRes, expectedValue, msg = "Failed to get the column values");
     } else {
         test:assertFail(spreadsheetRes.message());
     }
@@ -438,7 +438,7 @@ function testAddRowsAfterBySheetName() {
     enable: true
 }
 function testCreateOrUpdateRow() {
-    string[] values = ["Update", "Row", "Values"];
+    (string|int|decimal)[] values = ["Update", "Row", "Values"];
     var spreadsheetRes = spreadsheetClient->createOrUpdateRow(spreadsheetId, testSheetName, 10, values);
     if (spreadsheetRes is ()) {
         test:assertEquals(spreadsheetRes, (), msg = "Failed to create or update row");
@@ -453,11 +453,11 @@ function testCreateOrUpdateRow() {
     enable: true
 }
 function testGetRow() {
-    var spreadsheetRes = spreadsheetClient->getRow(spreadsheetId, testSheetName, 10);
-    if (spreadsheetRes is (string|int|float)[]) {
+    var spreadsheetRes = spreadsheetClient->getRow(spreadsheetId, testSheetName, 10, "FORMULA");
+    if (spreadsheetRes is (string|int|decimal)[]) {
         log:printInfo(spreadsheetRes.toString());
-        (int|string|float)[] expectedValue = ["Update", "Row", "Values"];
-        test:assertEquals(spreadsheetRes.toString(), expectedValue.toString(), msg = "Failed to get the row values");
+        (int|string|decimal)[] expectedValue = ["Update", "Row", "Values"];
+        test:assertEquals(spreadsheetRes, expectedValue, msg = "Failed to get the row values");
     } else {
         test:assertFail(spreadsheetRes.message());
     }
@@ -508,10 +508,10 @@ function testSetCell() {
     enable: true
 }
 function testGetCell() {
-    var spreadsheetRes = spreadsheetClient->getCell(spreadsheetId, testSheetName, "H1");
-    if (spreadsheetRes is (string|int|float)) {
+    var spreadsheetRes = spreadsheetClient->getCell(spreadsheetId, testSheetName, "H1", "FORMULA");
+    if (spreadsheetRes is (string|int|decimal)) {
         log:printInfo(spreadsheetRes.toString());
-        test:assertEquals(spreadsheetRes.toString(), "ModifiedValue", msg = "Failed to get the cell value");
+        test:assertEquals(spreadsheetRes, "ModifiedValue", msg = "Failed to get the cell value");
     } else {
         test:assertFail(spreadsheetRes.message());
     }
@@ -550,7 +550,7 @@ function testAppendRowToSheet() {
 }
 function testAppendRow() {
     string[] values = ["Appending", "Some", "Values"];
-    var spreadsheetRes = spreadsheetClient->appendRow(spreadsheetId, testSheetName, "F1:H3", values);
+    var spreadsheetRes = spreadsheetClient->appendRowToSheet(spreadsheetId, testSheetName, values, "F1:H3");
     if (spreadsheetRes is ()) {
         test:assertEquals(spreadsheetRes, (), msg = "Appending a row to range failed");
     } else {
@@ -563,8 +563,8 @@ function testAppendRow() {
     enable: true
 }
 function testAppendCell() {
-    string value = "AppendingValue";
-    var spreadsheetRes = spreadsheetClient->appendCell(spreadsheetId, testSheetName, "F1", value);
+    string[] value = ["AppendingValue"];
+    var spreadsheetRes = spreadsheetClient->appendRowToSheet(spreadsheetId, testSheetName, value, "F1");
     if (spreadsheetRes is ()) {
         test:assertEquals(spreadsheetRes, (), msg = "Appending a cell to range failed");
     } else {

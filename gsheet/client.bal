@@ -197,7 +197,7 @@ public client class Client {
         }
         sheetElement["properties"] = jsonSheetProperties;
         string addSheetPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + BATCH_UPDATE_REQUEST;
-        json | error response = sendRequestWithPayload(self.httpClient, addSheetPath, payload);
+        json|error response = sendRequestWithPayload(self.httpClient, addSheetPath, payload);
         if (response is error) {
             return response;
         } else {
@@ -206,7 +206,7 @@ public client class Client {
             if (jsonResponseValues is json) {
                 replies = <json[]>jsonResponseValues;
             }
-            json | error addSheet = replies[0].addSheet;
+            json|error addSheet = replies[0].addSheet;
 
             Sheet sheet = {};
             if (!(addSheet is error)) {
@@ -287,8 +287,8 @@ public client class Client {
     # + return - Nil on success, else returns an error
     @display {label: "Rename Worksheet"}
     remote isolated function renameSheet(@display {label: "Spreadsheet Id"} string spreadsheetId, 
-                                         @display {label: "Existing Name for Worksheet"} string sheetName, 
-                                         @display {label: "New Name for Worksheet"} string name) 
+                                         @display {label: "Existing Worksheet Name"} string sheetName, 
+                                         @display {label: "New Worksheet Name"} string name) 
                                          returns @tainted error? {
         Sheet sheet = check self->getSheetByName(spreadsheetId, sheetName);
         json payload = {
@@ -316,27 +316,30 @@ public client class Client {
     # + spreadsheetId - Id of the Spreadsheet
     # + sheetName - The name of the Worksheet
     # + range - The Range record to be set
+    # + valueInputOption - Determines how input data should be interpreted. 
+    #                      It's either "RAW" or "USER_ENTERED". Default is "RAW" (Optional)
     # + return - Nil on success, else returns an error
     @display {label: "Set Range"}
     remote isolated function setRange(@display {label: "Spreadsheet Id"} string spreadsheetId, 
                                       @display {label: "Worksheet Name"} string sheetName, 
-                                      Range range) returns @tainted error? {
-        (string | int | float)[][] values = range.values;
+                                      Range range, @display {label: "Value Input Option"} string? valueInputOption = ()) 
+                                      returns @tainted error? {
+        (string|int|decimal)[][] values = range.values;
         string a1Notation = range.a1Notation;
-        http:Request request = new;
-        string notation = sheetName;
         if (a1Notation == EMPTY_STRING) {
             return error("Invalid range notation");
         }
-        notation = notation + EXCLAMATION_MARK + a1Notation;
-        string setValuePath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + notation
-        + QUESTION_MARK + VALUE_INPUT_OPTION;
+        string notation = sheetName + EXCLAMATION_MARK + a1Notation;
+        string setValuePath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + notation;
+        setValuePath = setValuePath + ((valueInputOption is ()) ? string `${VALUE_INPUT_OPTION}${RAW}` : 
+            string `${VALUE_INPUT_OPTION}${valueInputOption}`);
+        http:Request request = new;
         json[][] jsonValues = [];
         int i = 0;
-        foreach (string | int | float)[] value in values {
+        foreach (string|int|decimal)[] value in values {
             int j = 0;
             json[] val = [];
-            foreach string | int | float v in value {
+            foreach string|int|decimal v in value {
                 val[j] = v;
                 j = j + 1;
             }
@@ -364,20 +367,25 @@ public client class Client {
     # + spreadsheetId - Id of the spreadsheet
     # + sheetName - The name of the worksheet
     # + a1Notation - The required range in A1 notation
+    # + valueRenderOption - Determines how values should be rendered in the output.
+    #                       It's either "FORMATTED_VALUE","UNFORMATTED_VALUE" or "USER_ENTERED". 
+    #                       Default is "FORMATTED_VALUE" (Optional)
     # + return - The Range record on success, else returns an error
     @display {label: "Get Range"}
     remote isolated function getRange(@display {label: "Spreadsheet Id"} string spreadsheetId, 
                                       @display {label: "Worksheet Name"} string sheetName, 
-                                      @display {label: "Required Range A1 Notation"} string a1Notation) 
+                                      @display {label: "Range A1 Notation"} string a1Notation,
+                                      @display {label: "Value Render Option"} string? valueRenderOption = ()) 
                                       returns @tainted Range|error {
-        (string | int | float)[][] values = [];
-        string notation = sheetName;
+        (string|int|decimal)[][] values = [];
         if (a1Notation == EMPTY_STRING) {
-            return error("Invalid range");
+            return error("Invalid range notation");
         }
-        notation = notation + EXCLAMATION_MARK + a1Notation;
+        string notation = sheetName + EXCLAMATION_MARK + a1Notation;
         string getSheetValuesPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + notation;
-        json | error response = sendRequest(self.httpClient, getSheetValuesPath);
+        getSheetValuesPath = getSheetValuesPath + ((valueRenderOption is ()) ? EMPTY_STRING : 
+            string `${QUESTION_MARK}${VALUE_RENDER_OPTION}${valueRenderOption}`);
+        json|error response = sendRequest(self.httpClient, getSheetValuesPath);
         if (response is error) {
             return response;
         } else {
@@ -398,12 +406,12 @@ public client class Client {
     @display {label: "Clear Range"}
     remote isolated function clearRange(@display {label: "Spreadsheet Id"} string spreadsheetId, 
                                         @display {label: "Worksheet Name"} string sheetName, 
-                                        @display {label: "Required Range A1 Notation"} string a1Notation) 
+                                        @display {label: "Range A1 Notation"} string a1Notation) 
                                         returns @tainted error? {
         string notation = sheetName + EXCLAMATION_MARK + a1Notation;
         string deleteSheetPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH +
-        notation + CLEAR_REQUEST;
-        json | error response = sendRequestWithPayload(self.httpClient, deleteSheetPath);
+            notation + CLEAR_REQUEST;
+        json|error response = sendRequestWithPayload(self.httpClient, deleteSheetPath);
         if (response is error) {
             return response;
         }
@@ -419,8 +427,8 @@ public client class Client {
     @display {label: "Add Columns Before By Sheet Id"}
     remote isolated function addColumnsBefore(@display {label: "Spreadsheet Id"} string spreadsheetId, 
                                               @display {label: "Worksheet Id"} int sheetId, 
-                                              @display {label: "Position of Given Column"} int index, 
-                                              @display {label: "Number of Columns to Insert"} int numberOfColumns) 
+                                              @display {label: "Column Position"} int index, 
+                                              @display {label: "Number of Columns"} int numberOfColumns) 
                                               returns @tainted error? {
         int startIndex = index - 1;
         int endIndex = startIndex + numberOfColumns;
@@ -439,7 +447,7 @@ public client class Client {
             ]
         };
         string addColumnsPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + BATCH_UPDATE_REQUEST;
-        json | error response = sendRequestWithPayload(self.httpClient, addColumnsPath, payload);
+        json|error response = sendRequestWithPayload(self.httpClient, addColumnsPath, payload);
         if (response is error) {
             return response;
         }
@@ -455,8 +463,8 @@ public client class Client {
     @display {label: "Add Columns Before"}
     remote isolated function addColumnsBeforeBySheetName(@display {label: "Spreadsheet Id"} string spreadsheetId, 
                                                          @display {label: "Worksheet Name"} string sheetName, 
-                                                         @display {label: "Position of Column"} int index, 
-                                                         @display {label: "Number of Columns to Insert"} 
+                                                         @display {label: "Column Position"} int index, 
+                                                         @display {label: "Number of Columns"} 
                                                          int numberOfColumns) 
                                                          returns @tainted error? {
         Sheet sheet = check self->getSheetByName(spreadsheetId, sheetName);
@@ -477,7 +485,7 @@ public client class Client {
             ]
         };
         string addColumnsPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + BATCH_UPDATE_REQUEST;
-        json | error response = sendRequestWithPayload(self.httpClient, addColumnsPath, payload);
+        json|error response = sendRequestWithPayload(self.httpClient, addColumnsPath, payload);
         if (response is error) {
             return response;
         }
@@ -493,8 +501,8 @@ public client class Client {
     @display {label: "Add Columns After By Sheet Id"}
     remote isolated function addColumnsAfter(@display {label: "Spreadsheet Id"} string spreadsheetId, 
                                              @display {label: "Worksheet Id"} int sheetId, 
-                                             @display {label: "Position of Column"} int index, 
-                                             @display {label: "Number of Columns to Insert"} int numberOfColumns) 
+                                             @display {label: "Column Position"} int index, 
+                                             @display {label: "Number of Columns"} int numberOfColumns) 
                                              returns @tainted error? {
         int startIndex = index;
         int endIndex = startIndex + numberOfColumns;
@@ -513,7 +521,7 @@ public client class Client {
             ]
         };
         string addColumnsPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + BATCH_UPDATE_REQUEST;
-        json | error response = sendRequestWithPayload(self.httpClient, addColumnsPath, payload);
+        json|error response = sendRequestWithPayload(self.httpClient, addColumnsPath, payload);
         if (response is error) {
             return response;
         }
@@ -529,8 +537,8 @@ public client class Client {
     @display {label: "Add Columns After"}
     remote isolated function addColumnsAfterBySheetName(@display {label: "Spreadsheet Id"} string spreadsheetId, 
                                                         @display {label: "Worksheet Name"} string sheetName, 
-                                                        @display {label: "Position of Column"} int index, 
-                                                        @display {label: "Number of Columns to Insert"} 
+                                                        @display {label: "Column Position"} int index, 
+                                                        @display {label: "Number of Columns"} 
                                                         int numberOfColumns) 
                                                         returns @tainted error? {
         Sheet sheet = check self->getSheetByName(spreadsheetId, sheetName);
@@ -551,7 +559,7 @@ public client class Client {
             ]
         };
         string addColumnsPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + BATCH_UPDATE_REQUEST;
-        json | error response = sendRequestWithPayload(self.httpClient, addColumnsPath, payload);
+        json|error response = sendRequestWithPayload(self.httpClient, addColumnsPath, payload);
         if (response is error) {
             return response;
         }
@@ -563,19 +571,23 @@ public client class Client {
     # + sheetName - The name of the worksheet
     # + column - Position of column (string notation) to set the data
     # + values - Array of values of the column to be added
+    # + valueInputOption - Determines how input data should be interpreted. 
+    #                      It's either "RAW" or "USER_ENTERED". Default is "RAW" (Optional)
     # + return - Nil on success, else returns an error
-    @display {label: "Create or Update Column"}
+    @display {label: "Set Column"}
     remote isolated function createOrUpdateColumn(@display {label: "Spreadsheet Id"} string spreadsheetId, 
                                                   @display {label: "Worksheet Name"} string sheetName, 
-                                                  @display {label: "Position of Column"} string column, 
-                                                  @display {label: "Values for the Column"} (int|string|float)[] values) 
+                                                  @display {label: "Column Position"} string column, 
+                                                  @display {label: "Column Values"} (int|string|decimal)[] values,
+                                                  @display {label: "Value Input Option"} string? valueInputOption = ()) 
                                                   returns @tainted error? {
         string notation = sheetName + EXCLAMATION_MARK + column + COLON + column;
-        string requestPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + notation 
-            + "?valueInputOption=USER_ENTERED";
+        string requestPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + notation;
+        requestPath = requestPath + ((valueInputOption is ()) ? string `${VALUE_INPUT_OPTION}${RAW}` : 
+            string `${VALUE_INPUT_OPTION}${valueInputOption}`);
         json[] jsonValues = [];
         int i = 0;
-        foreach (string|int|float) value in values {
+        foreach (string|int|decimal) value in values {
             jsonValues[i] = value;
             i = i + 1;
         }
@@ -601,16 +613,22 @@ public client class Client {
     # + spreadsheetId - Id of the spreadsheet
     # + sheetName - The name of the worksheet
     # + column - Position of Column (string notation) to retrieve the data
+    # + valueRenderOption - Determines how values should be rendered in the output.
+    #                       It's either "FORMATTED_VALUE","UNFORMATTED_VALUE" or "USER_ENTERED". 
+    #                       Default is "FORMATTED_VALUE" (Optional)
     # + return - Values of the given column in an array on success, else returns an error
     @display {label: "Get Column"}
     remote isolated function getColumn(@display {label: "Spreadsheet Id"} string spreadsheetId, 
                                        @display {label: "Worksheet Name"} string sheetName, 
-                                       @display {label: "Position of Column"} string column) 
-                                       returns @tainted @display {label: "Values"} (string|int|float)[]|error {
-        (int | string | float)[] values = [];
+                                       @display {label: "Column Position"} string column,
+                                       @display {label: "Value Render Option"} string? valueRenderOption = ()) 
+                                       returns @tainted @display {label: "Column Values"} (string|int|decimal)[]|error {
+        (int|string|decimal)[] values = [];
         string a1Notation = sheetName + EXCLAMATION_MARK + column + COLON + column;
         string getColumnDataPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + a1Notation;
-        json | error response = sendRequest(self.httpClient, getColumnDataPath);
+        getColumnDataPath = getColumnDataPath + ((valueRenderOption is ()) ? EMPTY_STRING : 
+            string `${QUESTION_MARK}${VALUE_RENDER_OPTION}${valueRenderOption}`);
+        json|error response = sendRequest(self.httpClient, getColumnDataPath);
         if (response is error) {
             return response;
         } else {
@@ -646,7 +664,7 @@ public client class Client {
     remote isolated function deleteColumns(@display {label: "Spreadsheet Id"} string spreadsheetId, 
                                            @display {label: "Worksheet Id"} int sheetId, 
                                            @display {label: "Starting Column Position"} int column, 
-                                           @display {label: "Number of Columns to Delete"} int numberOfColumns) 
+                                           @display {label: "Number of Columns"} int numberOfColumns) 
                                            returns @tainted error? {
         int startIndex = column - 1;
         int endIndex = startIndex + numberOfColumns;
@@ -665,7 +683,7 @@ public client class Client {
             ]
         };
         string deleteColumnsPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + BATCH_UPDATE_REQUEST;
-        json | error response = sendRequestWithPayload(self.httpClient, deleteColumnsPath, payload);
+        json|error response = sendRequestWithPayload(self.httpClient, deleteColumnsPath, payload);
         if (response is error) {
             return response;
         }
@@ -682,7 +700,7 @@ public client class Client {
     remote isolated function deleteColumnsBySheetName(@display {label: "Spreadsheet Id"} string spreadsheetId, 
                                                       @display {label: "Worksheet Name"} string sheetName, 
                                                       @display {label: "Starting Column Position"} int column, 
-                                                      @display {label: "Number of Columns to Delete"} 
+                                                      @display {label: "Number of Columns"} 
                                                       int numberOfColumns) 
                                                       returns @tainted error? {
         Sheet sheet = check self->getSheetByName(spreadsheetId, sheetName);
@@ -703,7 +721,7 @@ public client class Client {
             ]
         };
         string deleteColumnsPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + BATCH_UPDATE_REQUEST;
-        json | error response = sendRequestWithPayload(self.httpClient, deleteColumnsPath, payload);
+        json|error response = sendRequestWithPayload(self.httpClient, deleteColumnsPath, payload);
         if (response is error) {
             return response;
         }
@@ -719,8 +737,8 @@ public client class Client {
     @display {label: "Add Rows Before By Sheet Id"}
     remote isolated function addRowsBefore(@display {label: "Spreadsheet Id"} string spreadsheetId, 
                                            @display {label: "Worksheet Id"} int sheetId, 
-                                           @display {label: "Position of a Given Row"} int index, 
-                                           @display {label: "Number of Rows to Insert"} int numberOfRows) 
+                                           @display {label: "Row Position"} int index, 
+                                           @display {label: "Number of Rows"} int numberOfRows) 
                                            returns @tainted error? {
         int startIndex = index - 1;
         int endIndex = startIndex + numberOfRows;
@@ -739,7 +757,7 @@ public client class Client {
             ]
         };
         string addRowsPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + BATCH_UPDATE_REQUEST;
-        json | error response = sendRequestWithPayload(self.httpClient, addRowsPath, payload);
+        json|error response = sendRequestWithPayload(self.httpClient, addRowsPath, payload);
         if (response is error) {
             return response;
         }
@@ -755,8 +773,8 @@ public client class Client {
     @display {label: "Add Rows Before By Sheet Name"}
     remote isolated function addRowsBeforeBySheetName(@display {label: "Spreadsheet Id"} string spreadsheetId, 
                                                       @display {label: "Worksheet Name"} string sheetName, 
-                                                      @display {label: "Position of a Given Row"} int index, 
-                                                      @display {label: "Number of Rows to Insert"} int numberOfRows) 
+                                                      @display {label: "Row Position"} int index, 
+                                                      @display {label: "Number of Rows"} int numberOfRows) 
                                                       returns @tainted error? {
         Sheet sheet = check self->getSheetByName(spreadsheetId, sheetName);
         int startIndex = index - 1;
@@ -776,7 +794,7 @@ public client class Client {
             ]
         };
         string addRowsPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + BATCH_UPDATE_REQUEST;
-        json | error response = sendRequestWithPayload(self.httpClient, addRowsPath, payload);
+        json|error response = sendRequestWithPayload(self.httpClient, addRowsPath, payload);
         if (response is error) {
             return response;
         }
@@ -792,8 +810,8 @@ public client class Client {
     @display {label: "Add Rows After By Sheet Id"}
     remote isolated function addRowsAfter(@display {label: "Spreadsheet Id"} string spreadsheetId, 
                                           @display {label: "Worksheet Id"} int sheetId, 
-                                          @display {label: "Position of a Given Row"} int index, 
-                                          @display {label: "Number of Rows to Insert"} int numberOfRows) 
+                                          @display {label: "Row Position"} int index, 
+                                          @display {label: "Number of Rows"} int numberOfRows) 
                                           returns @tainted error? {
         int startIndex = index;
         int endIndex = startIndex + numberOfRows;
@@ -828,8 +846,8 @@ public client class Client {
     @display {label: "Add Rows After"}
     remote isolated function addRowsAfterBySheetName(@display {label: "Spreadsheet Id"} string spreadsheetId, 
                                                      @display {label: "Worksheet Name"} string sheetName, 
-                                                     @display {label: "Position of a Given Row"} int index, 
-                                                     @display {label: "Number of Rows to Insert"} int numberOfRows) 
+                                                     @display {label: "Row Position"} int index, 
+                                                     @display {label: "Number of Rows"} int numberOfRows) 
                                                      returns @tainted error? {
         Sheet sheet = check self->getSheetByName(spreadsheetId, sheetName);
         int startIndex = index;
@@ -861,19 +879,23 @@ public client class Client {
     # + sheetName - The name of the worksheet
     # + row - Position of row (integer notation) to set the data
     # + values - Array of values of the row to be added
+    # + valueInputOption - Determines how input data should be interpreted. 
+    #                      It's either "RAW" or "USER_ENTERED". Default is "RAW" (Optional)
     # + return - Nil on success, else returns an error
-    @display {label: "Create or Update Row"}
+    @display {label: "Set Row"}
     remote isolated function createOrUpdateRow(@display {label: "Spreadsheet Id"} string spreadsheetId, 
                                                @display {label: "Worksheet Name"} string sheetName, 
-                                               @display {label: "Position of Row"} int row, 
-                                               @display {label: "Values for the Row"} (int|string|float)[] values) 
+                                               @display {label: "Row Position"} int row, 
+                                               @display {label: "Row Values"} (int|string|decimal)[] values,
+                                               @display {label: "Value Input Option"} string? valueInputOption = ()) 
                                                returns @tainted error? {
         string notation = sheetName + EXCLAMATION_MARK + row.toString() + COLON + row.toString();
-        string requestPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + notation 
-            + "?valueInputOption=USER_ENTERED";
+        string requestPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + notation;
+        requestPath = requestPath + ((valueInputOption is ()) ? string `${VALUE_INPUT_OPTION}${RAW}` : 
+            string `${VALUE_INPUT_OPTION}${valueInputOption}`);
         json[] jsonValues = [];
         int i = 0;
-        foreach (string|int|float) value in values {
+        foreach (string|int|decimal) value in values {
             jsonValues[i] = value;
             i = i + 1;
         }
@@ -899,16 +921,22 @@ public client class Client {
     # + spreadsheetId - Id of the spreadsheet
     # + sheetName - The name of the worksheet
     # + row - Row number to retrieve the data
+    # + valueRenderOption - Determines how values should be rendered in the output.
+    #                       It's either "FORMATTED_VALUE","UNFORMATTED_VALUE" or "USER_ENTERED". 
+    #                       Default is "FORMATTED_VALUE" (Optional)
     # + return - Values of the given row in an array on success, else returns an error
     @display {label: "Get Row"}
     remote isolated function getRow(@display {label: "Spreadsheet Id"} string spreadsheetId, 
                                     @display {label: "Worksheet Name"} string sheetName, 
-                                    @display {label: "Position of Row"} int row) 
-                                    returns @tainted @display {label: "Row Values"} (string|int|float)[]|error {
-        (int | string | float)[] values = [];
+                                    @display {label: "Row Position"} int row,
+                                    @display {label: "Value Render Option"} string? valueRenderOption = ()) 
+                                    returns @tainted @display {label: "Row Values"} (string|int|decimal)[]|error {
+        (int|string|decimal)[] values = [];
         string a1Notation = sheetName + EXCLAMATION_MARK + row.toString() + COLON + row.toString();
         string getRowDataPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + a1Notation;
-        json | error response = sendRequest(self.httpClient, getRowDataPath);
+        getRowDataPath = getRowDataPath + ((valueRenderOption is ()) ? EMPTY_STRING : 
+            string `${QUESTION_MARK}${VALUE_RENDER_OPTION}${valueRenderOption}`);
+        json|error response = sendRequest(self.httpClient, getRowDataPath);
         if (response is error) {
             return response;
         } else {
@@ -921,7 +949,7 @@ public client class Client {
                 }
                 json[] jsonArray = <json[]>jsonValues[0];
                 foreach json value in jsonArray {
-                    values[i] = value.toString();
+                    values[i] = getConvertedValue(value);
                     i = i + 1;
                 }
             }
@@ -940,7 +968,7 @@ public client class Client {
     remote isolated function deleteRows(@display {label: "Spreadsheet Id"} string spreadsheetId, 
                                         @display {label: "Worksheet Id"} int sheetId, 
                                         @display {label: "Starting Row Position"} int row, 
-                                        @display {label: "Number of Rows to Delete"} int numberOfRows) 
+                                        @display {label: "Number of Rows"} int numberOfRows) 
                                         returns @tainted error? {
         int startIndex = row - 1;
         int endIndex = startIndex + numberOfRows;
@@ -959,7 +987,7 @@ public client class Client {
             ]
         };
         string deleteRowsPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + BATCH_UPDATE_REQUEST;
-        json | error response = sendRequestWithPayload(self.httpClient, deleteRowsPath, payload);
+        json|error response = sendRequestWithPayload(self.httpClient, deleteRowsPath, payload);
         if (response is error) {
             return response;
         }
@@ -976,7 +1004,7 @@ public client class Client {
     remote isolated function deleteRowsBySheetName(@display {label: "Spreadsheet Id"} string spreadsheetId, 
                                                    @display {label: "Worksheet Name"} string sheetName, 
                                                    @display {label: "Starting Row Position"} int row, 
-                                                   @display {label: "Number of Rows to Delete"} int numberOfRows) 
+                                                   @display {label: "Number of Rows"} int numberOfRows) 
                                                    returns @tainted error? {
         Sheet sheet = check self->getSheetByName(spreadsheetId, sheetName);
         int startIndex = row - 1;
@@ -996,7 +1024,7 @@ public client class Client {
             ]
         };
         string deleteRowsPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + BATCH_UPDATE_REQUEST;
-        json | error response = sendRequestWithPayload(self.httpClient, deleteRowsPath, payload);
+        json|error response = sendRequestWithPayload(self.httpClient, deleteRowsPath, payload);
         if (response is error) {
             return response;
         }
@@ -1008,18 +1036,22 @@ public client class Client {
     # + sheetName - The name of the worksheet
     # + a1Notation - The required cell in A1 notation
     # + value - Value of the cell to be set
+    # + valueInputOption - Determines how input data should be interpreted. 
+    #                      It's either "RAW" or "USER_ENTERED". Default is "RAW" (Optional)
     # + return - Nil on success, else returns an error
     @display {label: "Set Cell"}
     remote isolated function setCell(@display {label: "Spreadsheet Id"} string spreadsheetId, 
                                      @display {label: "Worksheet Name"} string sheetName, 
-                                     @display {label: "Required Cell in A1 Notation"} string a1Notation, 
-                                     @display {label: "Value of the Cell"} int|string|float value) 
+                                     @display {label: "Cell A1 Notation"} string a1Notation, 
+                                     @display {label: "Cell Value"} int|string|decimal value,
+                                     @display {label: "Value Input Option"} string? valueInputOption = ()) 
                                      returns @tainted error? {
+        string notatiob = sheetName + EXCLAMATION_MARK + a1Notation;
+        string setCellDataPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + notatiob;
+        setCellDataPath = setCellDataPath + ((valueInputOption is ()) ? string `${VALUE_INPUT_OPTION}${RAW}` : 
+            string `${VALUE_INPUT_OPTION}${valueInputOption}`);
         http:Request request = new;
         json jsonPayload = {"values": [[value]]};
-        string notatiob = sheetName + EXCLAMATION_MARK + a1Notation;
-        string setCellDataPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + notatiob
-        + QUESTION_MARK + VALUE_INPUT_OPTION;
         request.setJsonPayload(jsonPayload);
         http:Response|error httpResponse = self.httpClient->put(<@untainted>setCellDataPath, request);
         if (httpResponse is http:Response) {
@@ -1040,16 +1072,22 @@ public client class Client {
     # + spreadsheetId - Id of the spreadsheet
     # + sheetName - The name of the worksheet
     # + a1Notation - The required cell in A1 notation
+    # + valueRenderOption - Determines how values should be rendered in the output.
+    #                       It's either "FORMATTED_VALUE","UNFORMATTED_VALUE" or "USER_ENTERED". 
+    #                       Default is "FORMATTED_VALUE" (Optional)
     # + return - Value of the given cell on success, else returns an error
     @display {label: "Get Cell"}
     remote isolated function getCell(@display {label: "Spreadsheet Id"} string spreadsheetId, 
                                      @display {label: "Worksheet Name"} string sheetName, 
-                                     @display {label: "Required Cell A1 Notation"} string a1Notation) 
-                                     returns @tainted @display {label: "Value"} int|string|float|error {
-        int | string | float value = EMPTY_STRING;
+                                     @display {label: "Cell A1 Notation"} string a1Notation,
+                                     @display {label: "Value Render Option"} string? valueRenderOption = ()) 
+                                     returns @tainted @display {label: "Cell Value"} int|string|decimal|error {
+        int|string|decimal value = EMPTY_STRING;
         string notation = sheetName + EXCLAMATION_MARK + a1Notation;
         string getCellDataPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + notation;
-        json | error response = sendRequest(self.httpClient, getCellDataPath);
+        getCellDataPath = getCellDataPath + ((valueRenderOption is ()) ? EMPTY_STRING : 
+            string `${QUESTION_MARK}${VALUE_RENDER_OPTION}${valueRenderOption}`);
+        json|error response = sendRequest(self.httpClient, getCellDataPath);
         if (response is error) {
             return response;
         } else {
@@ -1060,7 +1098,7 @@ public client class Client {
                     responseValues = <json[]>jsonResponseValues;
                 }
                 json[] firstResponseValue = <json[]>responseValues[0];
-                value = firstResponseValue[0].toString();
+                value = getConvertedValue(firstResponseValue[0]);
             }
             return value;
         }
@@ -1080,19 +1118,29 @@ public client class Client {
         return self->clearRange(spreadsheetId, sheetName, a1Notation);
     }
 
-    # Adds a new row with the given values to the bottom of the worksheet.
+    # Adds a new row with the given values to the bottom of the worksheet. The input range is used to search 
+    # for existing data and find a "table" within that range. Values will be appended to the next row of 
+    # the table, starting with the first column of the table.
     #
     # + spreadsheetId - Id of the spreadsheet
     # + sheetName - The name of the worksheet
     # + values - Array of values of the row to be added
+    # + a1Notation - The required range in A1 notation (Optional)
+    # + valueInputOption - Determines how input data should be interpreted. 
+    #                      It's either "RAW" or "USER_ENTERED". Default is "RAW" (Optional)
     # + return - Nil on success, else returns an error
-        @display {label: "Append Row To Sheet"}
+    @display {label: "Append Row"}
     remote isolated function appendRowToSheet(@display {label: "Spreadsheet Id"} string spreadsheetId, 
                                               @display {label: "Worksheet Name"} string sheetName, 
-                                              @display {label: "Values for the Row"} (int|string|float)[] values) 
+                                              @display {label: "Row Values"} (int|string|float)[] values,
+                                              @display {label: "Range A1 Notation"} string? a1Notation = (),
+                                              @display {label: "Value Input Option"} string? valueInputOption = ()) 
                                               returns @tainted error? {
-        string setValuePath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + sheetName 
-            + APPEND_REQUEST;
+        string notation = (a1Notation is ()) ? string `${sheetName}` : 
+            string `${sheetName}${EXCLAMATION_MARK}${a1Notation}`;
+        string setValuePath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + notation + APPEND;
+        setValuePath = setValuePath + ((valueInputOption is ()) ? string `${VALUE_INPUT_OPTION}${RAW}` : 
+            string `${VALUE_INPUT_OPTION}${valueInputOption}`);
         json[] jsonValues = [];
         int i = 0;
         foreach (string|int|float) value in values {
@@ -1100,82 +1148,14 @@ public client class Client {
             i = i + 1;
         }
         json jsonPayload = {
-            "range": sheetName,
+            "range": notation,
             "majorDimension": "ROWS",
             "values": [
                 jsonValues
             ]
         };
         json|error response = sendRequestWithPayload(self.httpClient, <@untainted>setValuePath,
-        <@untainted>jsonPayload);
-        if (response is error) {
-            return response;
-        }
-    }
-
-    # Adds a new row with the given values to the bottom of the given range.
-    #
-    # + spreadsheetId - Id of the spreadsheet
-    # + sheetName - The name of the worksheet
-    # + a1Notation - The required range in A1 notation
-    # + values - Array of values of the row to be added
-    # + return - Nil on success, else returns an error
-    @display {label: "Append Row To Range"}
-    remote isolated function appendRow(@display {label: "Spreadsheet Id"} string spreadsheetId, 
-                                       @display {label: "Worksheet Name"} string sheetName, 
-                                       @display {label: "Required Range A1 Notation"} string a1Notation, 
-                                       @display {label: "Values for the Row"} (int|string|float)[] values) 
-                                       returns @tainted error? {
-        string notatiob = sheetName + EXCLAMATION_MARK + a1Notation;
-        string setValuePath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + notatiob 
-            + APPEND_REQUEST;
-        json[] jsonValues = [];
-        int i = 0;
-        foreach (string|int|float) value in values {
-            jsonValues[i] = value;
-            i = i + 1;
-        }
-        json jsonPayload = {
-            "range": notatiob,
-            "majorDimension": "ROWS",
-            "values": [
-                jsonValues
-            ]
-        };
-        json|error response = sendRequestWithPayload(self.httpClient, <@untainted>setValuePath,
-        <@untainted>jsonPayload);
-        if (response is error) {
-            return response;
-        }
-    }
-
-    # Adds a new cell with the given value to the bottom of the given range.
-    #
-    # + spreadsheetId - Id of the spreadsheet
-    # + sheetName - The name of the worksheet
-    # + a1Notation - The required range in A1 notation
-    # + value - Value of the cell to be added
-    # + return - Nil on success, else returns an error
-    @display {label: "Append Cell To Range"}
-    remote isolated function appendCell(@display {label: "Spreadsheet Id"} string spreadsheetId, 
-                                        @display {label: "Worksheet Name"} string sheetName, 
-                                        @display {label: "Required Range A1 Notation"} string a1Notation, 
-                                        @display {label: "Value for New Cell"} (int|string|float) value) 
-                                        returns @tainted error? {
-        string notatiob = sheetName + EXCLAMATION_MARK + a1Notation;
-        string setValuePath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + notatiob 
-            + APPEND_REQUEST;
-        json[] jsonValues = [];
-        jsonValues[0] = value;
-        json jsonPayload = {
-            "range": notatiob,
-            "majorDimension": "ROWS",
-            "values": [
-                jsonValues
-            ]
-        };
-        json|error response = sendRequestWithPayload(self.httpClient, <@untainted>setValuePath,
-        <@untainted>jsonPayload);
+            <@untainted>jsonPayload);
         if (response is error) {
             return response;
         }
@@ -1192,11 +1172,11 @@ public client class Client {
                                     @display {label: "Worksheet Id"} int sheetId, 
                                     @display {label: "Destination Spreadsheet Id"} string destinationId) 
                                     returns @tainted error? {
-        json payload = {"destinationSpreadsheetId": destinationId};
         string notation = sheetId.toString();
         string copyToPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + SHEETS_PATH + notation +
-        COPY_TO_REQUEST;
-        json | error response = sendRequestWithPayload(self.httpClient, copyToPath, payload);
+            COPY_TO_REQUEST;
+        json payload = {"destinationSpreadsheetId": destinationId};
+        json|error response = sendRequestWithPayload(self.httpClient, copyToPath, payload);
         if (response is error) {
             return response;
         }
@@ -1214,12 +1194,12 @@ public client class Client {
                                                @display {label: "Destination Spreadsheet Id"} string destinationId) 
                                                returns @tainted error? {
         Sheet sheet = check self->getSheetByName(spreadsheetId, sheetName);
-        json payload = {"destinationSpreadsheetId": destinationId};
         int sheetId = sheet.properties.sheetId;
         string notation = sheetId.toString();
         string copyToPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + SHEETS_PATH + notation +
-        COPY_TO_REQUEST;
-        json | error response = sendRequestWithPayload(self.httpClient, copyToPath, payload);
+            COPY_TO_REQUEST;
+        json payload = {"destinationSpreadsheetId": destinationId};
+        json|error response = sendRequestWithPayload(self.httpClient, copyToPath, payload);
         if (response is error) {
             return response;
         }
@@ -1246,7 +1226,7 @@ public client class Client {
             ]
         };
         string deleteSheetPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + BATCH_UPDATE_REQUEST;
-        json | error response = sendRequestWithPayload(self.httpClient, deleteSheetPath, payload);
+        json|error response = sendRequestWithPayload(self.httpClient, deleteSheetPath, payload);
         if (response is error) {
             return response;
         }
@@ -1275,7 +1255,7 @@ public client class Client {
             ]
         };
         string deleteSheetPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + BATCH_UPDATE_REQUEST;
-        json | error response = sendRequestWithPayload(self.httpClient, deleteSheetPath, payload);
+        json|error response = sendRequestWithPayload(self.httpClient, deleteSheetPath, payload);
         if (response is error) {
             return response;
         }
