@@ -755,8 +755,8 @@ public function main() {
         string[] values = ["Update", "Column", "Values"];
         error? columnCreate = checkpanic spreadsheetClient->createOrUpdateColumn(spreadsheetId, sheetName, "I", values);
         // Gets the values in the given column in a Worksheet with given name.
-        (string|int|float)[]|error column = spreadsheetClient->getColumn(spreadsheetId, sheetName, "I");
-        if (column is (string|int|float)[]) {
+        (string|int|decimal)[]|error column = spreadsheetClient->getColumn(spreadsheetId, sheetName, "I");
+        if (column is (string|int|decimal)[]) {
             log:printInfo(column.toString());
         } else {
             log:printError("Error: " + column.toString());
@@ -878,8 +878,8 @@ public function main() {
         string[] values = ["Update", "Row", "Values"];
         error? rowCreate = checkpanic spreadsheetClient->createOrUpdateRow(spreadsheetId, sheetName, 10, values);
         // Gets the values in the given row in a Worksheet with given name.
-        (string|int|float)[]|error row = spreadsheetClient->getRow(spreadsheetId, sheetName, 10);
-        if (row is (string|int|float)[]) {
+        (string|int|decimal)[]|error row = spreadsheetClient->getRow(spreadsheetId, sheetName, 10);
+        if (row is (string|int|decimal)[]) {
             log:printInfo(row.toString());
         } else {
             log:printError("Error: " + row.toString());
@@ -979,8 +979,8 @@ public function main() {
     error? spreadsheetRes = spreadsheetClient->setCell(spreadsheetId, sheetName, a1Notation, "ModifiedValue");
     if (spreadsheetRes is ()) {
         // Gets the value of the given cell of the Sheet
-        (string|int|float)|error getValuesResult = spreadsheetClient->getCell(spreadsheetId, sheetName, a1Notation);
-        if (getValuesResult is (string|int|float)) {
+        (string|int|decimal)|error getValuesResult = spreadsheetClient->getCell(spreadsheetId, sheetName, a1Notation);
+        if (getValuesResult is (string|int|decimal)) {
             log:printInfo("Cell Details: " + getValuesResult.toString());
         } else {
             log:printError("Error: " + getValuesResult.toString());
@@ -989,8 +989,8 @@ public function main() {
         // Clears the given cell of contents, formats, and data validation rules.
         error? clear = spreadsheetClient->clearCell(spreadsheetId, sheetName, a1Notation);
         if (clear is ()) {
-            (string|int|float)|error openRes = spreadsheetClient->getCell(spreadsheetId, sheetName, a1Notation);
-            if (openRes is (string|int|float)) {
+            (string|int|decimal)|error openRes = spreadsheetClient->getCell(spreadsheetId, sheetName, a1Notation);
+            if (openRes is (string|int|decimal)) {
                 log:printInfo("Cell Details: " + openRes.toString());
             } else {
                 log:printError("Error: " + openRes.toString());
@@ -1162,9 +1162,9 @@ public function main() {
         // The input range is used to search for existing data and find a "table" within that range. Values are appended 
         // to the next row of the table, starting with the first column of the table.
         string[] values = ["Appending", "Some", "Values"];
-        error? append = checkpanic spreadsheetClient->appendRow(spreadsheetId, sheetName, "A2", values);
+        error? append = checkpanic spreadsheetClient->appendRowToSheet(spreadsheetId, sheetName, values, "A2");
         string[] valuesNext = ["Appending", "Another", "Row"];
-        error? appendNext = checkpanic spreadsheetClient->appendRow(spreadsheetId, sheetName, a1Notation, valuesNext);
+        error? appendNext = checkpanic spreadsheetClient->appendRowToSheet(spreadsheetId, sheetName, valuesNext, a1Notation);
 
         // Gets the given range of the Sheet
         string a1NotationAppend = "B2:E8";
@@ -1246,8 +1246,8 @@ public function main() {
         // The input range is used to search for existing data and find a "table" within that range. Value is appended 
         // to the next row of the table, starting with the first column of the table. If the range is not in any table 
         // the value is written to the given cell
-        error? append = checkpanic spreadsheetClient->appendCell(spreadsheetId, sheetName, "D6", "Modified Value1");
-        error? appendNext = checkpanic spreadsheetClient->appendCell(spreadsheetId, sheetName, a1Notation, "Modified Value2");
+        error? append = checkpanic spreadsheetClient->appendRowToSheet(spreadsheetId, sheetName, ["Modified Value1"], "D6");
+        error? appendNext = checkpanic spreadsheetClient->appendRowToSheet(spreadsheetId, sheetName, ["Modified Value2"], a1Notation);
 
         // Gets the given range of the Sheet
         string a1NotationAppend = "B2:E8";

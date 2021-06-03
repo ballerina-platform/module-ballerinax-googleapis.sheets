@@ -73,8 +73,8 @@ public function main() {
         // The input range is used to search for existing data and find a "table" within that range. Value is appended 
         // to the next row of the table, starting with the first column of the table. If the range is not in any table 
         // the value is written to the given cell
-        error? append = checkpanic spreadsheetClient->appendCell(spreadsheetId, sheetName, "D6", "Modified Value1");
-        error? appendNext = checkpanic spreadsheetClient->appendCell(spreadsheetId, sheetName, a1Notation, "Modified Value2");
+        error? append = checkpanic spreadsheetClient->appendRowToSheet(spreadsheetId, sheetName, ["Modified Value1"], "D6");
+        error? appendNext = checkpanic spreadsheetClient->appendRowToSheet(spreadsheetId, sheetName, ["Modified Value2"], a1Notation);
 
         // Gets the given range of the Sheet
         string a1NotationAppend = "B2:E8";

@@ -60,8 +60,8 @@ public function main() {
     error? spreadsheetRes = spreadsheetClient->setCell(spreadsheetId, sheetName, a1Notation, "ModifiedValue");
     if (spreadsheetRes is ()) {
         // Gets the value of the given cell of the Sheet
-        (string|int|float)|error getValuesResult = spreadsheetClient->getCell(spreadsheetId, sheetName, a1Notation);
-        if (getValuesResult is (string|int|float)) {
+        (string|int|decimal)|error getValuesResult = spreadsheetClient->getCell(spreadsheetId, sheetName, a1Notation);
+        if (getValuesResult is (string|int|decimal)) {
             log:printInfo("Cell Details: " + getValuesResult.toString());
         } else {
             log:printError("Error: " + getValuesResult.toString());
@@ -70,8 +70,8 @@ public function main() {
         // Clears the given cell of contents, formats, and data validation rules.
         error? clear = spreadsheetClient->clearCell(spreadsheetId, sheetName, a1Notation);
         if (clear is ()) {
-            (string|int|float)|error openRes = spreadsheetClient->getCell(spreadsheetId, sheetName, a1Notation);
-            if (openRes is (string|int|float)) {
+            (string|int|decimal)|error openRes = spreadsheetClient->getCell(spreadsheetId, sheetName, a1Notation);
+            if (openRes is (string|int|decimal)) {
                 log:printInfo("Cell Details: " + openRes.toString());
             } else {
                 log:printError("Error: " + openRes.toString());
