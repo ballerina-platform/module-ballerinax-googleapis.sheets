@@ -22,7 +22,7 @@ class SpreadsheetStream {
     private File[] currentEntries = [];
     int index = 0;   
 
-    isolated function init(http:Client httpClient) returns error? {
+    isolated function init(http:Client httpClient) returns @tainted error? {
         self.httpClient = httpClient;
         self.pageToken = EMPTY_STRING;
         self.currentEntries = check self.fetchFiles();
