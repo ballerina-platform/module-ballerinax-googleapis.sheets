@@ -118,6 +118,43 @@ public type Range record {
     (int|string|decimal)[][] values;
 };
 
+# Single column in a sheet.
+#
+# + columnPosition - The column letter
+# + values - Values of the given column
+@display {label: "Column"}
+public type Column record {
+    @display {label: "Column Letter"}
+    string columnPosition;
+    @display {label: "Values"}
+    (int|string|decimal)[] values;
+};
+
+# Single row in a sheet.
+#
+# + rowPosition - The row number
+# + values - Values of the given row
+@display {label: "Row"}
+public type Row record {
+    @display {label: "Row Number"}
+    int rowPosition;
+    @display {label: "Values"}
+    (int|string|decimal)[] values;
+};
+
+# Single cell in a sheet.
+#
+# + a1Notation - The column letter followed by the row number.
+#                For example for a single cell "A1" refers to the intersection of column "A" with row "1"
+# + value - Value of the given cell
+@display {label: "Cell"}
+public type Cell record {
+    @display {label: "A1 Notation"}
+    string a1Notation;
+    @display {label: "Value"}
+    (int|string|decimal) value;
+};
+
 # Response from File search 
 #
 # + kind - Identifies what kind of resource is this. Value: the fixed string "drive#fileList".

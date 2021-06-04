@@ -30,9 +30,9 @@ sheets:SpreadsheetConfiguration spreadsheetConfig = {
     }
 };
 
-sheets:Client spreadsheetClient = checkpanic new (spreadsheetConfig);
+sheets:Client spreadsheetClient = check new (spreadsheetConfig);
 
-public function main() {
+public function main() returns error? {
     string spreadsheetId = "";
     string sheetName = "";
     int sheetId = 0;
@@ -70,27 +70,27 @@ public function main() {
     error? spreadsheetRes = spreadsheetClient->setRange(spreadsheetId, sheetName, range);
     if (spreadsheetRes is ()) {
         // Inserts the given number of rows before the given row position in a Worksheet with given ID.
-        error? rowBeforeId = checkpanic spreadsheetClient->addRowsBefore(spreadsheetId, sheetId, 4, 1);
+        error? rowBeforeId = check spreadsheetClient->addRowsBefore(spreadsheetId, sheetId, 4, 1);
         // Inserts the given number of rows before the given row position in a Worksheet with given name.
-        error? rowBefore = checkpanic spreadsheetClient->addRowsBeforeBySheetName(spreadsheetId, sheetName, 5, 1);        
+        error? rowBefore = check spreadsheetClient->addRowsBeforeBySheetName(spreadsheetId, sheetName, 5, 1);        
         // Inserts the given number of rows after the given row position in a Worksheet with given ID.
-        error? rowAfterId = checkpanic spreadsheetClient->addRowsAfter(spreadsheetId, sheetId, 6, 1);
+        error? rowAfterId = check spreadsheetClient->addRowsAfter(spreadsheetId, sheetId, 6, 1);
         // Inserts the given number of rows after the given row position in a Worksheet with given name.
-        error? rowAfter = checkpanic spreadsheetClient->addRowsAfterBySheetName(spreadsheetId, sheetName, 7, 1);
+        error? rowAfter = check spreadsheetClient->addRowsAfterBySheetName(spreadsheetId, sheetName, 7, 1);
         // Create or Update a Row with the given array of values in a Worksheet with given name.
         string[] values = ["Update", "Row", "Values"];
-        error? rowCreate = checkpanic spreadsheetClient->createOrUpdateRow(spreadsheetId, sheetName, 10, values);
+        error? rowCreate = check spreadsheetClient->createOrUpdateRow(spreadsheetId, sheetName, 10, values);
         // Gets the values in the given row in a Worksheet with given name.
-        (string|int|decimal)[]|error row = spreadsheetClient->getRow(spreadsheetId, sheetName, 10);
-        if (row is (string|int|decimal)[]) {
+        sheets:Row|error row = spreadsheetClient->getRow(spreadsheetId, sheetName, 10);
+        if (row is sheets:Row) {
             log:printInfo(row.toString());
         } else {
             log:printError("Error: " + row.toString());
         }
         // Deletes the given number of rows starting at the given row position in a Worksheet with given ID.
-        error? rowDeleteId = checkpanic spreadsheetClient->deleteRows(spreadsheetId, sheetId, 4, 2);
+        error? rowDeleteId = check spreadsheetClient->deleteRows(spreadsheetId, sheetId, 4, 2);
         // Deletes the given number of rows starting at the given row position in a Worksheet with given name.
-        error? rowDelete = checkpanic spreadsheetClient->deleteRowsBySheetName(spreadsheetId, sheetName, 5, 2);
+        error? rowDelete = check spreadsheetClient->deleteRowsBySheetName(spreadsheetId, sheetName, 5, 2);
 
         // Gets the given range of the Sheet
         sheets:Range|error getValuesResult = spreadsheetClient->getRange(spreadsheetId, sheetName, a1Notation);

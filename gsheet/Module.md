@@ -117,7 +117,7 @@ sheets:SpreadsheetConfiguration spreadsheetConfig = {
     }
 };
 
-sheets:Client spreadsheetClient = checkpanic new (spreadsheetConfig);
+sheets:Client spreadsheetClient = check new (spreadsheetConfig);
 ```
 Then the endpoint actions can be invoked as `var response = spreadsheetClient->actionName(arguments)`.
 
@@ -135,7 +135,7 @@ sheets:SpreadsheetConfiguration spreadsheetConfig = {
     }
 };
 
-sheets:Client spreadsheetClient = checkpanic new (spreadsheetConfig);
+sheets:Client spreadsheetClient = check new (spreadsheetConfig);
 
 public function main(string... args) {
     var response = spreadsheetClient->openSpreadsheetById(<spreadsheet-id>);
@@ -167,7 +167,7 @@ sheets:SpreadsheetConfiguration spreadsheetConfig = {
     }
 };
 
-sheets:Client spreadsheetClient = checkpanic new (spreadsheetConfig);
+sheets:Client spreadsheetClient = check new (spreadsheetConfig);
 
 public function main(string... args) {
     var response = spreadsheetClient->openSpreadsheetById(<spreadsheet-id>);

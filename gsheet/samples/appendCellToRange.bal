@@ -30,9 +30,9 @@ sheets:SpreadsheetConfiguration spreadsheetConfig = {
     }
 };
 
-sheets:Client spreadsheetClient = checkpanic new (spreadsheetConfig);
+sheets:Client spreadsheetClient = check new (spreadsheetConfig);
 
-public function main() {
+public function main() returns error? {
     string spreadsheetId = "";
     string sheetName = "";
     int sheetId = 0;
@@ -73,8 +73,8 @@ public function main() {
         // The input range is used to search for existing data and find a "table" within that range. Value is appended 
         // to the next row of the table, starting with the first column of the table. If the range is not in any table 
         // the value is written to the given cell
-        error? append = checkpanic spreadsheetClient->appendRowToSheet(spreadsheetId, sheetName, ["Modified Value1"], "D6");
-        error? appendNext = checkpanic spreadsheetClient->appendRowToSheet(spreadsheetId, sheetName, ["Modified Value2"], a1Notation);
+        error? append = check spreadsheetClient->appendRowToSheet(spreadsheetId, sheetName, ["Modified Value1"], "D6");
+        error? appendNext = check spreadsheetClient->appendRowToSheet(spreadsheetId, sheetName, ["Modified Value2"], a1Notation);
 
         // Gets the given range of the Sheet
         string a1NotationAppend = "B2:E8";

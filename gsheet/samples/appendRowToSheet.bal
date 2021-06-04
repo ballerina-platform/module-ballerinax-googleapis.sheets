@@ -30,9 +30,9 @@ sheets:SpreadsheetConfiguration spreadsheetConfig = {
     }
 };
 
-sheets:Client spreadsheetClient = checkpanic new (spreadsheetConfig);
+sheets:Client spreadsheetClient = check new (spreadsheetConfig);
 
-public function main() {
+public function main() returns error? {
     string spreadsheetId = "";
     string sheetName = "";
     int sheetId = 0;
@@ -71,9 +71,9 @@ public function main() {
     if (spreadsheetRes is ()) {
         // Append a new row with the given values to the bottom in a Worksheet with given name. 
         string[] values = ["Appending", "Some", "Values"];
-        error? append = checkpanic spreadsheetClient->appendRowToSheet(spreadsheetId, sheetName, values);
+        error? append = check spreadsheetClient->appendRowToSheet(spreadsheetId, sheetName, values);
         string[] valuesNext = ["Appending", "Another", "Row"];
-        error? appendNext = checkpanic spreadsheetClient->appendRowToSheet(spreadsheetId, sheetName, valuesNext);
+        error? appendNext = check spreadsheetClient->appendRowToSheet(spreadsheetId, sheetName, valuesNext);
 
         // Gets the given range of the Sheet
         string a1NotationAppend = "A1:D7";

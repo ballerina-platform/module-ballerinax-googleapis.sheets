@@ -30,9 +30,9 @@ sheets:SpreadsheetConfiguration spreadsheetConfig = {
     }
 };
 
-sheets:Client spreadsheetClient = checkpanic new (spreadsheetConfig);
+sheets:Client spreadsheetClient = check new (spreadsheetConfig);
 
-public function main() {
+public function main() returns error? {
     string spreadsheetId = "";
     string sheetName = "";
     int sheetId = 0;
@@ -70,27 +70,27 @@ public function main() {
     error? spreadsheetRes = spreadsheetClient->setRange(spreadsheetId, sheetName, range);
     if (spreadsheetRes is ()) {
         // Inserts the given number of columns before the given column position in a Worksheet with given ID.
-        error? columnBeforeId = checkpanic spreadsheetClient->addColumnsBefore(spreadsheetId, sheetId, 3, 1);
+        error? columnBeforeId = check spreadsheetClient->addColumnsBefore(spreadsheetId, sheetId, 3, 1);
         // Inserts the given number of columns before the given column position in a Worksheet with given name.
-        error? columnBefore = checkpanic spreadsheetClient->addColumnsBeforeBySheetName(spreadsheetId, sheetName, 4, 1);        
+        error? columnBefore = check spreadsheetClient->addColumnsBeforeBySheetName(spreadsheetId, sheetName, 4, 1);        
         // Inserts the given number of columns after the given column position in a Worksheet with given ID.
-        error? columnAfterId = checkpanic spreadsheetClient->addColumnsAfter(spreadsheetId, sheetId, 5, 1);
+        error? columnAfterId = check spreadsheetClient->addColumnsAfter(spreadsheetId, sheetId, 5, 1);
         // Inserts the given number of columns after the given column position in a Worksheet with given name.
-        error? columnAfter = checkpanic spreadsheetClient->addColumnsAfterBySheetName(spreadsheetId, sheetName, 6, 1);
+        error? columnAfter = check spreadsheetClient->addColumnsAfterBySheetName(spreadsheetId, sheetName, 6, 1);
         // Create or Update a Column with the given array of values in a Worksheet with given name.
         string[] values = ["Update", "Column", "Values"];
-        error? columnCreate = checkpanic spreadsheetClient->createOrUpdateColumn(spreadsheetId, sheetName, "I", values);
+        error? columnCreate = check spreadsheetClient->createOrUpdateColumn(spreadsheetId, sheetName, "I", values);
         // Gets the values in the given column in a Worksheet with given name.
-        (string|int|decimal)[]|error column = spreadsheetClient->getColumn(spreadsheetId, sheetName, "I");
-        if (column is (string|int|decimal)[]) {
+        sheets:Column|error column = spreadsheetClient->getColumn(spreadsheetId, sheetName, "I");
+        if (column is sheets:Column) {
             log:printInfo(column.toString());
         } else {
             log:printError("Error: " + column.toString());
         }
         // Deletes the given number of columns starting at the given column position in a Worksheet with given ID.
-        error? columnDeleteId = checkpanic spreadsheetClient->deleteColumns(spreadsheetId, sheetId, 3, 2);
+        error? columnDeleteId = check spreadsheetClient->deleteColumns(spreadsheetId, sheetId, 3, 2);
         // Deletes the given number of columns starting at the given column position in a Worksheet with given name.
-        error? columnDelete = checkpanic spreadsheetClient->deleteColumnsBySheetName(spreadsheetId, sheetName, 4, 2);
+        error? columnDelete = check spreadsheetClient->deleteColumnsBySheetName(spreadsheetId, sheetName, 4, 2);
 
         // Gets the given range of the Sheet
         sheets:Range|error getValuesResult = spreadsheetClient->getRange(spreadsheetId, sheetName, a1Notation);
