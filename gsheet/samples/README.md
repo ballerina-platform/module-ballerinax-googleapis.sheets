@@ -7,7 +7,7 @@ The Google Spreadsheet Ballerina Connector allows you to access the Google Sprea
 This section shows how to use the Google Spreadsheet ballerina connector to create a new spreadsheet. We must specify the spreadsheet name as a string parameter to the createSpreadsheet remote operation. This is the basic scenario of creating a new spreadsheet with the name “NewSpreadsheet”. It returns a Spreadsheet record type with all the information related to the spreadsheet created on success and a ballerina error if the operation is unsuccessful.
 
 Sample is available at:
-https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/blob/master/samples/createSpreadsheet.bal
+https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/blob/master/gsheet/samples/createSpreadsheet.bal
 
 ```ballerina
 import ballerinax/googleapis.sheets as sheets;
@@ -44,7 +44,7 @@ public function main() {
 This section shows how to use the Google Spreadsheet ballerina connector to open a spreadsheet by spreadsheet ID. We must specify the spreadsheet ID as a string parameter to the openSpreadsheetById remote operation. Spreadsheet ID is available in the spreadsheet URL "https://docs.google.com/spreadsheets/d/" + <spreadsheetId> + "/edit#gid=0". This is the basic scenario of opening a spreadsheet with the spreadsheet ID obtained when creating a new spreadsheet. It returns a Spreadsheet record type with all the information related to the spreadsheet opened on success and a ballerina error if the operation is unsuccessful.
 
 Sample is available at:
-https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/blob/master/samples/openSpreadsheetById.bal
+https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/blob/master/gsheet/samples/openSpreadsheetById.bal
 
 ```ballerina
 import ballerinax/googleapis.sheets as sheets;
@@ -92,7 +92,7 @@ public function main() {
 This section shows how to use the Google Spreadsheet ballerina connector to open a spreadsheet by spreadsheet URL. We must specify the spreadsheet ID as a string parameter to the openSpreadsheetByUrl remote operation. Spreadsheet URL is in the following format "https://docs.google.com/spreadsheets/d/" + <spreadsheetId> + "/edit#gid=" + <sheetId>. This is the basic scenario of opening a spreadsheet with the spreadsheet URL obtained when creating a new spreadsheet. It returns a Spreadsheet record type with all the information related to the spreadsheet opened on success and a ballerina error if the operation is unsuccessful.
 
 Sample is available at:
-https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/blob/master/samples/openSpreadsheetByUrl.bal
+https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/blob/master/gsheet/samples/openSpreadsheetByUrl.bal
 
 ```ballerina
 import ballerinax/googleapis.sheets as sheets;
@@ -140,7 +140,7 @@ public function main() {
 This section shows how to use the Google Spreadsheet ballerina connector to rename a spreadsheet with a given name by spreadsheet ID. We must specify the spreadsheet ID and the new name for the spreadsheet as string parameters to the renameSpreadsheet remote operation. Spreadsheet ID is available in the spreadsheet URL "https://docs.google.com/spreadsheets/d/" + <spreadsheetId> + "/edit#gid=0". This is the basic scenario of renaming a spreadsheet  with the name “RenamedSpreadsheet” by the spreadsheet ID which is obtained when creating a new spreadsheet. It returns Nil on success and a ballerina error if the operation is unsuccessful.
 
 Sample is available at:
-https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/blob/master/samples/renameSpreadsheet.bal
+https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/blob/master/gsheet/samples/renameSpreadsheet.bal
 
 ```ballerina
 import ballerinax/googleapis.sheets as sheets;
@@ -194,7 +194,7 @@ public function main() {
 This section shows how to use the Google Spreadsheet ballerina connector to get all the spreadsheets associated with the user account. This is the basic scenario of getting all the  spreadsheets in the user account. It returns a Stream of File record type with all the information related to the spreadsheets on success and a ballerina error if the operation is unsuccessful.
 
 Sample is available at:
-https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/blob/master/samples/getAllSpreadsheets.bal
+https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/blob/master/gsheet/samples/getAllSpreadsheets.bal
 
 ```ballerina
 import ballerinax/googleapis.sheets as sheets;
@@ -238,7 +238,7 @@ The Google Spreadsheet Ballerina Connector allows you to access the Google Sprea
 This section shows how to use the Google Spreadsheet ballerina connector to add a new worksheet with given name to the spreadsheet with the given spreadsheet ID. We must specify the spreadsheet ID and the name for the new worksheet as string parameters to the addSheet remote operation. Spreadsheet ID is available in the spreadsheet URL "https://docs.google.com/spreadsheets/d/" + <spreadsheetId> + "/edit#gid=" + <sheetId>. This is the basic scenario of adding a new worksheet  with the name “NewWorksheet” by the spreadsheet ID which is obtained when creating a new spreadsheet. It returns a Sheet record type with all the information related to the worksheet added on success and a ballerina error if the operation is unsuccessful.
 
 Sample is available at:
-https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/blob/master/samples/addSheet.bal
+https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/blob/master/gsheet/samples/addSheet.bal
 
 ```ballerina
 import ballerinax/googleapis.sheets as sheets;
@@ -285,7 +285,7 @@ public function main() {
 This section shows how to use the Google Spreadsheet ballerina connector to Get Worksheet with given name from the Spreadsheet with the given Spreadsheet ID. We must specify the spreadsheet ID and the name of the required worksheet as string parameters to the getSheetByName remote operation. Spreadsheet ID is available in the spreadsheet URL "https://docs.google.com/spreadsheets/d/" + <spreadsheetId> + "/edit#gid=" + <sheetId>. This is the basic scenario of getting a worksheet  with the name obtained when creating a new worksheet and by the spreadsheet ID which is obtained when creating a new spreadsheet. It returns a Sheet record type with all the information related to the worksheet opened on success and a ballerina error if the operation is unsuccessful.
 
 Sample is available at:
-https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/blob/master/samples/getSheetByName.bal
+https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/blob/master/gsheet/samples/getSheetByName.bal
 
 ```ballerina
 import ballerinax/googleapis.sheets as sheets;
@@ -342,7 +342,7 @@ public function main() {
 This section shows how to use the Google Spreadsheet ballerina connector to Rename Worksheet with given name from the Spreadsheet with the given Spreadsheet ID and Worksheet Name. We must specify the spreadsheet ID, the name of the required worksheet and the new name of the worksheet as string parameters to the renameSheet remote operation. Spreadsheet ID is available in the spreadsheet URL "https://docs.google.com/spreadsheets/d/" + <spreadsheetId> + "/edit#gid=" + <sheetId>. This is the basic scenario of renaming a worksheet with the name “RenamedWorksheet” from the name obtained when creating a new worksheet and by the spreadsheet ID which is obtained when creating a new spreadsheet. It returns Nil on success and a ballerina error if the operation is unsuccessful.
 
 Sample is available at:
-https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/blob/master/samples/renameSheet.bal
+https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/blob/master/gsheet/samples/renameSheet.bal
 
 ```ballerina
 import ballerinax/googleapis.sheets as sheets;
@@ -404,7 +404,7 @@ public function main() {
 This section shows how to use the Google Spreadsheet ballerina connector to Remove Worksheet with given ID from the Spreadsheet with the given Spreadsheet ID. We must specify the spreadsheet ID as a string parameter and the ID of the required worksheet to be removed as an integer parameter to the removeSheet remote operation. Spreadsheet ID and Worksheet ID is available in the spreadsheet URL "https://docs.google.com/spreadsheets/d/" + <spreadsheetId> + "/edit#gid=" + <sheetId>. This is the basic scenario of removing a worksheet with the ID obtained when creating a new worksheet and by the spreadsheet ID which is obtained when creating a new spreadsheet. It returns Nil on success and a ballerina error if the operation is unsuccessful.
 
 Sample is available at:
-https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/blob/master/samples/removeSheetById.bal
+https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/blob/master/gsheet/samples/removeSheetById.bal
 
 ```ballerina
 import ballerinax/googleapis.sheets as sheets;
@@ -466,7 +466,7 @@ public function main() {
 This section shows how to use the Google Spreadsheet ballerina connector to Remove Worksheet with given name from the Spreadsheet with the given Spreadsheet ID. We must specify the spreadsheet ID as a string parameter and the name of the required worksheet to be removed as string parameter to the removeSheetByName remote operation. Spreadsheet ID and Worksheet ID is available in the spreadsheet URL "https://docs.google.com/spreadsheets/d/" + <spreadsheetId> + "/edit#gid=" + <sheetId>. This is the basic scenario of removing a worksheet with the name obtained when creating a new worksheet and by the spreadsheet ID which is obtained when creating a new spreadsheet. It returns Nil on success and a ballerina error if the operation is unsuccessful.
 
 Sample is available at:
-https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/blob/master/samples/removeSheetByName.bal
+https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/blob/master/gsheet/samples/removeSheetByName.bal
 
 ```ballerina
 import ballerinax/googleapis.sheets as sheets;
@@ -528,7 +528,7 @@ public function main() {
 This section shows how to use the Google Spreadsheet ballerina connector to Get All Worksheets in the Spreadsheet with the given Spreadsheet ID . We must specify the spreadsheet ID as a string parameter to the getSheets remote operation. Spreadsheet ID is available in the spreadsheet URL "https://docs.google.com/spreadsheets/d/" + <spreadsheetId> + "/edit#gid=" + <sheetId>. This is the basic scenario of getting all the worksheets of a spreadsheet by the spreadsheet ID which is obtained when creating a new spreadsheet. It returns an array of Sheet record type with all the information related to the worksheets on success and a ballerina error if the operation is unsuccessful.
 
 Sample is available at:
-https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/blob/master/samples/getSheets.bal
+https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/blob/master/gsheet/samples/getSheets.bal
 
 ```ballerina
 import ballerinax/googleapis.sheets as sheets;
@@ -590,7 +590,7 @@ The Google Spreadsheet Ballerina Connector allows you to access the Google Sprea
 This section shows how to use the Google Spreadsheet ballerina connector to handle data level operations at a given range. We can set, get and clear the values of the given range of cells of the Worksheet with given Name from the Spreadsheet with the given Spreadsheet ID. 
 
 Sample is available at:
-https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/blob/master/samples/range.bal
+https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/blob/master/gsheet/samples/range.bal
 
 ```ballerina
 import ballerinax/googleapis.sheets as sheets;
@@ -685,7 +685,7 @@ To clear the values of the given range of cells of the Worksheet, we must specif
 This section shows how to use the Google Spreadsheet ballerina connector to handle data level operations column wise. We can insert columns before and after a given position, create or update, get column values of the given column position, delete columns starting at the given column position of the Worksheet with given ID/Name from the Spreadsheet with the given Spreadsheet ID. 
 
 Sample is available at:
-https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/blob/master/samples/column.bal
+https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/blob/master/gsheet/samples/column.bal
 
 ```ballerina
 import ballerinax/googleapis.sheets as sheets;
@@ -755,8 +755,8 @@ public function main() {
         string[] values = ["Update", "Column", "Values"];
         error? columnCreate = checkpanic spreadsheetClient->createOrUpdateColumn(spreadsheetId, sheetName, "I", values);
         // Gets the values in the given column in a Worksheet with given name.
-        (string|int|float)[]|error column = spreadsheetClient->getColumn(spreadsheetId, sheetName, "I");
-        if (column is (string|int|float)[]) {
+        (string|int|decimal)[]|error column = spreadsheetClient->getColumn(spreadsheetId, sheetName, "I");
+        if (column is (string|int|decimal)[]) {
             log:printInfo(column.toString());
         } else {
             log:printError("Error: " + column.toString());
@@ -808,7 +808,7 @@ To delete columns starting at the given column position of the Worksheet, we mus
 This section shows how to use the Google Spreadsheet ballerina connector to handle data level operations row wise. We can insert rows before and after a given position, create or update, get row values of the given row position, delete rows starting at the given row position of the Worksheet with given ID/Name from the Spreadsheet with the given Spreadsheet ID. 
 
 Sample is available at:
-https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/blob/master/samples/rows.bal
+https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/blob/master/gsheet/samples/rows.bal
 
 ```ballerina
 import ballerinax/googleapis.sheets as sheets;
@@ -878,8 +878,8 @@ public function main() {
         string[] values = ["Update", "Row", "Values"];
         error? rowCreate = checkpanic spreadsheetClient->createOrUpdateRow(spreadsheetId, sheetName, 10, values);
         // Gets the values in the given row in a Worksheet with given name.
-        (string|int|float)[]|error row = spreadsheetClient->getRow(spreadsheetId, sheetName, 10);
-        if (row is (string|int|float)[]) {
+        (string|int|decimal)[]|error row = spreadsheetClient->getRow(spreadsheetId, sheetName, 10);
+        if (row is (string|int|decimal)[]) {
             log:printInfo(row.toString());
         } else {
             log:printError("Error: " + row.toString());
@@ -930,7 +930,7 @@ To delete rows starting at the given row position of the Worksheet, we must spec
 This section shows how to use the Google Spreadsheet ballerina connector to handle data level operations at a given cell. We can set, get and clear the value of the given cell of the Worksheet with given Name from the Spreadsheet with the given Spreadsheet ID. 
 
 Sample is available at:
-https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/blob/master/samples/cell.bal
+https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/blob/master/gsheet/samples/cell.bal
 
 ```ballerina
 import ballerinax/googleapis.sheets as sheets;
@@ -979,8 +979,8 @@ public function main() {
     error? spreadsheetRes = spreadsheetClient->setCell(spreadsheetId, sheetName, a1Notation, "ModifiedValue");
     if (spreadsheetRes is ()) {
         // Gets the value of the given cell of the Sheet
-        (string|int|float)|error getValuesResult = spreadsheetClient->getCell(spreadsheetId, sheetName, a1Notation);
-        if (getValuesResult is (string|int|float)) {
+        (string|int|decimal)|error getValuesResult = spreadsheetClient->getCell(spreadsheetId, sheetName, a1Notation);
+        if (getValuesResult is (string|int|decimal)) {
             log:printInfo("Cell Details: " + getValuesResult.toString());
         } else {
             log:printError("Error: " + getValuesResult.toString());
@@ -989,8 +989,8 @@ public function main() {
         // Clears the given cell of contents, formats, and data validation rules.
         error? clear = spreadsheetClient->clearCell(spreadsheetId, sheetName, a1Notation);
         if (clear is ()) {
-            (string|int|float)|error openRes = spreadsheetClient->getCell(spreadsheetId, sheetName, a1Notation);
-            if (openRes is (string|int|float)) {
+            (string|int|decimal)|error openRes = spreadsheetClient->getCell(spreadsheetId, sheetName, a1Notation);
+            if (openRes is (string|int|decimal)) {
                 log:printInfo("Cell Details: " + openRes.toString());
             } else {
                 log:printError("Error: " + openRes.toString());
@@ -1018,7 +1018,7 @@ To clear the value of the given cell of the Worksheet, we must specify the sprea
 This section shows how to use the Google Spreadsheet ballerina connector Append a new row with the given values to the bottom in a Worksheet with given name to the spreadsheet with the given spreadsheet ID. We must specify the spreadsheet ID and the name for the new worksheet as string parameters and row values as an array of (int|string|float), to the appendRowToSheet remote operation. Spreadsheet ID is available in the spreadsheet URL "https://docs.google.com/spreadsheets/d/" + <spreadsheetId> + "/edit#gid=" + <sheetId>. This is the basic scenario of appending a new row with the given values to the bottom in a Worksheet with the name obtained when creating a new worksheet and by the spreadsheet ID which is obtained when creating a new spreadsheet. It returns Nil on success and a ballerina error if the operation is unsuccessful. 
 
 Sample is available at:
-https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/blob/master/samples/appendRowToSheet.bal
+https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/blob/master/gsheet/samples/appendRowToSheet.bal
 
 ```ballerina
 import ballerinax/googleapis.sheets as sheets;
@@ -1100,7 +1100,7 @@ public function main() {
 This section shows how to use the Google Spreadsheet ballerina connector Append a new row with the given values to the bottom of the range in a Worksheet with given name to the spreadsheet with the given spreadsheet ID. The input range is used to search for existing data and find a "table" within that range. Values are appended to the next row of the table, starting with the first column of the table. More information can be found here. We must specify the spreadsheet ID and the name for the new worksheet as string parameters, range as a string in A1 notation and row values as an array of (int|string|float), to the appendRow remote operation. Spreadsheet ID is available in the spreadsheet URL "https://docs.google.com/spreadsheets/d/" + <spreadsheetId> + "/edit#gid=" + <sheetId>. This is the basic scenario of appending a new row with the given values to the bottom of the range in a Worksheet with the name obtained when creating a new worksheet and by the spreadsheet ID which is obtained when creating a new spreadsheet. It returns Nil on success and a ballerina error if the operation is unsuccessful.
 
 Sample is available at:
-https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/blob/master/samples/appendRowToRange.bal
+https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/blob/master/gsheet/samples/appendRowToRange.bal
 
 ```ballerina
 import ballerinax/googleapis.sheets as sheets;
@@ -1162,9 +1162,9 @@ public function main() {
         // The input range is used to search for existing data and find a "table" within that range. Values are appended 
         // to the next row of the table, starting with the first column of the table.
         string[] values = ["Appending", "Some", "Values"];
-        error? append = checkpanic spreadsheetClient->appendRow(spreadsheetId, sheetName, "A2", values);
+        error? append = checkpanic spreadsheetClient->appendRowToSheet(spreadsheetId, sheetName, values, "A2");
         string[] valuesNext = ["Appending", "Another", "Row"];
-        error? appendNext = checkpanic spreadsheetClient->appendRow(spreadsheetId, sheetName, a1Notation, valuesNext);
+        error? appendNext = checkpanic spreadsheetClient->appendRowToSheet(spreadsheetId, sheetName, valuesNext, a1Notation);
 
         // Gets the given range of the Sheet
         string a1NotationAppend = "B2:E8";
@@ -1184,7 +1184,7 @@ public function main() {
 This section shows how to use the Google Spreadsheet ballerina connector Append a new cell with the given value to the bottom of the range in a Worksheet with given name to the spreadsheet with the given spreadsheet ID. The input range is used to search for existing data and find a "table" within that range. Cell value is appended to the next row of the table, starting with the first column of the table. More information can be found here. We must specify the spreadsheet ID and the name for the new worksheet as string parameters, range as a string in A1 notation and cell value as (int|string|float), to the appendCell remote operation. Spreadsheet ID is available in the spreadsheet URL "https://docs.google.com/spreadsheets/d/" + <spreadsheetId> + "/edit#gid=" + <sheetId>. This is the basic scenario of appending a new cell with the given value to the bottom of the range in a Worksheet with the name obtained when creating a new worksheet and by the spreadsheet ID which is obtained when creating a new spreadsheet. It returns Nil on success and a ballerina error if the operation is unsuccessful.
 
 Sample is available at:
-https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/blob/master/samples/appendCellToRange.bal
+https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/blob/master/gsheet/samples/appendCellToRange.bal
 
 ```ballerina
 import ballerinax/googleapis.sheets as sheets;
@@ -1246,8 +1246,8 @@ public function main() {
         // The input range is used to search for existing data and find a "table" within that range. Value is appended 
         // to the next row of the table, starting with the first column of the table. If the range is not in any table 
         // the value is written to the given cell
-        error? append = checkpanic spreadsheetClient->appendCell(spreadsheetId, sheetName, "D6", "Modified Value1");
-        error? appendNext = checkpanic spreadsheetClient->appendCell(spreadsheetId, sheetName, a1Notation, "Modified Value2");
+        error? append = checkpanic spreadsheetClient->appendRowToSheet(spreadsheetId, sheetName, ["Modified Value1"], "D6");
+        error? appendNext = checkpanic spreadsheetClient->appendRowToSheet(spreadsheetId, sheetName, ["Modified Value2"], a1Notation);
 
         // Gets the given range of the Sheet
         string a1NotationAppend = "B2:E8";
@@ -1267,7 +1267,7 @@ public function main() {
 This section shows how to use the Google Spreadsheet ballerina connector to Copy the Worksheet with a given ID from a source Spreadsheet with a given Spreadsheet ID to a destination Spreadsheet with a given Spreadsheet ID. We must specify the source spreadsheet ID as a string parameter, the ID of the required worksheet to be copied as an integer parameter and destination spreadsheet ID as a string parameter, to the copyTo remote operation. Spreadsheet ID and Worksheet ID is available in the spreadsheet URL "https://docs.google.com/spreadsheets/d/" + <spreadsheetId> + "/edit#gid=" + <sheetId>. This is the basic scenario of copying a worksheet with the ID obtained when creating a new worksheet and by the spreadsheet ID which is obtained when creating a new spreadsheet. It returns Nil on success and a ballerina error if the operation is unsuccessful.
 
 Sample is available at:
-https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/blob/master/samples/copyToById.bal
+https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/blob/master/gsheet/samples/copyToById.bal
 
 ```ballerina
 import ballerinax/googleapis.sheets as sheets;
@@ -1348,7 +1348,7 @@ public function main() {
 This section shows how to use the Google Spreadsheet ballerina connector to Copy the Worksheet with a given name from a source Spreadsheet with a given Spreadsheet ID to a destination Spreadsheet with a given Spreadsheet ID. We must specify the source spreadsheet ID as a string parameter, the Name of the required worksheet to be copied as a string parameter and destination spreadsheet ID as a string parameter, to the copyToBySheetName remote operation. Spreadsheet ID and Worksheet ID is available in the spreadsheet URL "https://docs.google.com/spreadsheets/d/" + <spreadsheetId> + "/edit#gid=" + <sheetId>. This is the basic scenario of copying a worksheet with the name obtained when creating a new worksheet and by the spreadsheet ID which is obtained when creating a new spreadsheet. It returns Nil on success and a ballerina error if the operation is unsuccessful.
 
 Sample is available at:
-https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/blob/master/samples/copyToByName.bal
+https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/blob/master/gsheet/samples/copyToByName.bal
 
 ```ballerina
 import ballerinax/googleapis.sheets as sheets;
@@ -1429,7 +1429,7 @@ public function main() {
 This section shows how to use the Google Spreadsheet ballerina connector to clear the Worksheet with a given ID from a Spreadsheet with a given Spreadsheet ID. We must specify the spreadsheet ID as a string parameter, the ID of the required worksheet to be cleared as an integer parameter, to the clearAll remote operation. Spreadsheet ID and Worksheet ID is available in the spreadsheet URL "https://docs.google.com/spreadsheets/d/" + <spreadsheetId> + "/edit#gid=" + <sheetId>. This is the basic scenario of clearing a worksheet with the ID obtained when creating a new worksheet and by the spreadsheet ID which is obtained when creating a new spreadsheet. It returns Nil on success and a ballerina error if the operation is unsuccessful.
 
 Sample is available at:
-https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/blob/master/samples/clearAllById.bal
+https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/blob/master/gsheet/samples/clearAllById.bal
 
 ```ballerina
 import ballerinax/googleapis.sheets as sheets;
@@ -1508,7 +1508,7 @@ public function main() {
 This section shows how to use the Google Spreadsheet ballerina connector to clear the Worksheet with a given name from a Spreadsheet with a given Spreadsheet ID. We must specify the spreadsheet ID as a string parameter, the name of the required worksheet to be cleared as a string parameter, to the clearAllBySheetName remote operation. Spreadsheet ID and Worksheet ID is available in the spreadsheet URL "https://docs.google.com/spreadsheets/d/" + <spreadsheetId> + "/edit#gid=" + <sheetId>. This is the basic scenario of clearing a worksheet with the Name obtained when creating a new worksheet and by the spreadsheet ID which is obtained when creating a new spreadsheet. It returns Nil on success and a ballerina error if the operation is unsuccessful.
 
 Sample is available at:
-https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/blob/master/samples/clearAllByName.bal
+https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/blob/master/gsheet/samples/clearAllByName.bal
 
 ```ballerina
 import ballerinax/googleapis.sheets as sheets;

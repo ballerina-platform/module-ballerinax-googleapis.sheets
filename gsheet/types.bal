@@ -107,15 +107,15 @@ public type GridProperties record {
 # Single cell or a group of adjacent cells in a sheet.
 #
 # + a1Notation - The column letter followed by the row number.
-#               For example for a single cell "A1" refers to the intersection of column "A" with row "1",
-#               and for a range of cells "A1:D5" refers to the top left cell and the bottom right cell of a range
+#                For example for a single cell "A1" refers to the intersection of column "A" with row "1",
+#                and for a range of cells "A1:D5" refers to the top left cell and the bottom right cell of a range
 # + values - Values of the given range
 @display {label: "Range"}
 public type Range record {
     @display {label: "A1 Notation"}
     string a1Notation;
     @display {label: "Values"}
-    (int|string|float)[][] values;
+    (int|string|decimal)[][] values;
 };
 
 # Response from File search 

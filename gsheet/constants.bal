@@ -18,13 +18,14 @@
 const string BASE_URL = "https://sheets.googleapis.com";
 public const string REFRESH_URL = "https://www.googleapis.com/oauth2/v3/token";
 const string SPREADSHEET_PATH = "/v4/spreadsheets";
+const string SHEETS_PATH = "/sheets/";
 const string VALUES_PATH = "/values/";
-const string VALUE_INPUT_OPTION = "valueInputOption=RAW";
 const string BATCH_UPDATE_REQUEST = ":batchUpdate";
 const string CLEAR_REQUEST = ":clear";
-const string APPEND_REQUEST = ":append?valueInputOption=USER_ENTERED";
-const string SHEETS_PATH = "/sheets/";
+const string APPEND = ":append";
 const string COPY_TO_REQUEST = ":copyTo";
+const string VALUE_INPUT_OPTION = "?valueInputOption=";
+const string VALUE_RENDER_OPTION = "valueRenderOption=";
 
 //Secure client configs
 const string SCHEME = "oauth";
@@ -60,3 +61,15 @@ const string PAGE_TOKEN = "pageToken";
 // Error
 const string ERR_FILE_RESPONSE =  "Error occurred while constructing FileResponse record.";
 
+// Value Input Options
+public enum ValueInputOption {
+    RAW,
+    USER_ENTERED
+}
+
+// Value Render Options
+public enum ValueRenderOption {
+    FORMATTED_VALUE,
+    UNFORMATTED_VALUE,
+    FORMULA
+}

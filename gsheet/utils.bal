@@ -61,10 +61,10 @@ isolated function sendRequest(http:Client httpClient, string path) returns @tain
     }
 }
 
-isolated function getConvertedValue(json value) returns string | int | float {
+isolated function getConvertedValue(json value) returns string|int|decimal {
     if (value is int) {
         return value;
-    } else if (value is float) {
+    } else if (value is decimal) {
         return value;
     } else {
         return value.toString();
