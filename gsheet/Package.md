@@ -209,4 +209,4 @@ We must specify the spreadsheet ID and the name for the new worksheet as string 
         log:printError("Error: " + sheet.toString());
     }
 ```
-More Samples are available at "https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/tree/master/samples".
+More Samples are available at "https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/tree/slalpha5/gsheet/samples".

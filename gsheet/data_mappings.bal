@@ -131,8 +131,8 @@ isolated function convertToBoolean(string stringVal) returns boolean {
     return stringVal == "true";
 }
 
-isolated function convertToArray(json jsonResponse) returns (string | int | float)[][] {
-    (string | int | float)[][] values = [];
+isolated function convertToArray(json jsonResponse) returns (string|int|decimal)[][] {
+    (string|int|decimal)[][] values = [];
     int i = 0;
     json|error jsonResponseValues = jsonResponse.values;
     json[] jsonValues = [];
@@ -142,7 +142,7 @@ isolated function convertToArray(json jsonResponse) returns (string | int | floa
     foreach json value in jsonValues {
         json[] jsonValArray = <json[]>value;
         int j = 0;
-        (string | int | float)[] val = [];
+        (string|int|decimal)[] val = [];
         foreach json v in jsonValArray {
             val[j] = getConvertedValue(v);
             j = j + 1;

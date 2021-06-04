@@ -37,7 +37,7 @@ jobs:
 
             # Build the ballerina project
             - name: Ballerina Build
-              uses: ballerina-platform/ballerina-action/@master
+              uses: ballerina-platform/ballerina-action/@slalpha5
               with:
                   args:
                       build -c ./gsheet

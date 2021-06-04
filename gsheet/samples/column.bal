@@ -81,8 +81,8 @@ public function main() {
         string[] values = ["Update", "Column", "Values"];
         error? columnCreate = checkpanic spreadsheetClient->createOrUpdateColumn(spreadsheetId, sheetName, "I", values);
         // Gets the values in the given column in a Worksheet with given name.
-        (string|int|float)[]|error column = spreadsheetClient->getColumn(spreadsheetId, sheetName, "I");
-        if (column is (string|int|float)[]) {
+        (string|int|decimal)[]|error column = spreadsheetClient->getColumn(spreadsheetId, sheetName, "I");
+        if (column is (string|int|decimal)[]) {
             log:printInfo(column.toString());
         } else {
             log:printError("Error: " + column.toString());
