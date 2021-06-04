@@ -616,13 +616,13 @@ public client class Client {
     # + valueRenderOption - Determines how values should be rendered in the output.
     #                       It's either "FORMATTED_VALUE","UNFORMATTED_VALUE" or "USER_ENTERED". 
     #                       Default is "FORMATTED_VALUE" (Optional)
-    # + return - Values of the given column in an array on success, else returns an error
+    # + return - Column record on success, else returns an error
     @display {label: "Get Column"}
     remote isolated function getColumn(@display {label: "Spreadsheet Id"} string spreadsheetId, 
                                        @display {label: "Worksheet Name"} string sheetName, 
                                        @display {label: "Column Position"} string column,
                                        @display {label: "Value Render Option"} string? valueRenderOption = ()) 
-                                       returns @tainted @display {label: "Column Values"} (string|int|decimal)[]|error {
+                                       returns @tainted Column|error {
         (int|string|decimal)[] values = [];
         string a1Notation = sheetName + EXCLAMATION_MARK + column + COLON + column;
         string getColumnDataPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + a1Notation;
@@ -649,7 +649,8 @@ public client class Client {
                     i = i + 1;
                 }
             }
-            return values;
+            Column columnRecord = {columnPosition: column, values: values};
+            return columnRecord;
         }
     }
 
@@ -924,13 +925,13 @@ public client class Client {
     # + valueRenderOption - Determines how values should be rendered in the output.
     #                       It's either "FORMATTED_VALUE","UNFORMATTED_VALUE" or "USER_ENTERED". 
     #                       Default is "FORMATTED_VALUE" (Optional)
-    # + return - Values of the given row in an array on success, else returns an error
+    # + return - Row record on success, else returns an error
     @display {label: "Get Row"}
     remote isolated function getRow(@display {label: "Spreadsheet Id"} string spreadsheetId, 
                                     @display {label: "Worksheet Name"} string sheetName, 
                                     @display {label: "Row Position"} int row,
                                     @display {label: "Value Render Option"} string? valueRenderOption = ()) 
-                                    returns @tainted @display {label: "Row Values"} (string|int|decimal)[]|error {
+                                    returns @tainted Row|error {
         (int|string|decimal)[] values = [];
         string a1Notation = sheetName + EXCLAMATION_MARK + row.toString() + COLON + row.toString();
         string getRowDataPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + a1Notation;
@@ -953,7 +954,8 @@ public client class Client {
                     i = i + 1;
                 }
             }
-            return values;
+            Row rowRecord = {rowPosition: row, values: values};
+            return rowRecord;
         }
     }
 
@@ -1075,13 +1077,13 @@ public client class Client {
     # + valueRenderOption - Determines how values should be rendered in the output.
     #                       It's either "FORMATTED_VALUE","UNFORMATTED_VALUE" or "USER_ENTERED". 
     #                       Default is "FORMATTED_VALUE" (Optional)
-    # + return - Value of the given cell on success, else returns an error
+    # + return - Cell record on success, else returns an error
     @display {label: "Get Cell"}
     remote isolated function getCell(@display {label: "Spreadsheet Id"} string spreadsheetId, 
                                      @display {label: "Worksheet Name"} string sheetName, 
                                      @display {label: "Cell A1 Notation"} string a1Notation,
                                      @display {label: "Value Render Option"} string? valueRenderOption = ()) 
-                                     returns @tainted @display {label: "Cell Value"} int|string|decimal|error {
+                                     returns @tainted Cell|error {
         int|string|decimal value = EMPTY_STRING;
         string notation = sheetName + EXCLAMATION_MARK + a1Notation;
         string getCellDataPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + notation;
@@ -1100,7 +1102,8 @@ public client class Client {
                 json[] firstResponseValue = <json[]>responseValues[0];
                 value = getConvertedValue(firstResponseValue[0]);
             }
-            return value;
+            Cell cellRecord = {a1Notation: a1Notation, value: value};
+            return cellRecord;
         }
     }
 
@@ -1132,7 +1135,7 @@ public client class Client {
     @display {label: "Append Row"}
     remote isolated function appendRowToSheet(@display {label: "Spreadsheet Id"} string spreadsheetId, 
                                               @display {label: "Worksheet Name"} string sheetName, 
-                                              @display {label: "Row Values"} (int|string|float)[] values,
+                                              @display {label: "Row Values"} (int|string|decimal)[] values,
                                               @display {label: "Range A1 Notation"} string? a1Notation = (),
                                               @display {label: "Value Input Option"} string? valueInputOption = ()) 
                                               returns @tainted error? {
@@ -1143,7 +1146,7 @@ public client class Client {
             string `${VALUE_INPUT_OPTION}${valueInputOption}`);
         json[] jsonValues = [];
         int i = 0;
-        foreach (string|int|float) value in values {
+        foreach (string|int|decimal) value in values {
             jsonValues[i] = value;
             i = i + 1;
         }

@@ -755,8 +755,8 @@ public function main() {
         string[] values = ["Update", "Column", "Values"];
         error? columnCreate = checkpanic spreadsheetClient->createOrUpdateColumn(spreadsheetId, sheetName, "I", values);
         // Gets the values in the given column in a Worksheet with given name.
-        (string|int|decimal)[]|error column = spreadsheetClient->getColumn(spreadsheetId, sheetName, "I");
-        if (column is (string|int|decimal)[]) {
+        sheets:Column|error column = spreadsheetClient->getColumn(spreadsheetId, sheetName, "I");
+        if (column is sheets:Column) {
             log:printInfo(column.toString());
         } else {
             log:printError("Error: " + column.toString());
@@ -878,8 +878,8 @@ public function main() {
         string[] values = ["Update", "Row", "Values"];
         error? rowCreate = checkpanic spreadsheetClient->createOrUpdateRow(spreadsheetId, sheetName, 10, values);
         // Gets the values in the given row in a Worksheet with given name.
-        (string|int|decimal)[]|error row = spreadsheetClient->getRow(spreadsheetId, sheetName, 10);
-        if (row is (string|int|decimal)[]) {
+        sheets:Row|error row = spreadsheetClient->getRow(spreadsheetId, sheetName, 10);
+        if (row is sheets:Row) {
             log:printInfo(row.toString());
         } else {
             log:printError("Error: " + row.toString());
@@ -979,8 +979,8 @@ public function main() {
     error? spreadsheetRes = spreadsheetClient->setCell(spreadsheetId, sheetName, a1Notation, "ModifiedValue");
     if (spreadsheetRes is ()) {
         // Gets the value of the given cell of the Sheet
-        (string|int|decimal)|error getValuesResult = spreadsheetClient->getCell(spreadsheetId, sheetName, a1Notation);
-        if (getValuesResult is (string|int|decimal)) {
+        sheets:Cell|error getValuesResult = spreadsheetClient->getCell(spreadsheetId, sheetName, a1Notation);
+        if (getValuesResult is sheets:Cell) {
             log:printInfo("Cell Details: " + getValuesResult.toString());
         } else {
             log:printError("Error: " + getValuesResult.toString());
@@ -989,8 +989,8 @@ public function main() {
         // Clears the given cell of contents, formats, and data validation rules.
         error? clear = spreadsheetClient->clearCell(spreadsheetId, sheetName, a1Notation);
         if (clear is ()) {
-            (string|int|decimal)|error openRes = spreadsheetClient->getCell(spreadsheetId, sheetName, a1Notation);
-            if (openRes is (string|int|decimal)) {
+            sheets:Cell|error openRes = spreadsheetClient->getCell(spreadsheetId, sheetName, a1Notation);
+            if (openRes is sheets:Cell) {
                 log:printInfo("Cell Details: " + openRes.toString());
             } else {
                 log:printError("Error: " + openRes.toString());
@@ -1015,7 +1015,7 @@ To clear the value of the given cell of the Worksheet, we must specify the sprea
 
 
 ### Append Row to Sheet
-This section shows how to use the Google Spreadsheet ballerina connector Append a new row with the given values to the bottom in a Worksheet with given name to the spreadsheet with the given spreadsheet ID. We must specify the spreadsheet ID and the name for the new worksheet as string parameters and row values as an array of (int|string|float), to the appendRowToSheet remote operation. Spreadsheet ID is available in the spreadsheet URL "https://docs.google.com/spreadsheets/d/" + <spreadsheetId> + "/edit#gid=" + <sheetId>. This is the basic scenario of appending a new row with the given values to the bottom in a Worksheet with the name obtained when creating a new worksheet and by the spreadsheet ID which is obtained when creating a new spreadsheet. It returns Nil on success and a ballerina error if the operation is unsuccessful. 
+This section shows how to use the Google Spreadsheet ballerina connector Append a new row with the given values to the bottom in a Worksheet with given name to the spreadsheet with the given spreadsheet ID. We must specify the spreadsheet ID and the name for the new worksheet as string parameters and row values as an array of (int|string|decimal), to the appendRowToSheet remote operation. Spreadsheet ID is available in the spreadsheet URL "https://docs.google.com/spreadsheets/d/" + <spreadsheetId> + "/edit#gid=" + <sheetId>. This is the basic scenario of appending a new row with the given values to the bottom in a Worksheet with the name obtained when creating a new worksheet and by the spreadsheet ID which is obtained when creating a new spreadsheet. It returns Nil on success and a ballerina error if the operation is unsuccessful. 
 
 Sample is available at:
 https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/blob/slalpha5/gsheet/samples/appendRowToSheet.bal
