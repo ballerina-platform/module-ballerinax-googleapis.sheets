@@ -29,7 +29,7 @@ service / on gsheetListener {
     }
 }
 
-http:Client httpClient = checkpanic new("http://localhost:9090/onEdit");
+http:Client httpClient = check new("http://localhost:9090/onEdit");
 
 @test:Config {}
 function testOnAppendRowTrigger() {

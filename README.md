@@ -153,7 +153,7 @@ sheets:SpreadsheetConfiguration spreadsheetConfig = {
     }
 };
  
-sheets:Client spreadsheetClient = checkpanic new (spreadsheetConfig);
+sheets:Client spreadsheetClient = check new (spreadsheetConfig);
 ```
 Then the endpoint actions can be invoked as `var response = spreadsheetClient->actionName(arguments)`.
 
@@ -171,7 +171,7 @@ sheets:SpreadsheetConfiguration spreadsheetConfig = {
     }
 };
 
-sheets:Client spreadsheetClient = checkpanic new (spreadsheetConfig);
+sheets:Client spreadsheetClient = check new (spreadsheetConfig);
 
 public function main(string... args) {
     var response = spreadsheetClient->openSpreadsheetById(<spreadsheet-id>);
@@ -203,7 +203,7 @@ sheets:SpreadsheetConfiguration spreadsheetConfig = {
     }
 };
 
-sheets:Client spreadsheetClient = checkpanic new (spreadsheetConfig);
+sheets:Client spreadsheetClient = check new (spreadsheetConfig);
 
 public function main(string... args) {
     var response = spreadsheetClient->openSpreadsheetById(<spreadsheet-id>);
@@ -247,7 +247,7 @@ sheets:SpreadsheetConfiguration spreadsheetConfig = {
     }
 };
  
-sheets:Client spreadsheetClient = checkpanic new (spreadsheetConfig);
+sheets:Client spreadsheetClient = check new (spreadsheetConfig);
 ```
 
 ### Step 3: Create Spreadsheet with given name
@@ -368,9 +368,9 @@ sheets:SpreadsheetConfiguration spreadsheetConfig = {
     }
 };
 
-sheets:Client spreadsheetClient = checkpanic new (spreadsheetConfig);
+sheets:Client spreadsheetClient = check new (spreadsheetConfig);
 
-public function main() {
+public function main() returns error? {
     // Create Spreadsheet with given name
     sheets:Spreadsheet|error response = spreadsheetClient->createSpreadsheet("NewSpreadsheet");
     if (response is sheets:Spreadsheet) {
@@ -400,9 +400,9 @@ sheets:SpreadsheetConfiguration spreadsheetConfig = {
     }
 };
 
-sheets:Client spreadsheetClient = checkpanic new (spreadsheetConfig);
+sheets:Client spreadsheetClient = check new (spreadsheetConfig);
 
-public function main() {
+public function main() returns error? {
     string spreadsheetId = "";
 
     // Create Spreadsheet with given name
@@ -444,9 +444,9 @@ sheets:SpreadsheetConfiguration spreadsheetConfig = {
     }
 };
 
-sheets:Client spreadsheetClient = checkpanic new (spreadsheetConfig);
+sheets:Client spreadsheetClient = check new (spreadsheetConfig);
 
-public function main() {
+public function main() returns error? {
     string spreadsheetId = "";
 
     // Create Spreadsheet with given name
@@ -488,9 +488,9 @@ sheets:SpreadsheetConfiguration spreadsheetConfig = {
     }
 };
 
-sheets:Client spreadsheetClient = checkpanic new (spreadsheetConfig);
+sheets:Client spreadsheetClient = check new (spreadsheetConfig);
 
-public function main() {
+public function main() returns error? {
     string spreadsheetId = "";
 
     // Create Spreadsheet with given name
@@ -538,9 +538,9 @@ sheets:SpreadsheetConfiguration spreadsheetConfig = {
     }
 };
 
-sheets:Client spreadsheetClient = checkpanic new (spreadsheetConfig);
+sheets:Client spreadsheetClient = check new (spreadsheetConfig);
 
-public function main() {
+public function main() returns error? {
 
     // Get All Spreadsheets associated with the user account
     stream<sheets:File>|error response = spreadsheetClient->getAllSpreadsheets();
@@ -577,9 +577,9 @@ sheets:SpreadsheetConfiguration spreadsheetConfig = {
     }
 };
 
-sheets:Client spreadsheetClient = checkpanic new (spreadsheetConfig);
+sheets:Client spreadsheetClient = check new (spreadsheetConfig);
 
-public function main() {
+public function main() returns error? {
     string spreadsheetId = "";
 
     // Create Spreadsheet with given name
@@ -620,9 +620,9 @@ sheets:SpreadsheetConfiguration spreadsheetConfig = {
     }
 };
 
-sheets:Client spreadsheetClient = checkpanic new (spreadsheetConfig);
+sheets:Client spreadsheetClient = check new (spreadsheetConfig);
 
-public function main() {
+public function main() returns error? {
     string spreadsheetId = "";
     string sheetName = "";
 
@@ -673,9 +673,9 @@ sheets:SpreadsheetConfiguration spreadsheetConfig = {
     }
 };
 
-sheets:Client spreadsheetClient = checkpanic new (spreadsheetConfig);
+sheets:Client spreadsheetClient = check new (spreadsheetConfig);
 
-public function main() {
+public function main() returns error? {
     string spreadsheetId = "";
     string sheetName = "";
 
@@ -731,9 +731,9 @@ sheets:SpreadsheetConfiguration spreadsheetConfig = {
     }
 };
 
-sheets:Client spreadsheetClient = checkpanic new (spreadsheetConfig);
+sheets:Client spreadsheetClient = check new (spreadsheetConfig);
 
-public function main() {
+public function main() returns error? {
     string spreadsheetId = "";
     int sheetId = 0;
 
@@ -789,9 +789,9 @@ sheets:SpreadsheetConfiguration spreadsheetConfig = {
     }
 };
 
-sheets:Client spreadsheetClient = checkpanic new (spreadsheetConfig);
+sheets:Client spreadsheetClient = check new (spreadsheetConfig);
 
-public function main() {
+public function main() returns error? {
     string spreadsheetId = "";
     string sheetName = "";
 
@@ -847,9 +847,9 @@ sheets:SpreadsheetConfiguration spreadsheetConfig = {
     }
 };
 
-sheets:Client spreadsheetClient = checkpanic new (spreadsheetConfig);
+sheets:Client spreadsheetClient = check new (spreadsheetConfig);
 
-public function main() {
+public function main() returns error? {
     string spreadsheetId = "";
     string sheetName = "";
 
@@ -906,9 +906,9 @@ sheets:SpreadsheetConfiguration spreadsheetConfig = {
     }
 };
 
-sheets:Client spreadsheetClient = checkpanic new (spreadsheetConfig);
+sheets:Client spreadsheetClient = check new (spreadsheetConfig);
 
-public function main() {
+public function main() returns error? {
     string spreadsheetId = "";
     string sheetName = "";
 
@@ -997,9 +997,9 @@ sheets:SpreadsheetConfiguration spreadsheetConfig = {
     }
 };
 
-sheets:Client spreadsheetClient = checkpanic new (spreadsheetConfig);
+sheets:Client spreadsheetClient = check new (spreadsheetConfig);
 
-public function main() {
+public function main() returns error? {
     string spreadsheetId = "";
     string sheetName = "";
     int sheetId = 0;
@@ -1037,27 +1037,27 @@ public function main() {
     error? spreadsheetRes = spreadsheetClient->setRange(spreadsheetId, sheetName, range);
     if (spreadsheetRes is ()) {
         // Inserts the given number of columns before the given column position in a Worksheet with given ID.
-        error? columnBeforeId = checkpanic spreadsheetClient->addColumnsBefore(spreadsheetId, sheetId, 3, 1);
+        error? columnBeforeId = check spreadsheetClient->addColumnsBefore(spreadsheetId, sheetId, 3, 1);
         // Inserts the given number of columns before the given column position in a Worksheet with given name.
-        error? columnBefore = checkpanic spreadsheetClient->addColumnsBeforeBySheetName(spreadsheetId, sheetName, 4, 1);        
+        error? columnBefore = check spreadsheetClient->addColumnsBeforeBySheetName(spreadsheetId, sheetName, 4, 1);        
         // Inserts the given number of columns after the given column position in a Worksheet with given ID.
-        error? columnAfterId = checkpanic spreadsheetClient->addColumnsAfter(spreadsheetId, sheetId, 5, 1);
+        error? columnAfterId = check spreadsheetClient->addColumnsAfter(spreadsheetId, sheetId, 5, 1);
         // Inserts the given number of columns after the given column position in a Worksheet with given name.
-        error? columnAfter = checkpanic spreadsheetClient->addColumnsAfterBySheetName(spreadsheetId, sheetName, 6, 1);
+        error? columnAfter = check spreadsheetClient->addColumnsAfterBySheetName(spreadsheetId, sheetName, 6, 1);
         // Create or Update a Column with the given array of values in a Worksheet with given name.
         string[] values = ["Update", "Column", "Values"];
-        error? columnCreate = checkpanic spreadsheetClient->createOrUpdateColumn(spreadsheetId, sheetName, "I", values);
+        error? columnCreate = check spreadsheetClient->createOrUpdateColumn(spreadsheetId, sheetName, "I", values);
         // Gets the values in the given column in a Worksheet with given name.
-        (string|int|decimal)[]|error column = spreadsheetClient->getColumn(spreadsheetId, sheetName, "I");
-        if (column is (string|int|decimal)[]) {
+        sheets:Column|error column = spreadsheetClient->getColumn(spreadsheetId, sheetName, "I");
+        if (column is sheets:Column) {
             log:printInfo(column.toString());
         } else {
             log:printError("Error: " + column.toString());
         }
         // Deletes the given number of columns starting at the given column position in a Worksheet with given ID.
-        error? columnDeleteId = checkpanic spreadsheetClient->deleteColumns(spreadsheetId, sheetId, 3, 2);
+        error? columnDeleteId = check spreadsheetClient->deleteColumns(spreadsheetId, sheetId, 3, 2);
         // Deletes the given number of columns starting at the given column position in a Worksheet with given name.
-        error? columnDelete = checkpanic spreadsheetClient->deleteColumnsBySheetName(spreadsheetId, sheetName, 4, 2);
+        error? columnDelete = check spreadsheetClient->deleteColumnsBySheetName(spreadsheetId, sheetName, 4, 2);
 
         // Gets the given range of the Sheet
         sheets:Range|error getValuesResult = spreadsheetClient->getRange(spreadsheetId, sheetName, a1Notation);
@@ -1116,9 +1116,9 @@ sheets:SpreadsheetConfiguration spreadsheetConfig = {
     }
 };
 
-sheets:Client spreadsheetClient = checkpanic new (spreadsheetConfig);
+sheets:Client spreadsheetClient = check new (spreadsheetConfig);
 
-public function main() {
+public function main() returns error? {
     string spreadsheetId = "";
     string sheetName = "";
     int sheetId = 0;
@@ -1156,27 +1156,27 @@ public function main() {
     error? spreadsheetRes = spreadsheetClient->setRange(spreadsheetId, sheetName, range);
     if (spreadsheetRes is ()) {
         // Inserts the given number of rows before the given row position in a Worksheet with given ID.
-        error? rowBeforeId = checkpanic spreadsheetClient->addRowsBefore(spreadsheetId, sheetId, 4, 1);
+        error? rowBeforeId = check spreadsheetClient->addRowsBefore(spreadsheetId, sheetId, 4, 1);
         // Inserts the given number of rows before the given row position in a Worksheet with given name.
-        error? rowBefore = checkpanic spreadsheetClient->addRowsBeforeBySheetName(spreadsheetId, sheetName, 5, 1);        
+        error? rowBefore = check spreadsheetClient->addRowsBeforeBySheetName(spreadsheetId, sheetName, 5, 1);        
         // Inserts the given number of rows after the given row position in a Worksheet with given ID.
-        error? rowAfterId = checkpanic spreadsheetClient->addRowsAfter(spreadsheetId, sheetId, 6, 1);
+        error? rowAfterId = check spreadsheetClient->addRowsAfter(spreadsheetId, sheetId, 6, 1);
         // Inserts the given number of rows after the given row position in a Worksheet with given name.
-        error? rowAfter = checkpanic spreadsheetClient->addRowsAfterBySheetName(spreadsheetId, sheetName, 7, 1);
+        error? rowAfter = check spreadsheetClient->addRowsAfterBySheetName(spreadsheetId, sheetName, 7, 1);
         // Create or Update a Row with the given array of values in a Worksheet with given name.
         string[] values = ["Update", "Row", "Values"];
-        error? rowCreate = checkpanic spreadsheetClient->createOrUpdateRow(spreadsheetId, sheetName, 10, values);
+        error? rowCreate = check spreadsheetClient->createOrUpdateRow(spreadsheetId, sheetName, 10, values);
         // Gets the values in the given row in a Worksheet with given name.
-        (string|int|decimal)[]|error row = spreadsheetClient->getRow(spreadsheetId, sheetName, 10);
-        if (row is (string|int|decimal)[]) {
+        sheets:Row|error row = spreadsheetClient->getRow(spreadsheetId, sheetName, 10);
+        if (row is sheets:Row) {
             log:printInfo(row.toString());
         } else {
             log:printError("Error: " + row.toString());
         }
         // Deletes the given number of rows starting at the given row position in a Worksheet with given ID.
-        error? rowDeleteId = checkpanic spreadsheetClient->deleteRows(spreadsheetId, sheetId, 4, 2);
+        error? rowDeleteId = check spreadsheetClient->deleteRows(spreadsheetId, sheetId, 4, 2);
         // Deletes the given number of rows starting at the given row position in a Worksheet with given name.
-        error? rowDelete = checkpanic spreadsheetClient->deleteRowsBySheetName(spreadsheetId, sheetName, 5, 2);
+        error? rowDelete = check spreadsheetClient->deleteRowsBySheetName(spreadsheetId, sheetName, 5, 2);
 
         // Gets the given range of the Sheet
         sheets:Range|error getValuesResult = spreadsheetClient->getRange(spreadsheetId, sheetName, a1Notation);
@@ -1234,9 +1234,9 @@ sheets:SpreadsheetConfiguration spreadsheetConfig = {
     }
 };
 
-sheets:Client spreadsheetClient = checkpanic new (spreadsheetConfig);
+sheets:Client spreadsheetClient = check new (spreadsheetConfig);
 
-public function main() {
+public function main() returns error? {
     string spreadsheetId = "";
     string sheetName = "";
 
@@ -1264,8 +1264,8 @@ public function main() {
     error? spreadsheetRes = spreadsheetClient->setCell(spreadsheetId, sheetName, a1Notation, "ModifiedValue");
     if (spreadsheetRes is ()) {
         // Gets the value of the given cell of the Sheet
-        (string|int|decimal)|error getValuesResult = spreadsheetClient->getCell(spreadsheetId, sheetName, a1Notation);
-        if (getValuesResult is (string|int|decimal)) {
+        sheets:Cell|error getValuesResult = spreadsheetClient->getCell(spreadsheetId, sheetName, a1Notation);
+        if (getValuesResult is sheets:Cell) {
             log:printInfo("Cell Details: " + getValuesResult.toString());
         } else {
             log:printError("Error: " + getValuesResult.toString());
@@ -1274,8 +1274,8 @@ public function main() {
         // Clears the given cell of contents, formats, and data validation rules.
         error? clear = spreadsheetClient->clearCell(spreadsheetId, sheetName, a1Notation);
         if (clear is ()) {
-            (string|int|decimal)|error openRes = spreadsheetClient->getCell(spreadsheetId, sheetName, a1Notation);
-            if (openRes is (string|int|decimal)) {
+            sheets:Cell|error openRes = spreadsheetClient->getCell(spreadsheetId, sheetName, a1Notation);
+            if (openRes is sheets:Cell) {
                 log:printInfo("Cell Details: " + openRes.toString());
             } else {
                 log:printError("Error: " + openRes.toString());
@@ -1300,7 +1300,7 @@ To clear the value of the given cell of the Worksheet, we must specify the sprea
 
 
 ### Append Row to Sheet
-This section shows how to use the Google Spreadsheet ballerina connector Append a new row with the given values to the bottom in a Worksheet with given name to the spreadsheet with the given spreadsheet ID. We must specify the spreadsheet ID and the name for the new worksheet as string parameters and row values as an array of (int|string|float), to the appendRowToSheet remote operation. Spreadsheet ID is available in the spreadsheet URL "https://docs.google.com/spreadsheets/d/" + <spreadsheetId> + "/edit#gid=" + <sheetId>. This is the basic scenario of appending a new row with the given values to the bottom in a Worksheet with the name obtained when creating a new worksheet and by the spreadsheet ID which is obtained when creating a new spreadsheet. It returns Nil on success and a ballerina error if the operation is unsuccessful. 
+This section shows how to use the Google Spreadsheet ballerina connector Append a new row with the given values to the bottom in a Worksheet with given name to the spreadsheet with the given spreadsheet ID. We must specify the spreadsheet ID and the name for the new worksheet as string parameters and row values as an array of (int|string|decimal), to the appendRowToSheet remote operation. Spreadsheet ID is available in the spreadsheet URL "https://docs.google.com/spreadsheets/d/" + <spreadsheetId> + "/edit#gid=" + <sheetId>. This is the basic scenario of appending a new row with the given values to the bottom in a Worksheet with the name obtained when creating a new worksheet and by the spreadsheet ID which is obtained when creating a new spreadsheet. It returns Nil on success and a ballerina error if the operation is unsuccessful. 
 
 Sample is available at:
 https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/blob/master/gsheet/samples/appendRowToSheet.bal
@@ -1318,9 +1318,9 @@ sheets:SpreadsheetConfiguration spreadsheetConfig = {
     }
 };
 
-sheets:Client spreadsheetClient = checkpanic new (spreadsheetConfig);
+sheets:Client spreadsheetClient = check new (spreadsheetConfig);
 
-public function main() {
+public function main() returns error? {
     string spreadsheetId = "";
     string sheetName = "";
     int sheetId = 0;
@@ -1359,9 +1359,9 @@ public function main() {
     if (spreadsheetRes is ()) {
         // Append a new row with the given values to the bottom in a Worksheet with given name. 
         string[] values = ["Appending", "Some", "Values"];
-        error? append = checkpanic spreadsheetClient->appendRowToSheet(spreadsheetId, sheetName, values);
+        error? append = check spreadsheetClient->appendRowToSheet(spreadsheetId, sheetName, values);
         string[] valuesNext = ["Appending", "Another", "Row"];
-        error? appendNext = checkpanic spreadsheetClient->appendRowToSheet(spreadsheetId, sheetName, valuesNext);
+        error? appendNext = check spreadsheetClient->appendRowToSheet(spreadsheetId, sheetName, valuesNext);
 
         // Gets the given range of the Sheet
         string a1NotationAppend = "A1:D7";
@@ -1396,9 +1396,9 @@ sheets:SpreadsheetConfiguration spreadsheetConfig = {
     }
 };
 
-sheets:Client spreadsheetClient = checkpanic new (spreadsheetConfig);
+sheets:Client spreadsheetClient = check new (spreadsheetConfig);
 
-public function main() {
+public function main() returns error? {
     string spreadsheetId = "";
     string sheetName = "";
     int sheetId = 0;
@@ -1439,9 +1439,9 @@ public function main() {
         // The input range is used to search for existing data and find a "table" within that range. Values are appended 
         // to the next row of the table, starting with the first column of the table.
         string[] values = ["Appending", "Some", "Values"];
-        error? append = checkpanic spreadsheetClient->appendRowToSheet(spreadsheetId, sheetName, values, "A2");
+        error? append = check spreadsheetClient->appendRowToSheet(spreadsheetId, sheetName, values, "A2");
         string[] valuesNext = ["Appending", "Another", "Row"];
-        error? appendNext = checkpanic spreadsheetClient->appendRowToSheet(spreadsheetId, sheetName, valuesNext, a1Notation);
+        error? appendNext = check spreadsheetClient->appendRowToSheet(spreadsheetId, sheetName, valuesNext, a1Notation);
 
         // Gets the given range of the Sheet
         string a1NotationAppend = "B2:E8";
@@ -1476,9 +1476,9 @@ sheets:SpreadsheetConfiguration spreadsheetConfig = {
     }
 };
 
-sheets:Client spreadsheetClient = checkpanic new (spreadsheetConfig);
+sheets:Client spreadsheetClient = check new (spreadsheetConfig);
 
-public function main() {
+public function main() returns error? {
     string spreadsheetId = "";
     string sheetName = "";
     int sheetId = 0;
@@ -1519,8 +1519,8 @@ public function main() {
         // The input range is used to search for existing data and find a "table" within that range. Value is appended 
         // to the next row of the table, starting with the first column of the table. If the range is not in any table 
         // the value is written to the given cell
-        error? append = checkpanic spreadsheetClient->appendRowToSheet(spreadsheetId, sheetName, ["Modified Value1"], "D6");
-        error? appendNext = checkpanic spreadsheetClient->appendRowToSheet(spreadsheetId, sheetName, ["Modified Value2"], a1Notation);
+        error? append = check spreadsheetClient->appendRowToSheet(spreadsheetId, sheetName, ["Modified Value1"], "D6");
+        error? appendNext = check spreadsheetClient->appendRowToSheet(spreadsheetId, sheetName, ["Modified Value2"], a1Notation);
 
         // Gets the given range of the Sheet
         string a1NotationAppend = "B2:E8";
@@ -1555,9 +1555,9 @@ sheets:SpreadsheetConfiguration spreadsheetConfig = {
     }
 };
 
-sheets:Client spreadsheetClient = checkpanic new (spreadsheetConfig);
+sheets:Client spreadsheetClient = check new (spreadsheetConfig);
 
-public function main() {
+public function main() returns error? {
     string spreadsheetId = "";
     string sheetName = "";
     int sheetId = 0;
@@ -1632,9 +1632,9 @@ sheets:SpreadsheetConfiguration spreadsheetConfig = {
     }
 };
 
-sheets:Client spreadsheetClient = checkpanic new (spreadsheetConfig);
+sheets:Client spreadsheetClient = check new (spreadsheetConfig);
 
-public function main() {
+public function main() returns error? {
     string spreadsheetId = "";
     string sheetName = "";
     int sheetId = 0;
@@ -1709,9 +1709,9 @@ sheets:SpreadsheetConfiguration spreadsheetConfig = {
     }
 };
 
-sheets:Client spreadsheetClient = checkpanic new (spreadsheetConfig);
+sheets:Client spreadsheetClient = check new (spreadsheetConfig);
 
-public function main() {
+public function main() returns error? {
     string spreadsheetId = "";
     string sheetName = "";
     int sheetId = 0;
@@ -1749,7 +1749,7 @@ public function main() {
     error? spreadsheetRes = spreadsheetClient->setRange(spreadsheetId, sheetName, range);
     if (spreadsheetRes is ()) {
         // Clears the sheet content and formatting rules by worksheet Id.
-        error? clearAll = checkpanic spreadsheetClient->clearAll(spreadsheetId, sheetId);
+        error? clearAll = check spreadsheetClient->clearAll(spreadsheetId, sheetId);
 
         // Gets the given range of the Sheet
         string a1NotationAppend = "A1:D5";
@@ -1784,9 +1784,9 @@ sheets:SpreadsheetConfiguration spreadsheetConfig = {
     }
 };
 
-sheets:Client spreadsheetClient = checkpanic new (spreadsheetConfig);
+sheets:Client spreadsheetClient = check new (spreadsheetConfig);
 
-public function main() {
+public function main() returns error? {
     string spreadsheetId = "";
     string sheetName = "";
     int sheetId = 0;
@@ -1824,7 +1824,7 @@ public function main() {
     error? spreadsheetRes = spreadsheetClient->setRange(spreadsheetId, sheetName, range);
     if (spreadsheetRes is ()) {
         // Clears the sheet content and formatting rules by worksheet Name.
-        error? clearAll = checkpanic spreadsheetClient->clearAllBySheetName(spreadsheetId, sheetName);
+        error? clearAll = check spreadsheetClient->clearAllBySheetName(spreadsheetId, sheetName);
 
         // Gets the given range of the Sheet
         string a1NotationAppend = "A1:D5";

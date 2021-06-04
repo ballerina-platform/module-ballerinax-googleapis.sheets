@@ -30,9 +30,9 @@ sheets:SpreadsheetConfiguration spreadsheetConfig = {
     }
 };
 
-sheets:Client spreadsheetClient = checkpanic new (spreadsheetConfig);
+sheets:Client spreadsheetClient = check new (spreadsheetConfig);
 
-public function main() {
+public function main() returns error? {
     string spreadsheetId = "";
     string sheetName = "";
     int sheetId = 0;
@@ -70,7 +70,7 @@ public function main() {
     error? spreadsheetRes = spreadsheetClient->setRange(spreadsheetId, sheetName, range);
     if (spreadsheetRes is ()) {
         // Clears the sheet content and formatting rules by worksheet Name.
-        error? clearAll = checkpanic spreadsheetClient->clearAllBySheetName(spreadsheetId, sheetName);
+        error? clearAll = check spreadsheetClient->clearAllBySheetName(spreadsheetId, sheetName);
 
         // Gets the given range of the Sheet
         string a1NotationAppend = "A1:D5";
