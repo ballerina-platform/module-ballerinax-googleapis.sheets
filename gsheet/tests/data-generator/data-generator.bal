@@ -29,7 +29,7 @@ sheets:SpreadsheetConfiguration spreadsheetConfig = {
 };
 
 // Connector configuration
-sheets:Client spreadsheetClient = checkpanic new (spreadsheetConfig);
+sheets:Client spreadsheetClient = check new (spreadsheetConfig);
 var randomString = sheets:createRandomUUIDWithoutHyphens();
 string connecterVersion = "0.99.8";
 
@@ -103,7 +103,7 @@ function generateRangeData() returns error? {
 
 function generateFileData() returns error? {
     log:printInfo("SampleDataGenerator -> FileData");
-    stream<sheets:File> response = check spreadsheetClient->getAllSpreadsheets();
+    stream<sheets:File|error> response = check spreadsheetClient->getAllSpreadsheets();
     var file1 = response.next();
     var file2 = response.next();
     var file3 = response.next();

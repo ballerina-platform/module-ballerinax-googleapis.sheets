@@ -30,9 +30,9 @@ sheets:SpreadsheetConfiguration spreadsheetConfig = {
     }
 };
 
-sheets:Client spreadsheetClient = checkpanic new (spreadsheetConfig);
+sheets:Client spreadsheetClient = check new (spreadsheetConfig);
 
-public function main() {
+public function main() returns error? {
 
     // Get All Spreadsheets associated with the user account
     stream<sheets:File,error>|error response = spreadsheetClient->getAllSpreadsheets();
