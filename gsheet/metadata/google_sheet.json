@@ -434,8 +434,8 @@
                             }
                         ],
                         "returnValue": {
-                            "name": "(string | int | float)[]",
-                            "displayName": "Values in Column"
+                            "name": "Column",
+                            "displayName": "Column"
                         }
         
                     },
@@ -646,8 +646,8 @@
                             }
                         ],
                         "returnValue": {
-                            "name": "(string | int | float)[]",
-                            "displayName": "Values in Row"
+                            "name": "Row",
+                            "displayName": "Row"
                         }
         
                     },
@@ -750,8 +750,8 @@
                             }
                         ],
                         "returnValue": {
-                            "name": "int | string | float",
-                            "displayName": "Value"
+                            "name": "Cell",
+                            "displayName": "Cell"
                         }
         
                     },
@@ -791,7 +791,7 @@
                                 "displayName": "Sheet Name"
                             },
                             {
-                                "name": "(int | string | float)[]",
+                                "name": "(int | string | decimal)[]",
                                 "displayName": "Values for New Row"
                             }
                         ],

@@ -343,10 +343,10 @@ function testCreateOrUpdateColumn() {
 }
 function testGetColumn() {
     var spreadsheetRes = spreadsheetClient->getColumn(spreadsheetId, testSheetName, "I", "FORMULA");
-    if (spreadsheetRes is (string|int|decimal)[]) {
+    if (spreadsheetRes is Column) {
         log:printInfo(spreadsheetRes.toString());
         (int|string|decimal)[] expectedValue = ["Update", "Column", "Values"];
-        test:assertEquals(spreadsheetRes, expectedValue, msg = "Failed to get the column values");
+        test:assertEquals(spreadsheetRes.values, expectedValue, msg = "Failed to get the column values");
     } else {
         test:assertFail(spreadsheetRes.message());
     }
@@ -454,10 +454,10 @@ function testCreateOrUpdateRow() {
 }
 function testGetRow() {
     var spreadsheetRes = spreadsheetClient->getRow(spreadsheetId, testSheetName, 10, "FORMULA");
-    if (spreadsheetRes is (string|int|decimal)[]) {
+    if (spreadsheetRes is Row) {
         log:printInfo(spreadsheetRes.toString());
         (int|string|decimal)[] expectedValue = ["Update", "Row", "Values"];
-        test:assertEquals(spreadsheetRes, expectedValue, msg = "Failed to get the row values");
+        test:assertEquals(spreadsheetRes.values, expectedValue, msg = "Failed to get the row values");
     } else {
         test:assertFail(spreadsheetRes.message());
     }
@@ -509,9 +509,9 @@ function testSetCell() {
 }
 function testGetCell() {
     var spreadsheetRes = spreadsheetClient->getCell(spreadsheetId, testSheetName, "H1", "FORMULA");
-    if (spreadsheetRes is (string|int|decimal)) {
+    if (spreadsheetRes is Cell) {
         log:printInfo(spreadsheetRes.toString());
-        test:assertEquals(spreadsheetRes, "ModifiedValue", msg = "Failed to get the cell value");
+        test:assertEquals(spreadsheetRes.value, "ModifiedValue", msg = "Failed to get the cell value");
     } else {
         test:assertFail(spreadsheetRes.message());
     }

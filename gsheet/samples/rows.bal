@@ -81,8 +81,8 @@ public function main() {
         string[] values = ["Update", "Row", "Values"];
         error? rowCreate = checkpanic spreadsheetClient->createOrUpdateRow(spreadsheetId, sheetName, 10, values);
         // Gets the values in the given row in a Worksheet with given name.
-        (string|int|decimal)[]|error row = spreadsheetClient->getRow(spreadsheetId, sheetName, 10);
-        if (row is (string|int|decimal)[]) {
+        sheets:Row|error row = spreadsheetClient->getRow(spreadsheetId, sheetName, 10);
+        if (row is sheets:Row) {
             log:printInfo(row.toString());
         } else {
             log:printError("Error: " + row.toString());
