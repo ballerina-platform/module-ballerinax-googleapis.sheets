@@ -18,12 +18,16 @@ import ballerina/os;
 import ballerina/test;
 import ballerina/log;
 
+configurable string & readonly refreshToken = os:getEnv("REFRESH_TOKEN");
+configurable string & readonly clientId = os:getEnv("CLIENT_ID");
+configurable string & readonly clientSecret = os:getEnv("CLIENT_SECRET");
+
 SpreadsheetConfiguration spreadsheetConfig = {
     oauthClientConfig: {
         refreshUrl: REFRESH_URL,
-        refreshToken: os:getEnv("REFRESH_TOKEN"),
-        clientId: os:getEnv("CLIENT_ID"),
-        clientSecret: os:getEnv("CLIENT_SECRET")
+        refreshToken: refreshToken,
+        clientId: clientId,
+        clientSecret: clientSecret
     }
 };
 
