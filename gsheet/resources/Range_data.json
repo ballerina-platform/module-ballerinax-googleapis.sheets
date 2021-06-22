@@ -1,5 +1,5 @@
 {
-    "ballerinax/googleapis.sheets:0.99.8:Range": [
+    "ballerinax/googleapis.sheets:0.99.9-SNAPSHOT:Range": [
         {
             "a1Notation": "A1:D30",
             "values": [
