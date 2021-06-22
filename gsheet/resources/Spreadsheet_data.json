@@ -1,5 +1,5 @@
 {
-    "ballerinax/googleapis.sheets:0.99.8:Spreadsheet": [
+    "ballerinax/googleapis.sheets:0.99.9-SNAPSHOT:Spreadsheet": [
         {
             "spreadsheetId": "14sjpSLfNTmIdPzUhx4pY9d9SHqI4yG9MS3Jc6HAAOjk",
             "properties": {
