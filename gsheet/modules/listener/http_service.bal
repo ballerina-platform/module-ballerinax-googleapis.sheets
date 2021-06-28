@@ -15,6 +15,7 @@
 // under the License.
 
 import ballerina/http;
+import ballerina/log;
 
 service class HttpService {
     private EventDispatcher eventDispatcher;
@@ -29,19 +30,26 @@ service class HttpService {
         json payload = check request.getJsonPayload();
         json spreadsheetId = check payload.spreadsheetId;
         json eventType = check payload.eventType;
-        check caller->respond(http:STATUS_OK); 
-        if (self.isEventFromMatchingGSheet(spreadsheetId)) {
-            GSheetEvent event = {};
-            EventInfo eventInfo = check payload.cloneWithType(EventInfo);
-            event.eventInfo = eventInfo; 
+
+        GSheetEvent event = {};
+        EventInfo eventInfo = check payload.cloneWithType(EventInfo);
+        event.eventInfo = eventInfo; 
+
+        http:Response res = new;
+        res.statusCode = http:STATUS_ACCEPTED;
+        check caller->respond(res); 
+
+        if (self.isEventFromMatchingGSheet(spreadsheetId)) {        
             error? dispatchResult = self.eventDispatcher.dispatch(eventType.toString(), event);
             if (dispatchResult is error) {
-                return error("Failed to dispatch event : ", 'error = dispatchResult);
+                log:printError("Dispatch error or user function implementation error : ", 'error = dispatchResult);
+                return;
             }
             return;
         }
-        return error("Diffrent spreadsheet IDs found : ", configuredSpreadsheetID = self.spreadsheetId, 
+        log:printError("Diffrent spreadsheet IDs found : ", configuredSpreadsheetID = self.spreadsheetId, 
             requestSpreadsheetID = spreadsheetId.toString());
+        return;
     }
 
     isolated function isEventFromMatchingGSheet(json spreadsheetId) returns boolean {
