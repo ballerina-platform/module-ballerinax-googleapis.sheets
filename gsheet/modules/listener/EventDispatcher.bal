@@ -48,21 +48,17 @@ class EventDispatcher {
                 if (self.isOnAppendRowAvailable) {
                     event.eventType = APPEND_ROW;
                     check callOnAppendRowMethod(self.httpService, event);
-                } else {
-                    return error("Unimplemented method [ onAppendRow ] found");
-                }
+                } 
             }
             UPDATE_ROW => {
                 if (self.isOnUpdateRowAvailable) {
                     event.eventType = UPDATE_ROW;
                     check callOnUpdateRowMethod(self.httpService, event);
-                } else {
-                    return error("Unimplemented method [ onUpdateRow ] found");
-                }
+                } 
             }
             _ => {
-                    log:printError("Unrecognized event type [" + eventType.toString() 
-                        + "] found in the response payload");
+                log:printError("Unrecognized event type [" + eventType.toString() 
+                    + "] found in the response payload");
             }
         }
         return;
