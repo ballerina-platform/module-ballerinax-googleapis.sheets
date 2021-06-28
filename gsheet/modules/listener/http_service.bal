@@ -42,14 +42,13 @@ service class HttpService {
         if (self.isEventFromMatchingGSheet(spreadsheetId)) {        
             error? dispatchResult = self.eventDispatcher.dispatch(eventType.toString(), event);
             if (dispatchResult is error) {
-                log:printError("Dispatch error or user function implementation error : ", 'error = dispatchResult);
+                log:printError("Dispatching or remote function error : ", 'error = dispatchResult);
                 return;
             }
             return;
         }
         log:printError("Diffrent spreadsheet IDs found : ", configuredSpreadsheetID = self.spreadsheetId, 
             requestSpreadsheetID = spreadsheetId.toString());
-        return;
     }
 
     isolated function isEventFromMatchingGSheet(json spreadsheetId) returns boolean {

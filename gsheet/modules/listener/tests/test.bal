@@ -13,14 +13,14 @@ SheetListenerConfiguration congifuration = {
 listener Listener gsheetListener = new (congifuration);
 
 service / on gsheetListener {
-    isolated remote function onAppendRow(GSheetEvent event) returns error? {
+    isolated remote function onAppendRow(GSheetEvent event) {
         log:printInfo("Received onAppendRow-message ", eventMsg = event);
         if (event?.eventInfo?.spreadsheetName != "TestListener") {
             log:printError("Received event data doesn't match");
         }
     }
 
-    isolated remote function onUpdateRow(GSheetEvent event) returns error? {
+    isolated remote function onUpdateRow(GSheetEvent event) {
         log:printInfo("Received onUpdateRow-message ", eventMsg = event);
         if (event?.eventInfo?.spreadsheetName != "TestListener") {
             log:printError("Received event data doesn't match");
