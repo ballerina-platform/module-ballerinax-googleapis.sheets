@@ -15,7 +15,6 @@ listener Listener gsheetListener = new (congifuration);
 service / on gsheetListener {
     isolated remote function onAppendRow(GSheetEvent event) {
         log:printInfo("Received onAppendRow-message ", eventMsg = event);
-        string? receivedData = event?.eventInfo?.spreadsheetName;
         if (event?.eventInfo?.spreadsheetName != "TestListener") {
             log:printError("Received event data doesn't match");
         }
@@ -44,7 +43,7 @@ function testOnAppendRowTrigger() {
 
     http:Response|error response = httpClient->post("/", request);
     if (response is http:Response) {
-        test:assertEquals(response.statusCode, 200);
+        test:assertEquals(response.statusCode, 202);
     } else {
         test:assertFail("GSheet listener onAppendRow test failed");
     }
@@ -63,7 +62,7 @@ function testOnUpdateRowTrigger() {
 
     http:Response|error response = httpClient->post("/", request);
     if (response is http:Response) {
-        test:assertEquals(response.statusCode, 200);
+        test:assertEquals(response.statusCode, 202);
     } else {
         test:assertFail("GSheet listener onUpdateRow test failed");
     }
