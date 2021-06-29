@@ -29,15 +29,19 @@ service class HttpService {
         json payload = check request.getJsonPayload();
         json spreadsheetId = check payload.spreadsheetId;
         json eventType = check payload.eventType;
-        check caller->respond(http:STATUS_OK); 
-        if (self.isEventFromMatchingGSheet(spreadsheetId)) {
-            GSheetEvent event = {};
-            EventInfo eventInfo = check payload.cloneWithType(EventInfo);
-            event.eventInfo = eventInfo; 
+
+        GSheetEvent event = {};
+        EventInfo eventInfo = check payload.cloneWithType(EventInfo);
+        event.eventInfo = eventInfo; 
+
+        if (self.isEventFromMatchingGSheet(spreadsheetId)) {        
             error? dispatchResult = self.eventDispatcher.dispatch(eventType.toString(), event);
             if (dispatchResult is error) {
-                return error("Failed to dispatch event : ", 'error = dispatchResult);
+                return error("Dispatching or remote function error : ", 'error = dispatchResult);
             }
+            http:Response res = new;
+            res.statusCode = http:STATUS_OK;
+            check caller->respond(res); 
             return;
         }
         return error("Diffrent spreadsheet IDs found : ", configuredSpreadsheetID = self.spreadsheetId, 

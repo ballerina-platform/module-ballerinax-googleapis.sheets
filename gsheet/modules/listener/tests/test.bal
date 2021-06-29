@@ -15,7 +15,6 @@ listener Listener gsheetListener = new (congifuration);
 service / on gsheetListener {
     isolated remote function onAppendRow(GSheetEvent event) {
         log:printInfo("Received onAppendRow-message ", eventMsg = event);
-        string? receivedData = event?.eventInfo?.spreadsheetName;
         if (event?.eventInfo?.spreadsheetName != "TestListener") {
             log:printError("Received event data doesn't match");
         }
