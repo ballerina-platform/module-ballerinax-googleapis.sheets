@@ -250,3 +250,33 @@ service / on gSheetListener {
 ```
 
 More Samples are available at "https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/tree/master/samples".
+
+> **NOTE:**
+At user function implementation if there was an error we throw it up & the http client will return status 500 error. 
+If no any error occured & the user logic is executed successfully we respond with status 200 OK. 
+If the user logic in listener remote operations include heavy processing, the user may face http timeout issues. 
+To solve this issue, user must use asynchronous processing when it includes heavy processing.
+
+```ballerina
+import ballerinax/googleapis.sheets.'listener as sheetsListener;
+
+configurable int port = ?;
+configurable string spreadsheetId = ?;
+
+sheetsListener:SheetListenerConfiguration congifuration = {
+    port: port,
+    spreadsheetId: spreadsheetId
+};
+
+listener sheetsListener:Listener gSheetListener = new (congifuration);
+
+service / on gsheetListener {
+    isolated remote function onAppendRow(GSheetEvent event) {
+       _ = @strand { thread: "any" } start userLogic(event);
+    }
+}
+
+function userLogic(sheetsListener:GSheetEvent event) returns error? {
+    // Write your logic here
+}
+```
