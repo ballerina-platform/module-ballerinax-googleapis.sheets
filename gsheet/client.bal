@@ -27,7 +27,8 @@ public client class Client {
 
     # Initializes the Google spreadsheet connector client endpoint.
     #
-    # +  spreadsheetConfig - Configurations required to initialize the `Client` endpoint
+    # + spreadsheetConfig - Configurations required to initialize the `Client` endpoint
+    # + return - Error at failure of client initialization
     public isolated function init(SpreadsheetConfiguration spreadsheetConfig) returns error? {
 
         http:ClientSecureSocket? socketConfig = spreadsheetConfig?.secureSocketConfig;
