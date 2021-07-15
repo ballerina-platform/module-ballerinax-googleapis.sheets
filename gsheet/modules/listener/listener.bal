@@ -29,7 +29,8 @@ public class Listener {
     }
 
     public isolated function attach(SimpleHttpService s, string[]|string? name = ()) returns @tainted error? {
-        self.httpService = new HttpService(s, self.config.spreadsheetId);
+        HttpToGSheetAdaptor adaptor = check new (s);   
+        self.httpService = new HttpService(adaptor, self.config.spreadsheetId);
         check self.httpListener.attach(self.httpService, name);
     }
 

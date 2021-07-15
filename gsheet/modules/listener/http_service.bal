@@ -15,14 +15,26 @@
 // under the License.
 
 import ballerina/http;
+import ballerina/log;
 
-service class HttpService {
-    private EventDispatcher eventDispatcher;
-    private string spreadsheetId;
+isolated service class HttpService {
+    private final string spreadsheetId;
+    private final boolean isOnAppendRowAvailable;
+    private final boolean isOnUpdateRowAvailable;
+    private final HttpToGSheetAdaptor adaptor;
 
-    public isolated function init(SimpleHttpService httpService, string spreadsheetId) {
-        self.eventDispatcher = new (httpService);
+    isolated function init(HttpToGSheetAdaptor adaptor, string spreadsheetId) {
+        self.adaptor = adaptor;
         self.spreadsheetId = spreadsheetId;
+
+        string[] methodNames = adaptor.getServiceMethodNames();
+        foreach string methodName in methodNames {
+            if (methodName !== ON_APPEND_ROW && methodName !== ON_UPDATE_ROW) {
+                log:printError("Unrecognized method [" + methodName + "] found in the implementation."); 
+            }
+        }
+        self.isOnAppendRowAvailable = isMethodAvailable(ON_APPEND_ROW, methodNames);
+        self.isOnUpdateRowAvailable = isMethodAvailable(ON_UPDATE_ROW, methodNames);
     }
 
     isolated resource function post onEdit(http:Caller caller, http:Request request) returns @tainted error? {
@@ -35,7 +47,7 @@ service class HttpService {
         event.eventInfo = eventInfo; 
 
         if (self.isEventFromMatchingGSheet(spreadsheetId)) {        
-            error? dispatchResult = self.eventDispatcher.dispatch(eventType.toString(), event);
+            error? dispatchResult = self.dispatch(eventType.toString(), event);
             if (dispatchResult is error) {
                 return error("Dispatching or remote function error : ", 'error = dispatchResult);
             }
@@ -51,4 +63,35 @@ service class HttpService {
     isolated function isEventFromMatchingGSheet(json spreadsheetId) returns boolean {
         return (self.spreadsheetId == spreadsheetId.toString());
     }
+
+    isolated function dispatch(string eventType, GSheetEvent event) returns error? {
+        match eventType.toString() {
+            APPEND_ROW => {
+                if (self.isOnAppendRowAvailable) {
+                    event.eventType = APPEND_ROW;
+                    check self.adaptor.callOnAppendRowMethod(event);
+                } 
+            }
+            UPDATE_ROW => {
+                if (self.isOnUpdateRowAvailable) {
+                    event.eventType = UPDATE_ROW;
+                    check self.adaptor.callOnUpdateRowMethod(event);
+                } 
+            }
+            _ => {
+                log:printError("Unrecognized event type [" + eventType.toString() 
+                    + "] found in the response payload");
+            }
+        }
+        return;
+    }
+}
+
+# Retrieves whether the particular remote method is available.
+# 
+# + methodName - Name of the required method
+# + methods - All available methods
+# + return - `true` if method available or else `false`
+isolated function isMethodAvailable(string methodName, string[] methods) returns boolean {
+    return methods.indexOf(methodName) is int;
 }
