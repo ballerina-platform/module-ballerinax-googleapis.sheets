@@ -36,22 +36,27 @@ import java.util.concurrent.CountDownLatch;
 
 import static io.ballerina.runtime.api.utils.StringUtils.fromString;
 
-public class HttpNativeOperationHandler {
-    public static Object callOnAppendRowMethod(Environment env, BObject bWebhookService,
-                                               BMap<BString, Object> message) {
-        return invokeRemoteFunction(env, bWebhookService, message, "callOnAppendRowMethod",
-                "onAppendRow");
+public class NativeHttpToGSheetAdaptor {
+    public static final String SERVICE_OBJECT = "GSHEET_SERVICE_OBJECT";
+
+    public static void externInit(BObject adaptor, BObject service) {
+        adaptor.addNativeData(SERVICE_OBJECT, service);
     }
 
-    public static Object callOnUpdateRowMethod(Environment env, BObject bWebhookService,
-                                               BMap<BString, Object> message) {
-        return invokeRemoteFunction(env, bWebhookService, message, "callOnUpdateRowMethod",
-                "onUpdateRow");
+    public static Object callOnAppendRowMethod(Environment env, BObject adaptor, BMap<BString, Object> message) {
+        BObject serviceObj = (BObject) adaptor.getNativeData(SERVICE_OBJECT);  
+        return invokeRemoteFunction(env, serviceObj, message, "callOnAppendRowMethod", "onAppendRow");
     }
 
-    public static BArray getServiceMethodNames(BObject bSubscriberService) {
+    public static Object callOnUpdateRowMethod(Environment env, BObject adaptor, BMap<BString, Object> message) {
+        BObject serviceObj = (BObject) adaptor.getNativeData(SERVICE_OBJECT);  
+        return invokeRemoteFunction(env, serviceObj, message, "callOnUpdateRowMethod", "onUpdateRow");
+    }
+
+    public static BArray getServiceMethodNames(BObject adaptor) {
+        BObject serviceObj = (BObject) adaptor.getNativeData(SERVICE_OBJECT);
         ArrayList<BString> methodNamesList = new ArrayList<>();
-        for (MethodType method : bSubscriberService.getType().getMethods()) {
+        for (MethodType method : serviceObj.getType().getMethods()) {
             methodNamesList.add(StringUtils.fromString(method.getName()));
         }
         return ValueCreator.createArrayValue(methodNamesList.toArray(BString[]::new));
