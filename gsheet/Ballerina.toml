@@ -5,7 +5,7 @@ version = "0.99.9-SNAPSHOT"
 export= ["googleapis.sheets", "googleapis.sheets.listener"]
 license= ["Apache-2.0"]
 authors = ["Ballerina"]
-keywords = ["sheets", "google", "spreadsheet"]
+keywords = ["Google", "Sheets", "Spreadsheet"]
 repository = "https://github.com/ballerina-platform/module-googlespreadsheet"
 
 [[platform.java11.dependency]]
