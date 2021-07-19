@@ -16,20 +16,27 @@
 
 import ballerina/jballerina.java;
 
-isolated function callOnAppendRowMethod(SimpleHttpService httpService, GSheetEvent event)
-                                returns error? = @java:Method {
-    'class: "org.ballerinalang.googleapis.sheets.HttpNativeOperationHandler"
-} external;
+isolated class HttpToGSheetAdaptor {
+    isolated function init(SimpleHttpService serviceObj) returns error? {
+        externInit(self, serviceObj);
+    }
 
-isolated function callOnUpdateRowMethod(SimpleHttpService httpService, GSheetEvent event)
-                                returns error? = @java:Method {
-    'class: "org.ballerinalang.googleapis.sheets.HttpNativeOperationHandler"
-} external;
+    isolated function callOnAppendRowMethod(GSheetEvent event) returns error? = @java:Method {
+        'class: "org.ballerinalang.googleapis.sheets.NativeHttpToGSheetAdaptor"
+    } external;
 
-# Invoke native method to retrieve implemented method names in the subscriber service
-#
-# + httpService - current http service
-# + return - {@code string[]} containing the method-names in current implementation
-isolated function getServiceMethodNames(SimpleHttpService httpService) returns string[] = @java:Method {
-    'class: "org.ballerinalang.googleapis.sheets.HttpNativeOperationHandler"
+    isolated function callOnUpdateRowMethod(GSheetEvent event) returns error? = @java:Method {
+        'class: "org.ballerinalang.googleapis.sheets.NativeHttpToGSheetAdaptor"
+    } external;
+
+    # Invoke native method to retrieve implemented method names in the subscriber service
+    #
+    # + return - {@code string[]} containing the method-names in current implementation
+    isolated function getServiceMethodNames() returns string[] = @java:Method {
+        'class: "org.ballerinalang.googleapis.sheets.NativeHttpToGSheetAdaptor"
+    } external;
+}
+
+isolated function externInit(HttpToGSheetAdaptor adaptor, SimpleHttpService serviceObj) = @java:Method {
+    'class: "org.ballerinalang.googleapis.sheets.NativeHttpToGSheetAdaptor"
 } external;
