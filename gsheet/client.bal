@@ -16,19 +16,25 @@
 
 import ballerina/http;
 
-# Google spreadsheet connector client endpoint.
+# Ballerina Google Sheets connector provides the capability to access Google Sheets API.
+# The connector let you perform spreadsheet management operations, worksheet management operations and 
+# the capability to handle Google Sheets data level operations.
 #
 # + httpClient - Connector http endpoint
 # + driveClient - Drive connector http endpoint
 @display {label: "Google Sheets", iconPath: "GoogleSheetsLogo.png"}
-public client class Client {
-    public http:Client httpClient;
-    public http:Client driveClient;
+public isolated client class Client {
+    final http:Client httpClient;
+    final http:Client driveClient;
 
-    # Initializes the Google spreadsheet connector client endpoint.
+    # Initializes the connector. During initialization you can pass either http:BearerTokenConfig
+    # if you have a bearer token or http:OAuth2RefreshTokenGrantConfig if you have Oauth tokens.
+    # Create a [Google account](https://accounts.google.com/signup/v2/webcreateaccount?utm_source=ga-ob-search&utm_medium=google-account&flowName=GlifWebSignIn&flowEntry=SignUp) and 
+    # obtain tokens following [this guide](https://developers.google.com/identity/protocols/oauth2). 
+    # Configure the OAuth2 tokens to have the [required permissions](https://developers.google.com/sheets/api/guides/authorizing).
     #
-    # + spreadsheetConfig - Configurations required to initialize the `Client` endpoint
-    # + return - Error at failure of client initialization
+    # + spreadsheetConfig - Configuration for the connector
+    # + return - `http:Error` in case of failure to initialize or `null` if successfully initialized  
     public isolated function init(SpreadsheetConfiguration spreadsheetConfig) returns error? {
 
         http:ClientSecureSocket? socketConfig = spreadsheetConfig?.secureSocketConfig;
@@ -48,7 +54,7 @@ public client class Client {
     # Creates a new spreadsheet.
     #
     # + name - Name of the spreadsheet
-    # + return - A Spreadsheet record type on success, else returns an error
+    # + return - `sheets:Spreadsheet` record on success, or else an error
     @display {label: "Create Google Sheet"}
     remote isolated function createSpreadsheet(@display {label: "Google Sheet Name"} string name) 
                                                returns @tainted Spreadsheet|error {
@@ -64,7 +70,7 @@ public client class Client {
     # Opens a spreadsheet by the given ID.
     #
     # + spreadsheetId - ID of the spreadsheet
-    # + return - A Spreadsheet record type on success, else returns an error
+    # + return - `sheets:Spreadsheet` record on success, or else an error
     @display {label: "Open Google Sheet By ID"}
     remote isolated function openSpreadsheetById(@display {label: "Google Sheet ID"} string spreadsheetId) 
                                                  returns @tainted Spreadsheet|error {
@@ -80,7 +86,7 @@ public client class Client {
     # Opens a spreadsheet by the given Url.
     #
     # + url - Url of the spreadsheet
-    # + return - A Spreadsheet record type on success, else returns an error
+    # + return - `sheets:Spreadsheet` record on success, or else an error
     @display {label: "Open Google Sheet By Url"}
     remote isolated function openSpreadsheetByUrl(@display {label: "Google Sheet Url"} string url) 
                                                   returns @tainted Spreadsheet|error {
@@ -94,7 +100,7 @@ public client class Client {
 
     # Get all spreadsheet files.
     # 
-    # + return - Stream of File records on success, else returns an error
+    # + return - Stream of `sheets:File` records on success, or else an error
     @display {label: "Get All Spreadsheets"}
     remote isolated function getAllSpreadsheets() returns @tainted 
                                                 @display {label: "Stream of Files"} stream<File,error>|error {
@@ -106,7 +112,7 @@ public client class Client {
     #
     # + spreadsheetId - ID of the spreadsheet
     # + name - New name for the spreadsheet
-    # + return - Nil on success, else returns an error
+    # + return - Nil() on success, or else an error
     @display {label: "Rename Google Sheet"}
     remote isolated function renameSpreadsheet(@display {label: "Google Sheet ID"} string spreadsheetId, 
                                                @display {label: "New Google Sheet Name"} string name) 
@@ -134,7 +140,7 @@ public client class Client {
     # Get worksheets of the spreadsheet.
     # 
     # + spreadsheetId - ID of the spreadsheet
-    # + return - Array of Sheet records on success and error on failure
+    # + return - Array of `sheets:Sheet` records on success, or else an error
     @display {label: "Get Worksheets"}
     remote isolated function getSheets(@display {label: "Google Sheet ID"} string spreadsheetId) 
                                        returns @tainted @display {label: "Array of Worksheets"} Sheet[]|error {
@@ -153,7 +159,7 @@ public client class Client {
     # 
     # + spreadsheetId - ID of the spreadsheet
     # + sheetName - Name of the worksheet to retrieve
-    # + return - Sheet record type on success and error on failure
+    # + return - `sheets:Sheet` record on success, or else an error
     @display {label: "Get Worksheet By Name"}
     remote isolated function getSheetByName(@display {label: "Google Sheet ID"} string spreadsheetId, 
                                             @display {label: "Worksheet Name"} string sheetName) 
@@ -179,7 +185,7 @@ public client class Client {
     #
     # + spreadsheetId - ID of the spreadsheet
     # + sheetName - The name of the worksheet
-    # + return - Sheet record type on success and error on failure
+    # + return - `sheets:Sheet` record on success, or else an error
     @display {label: "Add New Worksheet"}
     remote isolated function addSheet(@display {label: "Google Sheet ID"} string spreadsheetId, 
                                       @display {label: "Worksheet Name"} string sheetName) 
@@ -248,7 +254,7 @@ public client class Client {
     #
     # + spreadsheetId - ID of the spreadsheet
     # + sheetId - The ID of the worksheet to delete
-    # + return - Nil on success and error on failure
+    # + return - Nil() on success, or else an error
     @display {label: "Remove Worksheet By ID"}
     remote isolated function removeSheet(@display {label: "Google Sheet ID"} string spreadsheetId, 
                                          @display {label: "Worksheet ID"} int sheetId) returns @tainted error? {
@@ -265,7 +271,7 @@ public client class Client {
     #
     # + spreadsheetId - ID of the spreadsheet
     # + sheetName - The name of the worksheet to delete
-    # + return - Nil on success and error on failure
+    # + return - Nil() on success, or else an error
     @display {label: "Remove Worksheet"}
     remote isolated function removeSheetByName(@display {label: "Google Sheet ID"} string spreadsheetId, 
                                                @display {label: "Worksheet Name"} string sheetName) 
@@ -285,7 +291,7 @@ public client class Client {
     # + spreadsheetId - ID of the spreadsheet
     # + sheetName - The existing name of the worksheet
     # + name - New name for the worksheet
-    # + return - Nil on success, else returns an error
+    # + return - Nil() on success, or else an error
     @display {label: "Rename Worksheet"}
     remote isolated function renameSheet(@display {label: "Google Sheet ID"} string spreadsheetId, 
                                          @display {label: "Existing Worksheet Name"} string sheetName, 
@@ -319,7 +325,7 @@ public client class Client {
     # + range - The Range record to be set
     # + valueInputOption - Determines how input data should be interpreted. 
     #                      It's either "RAW" or "USER_ENTERED". Default is "RAW" (Optional)
-    # + return - Nil on success, else returns an error
+    # + return - Nil() on success, or else an error
     @display {label: "Set Range"}
     remote isolated function setRange(@display {label: "Google Sheet ID"} string spreadsheetId, 
                                       @display {label: "Worksheet Name"} string sheetName, 
@@ -371,7 +377,7 @@ public client class Client {
     # + valueRenderOption - Determines how values should be rendered in the output.
     #                       It's either "FORMATTED_VALUE","UNFORMATTED_VALUE" or "FORMULA". 
     #                       Default is "FORMATTED_VALUE" (Optional)
-    # + return - The Range record on success, else returns an error
+    # + return - `sheets:Range` record on success, or else an error
     @display {label: "Get Range"}
     remote isolated function getRange(@display {label: "Google Sheet ID"} string spreadsheetId, 
                                       @display {label: "Worksheet Name"} string sheetName, 
@@ -403,7 +409,7 @@ public client class Client {
     # + spreadsheetId - ID of the spreadsheet
     # + sheetName - The name of the worksheet
     # + a1Notation - The required range in A1 notation
-    # + return - Nil on success, else returns an error
+    # + return - Nil() on success, or else an error
     @display {label: "Clear Range"}
     remote isolated function clearRange(@display {label: "Google Sheet ID"} string spreadsheetId, 
                                         @display {label: "Worksheet Name"} string sheetName, 
@@ -424,7 +430,7 @@ public client class Client {
     # + sheetId - ID of the worksheet
     # + index - The position of the column before which the new columns should be added
     # + numberOfColumns - Number of columns to be added
-    # + return - Nil on success, else returns an error
+    # + return - Nil() on success, or else an error
     @display {label: "Add Columns Before By Sheet ID"}
     remote isolated function addColumnsBefore(@display {label: "Google Sheet ID"} string spreadsheetId, 
                                               @display {label: "Worksheet ID"} int sheetId, 
@@ -460,7 +466,7 @@ public client class Client {
     # + sheetName - The name of the Worksheet
     # + index - The position of the column before which the new columns should be added
     # + numberOfColumns - Number of columns to be added
-    # + return - Nil on success, else returns an error
+    # + return - Nil() on success, or else an error
     @display {label: "Add Columns Before"}
     remote isolated function addColumnsBeforeBySheetName(@display {label: "Google Sheet ID"} string spreadsheetId, 
                                                          @display {label: "Worksheet Name"} string sheetName, 
@@ -498,7 +504,7 @@ public client class Client {
     # + sheetId - ID of the worksheet
     # + index - The position of the column after which the new columns should be added
     # + numberOfColumns - Number of columns to be added
-    # + return - Nil on success, else returns an error
+    # + return - Nil() on success, or else an error
     @display {label: "Add Columns After By Sheet ID"}
     remote isolated function addColumnsAfter(@display {label: "Google Sheet ID"} string spreadsheetId, 
                                              @display {label: "Worksheet ID"} int sheetId, 
@@ -534,7 +540,7 @@ public client class Client {
     # + sheetName - The name of the worksheet
     # + index - The position of the column after which the new columns should be added
     # + numberOfColumns - Number of columns to be added
-    # + return - Nil on success, else returns an error
+    # + return - Nil() on success, or else an error
     @display {label: "Add Columns After"}
     remote isolated function addColumnsAfterBySheetName(@display {label: "Google Sheet ID"} string spreadsheetId, 
                                                         @display {label: "Worksheet Name"} string sheetName, 
@@ -574,7 +580,7 @@ public client class Client {
     # + values - Array of values of the column to be added
     # + valueInputOption - Determines how input data should be interpreted. 
     #                      It's either "RAW" or "USER_ENTERED". Default is "RAW" (Optional)
-    # + return - Nil on success, else returns an error
+    # + return - Nil() on success, or else an error
     @display {label: "Set Column"}
     remote isolated function createOrUpdateColumn(@display {label: "Google Sheet ID"} string spreadsheetId, 
                                                   @display {label: "Worksheet Name"} string sheetName, 
@@ -617,7 +623,7 @@ public client class Client {
     # + valueRenderOption - Determines how values should be rendered in the output.
     #                       It's either "FORMATTED_VALUE","UNFORMATTED_VALUE" or "FORMULA". 
     #                       Default is "FORMATTED_VALUE" (Optional)
-    # + return - Column record on success, else returns an error
+    # + return - `sheets:Column` record on success, or else an error
     @display {label: "Get Column"}
     remote isolated function getColumn(@display {label: "Google Sheet ID"} string spreadsheetId, 
                                        @display {label: "Worksheet Name"} string sheetName, 
@@ -661,7 +667,7 @@ public client class Client {
     # + sheetId - ID of the worksheet
     # + column - Starting position of the columns
     # + numberOfColumns - Number of columns from the starting position
-    # + return - Nil on success, else returns an error
+    # + return - Nil() on success, or else an error
     @display {label: "Delete Columns By Sheet ID"}
     remote isolated function deleteColumns(@display {label: "Google Sheet ID"} string spreadsheetId, 
                                            @display {label: "Worksheet ID"} int sheetId, 
@@ -697,7 +703,7 @@ public client class Client {
     # + sheetName - The name of the worksheet
     # + column - Starting position of the columns
     # + numberOfColumns - Number of columns from the starting position
-    # + return - Nil on success, else returns an error
+    # + return - Nil() on success, or else an error
     @display {label: "Delete Columns"}
     remote isolated function deleteColumnsBySheetName(@display {label: "Google Sheet ID"} string spreadsheetId, 
                                                       @display {label: "Worksheet Name"} string sheetName, 
@@ -735,7 +741,7 @@ public client class Client {
     # + sheetId - ID of the worksheet
     # + index - The position of the row before which the new rows should be added
     # + numberOfRows - The number of rows to be added
-    # + return - Nil on success, else returns an error
+    # + return - Nil() on success, or else an error
     @display {label: "Add Rows Before By Sheet ID"}
     remote isolated function addRowsBefore(@display {label: "Google Sheet ID"} string spreadsheetId, 
                                            @display {label: "Worksheet ID"} int sheetId, 
@@ -771,7 +777,7 @@ public client class Client {
     # + sheetName - The name of the worksheet
     # + index - The position of the row before which the new rows should be added
     # + numberOfRows - The number of rows to be added
-    # + return - Nil on success, else returns an error
+    # + return - Nil() on success, or else an error
     @display {label: "Add Rows Before"}
     remote isolated function addRowsBeforeBySheetName(@display {label: "Google Sheet ID"} string spreadsheetId, 
                                                       @display {label: "Worksheet Name"} string sheetName, 
@@ -808,7 +814,7 @@ public client class Client {
     # + sheetId - ID of the worksheet
     # + index - The row after which the new rows should be added.
     # + numberOfRows - The number of rows to be added
-    # + return - Nil on success, else returns an error
+    # + return - Nil() on success, or else an error
     @display {label: "Add Rows After By Sheet ID"}
     remote isolated function addRowsAfter(@display {label: "Google Sheet ID"} string spreadsheetId, 
                                           @display {label: "Worksheet ID"} int sheetId, 
@@ -844,7 +850,7 @@ public client class Client {
     # + sheetName - The name of the worksheet
     # + index - The row after which the new rows should be added.
     # + numberOfRows - The number of rows to be added
-    # + return - Nil on success, else returns an error
+    # + return - Nil() on success, or else an error
     @display {label: "Add Rows After"}
     remote isolated function addRowsAfterBySheetName(@display {label: "Google Sheet ID"} string spreadsheetId, 
                                                      @display {label: "Worksheet Name"} string sheetName, 
@@ -875,7 +881,7 @@ public client class Client {
         }
     }
 
-    # Create or Update a Row.
+    # Create or update a row.
     # 
     # + spreadsheetId - ID of the spreadsheet
     # + sheetName - The name of the worksheet
@@ -883,7 +889,7 @@ public client class Client {
     # + values - Array of values of the row to be added
     # + valueInputOption - Determines how input data should be interpreted. 
     #                      It's either "RAW" or "USER_ENTERED". Default is "RAW" (Optional)
-    # + return - Nil on success, else returns an error
+    # + return - Nil() on success, or else an error
     @display {label: "Set Row"}
     remote isolated function createOrUpdateRow(@display {label: "Google Sheet ID"} string spreadsheetId, 
                                                @display {label: "Worksheet Name"} string sheetName, 
@@ -926,7 +932,7 @@ public client class Client {
     # + valueRenderOption - Determines how values should be rendered in the output.
     #                       It's either "FORMATTED_VALUE","UNFORMATTED_VALUE" or "FORMULA". 
     #                       Default is "FORMATTED_VALUE" (Optional)
-    # + return - Row record on success, else returns an error
+    # + return - `sheets:Row` record on success, or else an error
     @display {label: "Get Row"}
     remote isolated function getRow(@display {label: "Google Sheet ID"} string spreadsheetId, 
                                     @display {label: "Worksheet Name"} string sheetName, 
@@ -966,7 +972,7 @@ public client class Client {
     # + sheetId - ID of the worksheet
     # + row - Starting position of the rows
     # + numberOfRows - Number of rows from the starting position
-    # + return - Nil on success, else returns an error
+    # + return - Nil() on success, or else an error
     @display {label: "Delete Rows By Sheet ID"}
     remote isolated function deleteRows(@display {label: "Google Sheet ID"} string spreadsheetId, 
                                         @display {label: "Worksheet ID"} int sheetId, 
@@ -1002,7 +1008,7 @@ public client class Client {
     # + sheetName - The name of the worksheet
     # + row - Starting position of the rows
     # + numberOfRows - Number of rows from the starting position
-    # + return - Nil on success, else returns an error
+    # + return - Nil() on success, or else an error
     @display {label: "Delete Rows"}
     remote isolated function deleteRowsBySheetName(@display {label: "Google Sheet ID"} string spreadsheetId, 
                                                    @display {label: "Worksheet Name"} string sheetName, 
@@ -1041,7 +1047,7 @@ public client class Client {
     # + value - Value of the cell to be set
     # + valueInputOption - Determines how input data should be interpreted. 
     #                      It's either "RAW" or "USER_ENTERED". Default is "RAW" (Optional)
-    # + return - Nil on success, else returns an error
+    # + return - Nil() on success, or else an error
     @display {label: "Set Cell"}
     remote isolated function setCell(@display {label: "Google Sheet ID"} string spreadsheetId, 
                                      @display {label: "Worksheet Name"} string sheetName, 
@@ -1078,7 +1084,7 @@ public client class Client {
     # + valueRenderOption - Determines how values should be rendered in the output.
     #                       It's either "FORMATTED_VALUE","UNFORMATTED_VALUE" or "FORMULA". 
     #                       Default is "FORMATTED_VALUE" (Optional)
-    # + return - Cell record on success, else returns an error
+    # + return - `sheets:Cell` record on success, or else an error
     @display {label: "Get Cell"}
     remote isolated function getCell(@display {label: "Google Sheet ID"} string spreadsheetId, 
                                      @display {label: "Worksheet Name"} string sheetName, 
@@ -1113,7 +1119,7 @@ public client class Client {
     # + spreadsheetId - ID of the spreadsheet
     # + sheetName - The name of the worksheet
     # + a1Notation - The required cell in A1 notation
-    # + return - Nil on success, else returns an error
+    # + return - Nil() on success, or else an error
     @display {label: "Clear Cell"}
     remote isolated function clearCell(@display {label: "Google Sheet ID"} string spreadsheetId, 
                                        @display {label: "Worksheet name"} string sheetName, 
@@ -1132,7 +1138,7 @@ public client class Client {
     # + a1Notation - The required range in A1 notation (Optional)
     # + valueInputOption - Determines how input data should be interpreted. 
     #                      It's either "RAW" or "USER_ENTERED". Default is "RAW" (Optional)
-    # + return - Nil on success, else returns an error
+    # + return - Nil() on success, or else an error
     @display {label: "Append Row"}
     remote isolated function appendRowToSheet(@display {label: "Google Sheet ID"} string spreadsheetId, 
                                               @display {label: "Worksheet Name"} string sheetName, 
@@ -1170,7 +1176,7 @@ public client class Client {
     # + spreadsheetId - ID of the spreadsheet
     # + sheetId - ID of the worksheet
     # + destinationId - ID of the spreadsheet to copy the sheet to
-    # + return - Nil on success, else returns an error
+    # + return - Nil() on success, or else an error
     @display {label: "Copy Sheet By Sheet ID"}
     remote isolated function copyTo(@display {label: "Google Sheet ID"} string spreadsheetId, 
                                     @display {label: "Worksheet ID"} int sheetId, 
@@ -1191,7 +1197,7 @@ public client class Client {
     # + spreadsheetId - ID of the spreadsheet
     # + sheetName - The name of the worksheet
     # + destinationId - ID of the spreadsheet to copy the sheet to
-    # + return - Nil on success, else returns an error
+    # + return - Nil() on success, or else an error
     @display {label: "Copy Worksheet"}
     remote isolated function copyToBySheetName(@display {label: "Google Sheet ID"} string spreadsheetId, 
                                                @display {label: "Worksheet Name"} string sheetName, 
@@ -1213,7 +1219,7 @@ public client class Client {
     #
     # + spreadsheetId - ID of the spreadsheet
     # + sheetId - ID of the worksheet
-    # + return - Nil on success, else returns an error
+    # + return - Nil() on success, or else an error
     @display {label: "Clear All By Sheet ID"}
     remote isolated function clearAll(@display {label: "Google Sheet ID"} string spreadsheetId, 
                                       @display {label: "Worksheet ID"} int sheetId) returns @tainted error? {
@@ -1240,7 +1246,7 @@ public client class Client {
     #
     # + spreadsheetId - ID of the spreadsheet
     # + sheetName - The name of the worksheet
-    # + return - Nil on success, else returns an error
+    # + return - Nil() on success, or else an error
     @display {label: "Clear Worksheet"}
     remote isolated function clearAllBySheetName(@display {label: "Google Sheet ID"} string spreadsheetId, 
                                                  @display {label: "Worksheet Name"} string sheetName) 
@@ -1266,7 +1272,7 @@ public client class Client {
     }
 }
 
-# Holds the parameters used to create a `Client`.
+# Client configuration details.
 #
 # + oauthClientConfig - OAuth client configuration
 # + secureSocketConfig - Secure socket configuration

@@ -13,11 +13,12 @@ The Google Spreadsheet [Ballerina](https://ballerina.io/) Connector allows you t
 The Google Spreadsheet [Ballerina](https://ballerina.io/) listener allows you to listen to Google Sheets events. It can listen to events triggered  when a spreadsheet is edited such as when a row is appended to a spreadsheet or when a row is updated in a spreadsheet.
 
 For more information, go to the module(s).
-- [ballerinax/googleapis.sheets](https://central.ballerina.io/ballerinax/googleapis.sheets)
+- [ballerinax/googleapis.sheets](gsheet/Module.md)
+- [ballerinax/googleapis.sheets.'listener](gsheet/modules/listener/Module.md)
 
-## Building from the Source
+## Building from the source
 
-### Setting Up the Prerequisites
+### Setting Up the prerequisites
 
 1. Download and install Java SE Development Kit (JDK) version 11 (from one of the following locations).
 
@@ -29,7 +30,7 @@ For more information, go to the module(s).
 
 2. Download and install [Ballerina](https://ballerina.io/). 
 
-### Building the Source
+### Building the source
 
 Execute the commands below to build from the source after installing Ballerina.
 
@@ -38,7 +39,6 @@ Clone this repository using the following command:
 ```shell
     git clone https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets
 ```
-Execute the commands below to build from the source after installing Ballerina.
 
 2. To build the package:
 Run this command from the module-ballerinax-googleapis.sheets root directory:
@@ -57,11 +57,11 @@ As an open source project, Ballerina welcomes contributions from the community.
 
 For more information, go to the [contribution guidelines](https://github.com/ballerina-platform/ballerina-lang/blob/master/gsheet/CONTRIBUTING.md).
 
-## Code of Conduct
+## Code of conduct
 
 All the contributors are encouraged to read the [Ballerina Code of Conduct](https://ballerina.io/code-of-conduct).
 
-## Useful Links
+## Useful links
 
 * Discuss the code changes of the Ballerina project in [ballerina-dev@googlegroups.com](mailto:ballerina-dev@googlegroups.com).
 * Chat live with us via our [Slack channel](https://ballerina.io/community/slack/).

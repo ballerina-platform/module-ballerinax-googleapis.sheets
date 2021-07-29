@@ -1,33 +1,17 @@
 ## Overview
 
-The Google Spreadsheet Ballerina Listener Module provides the capability to listen to simple events using the triggers via [App Scripts](https://developers.google.com/apps-script/guides/triggers). App Scripts run a function automatically whenever a certain event, like user changes a value in a spreadsheet. When a trigger fires, Apps Script passes the function an event object as an argument, typically called `e`. The event object contains information about the context that caused the trigger to fire. Using App Script [Installable triggers](https://developers.google.com/apps-script/guides/triggers/installable) we can call services that require authorization and pass these event information. The Google sheet listener can listen to these events triggered for different type of changes and execute the user logic when an event with one of the above change event type is received. By using the `/onEdit` service endpoint that listens to edit events with the trigger methods `onAppendRow`, `onUpdateRow`, the google sheets listener gets triggered when a spreadsheet is edited and can get more information about the edit event such as the `spreadsheet ID, spreadsheet name, worksheet ID, worksheet name, range updated, starting row position, end row position, starting column position, end column position, new values, last row with content, last column with content, data related to the Google App Script edit event object`etc.
+Ballerina listener for Google Sheets provides the capability to listen to simple events using the triggers via [App Scripts](https://developers.google.com/apps-script/guides/triggers). App Scripts run a function automatically whenever a certain event, like user changes a value in a spreadsheet. When a trigger fires, Apps Script passes the function an event object as an argument, typically called `e`. The event object contains information about the context that caused the trigger to fire. Using App Script [Installable triggers](https://developers.google.com/apps-script/guides/triggers/installable) we can call services that require authorization and pass these event information. The Google sheet listener can listen to these events triggered for different type of changes and execute the user logic when an event with one of the above change event type is received. By using the `/onEdit` service endpoint that listens to edit events with the trigger methods `onAppendRow`, `onUpdateRow`, the google sheets listener gets triggered when a spreadsheet is edited and can get more information about the edit event such as the `spreadsheet ID, spreadsheet name, worksheet ID, worksheet name, range updated, starting row position, end row position, starting column position, end column position, new values, last row with content, last column with content, data related to the Google App Script edit event object`etc.
 
 The `/onEdit` service endpoint, can listen to events triggered  when a spreadsheet is edited such as when a row is appended to a spreadsheet or when a row is updated in a spreadsheet with the following trigger methods: 
 
 * `onAppendRow`
 * `onUpdateRow`
 
-We can get more information about the edit event such as the 
-* `spreadsheet ID` 
-* `spreadsheet name` 
-* `worksheet ID` 
-* `worksheet name` 
-* `range updated` 
-* `starting row position` 
-* `end row position` 
-* `starting column position` 
-* `end column position` 
-* `new values` 
-* `last row with content` 
-* `last column with content`
-* `App Script event object`
-* etc.
+This module supports [Google App Scripts](https://developers.google.com/apps-script/guides/triggers).
 
-## Configuring Connector
+## Prerequisites
 
-### Prerequisites
-
-#### Enable Google App Script Trigger
+### Enable Google App Script trigger
 We need to enable the app script trigger if we want to listen to internal changes of a spreadsheet. Follow the following steps to enable the trigger.
 
 1. Open the Google sheet that you want to listen to internal changes.
@@ -115,82 +99,64 @@ We need to enable the app script trigger if we want to listen to internal change
 8. Then make sure you 'Choose which function to run' is `atChange` then 'Select event source' is `From spreadsheet` then 'Select event type' is  `On change` then click Save!.
 9. This will prompt you to authorize your script to connect to an external service. Click “Review Permissions” and then “Allow” to continue.
 10. Repeat the same process, add a new trigger this time choose this 'Choose which function to run' is `atEdit` then 'Select event source' is `From spreadsheet` then 'Select event type' is  `On edit` then click Save!.
-11. Your triggers will now work as you expect, if you go edit any cell and as soon as you leave that cell this trigger will run and it will hit your endpoint with the data!
+11. Your triggers will now work as you expect, if you go edit any cell and as soon as you leave that cell this trigger will run and it will hit your endpoint with the data.
 
-#### Add project configurations file
-Add the project configuration file by creating a `Config.toml` file under the root path of the project structure.
-This file should have following configurations. Spreadsheet ID is available in the spreadsheet URL "https://docs.google.com/spreadsheets/d/" + <SPREADSHEET_ID> + "/edit#gid=" + <WORKSHEET_ID>
+## Quickstart
 
-```
-[ballerinax.googleapis_sheets.listener]
-port = "<LISTENER_PORT>"
-spreadsheetId = "<IDENTIFIER_OF_THE_SPREADSHEET>"
-```
+To use the Google Sheets listener in your Ballerina application, update the .bal file as follows:
 
-## Quickstart(s)
-
-### Working with GSheets listener
-
-#### Step 1: Import the Google sheets listener Ballerina libraries
+### Step 1: Import listener
 First, import the ballerinax/googleapis.sheets.'listener module into the Ballerina project.
 ```ballerina
     import ballerinax/googleapis.sheets.'listener as sheetsListener;
 ```
 
-#### Step 2: Enable Google App Script Trigger
-We need to enable the app script trigger if we want to listen to internal changes of a spreadsheet. Follow the [Enable Google App Script Trigger](##enable-google-app-script-trigger) guide in the prerequisite section. This should be enabled only if you want to listen to events receieved through the `/onEdit` trigger endpoint.
-
-#### Step 3: Initialize the Google Sheets Listener
-In order for you to use the Google Sheets Listener Endpoint, first you need to create a Google Sheets Listener Endpoint.
+### Step 2: Create a new listener instance
+Create a `sheetsListener:SpreadsheetConfiguration` with the spreadsheet ID obtained, and initialize the listener with it. 
 ```ballerina
-configurable int port = ?;
-configurable string spreadsheetId = ?;
+    sheetsListener:SheetListenerConfiguration congifuration = {
+        port: <LISTENER_PORT>,
+        spreadsheetId: <IDENTIFIER_OF_THE_SPREADSHEET>
+    };
 
-sheetsListener:SheetListenerConfiguration congifuration = {
-    port: port,
-    spreadsheetId: spreadsheetId
-};
-
-listener sheetsListener:Listener gSheetListener = new (congifuration);
+    listener sheetsListener:Listener gSheetListener = new (congifuration);
 ```
+> **NOTE:**
+Spreadsheet ID is available in the spreadsheet URL "https://docs.google.com/spreadsheets/d/" + <SPREADSHEET_ID> + "/edit#gid=" + <WORKSHEET_ID>
 
-#### Step 4: Implement the service endpoint with the service logic for the supported triggers
-The Google Sheets Listener supports the service endpoint `/onEdit`.
-* The `/onEdit` service endpoint, can listen to events triggered when a spreadsheet is edited such as when a new row is appended or when a row is updated with the following trigger methods: `onAppendRow`, `onUpdateRow`. We can get more information about the edit event such as the `spreadsheet ID, spreadsheet name, worksheet ID, worksheet name, range updated, starting row position, end row position, starting column position, end column position, new values, last row with content, last column with content` etc.
-```ballerina
-service / on gSheetListener {
-    remote function onAppendRow(sheetsListener:GSheetEvent event) returns error? {
-        log:printInfo("Received onAppendRow-message ", eventMsg = event);
-        // Write your logic here.....
+### Step 3: Invoke listener triggers
+1. Now you can use the triggers available within the listener. 
+
+    Following is an example on how to listen to append events and update events of a spreadsheet using the listener. 
+    Add the trigger implementation logic under each section based on the event type you want to listen to using the Google sheets Listener.
+
+    Listen to append events and update events
+
+    ```ballerina
+    service / on gSheetListener {
+        remote function onAppendRow(sheetsListener:GSheetEvent event) returns error? {
+            log:printInfo("Received onAppendRow-message ", eventMsg = event);
+            // Write your logic here.....
+        }
+
+        remote function onUpdateRow(sheetsListener:GSheetEvent event) returns error? {
+            log:printInfo("Received onUpdateRow-message ", eventMsg = event);
+            // Write your logic here.....
+        }
     }
+    ```
 
-    remote function onUpdateRow(sheetsListener:GSheetEvent event) returns error? {
-        log:printInfo("Received onUpdateRow-message ", eventMsg = event);
-        // Write your logic here.....
-    }
-}
-```
-Add the trigger implementation logic under each section based on the event type you want to listen to using the Google sheets Listener.
+    > **NOTE:**
+    The Google Sheets Listener supports the service endpoint `/onEdit`. The `/onEdit` service endpoint, can listen to events triggered when a spreadsheet is edited such as when a new row is appended or when a row is updated with the following trigger methods: `onAppendRow`, `onUpdateRow`. We can get more information about the edit event such as the `spreadsheet ID, spreadsheet name, worksheet ID, worksheet name, range updated, starting row position, end row position, starting column position, end column position, new values, last row with content, last column with content` etc.
 
-## Snippets
+2. Use `bal run` command to compile and run the Ballerina program. 
 
-### Trigger On Append Row
-Triggers when a new row is appended to a spreadsheet.
+## Quick reference
+Code snippets of some frequently used triggers: 
+
+* Trigger On Append Row (Triggers when a new row is appended to a spreadsheet)
 
 ```ballerina
-import ballerina/log;
-import ballerinax/googleapis.sheets.'listener as sheetsListener;
-
-configurable int port = ?;
-configurable string spreadsheetId = ?;
-
-sheetsListener:SheetListenerConfiguration congifuration = {
-    port: port,
-    spreadsheetId: spreadsheetId
-};
-
-listener sheetsListener:Listener gSheetListener = new (congifuration);
-
 service / on gSheetListener {
     remote function onAppendRow(sheetsListener:GSheetEvent event) returns error? {
         log:printInfo("Received onAppendRow-message ", eventMsg = event);
@@ -199,23 +165,9 @@ service / on gSheetListener {
 }
 ```
 
-### Trigger On Update Row
-Triggers when a row is updated in a spreadsheet.
+* Trigger On Update Row (Triggers when a row is updated in a spreadsheet)
 
 ```ballerina
-import ballerina/log;
-import ballerinax/googleapis.sheets.'listener as sheetsListener;
-
-configurable int port = ?;
-configurable string spreadsheetId = ?;
-
-sheetsListener:SheetListenerConfiguration congifuration = {
-    port: port,
-    spreadsheetId: spreadsheetId
-};
-
-listener sheetsListener:Listener gSheetListener = new (congifuration);
-
 service / on gSheetListener {
     remote function onUpdateRow(sheetsListener:GSheetEvent event) returns error? {
         log:printInfo("Received onUpdateRow-message ", eventMsg = event);
@@ -254,4 +206,4 @@ function userLogic(sheetsListener:GSheetEvent event) returns error? {
 }
 ```
 
-### [You can find more samples here](https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/tree/master/gsheet/samples/listener)
+**[You can find a list of samples here](https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/tree/master/gsheet/samples/listener)**

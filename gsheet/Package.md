@@ -10,9 +10,6 @@ The `ballerinax/googleapis.sheets.'listener` is a [Ballerina](https://ballerina.
 
 This package provides the capability to listen to Google sheets events.
 
-For more information, go to the module(s).
-- [ballerinax/googleapis.sheets](https://central.ballerina.io/ballerinax/googleapis.sheets)
-
 ### Compatibility
 |                                                             | Version               |
 |:-----------------------------------------------------------:|:---------------------:|
