@@ -1,7 +1,7 @@
 [package]
 org = "ballerinax"
 name = "googleapis.sheets"
-version = "0.99.9-SNAPSHOT"
+version = "1.0.1"
 export= ["googleapis.sheets", "googleapis.sheets.listener"]
 license= ["Apache-2.0"]
 authors = ["Ballerina"]
@@ -9,7 +9,7 @@ keywords = ["google","sheets","spreadsheets"]
 repository = "https://github.com/ballerina-platform/module-googlespreadsheet"
 
 [[platform.java11.dependency]]
-path = "../java-wrapper/build/libs/java-wrapper-0.99.9-SNAPSHOT.jar"
+path = "../java-wrapper/build/libs/java-wrapper-1.0.1.jar"
 groupId = "org.ballerinalang.googleapis.sheets"
 artifactId = "java-wrapper"
-version = "0.99.9-SNAPSHOT"
+version = "1.0.1"
