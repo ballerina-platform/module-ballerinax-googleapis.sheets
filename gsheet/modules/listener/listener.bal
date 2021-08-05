@@ -23,6 +23,9 @@ public class Listener {
     private SheetListenerConfiguration config; 
     private HttpService httpService;
 
+    # Initializes the Google Sheets connector listener.
+    #
+    # + config - Configurations required to initialize the listener
     public isolated function init(SheetListenerConfiguration config) returns @tainted error? {
         self.httpListener = check new (config.port);
         self.config = config;
