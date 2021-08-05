@@ -2,9 +2,10 @@ Connects to [Google Sheets](https://developers.google.com/sheets/api) from Balle
 
 ## Package overview
 
-The `ballerinax/googleapis.sheets` is a [Ballerina](https://ballerina.io/) connector for Google Sheets. This package provides the capability to easily access Google Sheets. 
+The `ballerinax/googleapis.sheets` is a [Ballerina](https://ballerina.io/) connector for Google Sheets. It is comprised of the following capabilities. 
 
-The `ballerinax/googleapis.sheets.'listener` is a [Ballerina](https://ballerina.io/) listener for Google Sheets. This package provides the capability to listen to Google sheets events.
+* Perform Google Sheets related operations programatically using [Ballerina](https://ballerina.io/). `ballerinax/googleapis.sheets` module provides this capability. 
+* Listen for Google Sheets events and process them using [Ballerina](https://ballerina.io/). `ballerinax/googleapis.sheets.'listener` module provides this capability.
 
 ### Compatibility
 |                                                   | Version                         |
