@@ -23,7 +23,7 @@ configurable string & readonly clientId = os:getEnv("CLIENT_ID");
 configurable string & readonly clientSecret = os:getEnv("CLIENT_SECRET");
 
 SpreadsheetConfiguration spreadsheetConfig = {
-    oauthClientConfig: {
+    auth: {
         refreshUrl: REFRESH_URL,
         refreshToken: refreshToken,
         clientId: clientId,
@@ -118,7 +118,7 @@ function testRenameSpreadsheet() {
 function testGetAllSpreadSheets() {
     log:printInfo("testGetAllSpreadSheets");    
     var response = spreadsheetClient->getAllSpreadsheets();
-    if (response is stream<File,error>) {
+    if (response is stream<File,error?>) {
         record {|File value;|}|error? fileResponse = response.next();
         if (fileResponse is record {|File value;|}) {
             test:assertNotEquals(fileResponse.value["id"], "", msg = "Found 0 records");

@@ -33,17 +33,8 @@ public isolated client class Client {
     # + spreadsheetConfig - Configuration for the connector
     # + return - `http:Error` in case of failure to initialize or `null` if successfully initialized  
     public isolated function init(SpreadsheetConfiguration spreadsheetConfig) returns error? {
-
-        http:ClientSecureSocket? socketConfig = spreadsheetConfig?.secureSocketConfig;
-
-        self.httpClient = check new (BASE_URL, {
-            auth: spreadsheetConfig.oauthClientConfig,
-            secureSocket: socketConfig
-        });
-        self.driveClient = check new (DRIVE_URL, {
-            auth: spreadsheetConfig.oauthClientConfig,
-            secureSocket: socketConfig
-        });
+        self.httpClient = check new (BASE_URL, spreadsheetConfig);
+        self.driveClient = check new (DRIVE_URL, spreadsheetConfig);
     }
 
     // Spreadsheet Management Operations
@@ -99,10 +90,9 @@ public isolated client class Client {
     # 
     # + return - Stream of `sheets:File` records on success, or else an error
     @display {label: "Get All Spreadsheets"}
-    remote isolated function getAllSpreadsheets() returns @tainted 
-                                                @display {label: "Stream of Files"} stream<File,error>|error {
+    remote isolated function getAllSpreadsheets() returns @display {label: "Stream of Files"} stream<File,error?>|error {
         SpreadsheetStream spreadsheetStream = check new SpreadsheetStream(self.driveClient);
-        return new stream<File,error>(spreadsheetStream);
+        return new stream<File,error?>(spreadsheetStream);
     }
 
     # Renames the spreadsheet with the given name.
@@ -1271,12 +1261,36 @@ public isolated client class Client {
 
 # Client configuration details.
 #
-# + oauthClientConfig - OAuth client configuration
-# + secureSocketConfig - Secure socket configuration
 @display {label: "Connection Config"}
-public type SpreadsheetConfiguration record {
-    @display {label: "Auth Config"}
-    http:BearerTokenConfig|http:OAuth2RefreshTokenGrantConfig oauthClientConfig;
-    @display {label: "SSL Config"}
-    http:ClientSecureSocket secureSocketConfig?;
-};
+public type SpreadsheetConfiguration record {|
+    # Configurations related to client authentication
+    http:BearerTokenConfig|http:OAuth2RefreshTokenGrantConfig auth;
+    # The HTTP version understood by the client
+    string httpVersion = "1.1";
+    # Configurations related to HTTP/1.x protocol
+    http:ClientHttp1Settings http1Settings = {};
+    # Configurations related to HTTP/2 protocol
+    http:ClientHttp2Settings http2Settings = {};
+    # The maximum time to wait (in seconds) for a response before closing the connection
+    decimal timeout = 60;
+    # The choice of setting `forwarded`/`x-forwarded` header
+    string forwarded = "disable";
+    # Configurations associated with Redirection
+    http:FollowRedirects? followRedirects = ();
+    # Configurations associated with request pooling
+    http:PoolConfiguration? poolConfig = ();
+    # HTTP caching related configurations
+    http:CacheConfig cache = {};
+    # Specifies the way of handling compression (`accept-encoding`) header
+    http:Compression compression = http:COMPRESSION_AUTO;
+    # Configurations associated with the behaviour of the Circuit Breaker
+    http:CircuitBreakerConfig? circuitBreaker = ();
+    # Configurations associated with retrying
+    http:RetryConfig? retryConfig = ();
+    # Configurations associated with cookies
+    http:CookieConfig? cookieConfig = ();
+    # Configurations associated with inbound response size limits
+    http:ResponseLimitConfigs responseLimits = {};
+    #SSL/TLS-related options
+    http:ClientSecureSocket? secureSocket = ();
+|};
