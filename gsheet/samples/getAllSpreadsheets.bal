@@ -35,8 +35,8 @@ sheets:Client spreadsheetClient = check new (spreadsheetConfig);
 public function main() returns error? {
 
     // Get All Spreadsheets associated with the user account
-    stream<sheets:File,error>|error response = spreadsheetClient->getAllSpreadsheets();
-    if (response is stream<sheets:File, error>) {
+    stream<sheets:File,error?>|error response = spreadsheetClient->getAllSpreadsheets();
+    if (response is stream<sheets:File, error?>) {
         error? e = response.forEach(function (sheets:File spreadsheet) {
             log:printInfo("Spreadsheet Name: " + spreadsheet.name.toString() + " | Spreadsheet ID: " 
                 + spreadsheet.id.toString());
