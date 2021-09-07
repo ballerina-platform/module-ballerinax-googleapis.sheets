@@ -25,6 +25,9 @@ hs_err_pid*
 ballerina.conf
 Config.toml
 
+# .DS_Store
+.DS_Store
+
 #Target folder of ballerina project
 /target
 

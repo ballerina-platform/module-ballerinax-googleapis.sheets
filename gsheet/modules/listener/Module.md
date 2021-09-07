@@ -126,7 +126,7 @@ Import the ballerinax/googleapis.sheets.'listener module into the Ballerina proj
 ```
 
 ### Step 2: Create a new listener instance
-Create a `sheetsListener:SpreadsheetConfiguration` with the spreadsheet ID obtained, and initialize the listener with it. 
+Create a `sheetsListener:ConnectionConfig` with the spreadsheet ID obtained, and initialize the listener with it. 
 ```ballerina
     sheetsListener:SheetListenerConfiguration congifuration = {
         port: <LISTENER_PORT>,
