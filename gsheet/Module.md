@@ -22,10 +22,10 @@ Import the `ballerinax/googleapis.sheets` module into the Ballerina project.
 ```
 
 ### Step 2: Create a new connector instance
-Create a `sheets:SpreadsheetConfiguration` with the OAuth2 tokens obtained, and initialize the connector with it. 
+Create a `sheets:ConnectionConfig` with the OAuth2 tokens obtained, and initialize the connector with it. 
 ```ballerina
-    sheets:SpreadsheetConfiguration spreadsheetConfig = {
-        oauthClientConfig: {
+    sheets:ConnectionConfig spreadsheetConfig = {
+        auth: {
             clientId: <CLIENT_ID>,
             clientSecret: <CLIENT_SECRET>,
             refreshUrl: sheets:REFRESH_URL,

@@ -21,8 +21,8 @@ configurable string refreshToken = ?;
 configurable string clientId = ?;
 configurable string clientSecret = ?;
 
-sheets:SpreadsheetConfiguration spreadsheetConfig = {
-    oauthClientConfig: {
+sheets:ConnectionConfig spreadsheetConfig = {
+    auth: {
         clientId: clientId,
         clientSecret: clientSecret,
         refreshUrl: sheets:REFRESH_URL,

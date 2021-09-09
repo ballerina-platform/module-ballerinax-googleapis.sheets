@@ -19,8 +19,8 @@ import ballerina/io;
 import ballerina/log;
 import ballerinax/googleapis.sheets as sheets;
 
-sheets:SpreadsheetConfiguration spreadsheetConfig = {
-    oauthClientConfig: {
+sheets:ConnectionConfig spreadsheetConfig = {
+    auth: {
         refreshUrl: sheets:REFRESH_URL,
         refreshToken: os:getEnv("REFRESH_TOKEN"),
         clientId: os:getEnv("CLIENT_ID"),

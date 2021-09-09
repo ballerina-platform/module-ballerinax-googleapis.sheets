@@ -14,8 +14,7 @@ The `ballerinax/googleapis.sheets` is a [Ballerina](https://ballerina.io/) conne
 | Google Sheets API                                 | v4                              |
 
 ## Report issues
-
-To report bugs, request new features, start new discussions, view project boards, etc., go to the [Ballerina Google Sheets repository](https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets)
+To report bugs, request new features, start new discussions, view project boards, etc., go to the [Ballerina Extended Library repository](https://github.com/ballerina-platform/ballerina-extended-library)
 
 ## Useful links
 - Discuss code changes of the Ballerina project in [ballerina-dev@googlegroups.com](mailto:ballerina-dev@googlegroups.com).
