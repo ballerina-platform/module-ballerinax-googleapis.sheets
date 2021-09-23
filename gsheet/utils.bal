@@ -184,8 +184,7 @@ isolated function prepareDriveUrl(string? pageToken = ()) returns string {
 public function createRandomUUIDWithoutHyphens() returns string {
     string? stringUUID = java:toString(createRandomUUID());
     if (stringUUID is string) {
-        stringUUID = regex:replaceAll(stringUUID, "-", "");
-        return stringUUID;
+        return regex:replaceAll(stringUUID, "-", "");
     } else {
         return "";
     }

@@ -10,7 +10,7 @@ The Google Spreadsheet Listener Ballerina Module provides the capability to list
 
 | Ballerina Language Versions  | GSheet API Version |
 |:----------------------------:|:------------------:|
-|  Swan Lake Alpha 5           |   v4               |
+|  Swan Lake Beta 3            |   v4               |
 
 
 # Supported Trigger Operations
@@ -43,7 +43,7 @@ We can get more information about the edit event such as the
 Java Development Kit (JDK) with version 11 is required.
 
 * Download the Ballerina [distribution](https://ballerinalang.org/downloads/)
-Ballerina Swan Lake Alpha 5 is required.
+Ballerina Swan Lake Beta 3 is required.
 
 ## Enable Google App Script Trigger
 We need to enable the app script trigger if we want to listen to internal changes of a spreadsheet. Follow the following steps to enable the trigger.

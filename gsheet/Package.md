@@ -13,7 +13,7 @@ The Google Spreadsheet Ballerina Connector supports spreadsheet management opera
 |                                   | Version               |
 |:---------------------------------:|:---------------------:|
 | Google Sheets API Version         | V4                    |
-| Ballerina Language                | Swan Lake Alpha 5     |
+| Ballerina Language                | Swan Lake Beta 3      |
 | Java Development Kit (JDK)        | 11                    |
 
 # Supported Operations
@@ -37,7 +37,7 @@ worksheet data level operations. It includes operations like setting, getting an
 Java Development Kit (JDK) with version 11 is required.
 
 * Download the Ballerina [distribution](https://ballerinalang.org/downloads/)
-Ballerina Swan Lake Alpha 5 is required.
+Ballerina Swan Lake Beta 3 is required.
 
 * Instantiate the connector by giving authentication details in the HTTP client config. The HTTP client config has built-in support for Bearer Token Authentication and OAuth 2.0. Google Spreadsheet uses OAuth 2.0 to authenticate and authorize requests. It uses the Direct Token Grant Type. The Google Spreadsheet connector can be minimally instantiated in the HTTP client config using the OAuth 2.0 access token.
     * Access Token 
@@ -209,4 +209,4 @@ We must specify the spreadsheet ID and the name for the new worksheet as string 
         log:printError("Error: " + sheet.toString());
     }
 ```
-More Samples are available at "https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/tree/slalpha5/gsheet/samples".
+More Samples are available at "https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/tree/slbeta3/gsheet/samples".
