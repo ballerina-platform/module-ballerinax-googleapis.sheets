@@ -1,11 +1,11 @@
 [package]
 org = "ballerinax"
 name = "googleapis.sheets"
-version = "0.99.9-SNAPSHOT"
+version = "2.0.0"
 export= ["googleapis.sheets", "googleapis.sheets.listener"]
 license= ["Apache-2.0"]
 authors = ["Ballerina"]
-keywords = ["productivity/spreadsheets", "cost/free", "vendor/google"]
+keywords = ["Productivity/Spreadsheets", "Cost/Free", "Vendor/Google"]
 repository = "https://github.com/ballerina-platform/module-googlespreadsheet"
 
 [[platform.java11.dependency]]
