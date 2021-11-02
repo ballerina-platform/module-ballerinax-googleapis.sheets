@@ -40,7 +40,16 @@ jobs:
               uses: ballerina-platform/ballerina-action/@nightly
               with:
                   args:
-                      build -c ./gsheet
+                      pack ./gsheet
+              env:
+                JAVA_HOME: /usr/lib/jvm/default-jvm
+
+            # Test the ballerina project
+            - name: Ballerina Tests
+              uses: ballerina-platform/ballerina-action/@nightly
+              with:
+                  args:
+                      test ./gsheet
               env:
                 JAVA_HOME: /usr/lib/jvm/default-jvm
                 CLIENT_ID: ${{ secrets.CLIENT_ID }}
