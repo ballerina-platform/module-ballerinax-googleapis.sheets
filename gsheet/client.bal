@@ -596,7 +596,7 @@ public isolated client class Client {
         request.setJsonPayload(<@untainted>jsonPayload);
         http:Response httpResponse = <http:Response> check self.httpClient->put(<@untainted>requestPath, request);
         if (httpResponse.statusCode == http:STATUS_OK) {
-            json jsonResponse = check httpResponse.getJsonPayload();
+            _ = check httpResponse.getJsonPayload();
             return; 
         }
         return getErrorMessage(httpResponse);
@@ -905,7 +905,7 @@ public isolated client class Client {
         request.setJsonPayload(<@untainted>jsonPayload);
         http:Response httpResponse = <http:Response> check self.httpClient->put(<@untainted>requestPath, request);
         if (httpResponse.statusCode == http:STATUS_OK) {
-            json jsonResponse = check httpResponse.getJsonPayload();
+            _ = check httpResponse.getJsonPayload();
             return; 
         }
         return getErrorMessage(httpResponse);

@@ -125,43 +125,6 @@ isolated function getErrorMessage(http:Response response) returns @tainted error
         ", payload: " + payloadString, status = response.statusCode);
 }
 
-# Get files stream.
-# 
-# + driveClient - Drive client
-# + files - File array
-# + pageToken - Token for retrieving next page
-# + return - File stream on success, else an error
-function getFilesStream(http:Client driveClient, @tainted File[] files, string? pageToken = ()) 
-                        returns @tainted stream<File>|error {
-    string drivePath = DRIVE_PATH + FILES + QUESTION_MARK + Q + EQUAL + MIME_TYPE + EQUAL + APPLICATION + 
-        AND_SIGN + TRASH_FALSE;
-    if (pageToken is string) {
-        drivePath = DRIVE_PATH + FILES + QUESTION_MARK + Q + EQUAL + MIME_TYPE + EQUAL + APPLICATION + 
-            AND_SIGN + TRASH_FALSE + AND + PAGE_TOKEN + EQUAL + pageToken;
-    }
-    json|error resp = sendRequest(driveClient, drivePath);
-    if (resp is json) {
-        FilesResponse|error res = resp.cloneWithType(FilesResponse);
-        if (res is FilesResponse) {
-            int i = files.length();
-            foreach File item in res.files {
-                files[i] = item;
-                i = i + 1;
-            }        
-            stream<File> filesStream = (<@untainted>files).toStream();
-            string? nextPageToken = res?.nextPageToken;
-            if (nextPageToken is string) {
-                var streams = check getFilesStream(driveClient, files, nextPageToken);
-            }
-            return filesStream;
-        } else {
-            return error(ERR_FILE_RESPONSE, res);
-        }
-    } else {
-        return resp;
-    }
-}
-
 # Get the drive url path to get a list of files.
 # 
 # + pageToken - Token for retrieving next page (Optional)
