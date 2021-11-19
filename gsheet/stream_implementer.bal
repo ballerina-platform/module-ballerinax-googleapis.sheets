@@ -42,6 +42,8 @@ class SpreadsheetStream {
             self.index += 1;
             return file;
         }
+
+        return;
     }
 
     isolated function fetchFiles() returns @tainted File[]|error {

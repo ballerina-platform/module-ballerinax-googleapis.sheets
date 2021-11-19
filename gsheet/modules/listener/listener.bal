@@ -21,7 +21,7 @@ import ballerina/http;
 public class Listener {
     private http:Listener httpListener;
     private SheetListenerConfiguration config; 
-    private HttpService httpService;
+    private HttpService? httpService;
 
     # Initializes the Google Sheets connector listener.
     #
@@ -29,12 +29,14 @@ public class Listener {
     public isolated function init(SheetListenerConfiguration config) returns @tainted error? {
         self.httpListener = check new (config.port);
         self.config = config;
+        self.httpService = ();
     }
 
     public isolated function attach(SimpleHttpService s, string[]|string? name = ()) returns @tainted error? {
-        HttpToGSheetAdaptor adaptor = check new (s);   
-        self.httpService = new HttpService(adaptor, self.config.spreadsheetId);
-        check self.httpListener.attach(self.httpService, name);
+        HttpToGSheetAdaptor adaptor = check new (s);  
+        HttpService currentHttpService = new (adaptor, self.config.spreadsheetId);
+        self.httpService = currentHttpService;
+        check self.httpListener.attach(currentHttpService, name);
     }
 
     public isolated function 'start() returns error? {
@@ -42,7 +44,10 @@ public class Listener {
     }
 
     public isolated function detach(SimpleHttpService s) returns error? {
-        return self.httpListener.detach(s);
+        HttpService? currentHttpService = self.httpService;
+        if currentHttpService is HttpService {
+            return self.httpListener.detach(currentHttpService);
+        } 
     }
 
     public isolated function gracefulStop() returns error? {
