@@ -162,9 +162,7 @@ org = "ballerina"
 name = "lang.runtime"
 version = "0.0.0"
 dependencies = [
-	{org = "ballerina", name = "jballerina.java"},
-	{org = "ballerina", name = "lang.array"},
-	{org = "ballerina", name = "lang.value"}
+	{org = "ballerina", name = "jballerina.java"}
 ]
 
 [[package]]
@@ -302,7 +300,8 @@ dependencies = [
 ]
 modules = [
 	{org = "ballerinax", packageName = "googleapis.sheets", moduleName = "googleapis.sheets"},
-	{org = "ballerinax", packageName = "googleapis.sheets", moduleName = "googleapis.sheets.listener"}
+	{org = "ballerinax", packageName = "googleapis.sheets", moduleName = "googleapis.sheets.listener"},
+	{org = "ballerinax", packageName = "googleapis.sheets", moduleName = "googleapis.sheets.sheets"}
 ]
 
 

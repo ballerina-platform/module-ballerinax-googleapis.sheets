@@ -18,6 +18,7 @@ import ballerina/http;
 import ballerina/log;
 
 isolated service class HttpService {
+    *http:Service;
     private final string spreadsheetId;
     private final boolean isOnAppendRowAvailable;
     private final boolean isOnUpdateRowAvailable;
