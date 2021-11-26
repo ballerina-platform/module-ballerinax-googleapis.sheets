@@ -287,7 +287,7 @@ dependencies = [
 [[package]]
 org = "ballerinax"
 name = "googleapis.sheets"
-version = "2.0.0"
+version = "2.1.0"
 dependencies = [
 	{org = "ballerina", name = "http"},
 	{org = "ballerina", name = "jballerina.java"},
@@ -300,8 +300,7 @@ dependencies = [
 ]
 modules = [
 	{org = "ballerinax", packageName = "googleapis.sheets", moduleName = "googleapis.sheets"},
-	{org = "ballerinax", packageName = "googleapis.sheets", moduleName = "googleapis.sheets.listener"},
-	{org = "ballerinax", packageName = "googleapis.sheets", moduleName = "googleapis.sheets.sheets"}
+	{org = "ballerinax", packageName = "googleapis.sheets", moduleName = "googleapis.sheets.listener"}
 ]
 
 

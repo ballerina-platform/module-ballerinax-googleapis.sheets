@@ -41,7 +41,7 @@ jobs:
 
             # Build the ballerina project
             - name: Ballerina Build
-              uses: ballerina-platform/ballerina-action/@nightly
+              uses: ballerina-platform/ballerina-action/@slbeta4
               with:
                   args:
                       pack ./gsheet
@@ -50,7 +50,7 @@ jobs:
 
             # Test the ballerina project
             - name: Ballerina Tests
-              uses: ballerina-platform/ballerina-action/@nightly
+              uses: ballerina-platform/ballerina-action/@slbeta4
               with:
                   args:
                       test ./gsheet
