@@ -39,7 +39,7 @@ jobs:
 
             # Build the ballerina project
             - name: Ballerina Build
-              uses: ballerina-platform/ballerina-action/@master
+              uses: ballerina-platform/ballerina-action/@slbeta4
               with:
                   args:
                       pack ./gsheet
@@ -51,7 +51,7 @@ jobs:
 
             # Push the module to the Ballerina central
             - name: Ballerina Push
-              uses: ballerina-platform/ballerina-action/@master
+              uses: ballerina-platform/ballerina-action/@slbeta4
               with:
                   args:
                       push
