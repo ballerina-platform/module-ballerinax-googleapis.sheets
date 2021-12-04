@@ -19,7 +19,7 @@ import ballerina/http;
 # Ballerina Google Sheets connector provides the capability to access Google Sheets API.
 # The connector let you perform spreadsheet management operations, worksheet management operations and 
 # the capability to handle Google Sheets data level operations.
-@display {label: "Google Sheets", iconPath: "resources/googleapis.sheets.svg"}
+@display {label: "Google Sheets", iconPath: "icon.png"}
 public isolated client class Client {
     final http:Client httpClient;
     final http:Client driveClient;

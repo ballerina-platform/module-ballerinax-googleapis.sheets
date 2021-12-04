@@ -6,6 +6,7 @@ export= ["googleapis.sheets", "googleapis.sheets.listener"]
 license= ["Apache-2.0"]
 authors = ["Ballerina"]
 keywords = ["Productivity/Spreadsheets", "Cost/Free", "Vendor/Google"]
+icon = "icon.png"
 repository = "https://github.com/ballerina-platform/module-googlespreadsheet"
 
 [[platform.java11.dependency]]
