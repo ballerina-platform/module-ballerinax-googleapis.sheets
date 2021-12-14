@@ -10,7 +10,7 @@ The `ballerinax/googleapis.sheets` is a [Ballerina](https://ballerina.io/) conne
 ### Compatibility
 |                                                   | Version                         |
 |---------------------------------------------------|---------------------------------|
-| Ballerina Language                                | Ballerina Swan Lake Beta3       |
+| Ballerina Language                                | Ballerina Swan Lake Beta6       |
 | Google Sheets API                                 | v4                              |
 
 ## Report issues
