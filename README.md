@@ -10,11 +10,8 @@ Ballerina Google Sheets Connector
 
 The Google Sheets [Ballerina](https://ballerina.io/) connector exposes the [Google Sheets API v4](https://developers.google.com/sheets/api) through Ballerina. The connector makes it convenient to implement some of the most common use cases of Google Spreadsheets. With this connector, you can programmatically manage spreadsheets, manage worksheets, perform CRUD operations on worksheets, and perform column-level, row-level, and cell-level operations. 
 
-The Google Sheets [Ballerina](https://ballerina.io/) listener allows you to listen to Google Sheets events. It listens to events triggered when a spreadsheet is edited. For example, when a row is appended, when a row is updated, etc.
-
 For more information, go to the module(s).
 - [googleapis.sheets](gsheet/Module.md)
-- [googleapis.sheets.'listener](gsheet/modules/listener/Module.md)
 
 ## Building from the source
 
@@ -32,11 +29,11 @@ Execute the commands below to build from the source.
 
 - To build the package:
     ```shell
-    bal pack
+    bal pack ./gsheet
     ```
 - To test the package: 
     ```shell
-    bal test
+    bal test ./gsheet
     ```
 
 ## Contributing to Ballerina

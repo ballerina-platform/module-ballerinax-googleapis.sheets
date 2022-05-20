@@ -299,8 +299,7 @@ dependencies = [
 	{org = "ballerina", name = "test"}
 ]
 modules = [
-	{org = "ballerinax", packageName = "googleapis.sheets", moduleName = "googleapis.sheets"},
-	{org = "ballerinax", packageName = "googleapis.sheets", moduleName = "googleapis.sheets.listener"}
+	{org = "ballerinax", packageName = "googleapis.sheets", moduleName = "googleapis.sheets"}
 ]
 
 
