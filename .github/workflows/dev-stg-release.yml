@@ -21,7 +21,7 @@ jobs:
                 
             # Build the ballerina project
             - name: Ballerina Build
-              uses: ballerina-platform/ballerina-action/@master
+              uses: ballerina-platform/ballerina-action/@2201.1.0
               with:
                   args:
                       pack ./gsheet
@@ -29,7 +29,7 @@ jobs:
             # Push the package to Ballerina central - Staging
             - name: Push to Staging
               if: github.event.inputs.bal_central_environment == 'STAGE'
-              uses: ballerina-platform/ballerina-action/@master
+              uses: ballerina-platform/ballerina-action/@2201.1.0
               with:
                   args:
                       push
@@ -40,7 +40,7 @@ jobs:
             # Push the package to Ballerina central - Dev
             - name: Push to Dev
               if: github.event.inputs.bal_central_environment == 'DEV'
-              uses: ballerina-platform/ballerina-action/@master
+              uses: ballerina-platform/ballerina-action/@2201.1.0
               with:
                   args:
                       push
