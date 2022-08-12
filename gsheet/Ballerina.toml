@@ -1,8 +1,8 @@
 [package]
-distribution = "2201.1.0"
+distribution = "2201.2.0"
 org = "ballerinax"
 name = "googleapis.sheets"
-version = "3.0.1"
+version = "3.1.0"
 license= ["Apache-2.0"]
 authors = ["Ballerina"]
 keywords = ["Productivity/Spreadsheets", "Cost/Free", "Vendor/Google"]
