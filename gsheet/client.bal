@@ -34,7 +34,7 @@ public isolated client class Client {
     # + return - `http:Error` in case of failure to initialize or `null` if successfully initialized  
     public isolated function init(ConnectionConfig config) returns error? {
         http:ClientConfiguration httpClientConfig = {
-            auth: config.auth,
+            auth: let var authConfig = config.auth in (authConfig is BearerTokenConfig ? authConfig : {...authConfig}),
             httpVersion: config.httpVersion,
             http1Settings: {...config.http1Settings},
             http2Settings: config.http2Settings,
