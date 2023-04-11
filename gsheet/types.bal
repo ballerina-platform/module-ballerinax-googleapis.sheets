@@ -331,10 +331,15 @@ public type DimensionRange record {
 # 
 @display {label: "Gridrange filter"}
 public type GridRangeFilter record {
+    @display {label: "sheetId"}
     int sheetId;
+    @display {label: "startRowIndex"}
     int startRowIndex?;
+    @display {label: "endRowIndex"}
     int endRowIndex?;
+    @display {label: "startColumnIndex"}
     int startColumnIndex?;
+    @display {label: "endColumnIndex"}
     int endColumnIndex?;
 };
 
