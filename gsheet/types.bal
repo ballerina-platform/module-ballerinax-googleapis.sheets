@@ -211,3 +211,104 @@ public type File record {
     @display {label: "Mime Type"}
     string mimeType;
 };
+
+# The metadata visibility
+# 
+@display {label: "Metadata visibility"}
+public enum Visibility {
+    UNSPECIFIED_VISIBILITY = "DEVELOPER_METADATA_VISIBILITY_UNSPECIFIED",
+    DOCUMENT = "DOCUMENT",
+    PROJECT = "PROJECT"
+};
+
+# The location type for filters
+# 
+@display {label: "Location Type"}
+public enum LocationType {
+    UNSPECIFIED_LOCATION = "DEVELOPER_METADATA_LOCATION_TYPE_UNSPECIFIED",
+    COLUMN = "COLUMN",
+    SPREADSHEET = "SPREADSHEET",
+    SHEET = "SHEET",
+    ROW = "ROW"
+};
+
+# Dimension
+#
+@display {label: "Dimension"}
+public enum Dimension {
+    UNSPECIFIED_DIMENSION = "DIMENSION_UNSPECIFIED",
+    COLUMNS = "COLUMNS",
+    ROWS = "ROWS"
+};
+
+# The location matching strategy for filters
+#
+# + kind - Indicates location matching strategy used in filter.  
+@display {label: "Location Matching Strategy"}
+public enum LocationMatchingStrategy {
+    UNSPECIFIED_STRATEGY = "DEVELOPER_METADATA_LOCATION_MATCHING_STRATEGY_UNSPECIFIED",
+    EXACT_LOCATION = "EXACT_LOCATION",
+    INTERSECTING_LOCATION = "INTERSECTING_LOCATION"
+};
+
+# The developerMetadataLookup filter
+#  
+@display {label: "DeveloperMetadataLookup Filter"}
+public type DeveloperMetadataLookupFilter record {
+    @display {label: "Location Type"}
+    LocationType locationType;
+    @display {label: "Location matching strategy"}
+    LocationMatchingStrategy locationMatchingStrategy?;
+    @display {label: "metadataId"}
+    int metadataId?;
+    @display {label: "metadataKey"}
+    string metadataKey?;
+    @display {label: "metadataValue"}
+    string metadataValue;
+    @display {label: "Metadata Visibility"}
+    Visibility visibility?;
+    @display {label: "Metadata Location"}
+    MetadataLocation metadataLocation?;
+
+};
+
+# The Metadata Location
+#
+@display {label: "Metadata Location"}
+public type MetadataLocation record {
+    @display {label: "Location Type"}
+    LocationType locationType;
+    @display {label: "spreadsheet"}
+    boolean spreadsheet;
+    @display {label: "sheetId"}
+    int sheetId;
+    @display {label: "Dimension Range"}
+    DimensionRange dimensionRange;
+};
+
+# The Dimension Range
+#
+@display {label: "Dimension Range"}
+public type DimensionRange record {
+    @display {label: "sheetId"}
+    int sheetId;
+    @display {label: "Dimension"}
+    Dimension dimension;
+    @display {label: "Start Index"}
+    int startIndex;
+    @display {label: "End Index"}
+    int endIndex;
+};
+
+
+# The gridrange filters
+#
+@display {label: "Gridrange filter"}
+public type GridRangeFilter record {
+    int sheetId;
+    int startRowIndex?;
+    int endRowIndex?;
+    int startColumnIndex?;
+    int endColumnIndex?;
+};
+
