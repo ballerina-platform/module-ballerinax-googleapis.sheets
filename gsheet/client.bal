@@ -1343,7 +1343,7 @@ public isolated client class Client {
                                               @display {label: "Filter"} (string|DeveloperMetadataLookupFilter|GridRangeFilter) filter) 
                                               returns @tainted error|Row[] {
 
-        string setValuePath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + BATCH_GET_BY_DATAFILTER_REQUEST;
+        string getValuePath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + BATCH_GET_BY_DATAFILTER_REQUEST;
 
         json jsonPayload;
         if (filter is string) {
@@ -1372,7 +1372,7 @@ public isolated client class Client {
                         "majorDimension": "ROWS"
             };
         }
-        json|error response = sendRequestWithPayload(self.httpClient, <@untainted>setValuePath,
+        json|error response = sendRequestWithPayload(self.httpClient, <@untainted>getValuePath,
             <@untainted>jsonPayload);
         if (response is error) {
             return response;
@@ -1504,39 +1504,84 @@ public isolated client class Client {
                                               @display {label: "Filter"} (string|DeveloperMetadataLookupFilter|GridRangeFilter) filter) 
                                               returns @tainted error? {
 
-        string setValuePath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + BATCH_CLEAR_BY_DATAFILTER_REQUEST;
+        
+
+        string getValuePath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + BATCH_GET_BY_DATAFILTER_REQUEST;
+
+        string setValuePath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + BATCH_UPDATE_REQUEST;
 
         json jsonPayload;
         if (filter is string) {
             jsonPayload = {
-                "dataFilters": [
-                    {
-                        "a1Range": filter
-                    }
-                ]
+                        "dataFilters": [
+                            {
+                                "a1Range": filter
+                            }
+                        ],
+                        "majorDimension": "ROWS"
             };
         } else if (filter is GridRangeFilter) {
             jsonPayload = {
-                "dataFilters": [
-                    {
-                        "gridRange": filter.toJson()
-                    }
-                ]
+                        "dataFilters": [ {
+                            "gridRange": (<GridRangeFilter>filter).toJson()
+                        }
+                        ],
+                        "majorDimension": "ROWS"
             };
         } else {
             jsonPayload = {
-                "dataFilters": [
-                    {
-                        "developerMetadataLookup": filter.toJson()
-                    }
-                ]
+                        "dataFilters": [ {
+                                "developerMetadataLookup": (<DeveloperMetadataLookupFilter>filter).toJson()
+                            }
+                        ],
+                        "majorDimension": "ROWS"
             };
         }
 
-        json|error response = sendRequestWithPayload(self.httpClient, <@untainted>setValuePath,
+        json|error response = sendRequestWithPayload(self.httpClient, <@untainted>getValuePath,
             <@untainted>jsonPayload);
         if (response is error) {
             return response;
+        } else {
+            Row[] output = [];
+            json[] valueRanges = check response.valueRanges.ensureType();
+            foreach json value in valueRanges {
+                string[] valueArray = [];
+                json|error jsonValues = value.valueRange.values;
+                if (jsonValues is error) {
+                    return jsonValues;
+                }
+                json[] values = check jsonValues.ensureType();
+                string range = check value.valueRange.range.ensureType();       
+                regex:Match rowIndex = check regex:search(regex:split(range, ":")[1],"[0-9]",0).ensureType();
+                int rowID = check int:fromString(regex:split(range, ":")[1].substring(rowIndex.startIndex));
+                json[] valueJsonArray = check values[0].ensureType();
+                foreach json item in valueJsonArray {
+                    valueArray.push(item.toString());
+                }
+                output.push({rowPosition: rowID, values : valueArray});
+            }
+            foreach Row row in output {
+                jsonPayload = {
+                    "requests": [
+                        {  
+                            "deleteDimension": {
+                                "range": {
+                                    "sheetId": sheetId,
+                                    "dimension": "ROWS",
+                                    "startIndex": row.rowPosition-1,
+                                    "endIndex": row.rowPosition
+                                }
+                            }
+                        }
+                    ]
+                };
+                json|error rowDeleteResponse = sendRequestWithPayload(self.httpClient, <@untainted>setValuePath,
+                    <@untainted>jsonPayload);
+                if (rowDeleteResponse is error) {
+                    return rowDeleteResponse;
+                }
+            }
         }
     }
 }
