@@ -15,7 +15,7 @@
 // under the License.
 
 import ballerina/http;
-import ballerina/regex;
+import ballerina/lang.regexp;
 import ballerinax/'client.config;
 
 # Ballerina Google Sheets connector provides the capability to access Google Sheets API.
@@ -1137,14 +1137,14 @@ public isolated client class Client {
     # + valueInputOption - Determines how input data should be interpreted. 
     #                      It's either "RAW" or "USER_ENTERED". Default is "RAW" (Optional).
     #                      For more information, see [ValueInputOption](https://developers.google.com/sheets/api/reference/rest/v4/ValueInputOption)           
-    # + return - Row on success, or else an error
-    @display {label: "Append Row"}
+    # + return - Nil() on success, or else an error
+    @display {label: "Append Row To Sheet"}
     remote isolated function appendRowToSheet(@display {label: "Google Sheet ID"} string spreadsheetId, 
                                               @display {label: "Worksheet Name"} string sheetName, 
                                               @display {label: "Row Values"} (int|string|decimal)[] values,
                                               @display {label: "Range A1 Notation"} string? a1Notation = (),
                                               @display {label: "Value Input Option"} string? valueInputOption = ()) 
-                                              returns @tainted error|Row {
+                                              returns @tainted error? {
         string notation = (a1Notation is ()) ? string `${sheetName}` : 
             string `${sheetName}${EXCLAMATION_MARK}${a1Notation}`;
         string setValuePath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + notation + APPEND;
@@ -1167,12 +1167,59 @@ public isolated client class Client {
             <@untainted>jsonPayload);
         if (response is error) {
             return response;
+        }
+    }
+
+    # Adds a new row with the given values to the bottom of the worksheet. The input range is used to search 
+    # for existing data and find a "table" within that range. Values will be appended to the next row of 
+    # the table, starting with the first column of the table.
+    #
+    # + spreadsheetId - ID of the spreadsheet
+    # + sheetName - The name of the worksheet
+    # + values - Array of values of the row to be added
+    # + a1Notation - The required range in A1 notation (Optional)
+    # + valueInputOption - Determines how input data should be interpreted. 
+    #                      It's either "RAW" or "USER_ENTERED". Default is "RAW" (Optional).
+    #                      For more information, see [ValueInputOption](https://developers.google.com/sheets/api/reference/rest/v4/ValueInputOption)           
+    # + return - Row on success, or else an error
+    @display {label: "Append Row"}
+    remote isolated function appendRow(@display {label: "Google Sheet ID"} string spreadsheetId, 
+                                              @display {label: "Worksheet Name"} string sheetName, 
+                                              @display {label: "Row Values"} (int|string|decimal)[] values,
+                                              @display {label: "Range A1 Notation"} string? a1Notation = (),
+                                              @display {label: "Value Input Option"} string? valueInputOption = ()) 
+                                              returns @tainted error|Row {
+        string notation = (a1Notation is ()) ? string `${sheetName}` : 
+            string `${sheetName}${EXCLAMATION_MARK}${a1Notation}`;
+        string setValuePath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + notation + APPEND;
+        setValuePath = setValuePath + ((valueInputOption is ()) ? string `${VALUE_INPUT_OPTION}${RAW}` : 
+            string `${VALUE_INPUT_OPTION}${valueInputOption}`);
+        json[] jsonValues = [];
+        int i = 0;
+        foreach (string|int|decimal|boolean) value in values {
+            jsonValues[i] = value;
+            i = i + 1;
+        }
+        json jsonPayload = {
+            "range": notation,
+            "majorDimension": "ROWS",
+            "values": [
+                jsonValues
+            ]
+        };
+        json|error response = sendRequestWithPayload(self.httpClient, <@untainted>setValuePath,
+            <@untainted>jsonPayload);
+        if (response is error) {
+            return response;
         } else {
-            if (!(response.updates is error)) {
+            if response.updates !is error {
                 json jsonResponseValues = check response.updates.ensureType();
                 string range = check jsonResponseValues.updatedRange.ensureType();      
-                regex:Match rowIndex = check regex:search(regex:split(regex:split(range, "!")[1], ":")[0],"[0-9]",0).ensureType();
-                int rowID = check int:fromString(regex:split(regex:split(range, "!")[1], ":")[0].substring(rowIndex.startIndex));
+                regexp:Span? rowIndex = re `\d+`.find(re `:`.split(re `!`.split(range)[1])[0], 0);
+                if rowIndex is () {
+                    return <error>error(string `Error: ${range}, does not match the expected range format: A1 range. `);
+                }
+                int rowID = check int:fromString(rowIndex.substring());
                 Row rowRecord = {rowPosition: rowID, values: values};
                 return rowRecord;
             } else {
@@ -1378,6 +1425,9 @@ public isolated client class Client {
             return response;
         } else {
             Row[] output = [];
+            if (response.valueRanges is error) {
+                return output;
+            }
             json[] valueRanges = check response.valueRanges.ensureType();
             foreach json value in valueRanges {
                 string[] valueArray = [];
@@ -1387,8 +1437,11 @@ public isolated client class Client {
                 }
                 json[] values = check jsonValues.ensureType();
                 string range = check value.valueRange.range.ensureType();       
-                regex:Match rowIndex = check regex:search(regex:split(range, ":")[1],"[0-9]",0).ensureType();
-                int rowID = check int:fromString(regex:split(range, ":")[1].substring(rowIndex.startIndex));
+                regexp:Span? rowIndex = re `\d+`.find(re `:`.split(re `!`.split(range)[1])[0], 0);
+                if rowIndex is () {
+                    return <error>error(string `Error: ${range}, does not match the expected range format: A1 range. `);
+                }
+                int rowID = check int:fromString(rowIndex.substring());
                 json[] valueJsonArray = check values[0].ensureType();
                 foreach json item in valueJsonArray {
                     valueArray.push(item.toString());
@@ -1544,6 +1597,9 @@ public isolated client class Client {
             return response;
         } else {
             Row[] output = [];
+            if (response.valueRanges is error) {
+                return <error>error(string `Error: Value does not exist matching the defined filter. `);
+            }
             json[] valueRanges = check response.valueRanges.ensureType();
             foreach json value in valueRanges {
                 string[] valueArray = [];
@@ -1553,8 +1609,11 @@ public isolated client class Client {
                 }
                 json[] values = check jsonValues.ensureType();
                 string range = check value.valueRange.range.ensureType();       
-                regex:Match rowIndex = check regex:search(regex:split(range, ":")[1],"[0-9]",0).ensureType();
-                int rowID = check int:fromString(regex:split(range, ":")[1].substring(rowIndex.startIndex));
+                regexp:Span? rowIndex = re `\d+`.find(re `:`.split(re `!`.split(range)[1])[0], 0);
+                if rowIndex is () {
+                    return <error>error(string `Error: ${range}, does not match the expected range format: A1 range. `);
+                }
+                int rowID = check int:fromString(rowIndex.substring());
                 json[] valueJsonArray = check values[0].ensureType();
                 foreach json item in valueJsonArray {
                     valueArray.push(item.toString());
