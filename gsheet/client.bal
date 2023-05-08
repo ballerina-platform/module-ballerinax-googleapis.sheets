@@ -1209,7 +1209,7 @@ public isolated client class Client {
         };
         json|error response = sendRequestWithPayload(self.httpClient, <@untainted>setValuePath,
             <@untainted>jsonPayload);
-        if (response is error) {
+        if response is error {
             return response;
         } else {
             if response.updates !is error {
@@ -1393,7 +1393,7 @@ public isolated client class Client {
         string getValuePath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + BATCH_GET_BY_DATAFILTER_REQUEST;
 
         json jsonPayload;
-        if (filter is string) {
+        if filter is string {
             jsonPayload = {
                         "dataFilters": [
                             {
@@ -1402,7 +1402,7 @@ public isolated client class Client {
                         ],
                         "majorDimension": "ROWS"
             };
-        } else if (filter is GridRangeFilter) {
+        } else if filter is GridRangeFilter {
             jsonPayload = {
                         "dataFilters": [ {
                             "gridRange": (<GridRangeFilter>filter).toJson()
@@ -1425,7 +1425,7 @@ public isolated client class Client {
             return response;
         } else {
             Row[] output = [];
-            if (response.valueRanges is error) {
+            if response.valueRanges is error {
                 return output;
             }
             json[] valueRanges = check response.valueRanges.ensureType();
@@ -1481,7 +1481,7 @@ public isolated client class Client {
         }
 
         json jsonPayload;
-        if (filter is string) {
+        if filter is string {
             jsonPayload = {
                 "valueInputOption": valueInputOption,
                 "data": [
@@ -1499,7 +1499,7 @@ public isolated client class Client {
             "responseValueRenderOption": "FORMATTED_VALUE",
             "responseDateTimeRenderOption": "SERIAL_NUMBER"
             };
-        } else if (filter is GridRangeFilter) {
+        } else if filter is GridRangeFilter {
             jsonPayload = {
                 "valueInputOption": valueInputOption,
                 "data": [
@@ -1564,7 +1564,7 @@ public isolated client class Client {
         string setValuePath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + BATCH_UPDATE_REQUEST;
 
         json jsonPayload;
-        if (filter is string) {
+        if filter is string {
             jsonPayload = {
                         "dataFilters": [
                             {
@@ -1573,7 +1573,7 @@ public isolated client class Client {
                         ],
                         "majorDimension": "ROWS"
             };
-        } else if (filter is GridRangeFilter) {
+        } else if filter is GridRangeFilter {
             jsonPayload = {
                         "dataFilters": [ {
                             "gridRange": (<GridRangeFilter>filter).toJson()
@@ -1593,7 +1593,7 @@ public isolated client class Client {
 
         json|error response = sendRequestWithPayload(self.httpClient, <@untainted>getValuePath,
             <@untainted>jsonPayload);
-        if (response is error) {
+        if response is error {
             return response;
         } else {
             Row[] output = [];
@@ -1604,7 +1604,7 @@ public isolated client class Client {
             foreach json value in valueRanges {
                 string[] valueArray = [];
                 json|error jsonValues = value.valueRange.values;
-                if (jsonValues is error) {
+                if jsonValues is error {
                     return jsonValues;
                 }
                 json[] values = check jsonValues.ensureType();
