@@ -1383,7 +1383,7 @@ public isolated client class Client {
     # + spreadsheetId - ID of the spreadsheet
     # + sheetId - The ID of the worksheet
     # + filter - A record defining the filter used for the data filtering
-    # + return - Nil() on success, or else an error
+    # + return - Row[] on success, or else an error
     @display {label: "Get Row Using Data Filters"}
     remote isolated function getRowByDataFilter(@display {label: "Google Sheet ID"} string spreadsheetId, 
                                               @display {label: "Worksheet Id"} int sheetId, 
