@@ -314,8 +314,8 @@ public isolated client class Client {
     # + sheetName - The name of the Worksheet
     # + range - The Range record to be set
     # + valueInputOption - Determines how input data should be interpreted. 
-    # It's either "RAW" or "USER_ENTERED". Default is "RAW" (Optional).
-    # For more information, see [ValueInputOption](https://developers.google.com/sheets/api/reference/rest/v4/ValueInputOption)
+    #                      It's either "RAW" or "USER_ENTERED". Default is "RAW" (Optional).
+    #                      For more information, see [ValueInputOption](https://developers.google.com/sheets/api/reference/rest/v4/ValueInputOption)
     # + return - Nil() on success, or else an error
     @display {label: "Set Range"}
     remote isolated function setRange(@display {label: "Google Sheet ID"} string spreadsheetId,
@@ -366,9 +366,9 @@ public isolated client class Client {
     # + sheetName - The name of the worksheet
     # + a1Notation - The required range in A1 notation
     # + valueRenderOption - Determines how values should be rendered in the output.
-    # It's either "FORMATTED_VALUE","UNFORMATTED_VALUE" or "FORMULA". 
-    # Default is "FORMATTED_VALUE" (Optional).
-    # For more information, see [ValueRenderOption](https://developers.google.com/sheets/api/reference/rest/v4/ValueRenderOption)
+    #                       It's either "FORMATTED_VALUE","UNFORMATTED_VALUE" or "FORMULA". 
+    #                       Default is "FORMATTED_VALUE" (Optional).
+    #                       For more information, see [ValueRenderOption](https://developers.google.com/sheets/api/reference/rest/v4/ValueRenderOption)
     # + return - `sheets:Range` record on success, or else an error
     @display {label: "Get Range"}
     remote isolated function getRange(@display {label: "Google Sheet ID"} string spreadsheetId,
@@ -571,8 +571,8 @@ public isolated client class Client {
     # + column - Position of column (string notation) to set the data
     # + values - Array of values of the column to be added
     # + valueInputOption - Determines how input data should be interpreted. 
-    # It's either "RAW" or "USER_ENTERED". Default is "RAW" (Optional).
-    # For more information, see [ValueInputOption](https://developers.google.com/sheets/api/reference/rest/v4/ValueInputOption)
+    #                      It's either "RAW" or "USER_ENTERED". Default is "RAW" (Optional).
+    #                      For more information, see [ValueInputOption](https://developers.google.com/sheets/api/reference/rest/v4/ValueInputOption)
     # + return - Nil() on success, or else an error
     @display {label: "Set Column"}
     remote isolated function createOrUpdateColumn(@display {label: "Google Sheet ID"} string spreadsheetId,
@@ -614,9 +614,9 @@ public isolated client class Client {
     # + sheetName - The name of the worksheet
     # + column - Position of Column (string notation) to retrieve the data
     # + valueRenderOption - Determines how values should be rendered in the output.
-    # It's either "FORMATTED_VALUE","UNFORMATTED_VALUE" or "FORMULA". 
-    # Default is "FORMATTED_VALUE" (Optional).
-    # For more information, see [ValueRenderOption](https://developers.google.com/sheets/api/reference/rest/v4/ValueRenderOption)
+    #                       It's either "FORMATTED_VALUE","UNFORMATTED_VALUE" or "FORMULA". 
+    #                       Default is "FORMATTED_VALUE" (Optional).
+    #                       For more information, see [ValueRenderOption](https://developers.google.com/sheets/api/reference/rest/v4/ValueRenderOption)
     # + return - `sheets:Column` record on success, or else an error
     @display {label: "Get Column"}
     remote isolated function getColumn(@display {label: "Google Sheet ID"} string spreadsheetId,
@@ -882,8 +882,8 @@ public isolated client class Client {
     # + row - Position of row (integer notation) to set the data
     # + values - Array of values of the row to be added
     # + valueInputOption - Determines how input data should be interpreted. 
-    # It's either "RAW" or "USER_ENTERED". Default is "RAW" (Optional).
-    # For more information, see [ValueInputOption](https://developers.google.com/sheets/api/reference/rest/v4/ValueInputOption)
+    #                      It's either "RAW" or "USER_ENTERED". Default is "RAW" (Optional).
+    #                      For more information, see [ValueInputOption](https://developers.google.com/sheets/api/reference/rest/v4/ValueInputOption)
     # + return - Nil() on success, or else an error
     @display {label: "Set Row"}
     remote isolated function createOrUpdateRow(@display {label: "Google Sheet ID"} string spreadsheetId,
@@ -925,9 +925,9 @@ public isolated client class Client {
     # + sheetName - The name of the worksheet
     # + row - Row number to retrieve the data
     # + valueRenderOption - Determines how values should be rendered in the output.
-    # It's either "FORMATTED_VALUE","UNFORMATTED_VALUE" or "FORMULA". 
-    # Default is "FORMATTED_VALUE" (Optional).
-    # For more information, see [ValueRenderOption](https://developers.google.com/sheets/api/reference/rest/v4/ValueRenderOption)
+    #                       It's either "FORMATTED_VALUE","UNFORMATTED_VALUE" or "FORMULA". 
+    #                       Default is "FORMATTED_VALUE" (Optional).
+    #                       For more information, see [ValueRenderOption](https://developers.google.com/sheets/api/reference/rest/v4/ValueRenderOption)
     # + return - `sheets:Row` record on success, or else an error
     @display {label: "Get Row"}
     remote isolated function getRow(@display {label: "Google Sheet ID"} string spreadsheetId,
@@ -1042,8 +1042,8 @@ public isolated client class Client {
     # + a1Notation - The required cell in A1 notation
     # + value - Value of the cell to be set
     # + valueInputOption - Determines how input data should be interpreted. 
-    # It's either "RAW" or "USER_ENTERED". Default is "RAW" (Optional).
-    # For more information, see [ValueInputOption](https://developers.google.com/sheets/api/reference/rest/v4/ValueInputOption)
+    #                      It's either "RAW" or "USER_ENTERED". Default is "RAW" (Optional).
+    #                      For more information, see [ValueInputOption](https://developers.google.com/sheets/api/reference/rest/v4/ValueInputOption)
     # + return - Nil() on success, or else an error
     @display {label: "Set Cell"}
     remote isolated function setCell(@display {label: "Google Sheet ID"} string spreadsheetId,
@@ -1079,9 +1079,9 @@ public isolated client class Client {
     # + sheetName - The name of the worksheet
     # + a1Notation - The required cell in A1 notation
     # + valueRenderOption - Determines how values should be rendered in the output.
-    # It's either "FORMATTED_VALUE","UNFORMATTED_VALUE" or "FORMULA". 
-    # Default is "FORMATTED_VALUE" (Optional).
-    # For more information, see [ValueRenderOption](https://developers.google.com/sheets/api/reference/rest/v4/ValueRenderOption)
+    #                       It's either "FORMATTED_VALUE","UNFORMATTED_VALUE" or "FORMULA". 
+    #                       Default is "FORMATTED_VALUE" (Optional).
+    #                       For more information, see [ValueRenderOption](https://developers.google.com/sheets/api/reference/rest/v4/ValueRenderOption)
     # + return - `sheets:Cell` record on success, or else an error
     @display {label: "Get Cell"}
     remote isolated function getCell(@display {label: "Google Sheet ID"} string spreadsheetId,
@@ -1135,8 +1135,8 @@ public isolated client class Client {
     # + values - Array of values of the row to be added
     # + a1Notation - The required range in A1 notation (Optional)
     # + valueInputOption - Determines how input data should be interpreted. 
-    # It's either "RAW" or "USER_ENTERED". Default is "RAW" (Optional).
-    # For more information, see [ValueInputOption](https://developers.google.com/sheets/api/reference/rest/v4/ValueInputOption)           
+    #                      It's either "RAW" or "USER_ENTERED". Default is "RAW" (Optional).
+    #                      For more information, see [ValueInputOption](https://developers.google.com/sheets/api/reference/rest/v4/ValueInputOption)           
     # + return - Nil() on success, or else an error
     # 
     # # Deprecated
@@ -1185,8 +1185,8 @@ public isolated client class Client {
     # + values - Array of values of the row to be added
     # + a1Notation - The required range in A1 notation (Optional)
     # + valueInputOption - Determines how input data should be interpreted. 
-    # It's either "RAW" or "USER_ENTERED". Default is "RAW" (Optional).
-    # For more information, see [ValueInputOption](https://developers.google.com/sheets/api/reference/rest/v4/ValueInputOption)           
+    #                      It's either "RAW" or "USER_ENTERED". Default is "RAW" (Optional).
+    #                      For more information, see [ValueInputOption](https://developers.google.com/sheets/api/reference/rest/v4/ValueInputOption)           
     # + return - Row on success, or else an error
     @display {label: "Append Row"}
     remote isolated function appendRow(@display {label: "Google Sheet ID"} string spreadsheetId,
@@ -1451,8 +1451,8 @@ public isolated client class Client {
     # + filter - A record defining the filter used for the data filtering
     # + values - Values to assign.    
     # + valueInputOption - Determines how input data should be interpreted. 
-    # It's either "RAW" or "USER_ENTERED". Default is "RAW" (Optional).
-    # For more information, see [ValueInputOption](https://developers.google.com/sheets/api/reference/rest/v4/ValueInputOption)
+    #                      It's either "RAW" or "USER_ENTERED". Default is "RAW" (Optional).
+    #                      For more information, see [ValueInputOption](https://developers.google.com/sheets/api/reference/rest/v4/ValueInputOption)
     # + return - Nil() on success, or else an error
     @display {label: "Update Row Using Data Filters"}
     remote isolated function updateRowByDataFilter(@display {label: "Google Sheet ID"} string spreadsheetId,
