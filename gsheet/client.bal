@@ -1138,6 +1138,11 @@ public isolated client class Client {
     # It's either "RAW" or "USER_ENTERED". Default is "RAW" (Optional).
     # For more information, see [ValueInputOption](https://developers.google.com/sheets/api/reference/rest/v4/ValueInputOption)           
     # + return - Nil() on success, or else an error
+    # 
+    # # Deprecated
+    # This function is deprecated due to the introduction of new more resourceful API `appendRow`.
+    # This API will be removed with 4.0.0 release.
+    # 
     @display {label: "Append Row To Sheet"}
     @deprecated
     remote isolated function appendRowToSheet(@display {label: "Google Sheet ID"} string spreadsheetId,
@@ -1190,17 +1195,12 @@ public isolated client class Client {
             @display {label: "Range A1 Notation"} string? a1Notation = (),
             @display {label: "Value Input Option"} string? valueInputOption = ())
                                             returns @tainted error|RowValue {
-        string notation = (a1Notation is ()) ? string `${sheetName}` :
+        string notation = a1Notation is () ? sheetName :
             string `${sheetName}${EXCLAMATION_MARK}${a1Notation}`;
         string setValuePath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + notation + APPEND;
         setValuePath = setValuePath + ((valueInputOption is ()) ? string `${VALUE_INPUT_OPTION}${RAW}` :
             string `${VALUE_INPUT_OPTION}${valueInputOption}`);
-        json[] jsonValues = [];
-        int i = 0;
-        foreach (string|int|decimal|boolean) value in values {
-            jsonValues[i] = value;
-            i = i + 1;
-        }
+        json[] jsonValues = check values.ensureType();
         json jsonPayload = {
             "range": notation,
             "majorDimension": "ROWS",
@@ -1222,7 +1222,6 @@ public isolated client class Client {
         } else {
             return <error>response.updates;
         }
-
     }
 
     # Copies the sheet to a given spreadsheet by worksheet ID.
@@ -1344,7 +1343,6 @@ public isolated client class Client {
                                             returns @tainted error? {
 
         string setValuePath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + BATCH_UPDATE_REQUEST;
-
         json jsonPayload = {
             "requests": [
                 {
@@ -1367,11 +1365,7 @@ public isolated client class Client {
             ]
         };
 
-        json|error response = sendRequestWithPayload(self.httpClient, <@untainted>setValuePath,
-            <@untainted>jsonPayload);
-        if (response is error) {
-            return response;
-        }
+        json _ = check sendRequestWithPayload(self.httpClient, setValuePath, jsonPayload);
     }
 
     # Fetch rows matching to the given critirias in the filter.
@@ -1388,7 +1382,6 @@ public isolated client class Client {
                                             returns error|RowValue[] {
 
         string getValuePath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + BATCH_GET_BY_DATAFILTER_REQUEST;
-
         json jsonPayload;
         if filter is string {
             jsonPayload = {
@@ -1533,11 +1526,7 @@ public isolated client class Client {
                 "responseDateTimeRenderOption": "SERIAL_NUMBER"
             };
         }
-
-        json|error response = sendRequestWithPayload(self.httpClient, setValuePath, jsonPayload);
-        if (response is error) {
-            return response;
-        }
+        json _ = check sendRequestWithPayload(self.httpClient, setValuePath, jsonPayload);
     }
 
     # Delete rows matching the user provided data filter
@@ -1554,9 +1543,7 @@ public isolated client class Client {
                                             returns error? {
 
         string getValuePath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + BATCH_GET_BY_DATAFILTER_REQUEST;
-
         string setValuePath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + BATCH_UPDATE_REQUEST;
-
         json jsonPayload;
         if filter is string {
             jsonPayload = {
@@ -1571,7 +1558,7 @@ public isolated client class Client {
             jsonPayload = {
                 "dataFilters": [
                     {
-                        "gridRange": (<GridRangeFilter>filter).toJson()
+                        "gridRange": (filter).toJson()
                     }
                 ],
                 "majorDimension": "ROWS"
@@ -1580,7 +1567,7 @@ public isolated client class Client {
             jsonPayload = {
                 "dataFilters": [
                     {
-                        "developerMetadataLookup": (<DeveloperMetadataLookupFilter>filter).toJson()
+                        "developerMetadataLookup": (filter).toJson()
                     }
                 ],
                 "majorDimension": "ROWS"
@@ -1630,11 +1617,8 @@ public isolated client class Client {
                         }
                     ]
                 };
-                json|error rowDeleteResponse = sendRequestWithPayload(self.httpClient, setValuePath,
+                json _ = check sendRequestWithPayload(self.httpClient, setValuePath,
                     jsonPayload);
-                if (rowDeleteResponse is error) {
-                    return rowDeleteResponse;
-                }
             }
         }
     }
