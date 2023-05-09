@@ -292,7 +292,6 @@ public type DeveloperMetadataLookupFilter record {
     Visibility visibility?;
     @display {label: "Metadata Location"}
     MetadataLocation metadataLocation?;
-
 };
 
 # The Metadata Location

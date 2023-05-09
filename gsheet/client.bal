@@ -1198,7 +1198,7 @@ public isolated client class Client {
         string notation = a1Notation is () ? sheetName :
             string `${sheetName}${EXCLAMATION_MARK}${a1Notation}`;
         string setValuePath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + notation + APPEND;
-        setValuePath = setValuePath + ((valueInputOption is ()) ? string `${VALUE_INPUT_OPTION}${RAW}` :
+        setValuePath = setValuePath + (valueInputOption is () ? string `${VALUE_INPUT_OPTION}${RAW}` :
             string `${VALUE_INPUT_OPTION}${valueInputOption}`);
         json[] jsonValues = check values.ensureType();
         json jsonPayload = {
@@ -1214,7 +1214,7 @@ public isolated client class Client {
             string range = check jsonResponseValues.updatedRange.ensureType();
             regexp:Span? rowIndex = re `\d+`.find(re `:`.split(re `!`.split(range)[1])[0], 0);
             if rowIndex is () {
-                return <error>error(string `Error: ${range}, does not match the expected range format: A1 range. `);
+                return error(string `Error: ${range}, does not match the expected range format: A1 range. `);
             }
             int rowID = check int:fromString(rowIndex.substring());
             RowValue rowRecord = {rowPosition: rowID, values: values};
@@ -1463,13 +1463,7 @@ public isolated client class Client {
                                             returns error? {
 
         string setValuePath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + BATCH_UPDATE_BY_DATAFILTER_REQUEST;
-        json[] jsonValues = [];
-        int i = 0;
-        foreach (string|int|decimal|boolean) value in values {
-            jsonValues[i] = value;
-            i = i + 1;
-        }
-
+        json[] jsonValues = check values.ensureType();
         json jsonPayload;
         if filter is string {
             jsonPayload = {
@@ -1558,7 +1552,7 @@ public isolated client class Client {
             jsonPayload = {
                 "dataFilters": [
                     {
-                        "gridRange": (filter).toJson()
+                        "gridRange": filter.toJson()
                     }
                 ],
                 "majorDimension": "ROWS"
@@ -1567,7 +1561,7 @@ public isolated client class Client {
             jsonPayload = {
                 "dataFilters": [
                     {
-                        "developerMetadataLookup": (filter).toJson()
+                        "developerMetadataLookup": filter.toJson()
                     }
                 ],
                 "majorDimension": "ROWS"
