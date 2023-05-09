@@ -155,6 +155,18 @@ public type Row record {
     (int|string|decimal)[] values;
 };
 
+# Single row in a sheet.
+#
+# + rowPosition - The row number
+# + values - Values of the given row
+@display {label: "Row"}
+public type RowValue record {
+    @display {label: "Row Number"}
+    int rowPosition;
+    @display {label: "Values"}
+    (int|string|decimal|boolean)[] values;
+};
+
 # Single cell in a sheet.
 #
 # + a1Notation - The column letter followed by the row number.

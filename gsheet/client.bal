@@ -47,8 +47,8 @@ public isolated client class Client {
     # + name - Name of the spreadsheet
     # + return - `sheets:Spreadsheet` record on success, or else an error
     @display {label: "Create Google Sheet"}
-    remote isolated function createSpreadsheet(@display {label: "Google Sheet Name"} string name) 
-                                               returns @tainted Spreadsheet|error {
+    remote isolated function createSpreadsheet(@display {label: "Google Sheet Name"} string name)
+                                                returns @tainted Spreadsheet|error {
         json jsonPayload = {"properties": {"title": name}};
         json|error response = sendRequestWithPayload(self.httpClient, SPREADSHEET_PATH, jsonPayload);
         if (response is json) {
@@ -63,8 +63,8 @@ public isolated client class Client {
     # + spreadsheetId - ID of the spreadsheet
     # + return - `sheets:Spreadsheet` record on success, or else an error
     @display {label: "Open Google Sheet By ID"}
-    remote isolated function openSpreadsheetById(@display {label: "Google Sheet ID"} string spreadsheetId) 
-                                                 returns @tainted Spreadsheet|error {
+    remote isolated function openSpreadsheetById(@display {label: "Google Sheet ID"} string spreadsheetId)
+                                                returns @tainted Spreadsheet|error {
         string spreadsheetPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId;
         json|error response = sendRequest(self.httpClient, spreadsheetPath);
         if (response is json) {
@@ -79,8 +79,8 @@ public isolated client class Client {
     # + url - Url of the spreadsheet
     # + return - `sheets:Spreadsheet` record on success, or else an error
     @display {label: "Open Google Sheet By Url"}
-    remote isolated function openSpreadsheetByUrl(@display {label: "Google Sheet Url"} string url) 
-                                                  returns @tainted Spreadsheet|error {
+    remote isolated function openSpreadsheetByUrl(@display {label: "Google Sheet Url"} string url)
+                                                returns @tainted Spreadsheet|error {
         string|error spreadsheetId = getIdFromUrl(url);
         if (spreadsheetId is string) {
             return self->openSpreadsheetById(spreadsheetId);
@@ -90,12 +90,12 @@ public isolated client class Client {
     }
 
     # Get all spreadsheet files.
-    # 
+    #
     # + return - Stream of `sheets:File` records on success, or else an error
     @display {label: "Get All Spreadsheets"}
-    remote isolated function getAllSpreadsheets() returns @display {label: "Stream of Files"} stream<File,error?>|error {
+    remote isolated function getAllSpreadsheets() returns @display {label: "Stream of Files"} stream<File, error?>|error {
         SpreadsheetStream spreadsheetStream = check new SpreadsheetStream(self.driveClient);
-        return new stream<File,error?>(spreadsheetStream);
+        return new stream<File, error?>(spreadsheetStream);
     }
 
     # Renames the spreadsheet with the given name.
@@ -104,9 +104,9 @@ public isolated client class Client {
     # + name - New name for the spreadsheet
     # + return - Nil() on success, or else an error
     @display {label: "Rename Google Sheet"}
-    remote isolated function renameSpreadsheet(@display {label: "Google Sheet ID"} string spreadsheetId, 
-                                               @display {label: "New Google Sheet Name"} string name) 
-                                               returns @tainted error? {
+    remote isolated function renameSpreadsheet(@display {label: "Google Sheet ID"} string spreadsheetId,
+            @display {label: "New Google Sheet Name"} string name)
+                                                returns @tainted error? {
         json payload = {
             "requests": [
                 {
@@ -121,19 +121,19 @@ public isolated client class Client {
         json|error response = sendRequestWithPayload(self.httpClient, deleteSheetPath, payload);
         if (response is error) {
             return response;
-        } 
+        }
         return;
     }
 
     // Worksheet Management Operations
 
     # Get worksheets of the spreadsheet.
-    # 
+    #
     # + spreadsheetId - ID of the spreadsheet
     # + return - Array of `sheets:Sheet` records on success, or else an error
     @display {label: "Get Worksheets"}
-    remote isolated function getSheets(@display {label: "Google Sheet ID"} string spreadsheetId) 
-                                       returns @tainted @display {label: "Array of Worksheets"} Sheet[]|error {
+    remote isolated function getSheets(@display {label: "Google Sheet ID"} string spreadsheetId)
+                                        returns @tainted@display {label: "Array of Worksheets"} Sheet[]|error {
         string spreadsheetPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId;
         json|error response = sendRequest(self.httpClient, spreadsheetPath);
         Spreadsheet spreadsheet = {};
@@ -146,13 +146,13 @@ public isolated client class Client {
     }
 
     # Get a worksheet of the spreadsheet.
-    # 
+    #
     # + spreadsheetId - ID of the spreadsheet
     # + sheetName - Name of the worksheet to retrieve
     # + return - `sheets:Sheet` record on success, or else an error
     @display {label: "Get Worksheet By Name"}
-    remote isolated function getSheetByName(@display {label: "Google Sheet ID"} string spreadsheetId, 
-                                            @display {label: "Worksheet Name"} string sheetName) 
+    remote isolated function getSheetByName(@display {label: "Google Sheet ID"} string spreadsheetId,
+            @display {label: "Worksheet Name"} string sheetName)
                                             returns @tainted Sheet|error {
         string spreadsheetPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId;
         json|error response = sendRequest(self.httpClient, spreadsheetPath);
@@ -177,9 +177,9 @@ public isolated client class Client {
     # + sheetName - The name of the worksheet
     # + return - `sheets:Sheet` record on success, or else an error
     @display {label: "Add New Worksheet"}
-    remote isolated function addSheet(@display {label: "Google Sheet ID"} string spreadsheetId, 
-                                      @display {label: "Worksheet Name"} string sheetName) 
-                                      returns @tainted Sheet|error {
+    remote isolated function addSheet(@display {label: "Google Sheet ID"} string spreadsheetId,
+            @display {label: "Worksheet Name"} string sheetName)
+                                    returns @tainted Sheet|error {
         map<json> payload = {"requests": [{"addSheet": {"properties": {}}}]};
         map<json> jsonSheetProperties = {};
         if (sheetName != EMPTY_STRING) {
@@ -246,8 +246,8 @@ public isolated client class Client {
     # + sheetId - The ID of the worksheet to delete
     # + return - Nil() on success, or else an error
     @display {label: "Remove Worksheet By ID"}
-    remote isolated function removeSheet(@display {label: "Google Sheet ID"} string spreadsheetId, 
-                                         @display {label: "Worksheet ID"} int sheetId) returns @tainted error? {
+    remote isolated function removeSheet(@display {label: "Google Sheet ID"} string spreadsheetId,
+            @display {label: "Worksheet ID"} int sheetId) returns @tainted error? {
         json payload = {"requests": [{"deleteSheet": {"sheetId": sheetId}}]};
         string deleteSheetPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + BATCH_UPDATE_REQUEST;
         json|error response = sendRequestWithPayload(self.httpClient, deleteSheetPath, payload);
@@ -263,9 +263,9 @@ public isolated client class Client {
     # + sheetName - The name of the worksheet to delete
     # + return - Nil() on success, or else an error
     @display {label: "Remove Worksheet"}
-    remote isolated function removeSheetByName(@display {label: "Google Sheet ID"} string spreadsheetId, 
-                                               @display {label: "Worksheet Name"} string sheetName) 
-                                               returns @tainted error? {
+    remote isolated function removeSheetByName(@display {label: "Google Sheet ID"} string spreadsheetId,
+            @display {label: "Worksheet Name"} string sheetName)
+                                                returns @tainted error? {
         Sheet sheet = check self->getSheetByName(spreadsheetId, sheetName);
         json payload = {"requests": [{"deleteSheet": {"sheetId": sheet.properties.sheetId}}]};
         string deleteSheetPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + BATCH_UPDATE_REQUEST;
@@ -283,10 +283,10 @@ public isolated client class Client {
     # + name - New name for the worksheet
     # + return - Nil() on success, or else an error
     @display {label: "Rename Worksheet"}
-    remote isolated function renameSheet(@display {label: "Google Sheet ID"} string spreadsheetId, 
-                                         @display {label: "Existing Worksheet Name"} string sheetName, 
-                                         @display {label: "New Worksheet Name"} string name) 
-                                         returns @tainted error? {
+    remote isolated function renameSheet(@display {label: "Google Sheet ID"} string spreadsheetId,
+            @display {label: "Existing Worksheet Name"} string sheetName,
+            @display {label: "New Worksheet Name"} string name)
+                                        returns @tainted error? {
         Sheet sheet = check self->getSheetByName(spreadsheetId, sheetName);
         json payload = {
             "requests": [
@@ -302,7 +302,7 @@ public isolated client class Client {
         json|error response = sendRequestWithPayload(self.httpClient, deleteSheetPath, payload);
         if (response is error) {
             return response;
-        } 
+        }
         return;
     }
 
@@ -314,14 +314,14 @@ public isolated client class Client {
     # + sheetName - The name of the Worksheet
     # + range - The Range record to be set
     # + valueInputOption - Determines how input data should be interpreted. 
-    #                      It's either "RAW" or "USER_ENTERED". Default is "RAW" (Optional).
-    #                      For more information, see [ValueInputOption](https://developers.google.com/sheets/api/reference/rest/v4/ValueInputOption)
+    # It's either "RAW" or "USER_ENTERED". Default is "RAW" (Optional).
+    # For more information, see [ValueInputOption](https://developers.google.com/sheets/api/reference/rest/v4/ValueInputOption)
     # + return - Nil() on success, or else an error
     @display {label: "Set Range"}
-    remote isolated function setRange(@display {label: "Google Sheet ID"} string spreadsheetId, 
-                                      @display {label: "Worksheet Name"} string sheetName, 
-                                      Range range, @display {label: "Value Input Option"} string? valueInputOption = ()) 
-                                      returns @tainted error? {
+    remote isolated function setRange(@display {label: "Google Sheet ID"} string spreadsheetId,
+            @display {label: "Worksheet Name"} string sheetName,
+            Range range, @display {label: "Value Input Option"} string? valueInputOption = ())
+                                    returns @tainted error? {
         (string|int|decimal)[][] values = range.values;
         string a1Notation = range.a1Notation;
         if (a1Notation == EMPTY_STRING) {
@@ -329,7 +329,7 @@ public isolated client class Client {
         }
         string notation = sheetName + EXCLAMATION_MARK + a1Notation;
         string setValuePath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + notation;
-        setValuePath = setValuePath + ((valueInputOption is ()) ? string `${VALUE_INPUT_OPTION}${RAW}` : 
+        setValuePath = setValuePath + ((valueInputOption is ()) ? string `${VALUE_INPUT_OPTION}${RAW}` :
             string `${VALUE_INPUT_OPTION}${valueInputOption}`);
         http:Request request = new;
         json[][] jsonValues = [];
@@ -366,23 +366,23 @@ public isolated client class Client {
     # + sheetName - The name of the worksheet
     # + a1Notation - The required range in A1 notation
     # + valueRenderOption - Determines how values should be rendered in the output.
-    #                       It's either "FORMATTED_VALUE","UNFORMATTED_VALUE" or "FORMULA". 
-    #                       Default is "FORMATTED_VALUE" (Optional).
-    #                       For more information, see [ValueRenderOption](https://developers.google.com/sheets/api/reference/rest/v4/ValueRenderOption)
+    # It's either "FORMATTED_VALUE","UNFORMATTED_VALUE" or "FORMULA". 
+    # Default is "FORMATTED_VALUE" (Optional).
+    # For more information, see [ValueRenderOption](https://developers.google.com/sheets/api/reference/rest/v4/ValueRenderOption)
     # + return - `sheets:Range` record on success, or else an error
     @display {label: "Get Range"}
-    remote isolated function getRange(@display {label: "Google Sheet ID"} string spreadsheetId, 
-                                      @display {label: "Worksheet Name"} string sheetName, 
-                                      @display {label: "Range A1 Notation"} string a1Notation,
-                                      @display {label: "Value Render Option"} string? valueRenderOption = ()) 
-                                      returns @tainted Range|error {
+    remote isolated function getRange(@display {label: "Google Sheet ID"} string spreadsheetId,
+            @display {label: "Worksheet Name"} string sheetName,
+            @display {label: "Range A1 Notation"} string a1Notation,
+            @display {label: "Value Render Option"} string? valueRenderOption = ())
+                                    returns @tainted Range|error {
         (string|int|decimal)[][] values = [];
         if (a1Notation == EMPTY_STRING) {
             return error("Invalid range notation");
         }
         string notation = sheetName + EXCLAMATION_MARK + a1Notation;
         string getSheetValuesPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + notation;
-        getSheetValuesPath = getSheetValuesPath + ((valueRenderOption is ()) ? EMPTY_STRING : 
+        getSheetValuesPath = getSheetValuesPath + ((valueRenderOption is ()) ? EMPTY_STRING :
             string `${QUESTION_MARK}${VALUE_RENDER_OPTION}${valueRenderOption}`);
         json|error response = sendRequest(self.httpClient, getSheetValuesPath);
         if (response is error) {
@@ -403,9 +403,9 @@ public isolated client class Client {
     # + a1Notation - The required range in A1 notation
     # + return - Nil() on success, or else an error
     @display {label: "Clear Range"}
-    remote isolated function clearRange(@display {label: "Google Sheet ID"} string spreadsheetId, 
-                                        @display {label: "Worksheet Name"} string sheetName, 
-                                        @display {label: "Range A1 Notation"} string a1Notation) 
+    remote isolated function clearRange(@display {label: "Google Sheet ID"} string spreadsheetId,
+            @display {label: "Worksheet Name"} string sheetName,
+            @display {label: "Range A1 Notation"} string a1Notation)
                                         returns @tainted error? {
         string notation = sheetName + EXCLAMATION_MARK + a1Notation;
         string deleteSheetPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH +
@@ -424,11 +424,11 @@ public isolated client class Client {
     # + numberOfColumns - Number of columns to be added
     # + return - Nil() on success, or else an error
     @display {label: "Add Columns Before By Sheet ID"}
-    remote isolated function addColumnsBefore(@display {label: "Google Sheet ID"} string spreadsheetId, 
-                                              @display {label: "Worksheet ID"} int sheetId, 
-                                              @display {label: "Column Position"} int index, 
-                                              @display {label: "Number of Columns"} int numberOfColumns) 
-                                              returns @tainted error? {
+    remote isolated function addColumnsBefore(@display {label: "Google Sheet ID"} string spreadsheetId,
+            @display {label: "Worksheet ID"} int sheetId,
+            @display {label: "Column Position"} int index,
+            @display {label: "Number of Columns"} int numberOfColumns)
+                                            returns @tainted error? {
         int startIndex = index - 1;
         int endIndex = startIndex + numberOfColumns;
         json payload = {
@@ -460,12 +460,12 @@ public isolated client class Client {
     # + numberOfColumns - Number of columns to be added
     # + return - Nil() on success, or else an error
     @display {label: "Add Columns Before"}
-    remote isolated function addColumnsBeforeBySheetName(@display {label: "Google Sheet ID"} string spreadsheetId, 
-                                                         @display {label: "Worksheet Name"} string sheetName, 
-                                                         @display {label: "Column Position"} int index, 
-                                                         @display {label: "Number of Columns"} 
-                                                         int numberOfColumns) 
-                                                         returns @tainted error? {
+    remote isolated function addColumnsBeforeBySheetName(@display {label: "Google Sheet ID"} string spreadsheetId,
+            @display {label: "Worksheet Name"} string sheetName,
+            @display {label: "Column Position"} int index,
+            @display {label: "Number of Columns"}
+                                                        int numberOfColumns)
+                                                        returns @tainted error? {
         Sheet sheet = check self->getSheetByName(spreadsheetId, sheetName);
         int startIndex = index - 1;
         int endIndex = startIndex + numberOfColumns;
@@ -498,11 +498,11 @@ public isolated client class Client {
     # + numberOfColumns - Number of columns to be added
     # + return - Nil() on success, or else an error
     @display {label: "Add Columns After By Sheet ID"}
-    remote isolated function addColumnsAfter(@display {label: "Google Sheet ID"} string spreadsheetId, 
-                                             @display {label: "Worksheet ID"} int sheetId, 
-                                             @display {label: "Column Position"} int index, 
-                                             @display {label: "Number of Columns"} int numberOfColumns) 
-                                             returns @tainted error? {
+    remote isolated function addColumnsAfter(@display {label: "Google Sheet ID"} string spreadsheetId,
+            @display {label: "Worksheet ID"} int sheetId,
+            @display {label: "Column Position"} int index,
+            @display {label: "Number of Columns"} int numberOfColumns)
+                                            returns @tainted error? {
         int startIndex = index;
         int endIndex = startIndex + numberOfColumns;
         json payload = {
@@ -534,11 +534,11 @@ public isolated client class Client {
     # + numberOfColumns - Number of columns to be added
     # + return - Nil() on success, or else an error
     @display {label: "Add Columns After"}
-    remote isolated function addColumnsAfterBySheetName(@display {label: "Google Sheet ID"} string spreadsheetId, 
-                                                        @display {label: "Worksheet Name"} string sheetName, 
-                                                        @display {label: "Column Position"} int index, 
-                                                        @display {label: "Number of Columns"} 
-                                                        int numberOfColumns) 
+    remote isolated function addColumnsAfterBySheetName(@display {label: "Google Sheet ID"} string spreadsheetId,
+            @display {label: "Worksheet Name"} string sheetName,
+            @display {label: "Column Position"} int index,
+            @display {label: "Number of Columns"}
+                                                        int numberOfColumns)
                                                         returns @tainted error? {
         Sheet sheet = check self->getSheetByName(spreadsheetId, sheetName);
         int startIndex = index;
@@ -565,25 +565,25 @@ public isolated client class Client {
     }
 
     # Create or Update a Column.
-    # 
+    #
     # + spreadsheetId - ID of the spreadsheet
     # + sheetName - The name of the worksheet
     # + column - Position of column (string notation) to set the data
     # + values - Array of values of the column to be added
     # + valueInputOption - Determines how input data should be interpreted. 
-    #                      It's either "RAW" or "USER_ENTERED". Default is "RAW" (Optional).
-    #                      For more information, see [ValueInputOption](https://developers.google.com/sheets/api/reference/rest/v4/ValueInputOption)
+    # It's either "RAW" or "USER_ENTERED". Default is "RAW" (Optional).
+    # For more information, see [ValueInputOption](https://developers.google.com/sheets/api/reference/rest/v4/ValueInputOption)
     # + return - Nil() on success, or else an error
     @display {label: "Set Column"}
-    remote isolated function createOrUpdateColumn(@display {label: "Google Sheet ID"} string spreadsheetId, 
-                                                  @display {label: "Worksheet Name"} string sheetName, 
-                                                  @display {label: "Column Position"} string column, 
-                                                  @display {label: "Column Values"} (int|string|decimal)[] values,
-                                                  @display {label: "Value Input Option"} string? valueInputOption = ()) 
-                                                  returns @tainted error? {
+    remote isolated function createOrUpdateColumn(@display {label: "Google Sheet ID"} string spreadsheetId,
+            @display {label: "Worksheet Name"} string sheetName,
+            @display {label: "Column Position"} string column,
+            @display {label: "Column Values"} (int|string|decimal)[] values,
+            @display {label: "Value Input Option"} string? valueInputOption = ())
+                                                returns @tainted error? {
         string notation = sheetName + EXCLAMATION_MARK + column + COLON + column;
         string requestPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + notation;
-        requestPath = requestPath + ((valueInputOption is ()) ? string `${VALUE_INPUT_OPTION}${RAW}` : 
+        requestPath = requestPath + ((valueInputOption is ()) ? string `${VALUE_INPUT_OPTION}${RAW}` :
             string `${VALUE_INPUT_OPTION}${valueInputOption}`);
         json[] jsonValues = [];
         int i = 0;
@@ -598,12 +598,12 @@ public isolated client class Client {
                 jsonValues
             ]
         };
-        http:Request request = new();
+        http:Request request = new ();
         request.setJsonPayload(<@untainted>jsonPayload);
-        http:Response httpResponse = <http:Response> check self.httpClient->put(<@untainted>requestPath, request);
+        http:Response httpResponse = <http:Response>check self.httpClient->put(<@untainted>requestPath, request);
         if (httpResponse.statusCode == http:STATUS_OK) {
             _ = check httpResponse.getJsonPayload();
-            return; 
+            return;
         }
         return getErrorMessage(httpResponse);
     }
@@ -614,20 +614,20 @@ public isolated client class Client {
     # + sheetName - The name of the worksheet
     # + column - Position of Column (string notation) to retrieve the data
     # + valueRenderOption - Determines how values should be rendered in the output.
-    #                       It's either "FORMATTED_VALUE","UNFORMATTED_VALUE" or "FORMULA". 
-    #                       Default is "FORMATTED_VALUE" (Optional).
-    #                       For more information, see [ValueRenderOption](https://developers.google.com/sheets/api/reference/rest/v4/ValueRenderOption)
+    # It's either "FORMATTED_VALUE","UNFORMATTED_VALUE" or "FORMULA". 
+    # Default is "FORMATTED_VALUE" (Optional).
+    # For more information, see [ValueRenderOption](https://developers.google.com/sheets/api/reference/rest/v4/ValueRenderOption)
     # + return - `sheets:Column` record on success, or else an error
     @display {label: "Get Column"}
-    remote isolated function getColumn(@display {label: "Google Sheet ID"} string spreadsheetId, 
-                                       @display {label: "Worksheet Name"} string sheetName, 
-                                       @display {label: "Column Position"} string column,
-                                       @display {label: "Value Render Option"} string? valueRenderOption = ()) 
-                                       returns @tainted Column|error {
+    remote isolated function getColumn(@display {label: "Google Sheet ID"} string spreadsheetId,
+            @display {label: "Worksheet Name"} string sheetName,
+            @display {label: "Column Position"} string column,
+            @display {label: "Value Render Option"} string? valueRenderOption = ())
+                                        returns @tainted Column|error {
         (int|string|decimal)[] values = [];
         string a1Notation = sheetName + EXCLAMATION_MARK + column + COLON + column;
         string getColumnDataPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + a1Notation;
-        getColumnDataPath = getColumnDataPath + ((valueRenderOption is ()) ? EMPTY_STRING : 
+        getColumnDataPath = getColumnDataPath + ((valueRenderOption is ()) ? EMPTY_STRING :
             string `${QUESTION_MARK}${VALUE_RENDER_OPTION}${valueRenderOption}`);
         json|error response = sendRequest(self.httpClient, getColumnDataPath);
         if (response is error) {
@@ -663,11 +663,11 @@ public isolated client class Client {
     # + numberOfColumns - Number of columns from the starting position
     # + return - Nil() on success, or else an error
     @display {label: "Delete Columns By Sheet ID"}
-    remote isolated function deleteColumns(@display {label: "Google Sheet ID"} string spreadsheetId, 
-                                           @display {label: "Worksheet ID"} int sheetId, 
-                                           @display {label: "Starting Column Position"} int column, 
-                                           @display {label: "Number of Columns"} int numberOfColumns) 
-                                           returns @tainted error? {
+    remote isolated function deleteColumns(@display {label: "Google Sheet ID"} string spreadsheetId,
+            @display {label: "Worksheet ID"} int sheetId,
+            @display {label: "Starting Column Position"} int column,
+            @display {label: "Number of Columns"} int numberOfColumns)
+                                            returns @tainted error? {
         int startIndex = column - 1;
         int endIndex = startIndex + numberOfColumns;
         json payload = {
@@ -699,12 +699,12 @@ public isolated client class Client {
     # + numberOfColumns - Number of columns from the starting position
     # + return - Nil() on success, or else an error
     @display {label: "Delete Columns"}
-    remote isolated function deleteColumnsBySheetName(@display {label: "Google Sheet ID"} string spreadsheetId, 
-                                                      @display {label: "Worksheet Name"} string sheetName, 
-                                                      @display {label: "Starting Column Position"} int column, 
-                                                      @display {label: "Number of Columns"} 
-                                                      int numberOfColumns) 
-                                                      returns @tainted error? {
+    remote isolated function deleteColumnsBySheetName(@display {label: "Google Sheet ID"} string spreadsheetId,
+            @display {label: "Worksheet Name"} string sheetName,
+            @display {label: "Starting Column Position"} int column,
+            @display {label: "Number of Columns"}
+                                                    int numberOfColumns)
+                                                    returns @tainted error? {
         Sheet sheet = check self->getSheetByName(spreadsheetId, sheetName);
         int startIndex = column - 1;
         int endIndex = startIndex + numberOfColumns;
@@ -737,11 +737,11 @@ public isolated client class Client {
     # + numberOfRows - The number of rows to be added
     # + return - Nil() on success, or else an error
     @display {label: "Add Rows Before By Sheet ID"}
-    remote isolated function addRowsBefore(@display {label: "Google Sheet ID"} string spreadsheetId, 
-                                           @display {label: "Worksheet ID"} int sheetId, 
-                                           @display {label: "Row Position"} int index, 
-                                           @display {label: "Number of Rows"} int numberOfRows) 
-                                           returns @tainted error? {
+    remote isolated function addRowsBefore(@display {label: "Google Sheet ID"} string spreadsheetId,
+            @display {label: "Worksheet ID"} int sheetId,
+            @display {label: "Row Position"} int index,
+            @display {label: "Number of Rows"} int numberOfRows)
+                                            returns @tainted error? {
         int startIndex = index - 1;
         int endIndex = startIndex + numberOfRows;
         json payload = {
@@ -773,11 +773,11 @@ public isolated client class Client {
     # + numberOfRows - The number of rows to be added
     # + return - Nil() on success, or else an error
     @display {label: "Add Rows Before"}
-    remote isolated function addRowsBeforeBySheetName(@display {label: "Google Sheet ID"} string spreadsheetId, 
-                                                      @display {label: "Worksheet Name"} string sheetName, 
-                                                      @display {label: "Row Position"} int index, 
-                                                      @display {label: "Number of Rows"} int numberOfRows) 
-                                                      returns @tainted error? {
+    remote isolated function addRowsBeforeBySheetName(@display {label: "Google Sheet ID"} string spreadsheetId,
+            @display {label: "Worksheet Name"} string sheetName,
+            @display {label: "Row Position"} int index,
+            @display {label: "Number of Rows"} int numberOfRows)
+                                                    returns @tainted error? {
         Sheet sheet = check self->getSheetByName(spreadsheetId, sheetName);
         int startIndex = index - 1;
         int endIndex = startIndex + numberOfRows;
@@ -810,11 +810,11 @@ public isolated client class Client {
     # + numberOfRows - The number of rows to be added
     # + return - Nil() on success, or else an error
     @display {label: "Add Rows After By Sheet ID"}
-    remote isolated function addRowsAfter(@display {label: "Google Sheet ID"} string spreadsheetId, 
-                                          @display {label: "Worksheet ID"} int sheetId, 
-                                          @display {label: "Row Position"} int index, 
-                                          @display {label: "Number of Rows"} int numberOfRows) 
-                                          returns @tainted error? {
+    remote isolated function addRowsAfter(@display {label: "Google Sheet ID"} string spreadsheetId,
+            @display {label: "Worksheet ID"} int sheetId,
+            @display {label: "Row Position"} int index,
+            @display {label: "Number of Rows"} int numberOfRows)
+                                        returns @tainted error? {
         int startIndex = index;
         int endIndex = startIndex + numberOfRows;
         json payload = {
@@ -846,11 +846,11 @@ public isolated client class Client {
     # + numberOfRows - The number of rows to be added
     # + return - Nil() on success, or else an error
     @display {label: "Add Rows After"}
-    remote isolated function addRowsAfterBySheetName(@display {label: "Google Sheet ID"} string spreadsheetId, 
-                                                     @display {label: "Worksheet Name"} string sheetName, 
-                                                     @display {label: "Row Position"} int index, 
-                                                     @display {label: "Number of Rows"} int numberOfRows) 
-                                                     returns @tainted error? {
+    remote isolated function addRowsAfterBySheetName(@display {label: "Google Sheet ID"} string spreadsheetId,
+            @display {label: "Worksheet Name"} string sheetName,
+            @display {label: "Row Position"} int index,
+            @display {label: "Number of Rows"} int numberOfRows)
+                                                    returns @tainted error? {
         Sheet sheet = check self->getSheetByName(spreadsheetId, sheetName);
         int startIndex = index;
         int endIndex = startIndex + numberOfRows;
@@ -876,25 +876,25 @@ public isolated client class Client {
     }
 
     # Create or update a row.
-    # 
+    #
     # + spreadsheetId - ID of the spreadsheet
     # + sheetName - The name of the worksheet
     # + row - Position of row (integer notation) to set the data
     # + values - Array of values of the row to be added
     # + valueInputOption - Determines how input data should be interpreted. 
-    #                      It's either "RAW" or "USER_ENTERED". Default is "RAW" (Optional).
-    #                      For more information, see [ValueInputOption](https://developers.google.com/sheets/api/reference/rest/v4/ValueInputOption)
+    # It's either "RAW" or "USER_ENTERED". Default is "RAW" (Optional).
+    # For more information, see [ValueInputOption](https://developers.google.com/sheets/api/reference/rest/v4/ValueInputOption)
     # + return - Nil() on success, or else an error
     @display {label: "Set Row"}
-    remote isolated function createOrUpdateRow(@display {label: "Google Sheet ID"} string spreadsheetId, 
-                                               @display {label: "Worksheet Name"} string sheetName, 
-                                               @display {label: "Row Position"} int row, 
-                                               @display {label: "Row Values"} (int|string|decimal)[] values,
-                                               @display {label: "Value Input Option"} string? valueInputOption = ()) 
-                                               returns @tainted error? {
+    remote isolated function createOrUpdateRow(@display {label: "Google Sheet ID"} string spreadsheetId,
+            @display {label: "Worksheet Name"} string sheetName,
+            @display {label: "Row Position"} int row,
+            @display {label: "Row Values"} (int|string|decimal)[] values,
+            @display {label: "Value Input Option"} string? valueInputOption = ())
+                                                returns @tainted error? {
         string notation = sheetName + EXCLAMATION_MARK + row.toString() + COLON + row.toString();
         string requestPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + notation;
-        requestPath = requestPath + ((valueInputOption is ()) ? string `${VALUE_INPUT_OPTION}${RAW}` : 
+        requestPath = requestPath + ((valueInputOption is ()) ? string `${VALUE_INPUT_OPTION}${RAW}` :
             string `${VALUE_INPUT_OPTION}${valueInputOption}`);
         json[] jsonValues = [];
         int i = 0;
@@ -909,12 +909,12 @@ public isolated client class Client {
                 jsonValues
             ]
         };
-        http:Request request = new();
+        http:Request request = new ();
         request.setJsonPayload(<@untainted>jsonPayload);
-        http:Response httpResponse = <http:Response> check self.httpClient->put(<@untainted>requestPath, request);
+        http:Response httpResponse = <http:Response>check self.httpClient->put(<@untainted>requestPath, request);
         if (httpResponse.statusCode == http:STATUS_OK) {
             _ = check httpResponse.getJsonPayload();
-            return; 
+            return;
         }
         return getErrorMessage(httpResponse);
     }
@@ -925,20 +925,20 @@ public isolated client class Client {
     # + sheetName - The name of the worksheet
     # + row - Row number to retrieve the data
     # + valueRenderOption - Determines how values should be rendered in the output.
-    #                       It's either "FORMATTED_VALUE","UNFORMATTED_VALUE" or "FORMULA". 
-    #                       Default is "FORMATTED_VALUE" (Optional).
-    #                       For more information, see [ValueRenderOption](https://developers.google.com/sheets/api/reference/rest/v4/ValueRenderOption)
+    # It's either "FORMATTED_VALUE","UNFORMATTED_VALUE" or "FORMULA". 
+    # Default is "FORMATTED_VALUE" (Optional).
+    # For more information, see [ValueRenderOption](https://developers.google.com/sheets/api/reference/rest/v4/ValueRenderOption)
     # + return - `sheets:Row` record on success, or else an error
     @display {label: "Get Row"}
-    remote isolated function getRow(@display {label: "Google Sheet ID"} string spreadsheetId, 
-                                    @display {label: "Worksheet Name"} string sheetName, 
-                                    @display {label: "Row Position"} int row,
-                                    @display {label: "Value Render Option"} string? valueRenderOption = ()) 
+    remote isolated function getRow(@display {label: "Google Sheet ID"} string spreadsheetId,
+            @display {label: "Worksheet Name"} string sheetName,
+            @display {label: "Row Position"} int row,
+            @display {label: "Value Render Option"} string? valueRenderOption = ())
                                     returns @tainted Row|error {
         (int|string|decimal)[] values = [];
         string a1Notation = sheetName + EXCLAMATION_MARK + row.toString() + COLON + row.toString();
         string getRowDataPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + a1Notation;
-        getRowDataPath = getRowDataPath + ((valueRenderOption is ()) ? EMPTY_STRING : 
+        getRowDataPath = getRowDataPath + ((valueRenderOption is ()) ? EMPTY_STRING :
             string `${QUESTION_MARK}${VALUE_RENDER_OPTION}${valueRenderOption}`);
         json|error response = sendRequest(self.httpClient, getRowDataPath);
         if (response is error) {
@@ -970,10 +970,10 @@ public isolated client class Client {
     # + numberOfRows - Number of rows from the starting position
     # + return - Nil() on success, or else an error
     @display {label: "Delete Rows By Sheet ID"}
-    remote isolated function deleteRows(@display {label: "Google Sheet ID"} string spreadsheetId, 
-                                        @display {label: "Worksheet ID"} int sheetId, 
-                                        @display {label: "Starting Row Position"} int row, 
-                                        @display {label: "Number of Rows"} int numberOfRows) 
+    remote isolated function deleteRows(@display {label: "Google Sheet ID"} string spreadsheetId,
+            @display {label: "Worksheet ID"} int sheetId,
+            @display {label: "Starting Row Position"} int row,
+            @display {label: "Number of Rows"} int numberOfRows)
                                         returns @tainted error? {
         int startIndex = row - 1;
         int endIndex = startIndex + numberOfRows;
@@ -1006,11 +1006,11 @@ public isolated client class Client {
     # + numberOfRows - Number of rows from the starting position
     # + return - Nil() on success, or else an error
     @display {label: "Delete Rows"}
-    remote isolated function deleteRowsBySheetName(@display {label: "Google Sheet ID"} string spreadsheetId, 
-                                                   @display {label: "Worksheet Name"} string sheetName, 
-                                                   @display {label: "Starting Row Position"} int row, 
-                                                   @display {label: "Number of Rows"} int numberOfRows) 
-                                                   returns @tainted error? {
+    remote isolated function deleteRowsBySheetName(@display {label: "Google Sheet ID"} string spreadsheetId,
+            @display {label: "Worksheet Name"} string sheetName,
+            @display {label: "Starting Row Position"} int row,
+            @display {label: "Number of Rows"} int numberOfRows)
+                                                    returns @tainted error? {
         Sheet sheet = check self->getSheetByName(spreadsheetId, sheetName);
         int startIndex = row - 1;
         int endIndex = startIndex + numberOfRows;
@@ -1042,19 +1042,19 @@ public isolated client class Client {
     # + a1Notation - The required cell in A1 notation
     # + value - Value of the cell to be set
     # + valueInputOption - Determines how input data should be interpreted. 
-    #                      It's either "RAW" or "USER_ENTERED". Default is "RAW" (Optional).
-    #                      For more information, see [ValueInputOption](https://developers.google.com/sheets/api/reference/rest/v4/ValueInputOption)
+    # It's either "RAW" or "USER_ENTERED". Default is "RAW" (Optional).
+    # For more information, see [ValueInputOption](https://developers.google.com/sheets/api/reference/rest/v4/ValueInputOption)
     # + return - Nil() on success, or else an error
     @display {label: "Set Cell"}
-    remote isolated function setCell(@display {label: "Google Sheet ID"} string spreadsheetId, 
-                                     @display {label: "Worksheet Name"} string sheetName, 
-                                     @display {label: "Cell A1 Notation"} string a1Notation, 
-                                     @display {label: "Cell Value"} int|string|decimal value,
-                                     @display {label: "Value Input Option"} string? valueInputOption = ()) 
-                                     returns @tainted error? {
+    remote isolated function setCell(@display {label: "Google Sheet ID"} string spreadsheetId,
+            @display {label: "Worksheet Name"} string sheetName,
+            @display {label: "Cell A1 Notation"} string a1Notation,
+            @display {label: "Cell Value"} int|string|decimal value,
+            @display {label: "Value Input Option"} string? valueInputOption = ())
+                                    returns @tainted error? {
         string notatiob = sheetName + EXCLAMATION_MARK + a1Notation;
         string setCellDataPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + notatiob;
-        setCellDataPath = setCellDataPath + ((valueInputOption is ()) ? string `${VALUE_INPUT_OPTION}${RAW}` : 
+        setCellDataPath = setCellDataPath + ((valueInputOption is ()) ? string `${VALUE_INPUT_OPTION}${RAW}` :
             string `${VALUE_INPUT_OPTION}${valueInputOption}`);
         http:Request request = new;
         json jsonPayload = {"values": [[value]]};
@@ -1079,20 +1079,20 @@ public isolated client class Client {
     # + sheetName - The name of the worksheet
     # + a1Notation - The required cell in A1 notation
     # + valueRenderOption - Determines how values should be rendered in the output.
-    #                       It's either "FORMATTED_VALUE","UNFORMATTED_VALUE" or "FORMULA". 
-    #                       Default is "FORMATTED_VALUE" (Optional).
-    #                       For more information, see [ValueRenderOption](https://developers.google.com/sheets/api/reference/rest/v4/ValueRenderOption)
+    # It's either "FORMATTED_VALUE","UNFORMATTED_VALUE" or "FORMULA". 
+    # Default is "FORMATTED_VALUE" (Optional).
+    # For more information, see [ValueRenderOption](https://developers.google.com/sheets/api/reference/rest/v4/ValueRenderOption)
     # + return - `sheets:Cell` record on success, or else an error
     @display {label: "Get Cell"}
-    remote isolated function getCell(@display {label: "Google Sheet ID"} string spreadsheetId, 
-                                     @display {label: "Worksheet Name"} string sheetName, 
-                                     @display {label: "Cell A1 Notation"} string a1Notation,
-                                     @display {label: "Value Render Option"} string? valueRenderOption = ()) 
-                                     returns @tainted Cell|error {
+    remote isolated function getCell(@display {label: "Google Sheet ID"} string spreadsheetId,
+            @display {label: "Worksheet Name"} string sheetName,
+            @display {label: "Cell A1 Notation"} string a1Notation,
+            @display {label: "Value Render Option"} string? valueRenderOption = ())
+                                    returns @tainted Cell|error {
         int|string|decimal value = EMPTY_STRING;
         string notation = sheetName + EXCLAMATION_MARK + a1Notation;
         string getCellDataPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + notation;
-        getCellDataPath = getCellDataPath + ((valueRenderOption is ()) ? EMPTY_STRING : 
+        getCellDataPath = getCellDataPath + ((valueRenderOption is ()) ? EMPTY_STRING :
             string `${QUESTION_MARK}${VALUE_RENDER_OPTION}${valueRenderOption}`);
         json|error response = sendRequest(self.httpClient, getCellDataPath);
         if (response is error) {
@@ -1119,10 +1119,10 @@ public isolated client class Client {
     # + a1Notation - The required cell in A1 notation
     # + return - Nil() on success, or else an error
     @display {label: "Clear Cell"}
-    remote isolated function clearCell(@display {label: "Google Sheet ID"} string spreadsheetId, 
-                                       @display {label: "Worksheet name"} string sheetName, 
-                                       @display {label: "Required Cell A1 Notation"} string a1Notation) 
-                                       returns @tainted error? {
+    remote isolated function clearCell(@display {label: "Google Sheet ID"} string spreadsheetId,
+            @display {label: "Worksheet name"} string sheetName,
+            @display {label: "Required Cell A1 Notation"} string a1Notation)
+                                        returns @tainted error? {
         return self->clearRange(spreadsheetId, sheetName, a1Notation);
     }
 
@@ -1135,20 +1135,21 @@ public isolated client class Client {
     # + values - Array of values of the row to be added
     # + a1Notation - The required range in A1 notation (Optional)
     # + valueInputOption - Determines how input data should be interpreted. 
-    #                      It's either "RAW" or "USER_ENTERED". Default is "RAW" (Optional).
-    #                      For more information, see [ValueInputOption](https://developers.google.com/sheets/api/reference/rest/v4/ValueInputOption)           
+    # It's either "RAW" or "USER_ENTERED". Default is "RAW" (Optional).
+    # For more information, see [ValueInputOption](https://developers.google.com/sheets/api/reference/rest/v4/ValueInputOption)           
     # + return - Nil() on success, or else an error
     @display {label: "Append Row To Sheet"}
-    remote isolated function appendRowToSheet(@display {label: "Google Sheet ID"} string spreadsheetId, 
-                                              @display {label: "Worksheet Name"} string sheetName, 
-                                              @display {label: "Row Values"} (int|string|decimal)[] values,
-                                              @display {label: "Range A1 Notation"} string? a1Notation = (),
-                                              @display {label: "Value Input Option"} string? valueInputOption = ()) 
-                                              returns @tainted error? {
-        string notation = (a1Notation is ()) ? string `${sheetName}` : 
+    @deprecated
+    remote isolated function appendRowToSheet(@display {label: "Google Sheet ID"} string spreadsheetId,
+            @display {label: "Worksheet Name"} string sheetName,
+            @display {label: "Row Values"} (int|string|decimal)[] values,
+            @display {label: "Range A1 Notation"} string? a1Notation = (),
+            @display {label: "Value Input Option"} string? valueInputOption = ())
+                                            returns @tainted error? {
+        string notation = (a1Notation is ()) ? string `${sheetName}` :
             string `${sheetName}${EXCLAMATION_MARK}${a1Notation}`;
         string setValuePath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + notation + APPEND;
-        setValuePath = setValuePath + ((valueInputOption is ()) ? string `${VALUE_INPUT_OPTION}${RAW}` : 
+        setValuePath = setValuePath + ((valueInputOption is ()) ? string `${VALUE_INPUT_OPTION}${RAW}` :
             string `${VALUE_INPUT_OPTION}${valueInputOption}`);
         json[] jsonValues = [];
         int i = 0;
@@ -1179,20 +1180,20 @@ public isolated client class Client {
     # + values - Array of values of the row to be added
     # + a1Notation - The required range in A1 notation (Optional)
     # + valueInputOption - Determines how input data should be interpreted. 
-    #                      It's either "RAW" or "USER_ENTERED". Default is "RAW" (Optional).
-    #                      For more information, see [ValueInputOption](https://developers.google.com/sheets/api/reference/rest/v4/ValueInputOption)           
+    # It's either "RAW" or "USER_ENTERED". Default is "RAW" (Optional).
+    # For more information, see [ValueInputOption](https://developers.google.com/sheets/api/reference/rest/v4/ValueInputOption)           
     # + return - Row on success, or else an error
     @display {label: "Append Row"}
-    remote isolated function appendRow(@display {label: "Google Sheet ID"} string spreadsheetId, 
-                                              @display {label: "Worksheet Name"} string sheetName, 
-                                              @display {label: "Row Values"} (int|string|decimal)[] values,
-                                              @display {label: "Range A1 Notation"} string? a1Notation = (),
-                                              @display {label: "Value Input Option"} string? valueInputOption = ()) 
-                                              returns @tainted error|Row {
-        string notation = (a1Notation is ()) ? string `${sheetName}` : 
+    remote isolated function appendRow(@display {label: "Google Sheet ID"} string spreadsheetId,
+            @display {label: "Worksheet Name"} string sheetName,
+            @display {label: "Row Values"} (int|string|decimal|boolean)[] values,
+            @display {label: "Range A1 Notation"} string? a1Notation = (),
+            @display {label: "Value Input Option"} string? valueInputOption = ())
+                                            returns @tainted error|RowValue {
+        string notation = (a1Notation is ()) ? string `${sheetName}` :
             string `${sheetName}${EXCLAMATION_MARK}${a1Notation}`;
         string setValuePath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + notation + APPEND;
-        setValuePath = setValuePath + ((valueInputOption is ()) ? string `${VALUE_INPUT_OPTION}${RAW}` : 
+        setValuePath = setValuePath + ((valueInputOption is ()) ? string `${VALUE_INPUT_OPTION}${RAW}` :
             string `${VALUE_INPUT_OPTION}${valueInputOption}`);
         json[] jsonValues = [];
         int i = 0;
@@ -1207,25 +1208,21 @@ public isolated client class Client {
                 jsonValues
             ]
         };
-        json|error response = sendRequestWithPayload(self.httpClient, <@untainted>setValuePath,
-            <@untainted>jsonPayload);
-        if response is error {
-            return response;
-        } else {
-            if response.updates !is error {
-                json jsonResponseValues = check response.updates.ensureType();
-                string range = check jsonResponseValues.updatedRange.ensureType();      
-                regexp:Span? rowIndex = re `\d+`.find(re `:`.split(re `!`.split(range)[1])[0], 0);
-                if rowIndex is () {
-                    return <error>error(string `Error: ${range}, does not match the expected range format: A1 range. `);
-                }
-                int rowID = check int:fromString(rowIndex.substring());
-                Row rowRecord = {rowPosition: rowID, values: values};
-                return rowRecord;
-            } else {
-                return <error> response.updates;
+        json response = check sendRequestWithPayload(self.httpClient, setValuePath, jsonPayload);
+        if response.updates !is error {
+            json jsonResponseValues = check response.updates.ensureType();
+            string range = check jsonResponseValues.updatedRange.ensureType();
+            regexp:Span? rowIndex = re `\d+`.find(re `:`.split(re `!`.split(range)[1])[0], 0);
+            if rowIndex is () {
+                return <error>error(string `Error: ${range}, does not match the expected range format: A1 range. `);
             }
+            int rowID = check int:fromString(rowIndex.substring());
+            RowValue rowRecord = {rowPosition: rowID, values: values};
+            return rowRecord;
+        } else {
+            return <error>response.updates;
         }
+
     }
 
     # Copies the sheet to a given spreadsheet by worksheet ID.
@@ -1235,9 +1232,9 @@ public isolated client class Client {
     # + destinationId - ID of the spreadsheet to copy the sheet to
     # + return - Nil() on success, or else an error
     @display {label: "Copy Sheet By Sheet ID"}
-    remote isolated function copyTo(@display {label: "Google Sheet ID"} string spreadsheetId, 
-                                    @display {label: "Worksheet ID"} int sheetId, 
-                                    @display {label: "Destination Google Sheet ID"} string destinationId) 
+    remote isolated function copyTo(@display {label: "Google Sheet ID"} string spreadsheetId,
+            @display {label: "Worksheet ID"} int sheetId,
+            @display {label: "Destination Google Sheet ID"} string destinationId)
                                     returns @tainted error? {
         string notation = sheetId.toString();
         string copyToPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + SHEETS_PATH + notation +
@@ -1256,10 +1253,10 @@ public isolated client class Client {
     # + destinationId - ID of the spreadsheet to copy the sheet to
     # + return - Nil() on success, or else an error
     @display {label: "Copy Worksheet"}
-    remote isolated function copyToBySheetName(@display {label: "Google Sheet ID"} string spreadsheetId, 
-                                               @display {label: "Worksheet Name"} string sheetName, 
-                                               @display {label: "Destination Google Sheet ID"} string destinationId) 
-                                               returns @tainted error? {
+    remote isolated function copyToBySheetName(@display {label: "Google Sheet ID"} string spreadsheetId,
+            @display {label: "Worksheet Name"} string sheetName,
+            @display {label: "Destination Google Sheet ID"} string destinationId)
+                                                returns @tainted error? {
         Sheet sheet = check self->getSheetByName(spreadsheetId, sheetName);
         int sheetId = sheet.properties.sheetId;
         string notation = sheetId.toString();
@@ -1278,8 +1275,8 @@ public isolated client class Client {
     # + sheetId - ID of the worksheet
     # + return - Nil() on success, or else an error
     @display {label: "Clear All By Sheet ID"}
-    remote isolated function clearAll(@display {label: "Google Sheet ID"} string spreadsheetId, 
-                                      @display {label: "Worksheet ID"} int sheetId) returns @tainted error? {
+    remote isolated function clearAll(@display {label: "Google Sheet ID"} string spreadsheetId,
+            @display {label: "Worksheet ID"} int sheetId) returns @tainted error? {
         json payload = {
             "requests": [
                 {
@@ -1305,9 +1302,9 @@ public isolated client class Client {
     # + sheetName - The name of the worksheet
     # + return - Nil() on success, or else an error
     @display {label: "Clear Worksheet"}
-    remote isolated function clearAllBySheetName(@display {label: "Google Sheet ID"} string spreadsheetId, 
-                                                 @display {label: "Worksheet Name"} string sheetName) 
-                                                 returns @tainted error? {
+    remote isolated function clearAllBySheetName(@display {label: "Google Sheet ID"} string spreadsheetId,
+            @display {label: "Worksheet Name"} string sheetName)
+                                                returns @tainted error? {
         Sheet sheet = check self->getSheetByName(spreadsheetId, sheetName);
         json payload = {
             "requests": [
@@ -1329,7 +1326,7 @@ public isolated client class Client {
     }
 
     # Add developer metadata to the given row
-    # 
+    #
     # + spreadsheetId - ID of the spreadsheet
     # + sheetId - The ID of the worksheet
     # + rowIndex - ID of the target row
@@ -1338,13 +1335,13 @@ public isolated client class Client {
     # + value - Value assigned with the key. This should be unique.     
     # + return - Nil() on success, or else an error
     @display {label: "Set Row Metadata"}
-    remote isolated function setRowMetaData(@display {label: "Google Sheet ID"} string spreadsheetId, 
-                                              @display {label: "Worksheet Id"} int sheetId, 
-                                              @display {label: "Index of the Row"} int rowIndex,
-                                              @display {label: "Visibility of the Metadata"} Visibility visibility,
-                                              @display {label: "Metadata Key"} string key,
-                                               @display {label: "Metadata Value"} string value) 
-                                              returns @tainted error? {
+    remote isolated function setRowMetaData(@display {label: "Google Sheet ID"} string spreadsheetId,
+            @display {label: "Worksheet Id"} int sheetId,
+            @display {label: "Index of the Row"} int rowIndex,
+            @display {label: "Visibility of the Metadata"} Visibility visibility,
+            @display {label: "Metadata Key"} string key,
+            @display {label: "Metadata Value"} string value)
+                                            returns @tainted error? {
 
         string setValuePath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + BATCH_UPDATE_REQUEST;
 
@@ -1357,7 +1354,7 @@ public isolated client class Client {
                                 "dimensionRange": {
                                     "sheetId": sheetId,
                                     "dimension": "ROWS",
-                                    "startIndex": rowIndex-1,
+                                    "startIndex": rowIndex - 1,
                                     "endIndex": rowIndex
                                 }
                             },
@@ -1365,7 +1362,7 @@ public isolated client class Client {
                             "metadataKey": key,
                             "metadataValue": value
                         }
-                    }             
+                    }
                 }
             ]
         };
@@ -1385,46 +1382,47 @@ public isolated client class Client {
     # + filter - A record defining the filter used for the data filtering
     # + return - Row[] on success, or else an error
     @display {label: "Get Row Using Data Filters"}
-    remote isolated function getRowByDataFilter(@display {label: "Google Sheet ID"} string spreadsheetId, 
-                                              @display {label: "Worksheet Id"} int sheetId, 
-                                              @display {label: "Filter"} (string|DeveloperMetadataLookupFilter|GridRangeFilter) filter) 
-                                              returns @tainted error|Row[] {
+    remote isolated function getRowByDataFilter(@display {label: "Google Sheet ID"} string spreadsheetId,
+            @display {label: "Worksheet Id"} int sheetId,
+            @display {label: "Filter"} (string|DeveloperMetadataLookupFilter|GridRangeFilter) filter)
+                                            returns error|RowValue[] {
 
         string getValuePath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + BATCH_GET_BY_DATAFILTER_REQUEST;
 
         json jsonPayload;
         if filter is string {
             jsonPayload = {
-                        "dataFilters": [
-                            {
-                                "a1Range": filter
-                            }
-                        ],
-                        "majorDimension": "ROWS"
+                "dataFilters": [
+                    {
+                        "a1Range": filter
+                    }
+                ],
+                "majorDimension": "ROWS"
             };
         } else if filter is GridRangeFilter {
             jsonPayload = {
-                        "dataFilters": [ {
-                            "gridRange": (<GridRangeFilter>filter).toJson()
-                        }
-                        ],
-                        "majorDimension": "ROWS"
+                "dataFilters": [
+                    {
+                        "gridRange": (<GridRangeFilter>filter).toJson()
+                    }
+                ],
+                "majorDimension": "ROWS"
             };
         } else {
             jsonPayload = {
-                        "dataFilters": [ {
-                                "developerMetadataLookup": (<DeveloperMetadataLookupFilter>filter).toJson()
-                            }
-                        ],
-                        "majorDimension": "ROWS"
+                "dataFilters": [
+                    {
+                        "developerMetadataLookup": (<DeveloperMetadataLookupFilter>filter).toJson()
+                    }
+                ],
+                "majorDimension": "ROWS"
             };
         }
-        json|error response = sendRequestWithPayload(self.httpClient, <@untainted>getValuePath,
-            <@untainted>jsonPayload);
+        json|error response = sendRequestWithPayload(self.httpClient, getValuePath, jsonPayload);
         if (response is error) {
             return response;
         } else {
-            Row[] output = [];
+            RowValue[] output = [];
             if response.valueRanges is error {
                 return output;
             }
@@ -1436,7 +1434,7 @@ public isolated client class Client {
                     return output;
                 }
                 json[] values = check jsonValues.ensureType();
-                string range = check value.valueRange.range.ensureType();       
+                string range = check value.valueRange.range.ensureType();
                 regexp:Span? rowIndex = re `\d+`.find(re `:`.split(re `!`.split(range)[1])[0], 0);
                 if rowIndex is () {
                     return <error>error(string `Error: ${range}, does not match the expected range format: A1 range. `);
@@ -1446,12 +1444,11 @@ public isolated client class Client {
                 foreach json item in valueJsonArray {
                     valueArray.push(item.toString());
                 }
-                output.push({rowPosition: rowID, values : valueArray});
+                output.push({rowPosition: rowID, values: valueArray});
             }
             return output;
         }
     }
-
 
     # Update rows matching the user provided data filter
     # Supports a1Range, gridRange and Developer metadata lookup filters
@@ -1461,21 +1458,21 @@ public isolated client class Client {
     # + filter - A record defining the filter used for the data filtering
     # + values - Values to assign.    
     # + valueInputOption - Determines how input data should be interpreted. 
-    #                      It's either "RAW" or "USER_ENTERED". Default is "RAW" (Optional).
-    #                      For more information, see [ValueInputOption](https://developers.google.com/sheets/api/reference/rest/v4/ValueInputOption)
+    # It's either "RAW" or "USER_ENTERED". Default is "RAW" (Optional).
+    # For more information, see [ValueInputOption](https://developers.google.com/sheets/api/reference/rest/v4/ValueInputOption)
     # + return - Nil() on success, or else an error
     @display {label: "Update Row Using Data Filters"}
-    remote isolated function updateRowByDataFilter(@display {label: "Google Sheet ID"} string spreadsheetId, 
-                                              @display {label: "Worksheet Id"} int sheetId, 
-                                              @display {label: "Filter"} (string|DeveloperMetadataLookupFilter|GridRangeFilter) filter,
-                                              @display {label: "Row Values"} (int|string|decimal)[] values,
-                                              @display {label: "Value Input Option"} string valueInputOption) 
-                                              returns @tainted error? {
+    remote isolated function updateRowByDataFilter(@display {label: "Google Sheet ID"} string spreadsheetId,
+            @display {label: "Worksheet Id"} int sheetId,
+            @display {label: "Filter"} (string|DeveloperMetadataLookupFilter|GridRangeFilter) filter,
+            @display {label: "Row Values"} (int|string|decimal|boolean)[] values,
+            @display {label: "Value Input Option"} string valueInputOption)
+                                            returns error? {
 
         string setValuePath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + BATCH_UPDATE_BY_DATAFILTER_REQUEST;
         json[] jsonValues = [];
         int i = 0;
-        foreach (string|int|decimal) value in values {
+        foreach (string|int|decimal|boolean) value in values {
             jsonValues[i] = value;
             i = i + 1;
         }
@@ -1495,9 +1492,9 @@ public isolated client class Client {
                         ]
                     }
                 ],
-            "includeValuesInResponse": false,
-            "responseValueRenderOption": "FORMATTED_VALUE",
-            "responseDateTimeRenderOption": "SERIAL_NUMBER"
+                "includeValuesInResponse": false,
+                "responseValueRenderOption": "FORMATTED_VALUE",
+                "responseDateTimeRenderOption": "SERIAL_NUMBER"
             };
         } else if filter is GridRangeFilter {
             jsonPayload = {
@@ -1513,9 +1510,9 @@ public isolated client class Client {
                         ]
                     }
                 ],
-            "includeValuesInResponse": false,
-            "responseValueRenderOption": "FORMATTED_VALUE",
-            "responseDateTimeRenderOption": "SERIAL_NUMBER"
+                "includeValuesInResponse": false,
+                "responseValueRenderOption": "FORMATTED_VALUE",
+                "responseDateTimeRenderOption": "SERIAL_NUMBER"
             };
         } else {
             jsonPayload = {
@@ -1531,14 +1528,13 @@ public isolated client class Client {
                         ]
                     }
                 ],
-            "includeValuesInResponse": false,
-            "responseValueRenderOption": "FORMATTED_VALUE",
-            "responseDateTimeRenderOption": "SERIAL_NUMBER"
+                "includeValuesInResponse": false,
+                "responseValueRenderOption": "FORMATTED_VALUE",
+                "responseDateTimeRenderOption": "SERIAL_NUMBER"
             };
         }
 
-        json|error response = sendRequestWithPayload(self.httpClient, <@untainted>setValuePath,
-            <@untainted>jsonPayload);
+        json|error response = sendRequestWithPayload(self.httpClient, setValuePath, jsonPayload);
         if (response is error) {
             return response;
         }
@@ -1552,12 +1548,10 @@ public isolated client class Client {
     # + filter - A record defining the filter used for the data filtering
     # + return - Nil() on success, or else an error
     @display {label: "delete Row Using Data Filters"}
-    remote isolated function deleteRowByDataFilter(@display {label: "Google Sheet ID"} string spreadsheetId, 
-                                              @display {label: "Worksheet Id"} int sheetId, 
-                                              @display {label: "Filter"} (string|DeveloperMetadataLookupFilter|GridRangeFilter) filter) 
-                                              returns @tainted error? {
-
-        
+    remote isolated function deleteRowByDataFilter(@display {label: "Google Sheet ID"} string spreadsheetId,
+            @display {label: "Worksheet Id"} int sheetId,
+            @display {label: "Filter"} (string|DeveloperMetadataLookupFilter|GridRangeFilter) filter)
+                                            returns error? {
 
         string getValuePath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + BATCH_GET_BY_DATAFILTER_REQUEST;
 
@@ -1566,37 +1560,38 @@ public isolated client class Client {
         json jsonPayload;
         if filter is string {
             jsonPayload = {
-                        "dataFilters": [
-                            {
-                                "a1Range": filter
-                            }
-                        ],
-                        "majorDimension": "ROWS"
+                "dataFilters": [
+                    {
+                        "a1Range": filter
+                    }
+                ],
+                "majorDimension": "ROWS"
             };
         } else if filter is GridRangeFilter {
             jsonPayload = {
-                        "dataFilters": [ {
-                            "gridRange": (<GridRangeFilter>filter).toJson()
-                        }
-                        ],
-                        "majorDimension": "ROWS"
+                "dataFilters": [
+                    {
+                        "gridRange": (<GridRangeFilter>filter).toJson()
+                    }
+                ],
+                "majorDimension": "ROWS"
             };
         } else {
             jsonPayload = {
-                        "dataFilters": [ {
-                                "developerMetadataLookup": (<DeveloperMetadataLookupFilter>filter).toJson()
-                            }
-                        ],
-                        "majorDimension": "ROWS"
+                "dataFilters": [
+                    {
+                        "developerMetadataLookup": (<DeveloperMetadataLookupFilter>filter).toJson()
+                    }
+                ],
+                "majorDimension": "ROWS"
             };
         }
 
-        json|error response = sendRequestWithPayload(self.httpClient, <@untainted>getValuePath,
-            <@untainted>jsonPayload);
+        json|error response = sendRequestWithPayload(self.httpClient, getValuePath, jsonPayload);
         if response is error {
             return response;
         } else {
-            Row[] output = [];
+            RowValue[] output = [];
             if (response.valueRanges is error) {
                 return <error>error(string `Error: Value does not exist matching the defined filter. `);
             }
@@ -1608,7 +1603,7 @@ public isolated client class Client {
                     return jsonValues;
                 }
                 json[] values = check jsonValues.ensureType();
-                string range = check value.valueRange.range.ensureType();       
+                string range = check value.valueRange.range.ensureType();
                 regexp:Span? rowIndex = re `\d+`.find(re `:`.split(re `!`.split(range)[1])[0], 0);
                 if rowIndex is () {
                     return <error>error(string `Error: ${range}, does not match the expected range format: A1 range. `);
@@ -1618,25 +1613,25 @@ public isolated client class Client {
                 foreach json item in valueJsonArray {
                     valueArray.push(item.toString());
                 }
-                output.push({rowPosition: rowID, values : valueArray});
+                output.push({rowPosition: rowID, values: valueArray});
             }
-            foreach Row row in output {
+            foreach RowValue row in output {
                 jsonPayload = {
                     "requests": [
-                        {  
+                        {
                             "deleteDimension": {
                                 "range": {
                                     "sheetId": sheetId,
                                     "dimension": "ROWS",
-                                    "startIndex": row.rowPosition-1,
+                                    "startIndex": row.rowPosition - 1,
                                     "endIndex": row.rowPosition
                                 }
                             }
                         }
                     ]
                 };
-                json|error rowDeleteResponse = sendRequestWithPayload(self.httpClient, <@untainted>setValuePath,
-                    <@untainted>jsonPayload);
+                json|error rowDeleteResponse = sendRequestWithPayload(self.httpClient, setValuePath,
+                    jsonPayload);
                 if (rowDeleteResponse is error) {
                     return rowDeleteResponse;
                 }
