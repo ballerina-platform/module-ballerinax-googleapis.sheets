@@ -332,7 +332,6 @@ public type DimensionRange record {
     int endIndex;
 };
 
-
 # The gridrange filters
 # + sheetId - The ID of the worksheet
 # + startRowIndex - The start row (inclusive) of the range, or not set if unbounded.
