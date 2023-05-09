@@ -155,16 +155,34 @@ public type Row record {
     (int|string|decimal)[] values;
 };
 
-# Single row in a sheet.
+# A1 Notation of a ValueRange
+#
+# + sheetName - Sheet name in A1 notation
+# + startIndex - Starting cell of the range
+# + endIndex - Ending cell of the range
+@display {label: "A1Notation"}
+public type A1Notation record {
+    @display {label: "Sheet Name"}
+    string sheetName;
+    @display {label: "Start Index"}
+    string startIndex?;
+    @display {label: "End Index"}
+    string endIndex?;
+};
+
+# Values related to a single row.
 #
 # + rowPosition - The row number
 # + values - Values of the given row
-@display {label: "Row"}
-public type RowValue record {
+# + a1Notation - A1Notation of the range
+@display {label: "ValueRange"}
+public type ValueRange record {
     @display {label: "Row Number"}
     int rowPosition;
     @display {label: "Values"}
-    (int|string|decimal|boolean)[] values;
+    (int|string|decimal|boolean|float)[] values;
+    @display {label: "A1 Notation"}
+    A1Notation a1Notation;
 };
 
 # Single cell in a sheet.
