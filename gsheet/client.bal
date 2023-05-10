@@ -90,7 +90,7 @@ public isolated client class Client {
     }
 
     # Get all spreadsheet files.
-    #
+    # 
     # + return - Stream of `sheets:File` records on success, or else an error
     @display {label: "Get All Spreadsheets"}
     remote isolated function getAllSpreadsheets() returns @display {label: "Stream of Files"} stream<File,error?>|error {
@@ -104,8 +104,8 @@ public isolated client class Client {
     # + name - New name for the spreadsheet
     # + return - Nil() on success, or else an error
     @display {label: "Rename Google Sheet"}
-    remote isolated function renameSpreadsheet(@display {label: "Google Sheet ID"} string spreadsheetId,
-                                               @display {label: "New Google Sheet Name"} string name)
+    remote isolated function renameSpreadsheet(@display {label: "Google Sheet ID"} string spreadsheetId, 
+                                               @display {label: "New Google Sheet Name"} string name) 
                                                returns @tainted error? {
         json payload = {
             "requests": [
@@ -328,8 +328,8 @@ public isolated client class Client {
             return error("Invalid range notation");
         }
         string notation = sheetName + EXCLAMATION_MARK + a1Notation;
-        string setValuePath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + notation; 
-        setValuePath = setValuePath + ((valueInputOption is ()) ? string `${VALUE_INPUT_OPTION}${RAW}` :
+        string setValuePath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + notation;
+        setValuePath = setValuePath + ((valueInputOption is ()) ? string `${VALUE_INPUT_OPTION}${RAW}` : 
             string `${VALUE_INPUT_OPTION}${valueInputOption}`);
         http:Request request = new;
         json[][] jsonValues = [];
@@ -464,7 +464,7 @@ public isolated client class Client {
                                                          @display {label: "Worksheet Name"} string sheetName, 
                                                          @display {label: "Column Position"} int index, 
                                                          @display {label: "Number of Columns"} 
-                                                         int numberOfColumns)
+                                                         int numberOfColumns) 
                                                          returns @tainted error? {
         Sheet sheet = check self->getSheetByName(spreadsheetId, sheetName);
         int startIndex = index - 1;
@@ -703,7 +703,7 @@ public isolated client class Client {
                                                       @display {label: "Worksheet Name"} string sheetName, 
                                                       @display {label: "Starting Column Position"} int column, 
                                                       @display {label: "Number of Columns"} 
-                                                      int numberOfColumns)
+                                                      int numberOfColumns) 
                                                       returns @tainted error? {
         Sheet sheet = check self->getSheetByName(spreadsheetId, sheetName);
         int startIndex = column - 1;
@@ -1049,9 +1049,9 @@ public isolated client class Client {
     remote isolated function setCell(@display {label: "Google Sheet ID"} string spreadsheetId, 
                                      @display {label: "Worksheet Name"} string sheetName, 
                                      @display {label: "Cell A1 Notation"} string a1Notation, 
-                                     @display {label: "Cell Value"} int|string|decimal value, 
+                                     @display {label: "Cell Value"} int|string|decimal value,
                                      @display {label: "Value Input Option"} string? valueInputOption = ()) 
-                                    returns @tainted error? {
+                                     returns @tainted error? {
         string notatiob = sheetName + EXCLAMATION_MARK + a1Notation;
         string setCellDataPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + notatiob;
         setCellDataPath = setCellDataPath + ((valueInputOption is ()) ? string `${VALUE_INPUT_OPTION}${RAW}` : 
@@ -1149,12 +1149,12 @@ public isolated client class Client {
                                               @display {label: "Worksheet Name"} string sheetName,
                                               @display {label: "Row Values"} (int|string|decimal)[] values,
                                               @display {label: "Range A1 Notation"} string? a1Notation = (),
-                                              @display {label: "Value Input Option"} string? valueInputOption = ())
-                                            returns @tainted error? {
-        string notation = (a1Notation is ()) ? string `${sheetName}` :
+                                              @display {label: "Value Input Option"} string? valueInputOption = ()) 
+                                              returns @tainted error? {
+        string notation = (a1Notation is ()) ? string `${sheetName}` : 
             string `${sheetName}${EXCLAMATION_MARK}${a1Notation}`;
         string setValuePath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + notation + APPEND;
-        setValuePath = setValuePath + ((valueInputOption is ()) ? string `${VALUE_INPUT_OPTION}${RAW}` :
+        setValuePath = setValuePath + ((valueInputOption is ()) ? string `${VALUE_INPUT_OPTION}${RAW}` : 
             string `${VALUE_INPUT_OPTION}${valueInputOption}`);
         json[] jsonValues = [];
         int i = 0;
