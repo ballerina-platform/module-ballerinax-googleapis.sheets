@@ -1186,7 +1186,7 @@ public isolated client class Client {
     # + valueInputOption - Determines how input data should be interpreted. 
     #                      It's either "RAW" or "USER_ENTERED". Default is "RAW" (Optional).
     #                      For more information, see [ValueInputOption](https://developers.google.com/sheets/api/reference/rest/v4/ValueInputOption)           
-    # + return - Row on success, or else an error
+    # + return - ValueRange on success, or else an error
     @display {label: "Append Value"}
     remote isolated function appendValue(@display {label: "Google Sheet ID"} string spreadsheetId,
                                          @display {label: "Row Values"} (int|string|decimal|boolean|float)[] values,
@@ -1194,7 +1194,6 @@ public isolated client class Client {
                                          @display {label: "Value Input Option"} string? valueInputOption = ())
                                          returns error|ValueRange {
 
-        string sheetName = a1Notation.sheetName;
         string notation = check self.getA1Filter(a1Notation);
         string setValuePath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + notation + APPEND;
         setValuePath = setValuePath + (valueInputOption is () ? string `${VALUE_INPUT_OPTION}${RAW}` :
