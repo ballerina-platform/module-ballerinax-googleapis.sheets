@@ -1195,7 +1195,7 @@ public isolated client class Client {
                                          returns error|ValueRange {
 
         string sheetName = a1Notation.sheetName;
-        string notation = self.getA1Filter(a1Notation);
+        string notation = check self.getA1Filter(a1Notation);
         string setValuePath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + notation + APPEND;
         setValuePath = setValuePath + (valueInputOption is () ? string `${VALUE_INPUT_OPTION}${RAW}` :
             string `${VALUE_INPUT_OPTION}${valueInputOption}`);
@@ -1391,7 +1391,7 @@ public isolated client class Client {
         string getValuePath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + BATCH_GET_BY_DATAFILTER_REQUEST;
         json jsonPayload;
         if filter is A1Notation {
-            string a1RangeFilter = self.getA1Filter(filter);
+            string a1RangeFilter = check self.getA1Filter(filter);
             jsonPayload = {
                 "dataFilters": [
                     {
@@ -1476,7 +1476,7 @@ public isolated client class Client {
         json[] jsonValues = check values.ensureType();
         json jsonPayload;
         if filter is A1Notation {
-            string a1RangeFilter = self.getA1Filter(filter);
+            string a1RangeFilter = check self.getA1Filter(filter);
             jsonPayload = {
                 "valueInputOption": valueInputOption,
                 "data": [
@@ -1551,7 +1551,7 @@ public isolated client class Client {
         string setValuePath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + BATCH_UPDATE_REQUEST;
         json jsonPayload;
         if filter is A1Notation {
-            string a1RangeFilter = self.getA1Filter(filter);
+            string a1RangeFilter = check self.getA1Filter(filter);
             jsonPayload = {
                 "dataFilters": [
                     {
@@ -1631,10 +1631,10 @@ public isolated client class Client {
         }
     }
 
-    private isolated function getA1Filter(A1Notation a1Notation) returns string {
-        string filter = "";
-        if a1Notation.hasKey("sheetName") {
-            filter = string `${<string>a1Notation.sheetName}`;
+    private isolated function getA1Filter(A1Notation a1Notation) returns string|error {
+        string filter = string `${a1Notation.sheetName}`;
+        if !a1Notation.hasKey("startIndex") && a1Notation.hasKey("endIndex") {
+            return error("Error: The provided A1Notation is not supported. ");
         }
         if a1Notation.hasKey("startIndex") {
             filter = string `${filter}!${<string>a1Notation.startIndex}`;
