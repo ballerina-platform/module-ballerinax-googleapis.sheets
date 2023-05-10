@@ -155,6 +155,36 @@ public type Row record {
     (int|string|decimal)[] values;
 };
 
+# A1 Notation of a ValueRange
+#
+# + sheetName - Sheet name in A1 notation
+# + startIndex - Starting cell of the range
+# + endIndex - Ending cell of the range
+@display {label: "A1Notation"}
+public type A1Notation record {
+    @display {label: "Sheet Name"}
+    string sheetName;
+    @display {label: "Start Index"}
+    string startIndex?;
+    @display {label: "End Index"}
+    string endIndex?;
+};
+
+# Values related to a single row.
+#
+# + rowPosition - The row number
+# + values - Values of the given row
+# + a1Notation - A1Notation of the range
+@display {label: "ValueRange"}
+public type ValueRange record {
+    @display {label: "Row Number"}
+    int rowPosition;
+    @display {label: "Values"}
+    (int|string|decimal|boolean|float)[] values;
+    @display {label: "A1 Notation"}
+    A1Notation a1Notation;
+};
+
 # Single cell in a sheet.
 #
 # + a1Notation - The column letter followed by the row number.
@@ -211,3 +241,133 @@ public type File record {
     @display {label: "Mime Type"}
     string mimeType;
 };
+
+# The metadata visibility
+# 
+@display {label: "Metadata visibility"}
+public enum Visibility {
+    UNSPECIFIED_VISIBILITY = "DEVELOPER_METADATA_VISIBILITY_UNSPECIFIED",
+    DOCUMENT = "DOCUMENT",
+    PROJECT = "PROJECT"
+};
+
+# The location type for filters
+# 
+@display {label: "Location Type"}
+public enum LocationType {
+    UNSPECIFIED_LOCATION = "DEVELOPER_METADATA_LOCATION_TYPE_UNSPECIFIED",
+    COLUMN = "COLUMN",
+    SPREADSHEET = "SPREADSHEET",
+    SHEET = "SHEET",
+    ROW = "ROW"
+};
+
+# Dimension
+#
+@display {label: "Dimension"}
+public enum Dimension {
+    UNSPECIFIED_DIMENSION = "DIMENSION_UNSPECIFIED",
+    COLUMNS = "COLUMNS",
+    ROWS = "ROWS"
+};
+
+# The location matching strategy for filters
+#
+# + kind - Indicates location matching strategy used in filter.  
+@display {label: "Location Matching Strategy"}
+public enum LocationMatchingStrategy {
+    UNSPECIFIED_STRATEGY = "DEVELOPER_METADATA_LOCATION_MATCHING_STRATEGY_UNSPECIFIED",
+    EXACT_LOCATION = "EXACT_LOCATION",
+    INTERSECTING_LOCATION = "INTERSECTING_LOCATION"
+};
+
+# The developerMetadataLookup filter
+#  
+# + locationType - Specified type which the metadata ara associated. 
+#                  For more information, see [LocationType](https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.developerMetadata#DeveloperMetadata.DeveloperMetadataLocationType)
+# + locationMatchingStrategy - An enumeration of strategies for matching developer metadata locations.
+#                              For more information, see [locationMatchingStrategy](https://developers.google.com/sheets/api/reference/rest/v4/DataFilter#DeveloperMetadataLocationMatchingStrategy).
+# + metadataId - The spreadsheet-scoped unique ID that identifies the metadata.
+# + metadataKey - Key used to identify metadata.
+# + metadataValue - Data associated with the metadata's key.
+# + visibility - Visibility scope of the associated metadata
+#                For more information, see [Visibility](https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.developerMetadata#DeveloperMetadata.DeveloperMetadataVisibility).
+# + metadataLocation - Location of association for metadata
+#                             
+@display {label: "DeveloperMetadataLookup Filter"}
+public type DeveloperMetadataLookupFilter record {
+    @display {label: "Location Type"}
+    LocationType locationType;
+    @display {label: "Location matching strategy"}
+    LocationMatchingStrategy locationMatchingStrategy?;
+    @display {label: "metadataId"}
+    int metadataId?;
+    @display {label: "metadataKey"}
+    string metadataKey?;
+    @display {label: "metadataValue"}
+    string metadataValue;
+    @display {label: "Metadata Visibility"}
+    Visibility visibility?;
+    @display {label: "Metadata Location"}
+    MetadataLocation metadataLocation?;
+};
+
+# The Metadata Location
+#
+#  + locationType - Specified type which the metadata ara associated. 
+#                  For more information, see [LocationType](https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.developerMetadata#DeveloperMetadata.DeveloperMetadataLocationType)
+#  + spreadsheet - Whether metadata is associated with an entire spreadsheet.
+#  + sheetId - The ID of the worksheet
+#  + dimensionRange - Dimension the when the metadata is associated with them
+#  
+@display {label: "Metadata Location"}
+public type MetadataLocation record {
+    @display {label: "Location Type"}
+    LocationType locationType;
+    @display {label: "spreadsheet"}
+    boolean spreadsheet;
+    @display {label: "sheetId"}
+    int sheetId;
+    @display {label: "Dimension Range"}
+    DimensionRange dimensionRange;
+};
+
+# The Dimension Range
+# + sheetId - The ID of the worksheet
+# + dimension - The dimension of the span
+# + startIndex - The start (inclusive) of the span, or not set if unbounded
+# + endIndex - The end (exclusive) of the span, or not set if unbounded.
+#
+@display {label: "Dimension Range"}
+public type DimensionRange record {
+    @display {label: "sheetId"}
+    int sheetId;
+    @display {label: "Dimension"}
+    Dimension dimension;
+    @display {label: "Start Index"}
+    int startIndex;
+    @display {label: "End Index"}
+    int endIndex;
+};
+
+# The gridrange filters
+# + sheetId - The ID of the worksheet
+# + startRowIndex - The start row (inclusive) of the range, or not set if unbounded.
+# + endRowIndex - The end row (exclusive) of the range, or not set if unbounded.
+# + startColumnIndex - The start column (inclusive) of the range, or not set if unbounded.
+# + endColumnIndex - The end column (exclusive) of the range, or not set if unbounded.
+# 
+@display {label: "Gridrange filter"}
+public type GridRangeFilter record {
+    @display {label: "sheetId"}
+    int sheetId;
+    @display {label: "startRowIndex"}
+    int startRowIndex?;
+    @display {label: "endRowIndex"}
+    int endRowIndex?;
+    @display {label: "startColumnIndex"}
+    int startColumnIndex?;
+    @display {label: "endColumnIndex"}
+    int endColumnIndex?;
+};
+
