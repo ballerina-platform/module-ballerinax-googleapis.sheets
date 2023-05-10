@@ -2,7 +2,7 @@
 distribution = "2201.3.0"
 org = "ballerinax"
 name = "googleapis.sheets"
-version = "3.2.0"
+version = "3.3.0"
 license= ["Apache-2.0"]
 authors = ["Ballerina"]
 keywords = ["Productivity/Spreadsheets", "Cost/Free", "Vendor/Google"]
