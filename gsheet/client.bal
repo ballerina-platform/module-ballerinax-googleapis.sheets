@@ -1182,7 +1182,7 @@ public isolated client class Client {
     #
     # + spreadsheetId - ID of the spreadsheet
     # + values - Array of values of the row to be added
-    # + a1Notation - The required range in A1 notation
+    # + a1Range - The required range in A1 notation
     # + valueInputOption - Determines how input data should be interpreted. 
     #                      It's either "RAW" or "USER_ENTERED". Default is "RAW" (Optional).
     #                      For more information, see [ValueInputOption](https://developers.google.com/sheets/api/reference/rest/v4/ValueInputOption)           
@@ -1190,11 +1190,11 @@ public isolated client class Client {
     @display {label: "Append Value"}
     remote isolated function appendValue(@display {label: "Google Sheet ID"} string spreadsheetId,
                                          @display {label: "Row Values"} (int|string|decimal|boolean|float)[] values,
-                                         @display {label: "Range A1 Notation"} A1Notation a1Notation,
+                                         @display {label: "Range A1 Notation"} A1Range a1Range,
                                          @display {label: "Value Input Option"} string? valueInputOption = ())
                                          returns error|ValueRange {
 
-        string notation = check self.getA1Filter(a1Notation);
+        string notation = check self.getA1Filter(a1Range);
         string setValuePath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + notation + APPEND;
         setValuePath += (valueInputOption is () ? string `${VALUE_INPUT_OPTION}${RAW}` :
             string `${VALUE_INPUT_OPTION}${valueInputOption}`);
@@ -1217,13 +1217,13 @@ public isolated client class Client {
             return error(string `Error: ${range}, does not match the expected range format: A1 range. `);
         }
         string responseSheetName = re `!`.split(range)[0];
-        string[] a1Range = re `:`.split(re `!`.split(range)[1]);
+        string[] responseA1Range = re `:`.split(re `!`.split(range)[1]);
         int rowID = check int:fromString(rowIndex.substring());
         ValueRange rowRecord;
-        if a1Range.length() == 2 {
-            rowRecord = {rowPosition: rowID, values: values, a1Notation: {sheetName: responseSheetName, startIndex: a1Range[0], endIndex: a1Range[1]}};
+        if responseA1Range.length() == 2 {
+            rowRecord = {rowPosition: rowID, values: values, a1Range: {sheetName: responseSheetName, startIndex: responseA1Range[0], endIndex: responseA1Range[1]}};
         } else {
-            rowRecord = {rowPosition: rowID, values: values, a1Notation: {sheetName: responseSheetName, startIndex: a1Range[0]}};
+            rowRecord = {rowPosition: rowID, values: values, a1Range: {sheetName: responseSheetName, startIndex: responseA1Range[0]}};
         }
         
         return rowRecord;
@@ -1383,12 +1383,12 @@ public isolated client class Client {
     @display {label: "Get Row Using Data Filters"}
     remote isolated function getRowByDataFilter(@display {label: "Google Sheet ID"} string spreadsheetId,
                                                 @display {label: "Worksheet Id"} int sheetId,
-                                                @display {label: "Filter"} (A1Notation|DeveloperMetadataLookupFilter|GridRangeFilter) filter)
+                                                @display {label: "Filter"} (A1Range|DeveloperMetadataLookupFilter|GridRangeFilter) filter)
                                             returns error|ValueRange[] {
 
         string getValuePath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + BATCH_GET_BY_DATAFILTER_REQUEST;
         json jsonPayload;
-        if filter is A1Notation {
+        if filter is A1Range {
             string a1RangeFilter = check self.getA1Filter(filter);
             jsonPayload = {
                 "dataFilters": [
@@ -1445,7 +1445,7 @@ public isolated client class Client {
                 foreach json item in valueJsonArray {
                     valueArray.push(item.toString());
                 }
-                output.push({rowPosition: rowID, values: valueArray, a1Notation:{sheetName: responseSheetName, startIndex: a1Range[0], endIndex: a1Range[1]}});
+                output.push({rowPosition: rowID, values: valueArray, a1Range:{sheetName: responseSheetName, startIndex: a1Range[0], endIndex: a1Range[1]}});
             }
             return output;
         }
@@ -1465,7 +1465,7 @@ public isolated client class Client {
     @display {label: "Update Row Using Data Filters"}
     remote isolated function updateRowByDataFilter(@display {label: "Google Sheet ID"} string spreadsheetId,
                                                    @display {label: "Worksheet Id"} int sheetId,
-                                                   @display {label: "Filter"} (A1Notation|DeveloperMetadataLookupFilter|GridRangeFilter) filter,
+                                                   @display {label: "Filter"} (A1Range|DeveloperMetadataLookupFilter|GridRangeFilter) filter,
                                                    @display {label: "Row Values"} (int|string|decimal|boolean|float)[] values,
                                                    @display {label: "Value Input Option"} string valueInputOption)
                                             returns error? {
@@ -1473,7 +1473,7 @@ public isolated client class Client {
         string setValuePath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + BATCH_UPDATE_BY_DATAFILTER_REQUEST;
         json[] jsonValues = check values.ensureType();
         json jsonPayload;
-        if filter is A1Notation {
+        if filter is A1Range {
             string a1RangeFilter = check self.getA1Filter(filter);
             jsonPayload = {
                 "valueInputOption": valueInputOption,
@@ -1542,13 +1542,13 @@ public isolated client class Client {
     @display {label: "delete Row Using Data Filters"}
     remote isolated function deleteRowByDataFilter(@display {label: "Google Sheet ID"} string spreadsheetId,
                                                    @display {label: "Worksheet Id"} int sheetId,
-                                                   @display {label: "Filter"} (A1Notation|DeveloperMetadataLookupFilter|GridRangeFilter) filter)
+                                                   @display {label: "Filter"} (A1Range|DeveloperMetadataLookupFilter|GridRangeFilter) filter)
                                             returns error? {
 
         string getValuePath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + BATCH_GET_BY_DATAFILTER_REQUEST;
         string setValuePath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + BATCH_UPDATE_REQUEST;
         json jsonPayload;
-        if filter is A1Notation {
+        if filter is A1Range {
             string a1RangeFilter = check self.getA1Filter(filter);
             jsonPayload = {
                 "dataFilters": [
@@ -1606,7 +1606,7 @@ public isolated client class Client {
                 foreach json item in valueJsonArray {
                     valueArray.push(item.toString());
                 }
-                output.push({rowPosition: rowID, values: valueArray, a1Notation:{sheetName: responseSheetName, startIndex: a1Range[0], endIndex: a1Range[1]}});
+                output.push({rowPosition: rowID, values: valueArray, a1Range:{sheetName: responseSheetName, startIndex: a1Range[0], endIndex: a1Range[1]}});
             }
             foreach ValueRange row in output {
                 jsonPayload = {
@@ -1629,16 +1629,16 @@ public isolated client class Client {
         }
     }
 
-    private isolated function getA1Filter(A1Notation a1Notation) returns string|error {
-        string filter = string `${a1Notation.sheetName}`;
-        if !a1Notation.hasKey("startIndex") && a1Notation.hasKey("endIndex") {
-            return error("Error: The provided A1Notation is not supported. ");
+    private isolated function getA1Filter(A1Range a1Range) returns string|error {
+        string filter = string `${a1Range.sheetName}`;
+        if !a1Range.hasKey("startIndex") && a1Range.hasKey("endIndex") {
+            return error("Error: The provided A1 range is not supported. ");
         }
-        if a1Notation.hasKey("startIndex") {
-            filter = string `${filter}!${<string>a1Notation.startIndex}`;
+        if a1Range.hasKey("startIndex") {
+            filter = string `${filter}!${<string>a1Range.startIndex}`;
         }
-        if a1Notation.hasKey("endIndex") {
-            filter = string `${filter}:${<string>a1Notation.endIndex}`;
+        if a1Range.hasKey("endIndex") {
+            filter = string `${filter}:${<string>a1Range.endIndex}`;
         }
         return filter;
     }
