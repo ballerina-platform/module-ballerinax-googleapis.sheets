@@ -1196,7 +1196,7 @@ public isolated client class Client {
 
         string notation = check self.getA1Filter(a1Notation);
         string setValuePath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + notation + APPEND;
-        setValuePath = setValuePath + (valueInputOption is () ? string `${VALUE_INPUT_OPTION}${RAW}` :
+        setValuePath += (valueInputOption is () ? string `${VALUE_INPUT_OPTION}${RAW}` :
             string `${VALUE_INPUT_OPTION}${valueInputOption}`);
         json[] jsonValues = check values.ensureType();
         json jsonPayload = {
@@ -1207,27 +1207,26 @@ public isolated client class Client {
             ]
         };
         json response = check sendRequestWithPayload(self.httpClient, setValuePath, jsonPayload);
-        if response.updates !is error {
-            json jsonResponseValues = check response.updates.ensureType();
-            string range = check jsonResponseValues.updatedRange.ensureType();
-            regexp:Span? rowIndex = re `\d+`.find(re `:`.split(re `!`.split(range)[1])[0], 0);
-            if rowIndex is () {
-                return error(string `Error: ${range}, does not match the expected range format: A1 range. `);
-            }
-            string responseSheetName = re `!`.split(range)[0];
-            string[] a1Range = re `:`.split(re `!`.split(range)[1]);
-            int rowID = check int:fromString(rowIndex.substring());
-            ValueRange rowRecord;
-            if a1Range.length() == 2 {
-                rowRecord = {rowPosition: rowID, values: values, a1Notation: {sheetName: responseSheetName, startIndex: a1Range[0], endIndex: a1Range[1]}};
-            } else {
-                rowRecord = {rowPosition: rowID, values: values, a1Notation: {sheetName: responseSheetName, startIndex: a1Range[0]}};
-            }
-            
-            return rowRecord;
-        } else {
+        if response.updates is error {
             return <error>response.updates;
         }
+        json jsonResponseValues = check response.updates.ensureType();
+        string range = check jsonResponseValues.updatedRange.ensureType();
+        regexp:Span? rowIndex = re `\d+`.find(re `:`.split(re `!`.split(range)[1])[0], 0);
+        if rowIndex is () {
+            return error(string `Error: ${range}, does not match the expected range format: A1 range. `);
+        }
+        string responseSheetName = re `!`.split(range)[0];
+        string[] a1Range = re `:`.split(re `!`.split(range)[1]);
+        int rowID = check int:fromString(rowIndex.substring());
+        ValueRange rowRecord;
+        if a1Range.length() == 2 {
+            rowRecord = {rowPosition: rowID, values: values, a1Notation: {sheetName: responseSheetName, startIndex: a1Range[0], endIndex: a1Range[1]}};
+        } else {
+            rowRecord = {rowPosition: rowID, values: values, a1Notation: {sheetName: responseSheetName, startIndex: a1Range[0]}};
+        }
+        
+        return rowRecord;
     }
 
     # Copies the sheet to a given spreadsheet by worksheet ID.
@@ -1467,7 +1466,7 @@ public isolated client class Client {
     remote isolated function updateRowByDataFilter(@display {label: "Google Sheet ID"} string spreadsheetId,
                                                    @display {label: "Worksheet Id"} int sheetId,
                                                    @display {label: "Filter"} (A1Notation|DeveloperMetadataLookupFilter|GridRangeFilter) filter,
-                                                   @display {label: "Row Values"} (int|string|decimal|boolean)[] values,
+                                                   @display {label: "Row Values"} (int|string|decimal|boolean|float)[] values,
                                                    @display {label: "Value Input Option"} string valueInputOption)
                                             returns error? {
 
