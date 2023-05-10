@@ -160,8 +160,8 @@ public type Row record {
 # + sheetName - Sheet name in A1 notation
 # + startIndex - Starting cell of the range
 # + endIndex - Ending cell of the range
-@display {label: "A1Notation"}
-public type A1Notation record {
+@display {label: "A1Range"}
+public type A1Range record {
     @display {label: "Sheet Name"}
     string sheetName;
     @display {label: "Start Index"}
@@ -182,7 +182,7 @@ public type ValueRange record {
     @display {label: "Values"}
     (int|string|decimal|boolean|float)[] values;
     @display {label: "A1 Notation"}
-    A1Notation a1Notation;
+    A1Range a1Range;
 };
 
 # Single cell in a sheet.
