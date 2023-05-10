@@ -1182,7 +1182,7 @@ public isolated client class Client {
     #
     # + spreadsheetId - ID of the spreadsheet
     # + values - Array of values of the row to be added
-    # + a1Notation - The required range in A1 notation (Optional)
+    # + a1Notation - The required range in A1 notation
     # + valueInputOption - Determines how input data should be interpreted. 
     #                      It's either "RAW" or "USER_ENTERED". Default is "RAW" (Optional).
     #                      For more information, see [ValueInputOption](https://developers.google.com/sheets/api/reference/rest/v4/ValueInputOption)           
