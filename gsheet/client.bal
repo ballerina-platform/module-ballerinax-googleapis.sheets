@@ -1328,7 +1328,7 @@ public isolated client class Client {
         }
     }
 
-    # Add developer metadata to the given row
+    # Add developer metadata to the given row.
     #
     # + spreadsheetId - ID of the spreadsheet
     # + sheetId - The ID of the worksheet
@@ -1345,7 +1345,6 @@ public isolated client class Client {
                                             @display {label: "Metadata Key"} string key,
                                             @display {label: "Metadata Value"} string value)
                                             returns error? {
-
         string setValuePath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + BATCH_UPDATE_REQUEST;
         json jsonPayload = {
             "requests": [
@@ -1368,12 +1367,11 @@ public isolated client class Client {
                 }
             ]
         };
-
         json _ = check sendRequestWithPayload(self.httpClient, setValuePath, jsonPayload);
     }
 
-    # Fetch rows matching to the given critirias in the filter.
-    # Supports a1Range, gridRange and Developer metadata lookup filters
+    # Fetch rows matching to the given criteria in the filter.
+    # Supports A1Range, GridRange and DeveloperMetadataLookup filters.
     #
     # + spreadsheetId - ID of the spreadsheet
     # + sheetId - The ID of the worksheet
@@ -1382,9 +1380,8 @@ public isolated client class Client {
     @display {label: "Get Row Using Data Filters"}
     remote isolated function getRowByDataFilter(@display {label: "Google Sheet ID"} string spreadsheetId,
                                                 @display {label: "Worksheet Id"} int sheetId,
-                                                @display {label: "Filter"} (A1Range|DeveloperMetadataLookupFilter|GridRangeFilter) filter)
+                                                @display {label: "Filter"} Filter filter)
                                             returns error|ValueRange[] {
-
         string getValuePath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + BATCH_GET_BY_DATAFILTER_REQUEST;
         json jsonPayload;
         if filter is A1Range {
@@ -1450,8 +1447,8 @@ public isolated client class Client {
         }
     }
 
-    # Update rows matching the user provided data filter
-    # Supports a1Range, gridRange and Developer metadata lookup filters
+    # Update rows matching the user provided data filter.
+    # Supports a1Range, gridRange and Developer metadata lookup filters.
     #
     # + spreadsheetId - ID of the spreadsheet
     # + sheetId - The ID of the worksheet
@@ -1464,7 +1461,7 @@ public isolated client class Client {
     @display {label: "Update Row Using Data Filters"}
     remote isolated function updateRowByDataFilter(@display {label: "Google Sheet ID"} string spreadsheetId,
                                                    @display {label: "Worksheet Id"} int sheetId,
-                                                   @display {label: "Filter"} (A1Range|DeveloperMetadataLookupFilter|GridRangeFilter) filter,
+                                                   @display {label: "Filter"} Filter filter,
                                                    @display {label: "Row Values"} (int|string|decimal|boolean|float)[] values,
                                                    @display {label: "Value Input Option"} string valueInputOption)
                                             returns error? {
@@ -1541,7 +1538,7 @@ public isolated client class Client {
     @display {label: "delete Row Using Data Filters"}
     remote isolated function deleteRowByDataFilter(@display {label: "Google Sheet ID"} string spreadsheetId,
                                                    @display {label: "Worksheet Id"} int sheetId,
-                                                   @display {label: "Filter"} (A1Range|DeveloperMetadataLookupFilter|GridRangeFilter) filter)
+                                                   @display {label: "Filter"} Filter filter)
                                             returns error? {
 
         string getValuePath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + BATCH_GET_BY_DATAFILTER_REQUEST;

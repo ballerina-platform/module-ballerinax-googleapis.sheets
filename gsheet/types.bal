@@ -372,3 +372,8 @@ public type GridRangeFilter record {
     int endColumnIndex?;
 };
 
+# Type of filter used to match data.
+# 
+@display {label: "Filter"}
+public type Filter A1Range|DeveloperMetadataLookupFilter|GridRangeFilter;
+
