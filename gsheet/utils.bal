@@ -153,7 +153,26 @@ public function createRandomUUIDWithoutHyphens() returns string {
     }
 }
 
+# Get a string containing the A1 Annotation from A1Range.
+# 
+# + return - A string with A1 Annotation. 
+public isolated function getA1RangeString(A1Range a1Range) returns string|error {
+    string filter = a1Range.sheetName;
+    if a1Range.startIndex == () && a1Range.endIndex != () {
+        return error("Error: The provided A1 range is not supported. ");
+    }
+    if a1Range.startIndex != () {
+        filter = string `${filter}!${<string>a1Range.startIndex}`;
+    }
+    if a1Range.endIndex != () {
+        filter = string `${filter}:${<string>a1Range.endIndex}`;
+    }
+    return filter;
+}
+
 function createRandomUUID() returns handle = @java:Method {
     name: "randomUUID",
     'class: "java.util.UUID"
 } external;
+
+

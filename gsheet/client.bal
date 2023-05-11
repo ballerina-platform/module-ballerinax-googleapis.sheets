@@ -1194,7 +1194,7 @@ public isolated client class Client {
                                          @display {label: "Value Input Option"} string? valueInputOption = ())
                                          returns error|ValueRange {
 
-        string notation = check self.getA1RangeString(a1Range);
+        string notation = check getA1RangeString(a1Range);
         string setValuePath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + notation + APPEND;
         setValuePath += (valueInputOption is () ? string `${VALUE_INPUT_OPTION}${RAW}` :
             string `${VALUE_INPUT_OPTION}${valueInputOption}`);
@@ -1225,7 +1225,6 @@ public isolated client class Client {
         } else {
             rowRecord = {rowPosition: rowID, values: values, a1Range: {sheetName: responseSheetName, startIndex: responseA1Range[0]}};
         }
-        
         return rowRecord;
     }
 
@@ -1389,7 +1388,7 @@ public isolated client class Client {
         string getValuePath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + BATCH_GET_BY_DATAFILTER_REQUEST;
         json jsonPayload;
         if filter is A1Range {
-            string a1RangeFilter = check self.getA1RangeString(filter);
+            string a1RangeFilter = check getA1RangeString(filter);
             jsonPayload = {
                 "dataFilters": [
                     {
@@ -1474,7 +1473,7 @@ public isolated client class Client {
         json[] jsonValues = check values.ensureType();
         json jsonPayload;
         if filter is A1Range {
-            string a1RangeFilter = check self.getA1RangeString(filter);
+            string a1RangeFilter = check getA1RangeString(filter);
             jsonPayload = {
                 "valueInputOption": valueInputOption,
                 "data": [
@@ -1549,7 +1548,7 @@ public isolated client class Client {
         string setValuePath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + BATCH_UPDATE_REQUEST;
         json jsonPayload;
         if filter is A1Range {
-            string a1RangeFilter = check self.getA1RangeString(filter);
+            string a1RangeFilter = check getA1RangeString(filter);
             jsonPayload = {
                 "dataFilters": [
                     {
@@ -1627,19 +1626,5 @@ public isolated client class Client {
                     jsonPayload);
             }
         }
-    }
-
-    private isolated function getA1RangeString(A1Range a1Range) returns string|error {
-        string filter = a1Range.sheetName;
-        if a1Range.startIndex == () && a1Range.endIndex != () {
-            return error("Error: The provided A1 range is not supported. ");
-        }
-        if a1Range.startIndex != () {
-            filter = string `${filter}!${<string>a1Range.startIndex}`;
-        }
-        if a1Range.endIndex != () {
-            filter = string `${filter}:${<string>a1Range.endIndex}`;
-        }
-        return filter;
     }
 }
