@@ -1381,7 +1381,7 @@ public isolated client class Client {
     remote isolated function getRowByDataFilter(@display {label: "Google Sheet ID"} string spreadsheetId,
                                                 @display {label: "Worksheet Id"} int sheetId,
                                                 @display {label: "Filter"} Filter filter)
-                                            returns error|ValueRange[] {
+                                                returns error|ValueRange[] {
         string getValuePath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + BATCH_GET_BY_DATAFILTER_REQUEST;
         json jsonPayload;
         if filter is A1Range {
@@ -1464,7 +1464,7 @@ public isolated client class Client {
                                                    @display {label: "Filter"} Filter filter,
                                                    @display {label: "Row Values"} (int|string|decimal|boolean|float)[] values,
                                                    @display {label: "Value Input Option"} string valueInputOption)
-                                            returns error? {
+                                                   returns error? {
 
         string setValuePath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + BATCH_UPDATE_BY_DATAFILTER_REQUEST;
         json[] jsonValues = check values.ensureType();
@@ -1539,7 +1539,7 @@ public isolated client class Client {
     remote isolated function deleteRowByDataFilter(@display {label: "Google Sheet ID"} string spreadsheetId,
                                                    @display {label: "Worksheet Id"} int sheetId,
                                                    @display {label: "Filter"} Filter filter)
-                                            returns error? {
+                                                   returns error? {
 
         string getValuePath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + BATCH_GET_BY_DATAFILTER_REQUEST;
         string setValuePath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + BATCH_UPDATE_REQUEST;
