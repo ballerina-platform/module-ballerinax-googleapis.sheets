@@ -174,7 +174,7 @@ public type A1Range record {
 #
 # + rowPosition - The row number
 # + values - Values of the given row
-# + a1Notation - A1Notation of the range
+# + a1Range - A1Notation of the range
 @display {label: "ValueRange"}
 public type ValueRange record {
     @display {label: "Row Number"}
