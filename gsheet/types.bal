@@ -181,7 +181,7 @@ public type ValueRange record {
     int rowPosition;
     @display {label: "Values"}
     (int|string|decimal|boolean|float)[] values;
-    @display {label: "A1 Notation"}
+    @display {label: "A1 Range"}
     A1Range a1Range;
 };
 
@@ -244,7 +244,7 @@ public type File record {
 
 # The metadata visibility
 # 
-@display {label: "Metadata visibility"}
+@display {label: "Metadata Visibility"}
 public enum Visibility {
     UNSPECIFIED_VISIBILITY = "DEVELOPER_METADATA_VISIBILITY_UNSPECIFIED",
     DOCUMENT = "DOCUMENT",
@@ -325,7 +325,7 @@ public type MetadataLocation record {
     LocationType locationType;
     @display {label: "Spreadsheet"}
     boolean spreadsheet;
-    @display {label: "SheetId"}
+    @display {label: "Worksheet ID"}
     int sheetId;
     @display {label: "Dimension Range"}
     DimensionRange dimensionRange;
@@ -340,7 +340,7 @@ public type MetadataLocation record {
 #
 @display {label: "Dimension Range"}
 public type DimensionRange record {
-    @display {label: "Sheet Id"}
+    @display {label: "Worksheet ID"}
     int sheetId;
     @display {label: "Dimension"}
     Dimension dimension;
@@ -358,9 +358,9 @@ public type DimensionRange record {
 # + startColumnIndex - The start column (inclusive) of the range, or not set if unbounded.
 # + endColumnIndex - The end column (exclusive) of the range, or not set if unbounded.
 # 
-@display {label: "Gridrange filter"}
+@display {label: "Gridrange Filter"}
 public type GridRangeFilter record {
-    @display {label: "Sheet Id"}
+    @display {label: "Worksheet ID"}
     int sheetId;
     @display {label: "Starting Row Index"}
     int startRowIndex?;

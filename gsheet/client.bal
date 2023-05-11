@@ -1339,7 +1339,7 @@ public isolated client class Client {
     # + return - Nil() on success, or else an error
     @display {label: "Set Row Metadata"}
     remote isolated function setRowMetaData(@display {label: "Google Sheet ID"} string spreadsheetId,
-                                            @display {label: "Worksheet Id"} int sheetId,
+                                            @display {label: "Worksheet ID"} int sheetId,
                                             @display {label: "Index of the Row"} int rowIndex,
                                             @display {label: "Visibility of the Metadata"} Visibility visibility,
                                             @display {label: "Metadata Key"} string key,
@@ -1379,7 +1379,7 @@ public isolated client class Client {
     # + return - ValueRange[] on success, or else an error
     @display {label: "Get Row Using Data Filters"}
     remote isolated function getRowByDataFilter(@display {label: "Google Sheet ID"} string spreadsheetId,
-                                                @display {label: "Worksheet Id"} int sheetId,
+                                                @display {label: "Worksheet ID"} int sheetId,
                                                 @display {label: "Filter"} Filter filter)
                                                 returns error|ValueRange[] {
         string getValuePath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + BATCH_GET_BY_DATAFILTER_REQUEST;
@@ -1460,7 +1460,7 @@ public isolated client class Client {
     # + return - Nil() on success, or else an error
     @display {label: "Update Row Using Data Filters"}
     remote isolated function updateRowByDataFilter(@display {label: "Google Sheet ID"} string spreadsheetId,
-                                                   @display {label: "Worksheet Id"} int sheetId,
+                                                   @display {label: "Worksheet ID"} int sheetId,
                                                    @display {label: "Filter"} Filter filter,
                                                    @display {label: "Row Values"} (int|string|decimal|boolean|float)[] values,
                                                    @display {label: "Value Input Option"} string valueInputOption)
@@ -1537,7 +1537,7 @@ public isolated client class Client {
     # + return - Nil() on success, or else an error
     @display {label: "delete Row Using Data Filters"}
     remote isolated function deleteRowByDataFilter(@display {label: "Google Sheet ID"} string spreadsheetId,
-                                                   @display {label: "Worksheet Id"} int sheetId,
+                                                   @display {label: "Worksheet ID"} int sheetId,
                                                    @display {label: "Filter"} Filter filter)
                                                    returns error? {
 
