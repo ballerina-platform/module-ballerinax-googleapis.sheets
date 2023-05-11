@@ -273,7 +273,6 @@ public enum Dimension {
 
 # The location matching strategy for filters
 #
-# + kind - Indicates location matching strategy used in filter.  
 @display {label: "Location Matching Strategy"}
 public enum LocationMatchingStrategy {
     UNSPECIFIED_STRATEGY = "DEVELOPER_METADATA_LOCATION_MATCHING_STRATEGY_UNSPECIFIED",
@@ -281,7 +280,7 @@ public enum LocationMatchingStrategy {
     INTERSECTING_LOCATION = "INTERSECTING_LOCATION"
 };
 
-# The developerMetadataLookup filter
+# The DeveloperMetadataLookup filter
 #  
 # + locationType - Specified type which the metadata ara associated. 
 #                  For more information, see [LocationType](https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.developerMetadata#DeveloperMetadata.DeveloperMetadataLocationType)
@@ -300,11 +299,11 @@ public type DeveloperMetadataLookupFilter record {
     LocationType locationType;
     @display {label: "Location matching strategy"}
     LocationMatchingStrategy locationMatchingStrategy?;
-    @display {label: "metadataId"}
+    @display {label: "Metadata Id"}
     int metadataId?;
-    @display {label: "metadataKey"}
+    @display {label: "Metadata Key"}
     string metadataKey?;
-    @display {label: "metadataValue"}
+    @display {label: "Metadata Value"}
     string metadataValue;
     @display {label: "Metadata Visibility"}
     Visibility visibility?;
@@ -324,15 +323,16 @@ public type DeveloperMetadataLookupFilter record {
 public type MetadataLocation record {
     @display {label: "Location Type"}
     LocationType locationType;
-    @display {label: "spreadsheet"}
+    @display {label: "Spreadsheet"}
     boolean spreadsheet;
-    @display {label: "sheetId"}
+    @display {label: "SheetId"}
     int sheetId;
     @display {label: "Dimension Range"}
     DimensionRange dimensionRange;
 };
 
 # The Dimension Range
+# 
 # + sheetId - The ID of the worksheet
 # + dimension - The dimension of the span
 # + startIndex - The start (inclusive) of the span, or not set if unbounded
@@ -340,7 +340,7 @@ public type MetadataLocation record {
 #
 @display {label: "Dimension Range"}
 public type DimensionRange record {
-    @display {label: "sheetId"}
+    @display {label: "Sheet Id"}
     int sheetId;
     @display {label: "Dimension"}
     Dimension dimension;
@@ -350,7 +350,8 @@ public type DimensionRange record {
     int endIndex;
 };
 
-# The gridrange filters
+# The GridRange filters
+# 
 # + sheetId - The ID of the worksheet
 # + startRowIndex - The start row (inclusive) of the range, or not set if unbounded.
 # + endRowIndex - The end row (exclusive) of the range, or not set if unbounded.
@@ -359,15 +360,15 @@ public type DimensionRange record {
 # 
 @display {label: "Gridrange filter"}
 public type GridRangeFilter record {
-    @display {label: "sheetId"}
+    @display {label: "Sheet Id"}
     int sheetId;
-    @display {label: "startRowIndex"}
+    @display {label: "Starting Row Index"}
     int startRowIndex?;
-    @display {label: "endRowIndex"}
+    @display {label: "Ending Row Index"}
     int endRowIndex?;
-    @display {label: "startColumnIndex"}
+    @display {label: "Starting Column Index"}
     int startColumnIndex?;
-    @display {label: "endColumnIndex"}
+    @display {label: "Ending Column Index"}
     int endColumnIndex?;
 };
 
