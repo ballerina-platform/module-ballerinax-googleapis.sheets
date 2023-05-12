@@ -15,6 +15,7 @@
 // under the License.
 
 import ballerina/http;
+import ballerina/lang.regexp;
 import ballerinax/'client.config;
 
 # Ballerina Google Sheets connector provides the capability to access Google Sheets API.
@@ -1137,9 +1138,15 @@ public isolated client class Client {
     #                      It's either "RAW" or "USER_ENTERED". Default is "RAW" (Optional).
     #                      For more information, see [ValueInputOption](https://developers.google.com/sheets/api/reference/rest/v4/ValueInputOption)           
     # + return - Nil() on success, or else an error
-    @display {label: "Append Row"}
-    remote isolated function appendRowToSheet(@display {label: "Google Sheet ID"} string spreadsheetId, 
-                                              @display {label: "Worksheet Name"} string sheetName, 
+    # 
+    # # Deprecated
+    # This function is deprecated due to the introduction of new more resourceful API `appendValue`.
+    # This API will be removed with 4.0.0 release.
+    # 
+    @display {label: "Append Row To Sheet"}
+    @deprecated
+    remote isolated function appendRowToSheet(@display {label: "Google Sheet ID"} string spreadsheetId,
+                                              @display {label: "Worksheet Name"} string sheetName,
                                               @display {label: "Row Values"} (int|string|decimal)[] values,
                                               @display {label: "Range A1 Notation"} string? a1Notation = (),
                                               @display {label: "Value Input Option"} string? valueInputOption = ()) 
@@ -1167,6 +1174,58 @@ public isolated client class Client {
         if (response is error) {
             return response;
         }
+    }
+
+    # Adds the given values to a row at the bottom of the worksheet. The input range is used to search 
+    # for existing data and find a "table" within that range. Values will be appended to the next row of 
+    # the table, starting with the first column of the table.
+    #
+    # + spreadsheetId - ID of the spreadsheet
+    # + values - Array of values of the row to be added
+    # + a1Range - The required range in A1 notation
+    # + valueInputOption - Determines how input data should be interpreted. 
+    #                      It's either "RAW" or "USER_ENTERED". Default is "RAW" (Optional).
+    #                      For more information, see [ValueInputOption](https://developers.google.com/sheets/api/reference/rest/v4/ValueInputOption)           
+    # + return - ValueRange on success, or else an error
+    @display {label: "Append Value"}
+    remote isolated function appendValue(@display {label: "Google Sheet ID"} string spreadsheetId,
+                                         @display {label: "Row Values"} (int|string|decimal|boolean|float)[] values,
+                                         @display {label: "Range A1 Notation"} A1Range a1Range,
+                                         @display {label: "Value Input Option"} string? valueInputOption = ())
+                                         returns error|ValueRange {
+
+        string notation = check getA1RangeString(a1Range);
+        string setValuePath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + notation + APPEND;
+        setValuePath += (valueInputOption is () ? string `${VALUE_INPUT_OPTION}${RAW}` :
+            string `${VALUE_INPUT_OPTION}${valueInputOption}`);
+        json[] jsonValues = check values.ensureType();
+        json jsonPayload = {
+            "range": notation,
+            "majorDimension": "ROWS",
+            "values": [
+                jsonValues
+            ]
+        };
+        json response = check sendRequestWithPayload(self.httpClient, setValuePath, jsonPayload);
+        if response.updates is error {
+            return <error>response.updates;
+        }
+        json jsonResponseValues = check response.updates.ensureType();
+        string range = check jsonResponseValues.updatedRange.ensureType();
+        regexp:Span? rowIndex = re `\d+`.find(re `:`.split(re `!`.split(range)[1])[0], 0);
+        if rowIndex is () {
+            return error(string `Error: ${range}, does not match the expected range format: A1 range. `);
+        }
+        string responseSheetName = re `!`.split(range)[0];
+        string[] responseA1Range = re `:`.split(re `!`.split(range)[1]);
+        int rowID = check int:fromString(rowIndex.substring());
+        ValueRange rowRecord;
+        if responseA1Range.length() == 2 {
+            rowRecord = {rowPosition: rowID, values: values, a1Range: {sheetName: responseSheetName, startIndex: responseA1Range[0], endIndex: responseA1Range[1]}};
+        } else {
+            rowRecord = {rowPosition: rowID, values: values, a1Range: {sheetName: responseSheetName, startIndex: responseA1Range[0]}};
+        }
+        return rowRecord;
     }
 
     # Copies the sheet to a given spreadsheet by worksheet ID.
@@ -1266,6 +1325,303 @@ public isolated client class Client {
         json|error response = sendRequestWithPayload(self.httpClient, deleteSheetPath, payload);
         if (response is error) {
             return response;
+        }
+    }
+
+    # Add developer metadata to the given row.
+    #
+    # + spreadsheetId - ID of the spreadsheet
+    # + sheetId - The ID of the worksheet
+    # + rowIndex - ID of the target row
+    # + visibility - Visibility parameter for the developer metadata. It's either "UNSPECIFIED", "DOCUMENT or "PROJECT".
+    # + key - Metadata key asigned to the row
+    # + value - Value assigned with the key. This should be unique.     
+    # + return - Nil() on success, or else an error
+    @display {label: "Set Row Metadata"}
+    remote isolated function setRowMetaData(@display {label: "Google Sheet ID"} string spreadsheetId,
+                                            @display {label: "Worksheet ID"} int sheetId,
+                                            @display {label: "Index of the Row"} int rowIndex,
+                                            @display {label: "Visibility of the Metadata"} Visibility visibility,
+                                            @display {label: "Metadata Key"} string key,
+                                            @display {label: "Metadata Value"} string value)
+                                            returns error? {
+        string setValuePath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + BATCH_UPDATE_REQUEST;
+        json jsonPayload = {
+            "requests": [
+                {
+                    "createDeveloperMetadata": {
+                        "developerMetadata": {
+                            "location": {
+                                "dimensionRange": {
+                                    "sheetId": sheetId,
+                                    "dimension": "ROWS",
+                                    "startIndex": rowIndex - 1,
+                                    "endIndex": rowIndex
+                                }
+                            },
+                            "visibility": visibility,
+                            "metadataKey": key,
+                            "metadataValue": value
+                        }
+                    }
+                }
+            ]
+        };
+        json _ = check sendRequestWithPayload(self.httpClient, setValuePath, jsonPayload);
+    }
+
+    # Fetch rows matching to the given criteria in the filter.
+    # Supports A1Range, GridRange and DeveloperMetadataLookup filters.
+    #
+    # + spreadsheetId - ID of the spreadsheet
+    # + sheetId - The ID of the worksheet
+    # + filter - A record defining the filter used for the data filtering
+    # + return - ValueRange[] on success, or else an error
+    @display {label: "Get Row Using Data Filters"}
+    remote isolated function getRowByDataFilter(@display {label: "Google Sheet ID"} string spreadsheetId,
+                                                @display {label: "Worksheet ID"} int sheetId,
+                                                @display {label: "Filter"} Filter filter)
+                                                returns error|ValueRange[] {
+        string getValuePath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + BATCH_GET_BY_DATAFILTER_REQUEST;
+        json jsonPayload;
+        if filter is A1Range {
+            string a1RangeFilter = check getA1RangeString(filter);
+            jsonPayload = {
+                "dataFilters": [
+                    {
+                        "a1Range": a1RangeFilter
+                    }
+                ],
+                "majorDimension": "ROWS"
+            };
+        } else if filter is GridRangeFilter {
+            jsonPayload = {
+                "dataFilters": [
+                    {
+                        "gridRange": filter.toJson()
+                    }
+                ],
+                "majorDimension": "ROWS"
+            };
+        } else {
+            jsonPayload = {
+                "dataFilters": [
+                    {
+                        "developerMetadataLookup": filter.toJson()
+                    }
+                ],
+                "majorDimension": "ROWS"
+            };
+        }
+        json|error response = sendRequestWithPayload(self.httpClient, getValuePath, jsonPayload);
+        if (response is error) {
+            return response;
+        } else {
+            ValueRange[] output = [];
+            if response.valueRanges is error {
+                return output;
+            }
+            json[] valueRanges = check response.valueRanges.ensureType();
+            foreach json value in valueRanges {
+                string[] valueArray = [];
+                json|error jsonValues = value.valueRange.values;
+                if (jsonValues is error) {
+                    return output;
+                }
+                json[] values = check jsonValues.ensureType();
+                string range = check value.valueRange.range.ensureType();
+                regexp:Span? rowIndex = re `\d+`.find(re `:`.split(re `!`.split(range)[1])[0], 0);
+                if rowIndex is () {
+                    return error(string `Error: ${range}, does not match the expected range format: A1 range. `);
+                }
+                string responseSheetName = re `!`.split(range)[0];
+                string[] a1Range = re `:`.split(re `!`.split(range)[1]);
+                int rowID = check int:fromString(rowIndex.substring());
+                json[] valueJsonArray = check values[0].ensureType();
+                foreach json item in valueJsonArray {
+                    valueArray.push(item.toString());
+                }
+                output.push({rowPosition: rowID, values: valueArray, a1Range:{sheetName: responseSheetName, startIndex: a1Range[0], endIndex: a1Range[1]}});
+            }
+            return output;
+        }
+    }
+
+    # Update rows matching the user provided data filter.
+    # Supports a1Range, gridRange and Developer metadata lookup filters.
+    #
+    # + spreadsheetId - ID of the spreadsheet
+    # + sheetId - The ID of the worksheet
+    # + filter - A record defining the filter used for the data filtering
+    # + values - Values to assign.    
+    # + valueInputOption - Determines how input data should be interpreted. 
+    #                      It's either "RAW" or "USER_ENTERED". Default is "RAW" (Optional).
+    #                      For more information, see [ValueInputOption](https://developers.google.com/sheets/api/reference/rest/v4/ValueInputOption)
+    # + return - Nil() on success, or else an error
+    @display {label: "Update Row Using Data Filters"}
+    remote isolated function updateRowByDataFilter(@display {label: "Google Sheet ID"} string spreadsheetId,
+                                                   @display {label: "Worksheet ID"} int sheetId,
+                                                   @display {label: "Filter"} Filter filter,
+                                                   @display {label: "Row Values"} (int|string|decimal|boolean|float)[] values,
+                                                   @display {label: "Value Input Option"} string valueInputOption)
+                                                   returns error? {
+
+        string setValuePath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + BATCH_UPDATE_BY_DATAFILTER_REQUEST;
+        json[] jsonValues = check values.ensureType();
+        json jsonPayload;
+        if filter is A1Range {
+            string a1RangeFilter = check getA1RangeString(filter);
+            jsonPayload = {
+                "valueInputOption": valueInputOption,
+                "data": [
+                    {
+                        "dataFilter": {
+                            "a1Range": a1RangeFilter
+                        },
+                        "majorDimension": "ROWS",
+                        "values": [
+                            jsonValues
+                        ]
+                    }
+                ],
+                "includeValuesInResponse": false,
+                "responseValueRenderOption": "FORMATTED_VALUE",
+                "responseDateTimeRenderOption": "SERIAL_NUMBER"
+            };
+        } else if filter is GridRangeFilter {
+            jsonPayload = {
+                "valueInputOption": valueInputOption,
+                "data": [
+                    {
+                        "dataFilter": {
+                            "gridRange": filter.toJson()
+                        },
+                        "majorDimension": "ROWS",
+                        "values": [
+                            jsonValues
+                        ]
+                    }
+                ],
+                "includeValuesInResponse": false,
+                "responseValueRenderOption": "FORMATTED_VALUE",
+                "responseDateTimeRenderOption": "SERIAL_NUMBER"
+            };
+        } else {
+            jsonPayload = {
+                "valueInputOption": valueInputOption,
+                "data": [
+                    {
+                        "dataFilter": {
+                            "developerMetadataLookup": filter.toJson()
+                        },
+                        "majorDimension": "ROWS",
+                        "values": [
+                            jsonValues
+                        ]
+                    }
+                ],
+                "includeValuesInResponse": false,
+                "responseValueRenderOption": "FORMATTED_VALUE",
+                "responseDateTimeRenderOption": "SERIAL_NUMBER"
+            };
+        }
+        json _ = check sendRequestWithPayload(self.httpClient, setValuePath, jsonPayload);
+    }
+
+    # Delete rows matching the user provided data filter
+    # Supports a1Range, gridRange and Developer metadata lookup filters
+    #
+    # + spreadsheetId - ID of the spreadsheet
+    # + sheetId - The ID of the worksheet
+    # + filter - A record defining the filter used for the data filtering
+    # + return - Nil() on success, or else an error
+    @display {label: "delete Row Using Data Filters"}
+    remote isolated function deleteRowByDataFilter(@display {label: "Google Sheet ID"} string spreadsheetId,
+                                                   @display {label: "Worksheet ID"} int sheetId,
+                                                   @display {label: "Filter"} Filter filter)
+                                                   returns error? {
+
+        string getValuePath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + BATCH_GET_BY_DATAFILTER_REQUEST;
+        string setValuePath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + BATCH_UPDATE_REQUEST;
+        json jsonPayload;
+        if filter is A1Range {
+            string a1RangeFilter = check getA1RangeString(filter);
+            jsonPayload = {
+                "dataFilters": [
+                    {
+                        "a1Range": a1RangeFilter
+                    }
+                ],
+                "majorDimension": "ROWS"
+            };
+        } else if filter is GridRangeFilter {
+            jsonPayload = {
+                "dataFilters": [
+                    {
+                        "gridRange": filter.toJson()
+                    }
+                ],
+                "majorDimension": "ROWS"
+            };
+        } else {
+            jsonPayload = {
+                "dataFilters": [
+                    {
+                        "developerMetadataLookup": filter.toJson()
+                    }
+                ],
+                "majorDimension": "ROWS"
+            };
+        }
+
+        json|error response = sendRequestWithPayload(self.httpClient, getValuePath, jsonPayload);
+        if response is error {
+            return response;
+        } else {
+            ValueRange[] output = [];
+            if (response.valueRanges is error) {
+                return <error>error(string `Error: Value does not exist matching the defined filter. `);
+            }
+            json[] valueRanges = check response.valueRanges.ensureType();
+            foreach json value in valueRanges {
+                string[] valueArray = [];
+                json|error jsonValues = value.valueRange.values;
+                if jsonValues is error {
+                    return jsonValues;
+                }
+                json[] values = check jsonValues.ensureType();
+                string range = check value.valueRange.range.ensureType();
+                regexp:Span? rowIndex = re `\d+`.find(re `:`.split(re `!`.split(range)[1])[0], 0);
+                if rowIndex is () {
+                    return <error>error(string `Error: ${range}, does not match the expected range format: A1 range. `);
+                }
+                string responseSheetName = re `!`.split(range)[0];
+                string[] a1Range = re `:`.split(re `!`.split(range)[1]);
+                int rowID = check int:fromString(rowIndex.substring());
+                json[] valueJsonArray = check values[0].ensureType();
+                foreach json item in valueJsonArray {
+                    valueArray.push(item.toString());
+                }
+                output.push({rowPosition: rowID, values: valueArray, a1Range:{sheetName: responseSheetName, startIndex: a1Range[0], endIndex: a1Range[1]}});
+            }
+            foreach ValueRange row in output {
+                jsonPayload = {
+                    "requests": [
+                        {
+                            "deleteDimension": {
+                                "range": {
+                                    "sheetId": sheetId,
+                                    "dimension": "ROWS",
+                                    "startIndex": row.rowPosition - 1,
+                                    "endIndex": row.rowPosition
+                                }
+                            }
+                        }
+                    ]
+                };
+                json _ = check sendRequestWithPayload(self.httpClient, setValuePath,
+                    jsonPayload);
+            }
         }
     }
 }

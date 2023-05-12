@@ -594,6 +594,194 @@ function testCopyTo() {
 }
 
 @test:Config {
+    dependsOn: [ testAppendRow ],
+    enable: true
+}
+function testAppendValueToTestSetMetadata() returns error? {
+    string[] values = ["Appending", "Some", "Values for Metadata"];
+    var spreadsheetRes = spreadsheetClient->appendValue(spreadsheetId, values, <A1Range>{sheetName: testSheetName});
+    if spreadsheetRes !is error {
+        test:assertEquals({"rowPosition": spreadsheetRes["rowPosition"], "values": spreadsheetRes["values"], "startIndex": spreadsheetRes["a1Range"].startIndex, "endIndex": spreadsheetRes["a1Range"].endIndex},
+        {"rowPosition": 1, "values": ["Appending", "Some", "Values for Metadata"], startIndex: "A1", endIndex: "C1"}, msg = "Appending a row to sheet failed");
+    } else {
+        test:assertFail(spreadsheetRes.message());
+    }
+}
+
+@test:Config {
+    dependsOn: [ testAppendValueToTestSetMetadata ],
+    enable: true
+}
+
+function testSetRowMetadata() returns error? {
+    Sheet sheet = check spreadsheetClient->getSheetByName(spreadsheetId, testSheetName);
+    error? response = spreadsheetClient->setRowMetaData(spreadsheetId, sheet.properties.sheetId, 1, "DOCUMENT", "metadataKey", "value1");
+    if response !is error {
+        test:assertEquals(response, (), msg = "Appending a row to sheet with metadata failed");
+    } else {
+        test:assertFail(response.message());
+    }
+}
+
+@test:Config {
+    dependsOn: [ testSetRowMetadata ],
+    enable: true
+}
+function testAppendValueToSheetForFilterTests() returns error? {
+    string[] values = ["Appending", "Some", "Values"];
+    var spreadsheetRes = spreadsheetClient->appendValue(spreadsheetId, values, <A1Range>{sheetName: testSheetName});
+    if spreadsheetRes !is error {
+        test:assertEquals({"rowPosition": spreadsheetRes["rowPosition"], "values": spreadsheetRes["values"], "startIndex": spreadsheetRes["a1Range"].startIndex, "endIndex": spreadsheetRes["a1Range"].endIndex},
+        {"rowPosition": 2, "values": ["Appending", "Some", "Values"], startIndex: "A2", endIndex: "C2"}, msg = "Appending a row to sheet failed");
+    } else {
+        test:assertFail(spreadsheetRes.message());
+    }
+    spreadsheetRes = spreadsheetClient->appendValue(spreadsheetId, values, <A1Range>{sheetName: testSheetName});
+    if spreadsheetRes !is error {
+        test:assertEquals({"rowPosition": spreadsheetRes["rowPosition"], "values": spreadsheetRes["values"], "startIndex": spreadsheetRes["a1Range"].startIndex, "endIndex": spreadsheetRes["a1Range"].endIndex},
+        {"rowPosition": 3, "values": ["Appending", "Some", "Values"], startIndex: "A3", endIndex: "C3"}, msg = "Appending a row to sheet failed");
+    } else {
+        test:assertFail(spreadsheetRes.message());
+    }
+}
+
+@test:Config {
+    dependsOn: [testAppendValueToSheetForFilterTests],
+    enable: true
+}
+function testUpdateRowFromSheetWithFilter() returns error? {
+    (string|float|boolean)[] values = ["Appending", false, 0.1f];
+    string[] values_metadata = ["Appending", "Some", "Values Updated With Metadata"];
+    string[] values_gridRange = ["Appending", "Some", "Values Updated With gridrange"];
+
+    Sheet sheet = check spreadsheetClient->getSheetByName(spreadsheetId, testSheetName);
+    error? response = spreadsheetClient->updateRowByDataFilter(spreadsheetId, sheet.properties.sheetId, <A1Range>{sheetName: testSheetName, startIndex: "A3", endIndex: "C3"}, values, valueInputOption = "USER_ENTERED");
+    if response !is error {
+        test:assertEquals(response, (), msg = "Update using A1Range filter failed");
+    } else {
+        test:assertFail(response.message());
+    }
+
+    GridRangeFilter gridRangeFilter = {sheetId: sheet.properties.sheetId, startRowIndex: 1, endRowIndex: 2, startColumnIndex: 0, endColumnIndex: 4};
+    DeveloperMetadataLookupFilter developerMetadataLookupFilter = {locationType: "ROW", metadataKey: "metadataKey", metadataValue: "value1"};
+    response = spreadsheetClient->updateRowByDataFilter(spreadsheetId, sheet.properties.sheetId, gridRangeFilter, values_gridRange, valueInputOption = "USER_ENTERED");
+    if response !is error {
+        test:assertEquals(response, (), msg = "Update using GridRangeFilter failed");
+    } else {
+        test:assertFail(response.message());
+    }
+
+    response = spreadsheetClient->updateRowByDataFilter(spreadsheetId, sheet.properties.sheetId, developerMetadataLookupFilter, values_metadata, valueInputOption = "USER_ENTERED");
+    if response !is error {
+        test:assertEquals(response, (), msg = "Update using DeveloperMetadataLookupFilter failed");
+    } else {
+        test:assertFail(response.message());
+    }
+}
+
+
+@test:Config {
+    dependsOn: [ testUpdateRowFromSheetWithFilter ],
+    enable: true
+}
+function testGetRowFromSheetWithFilter() returns error? {
+    Sheet sheet = check spreadsheetClient->getSheetByName(spreadsheetId, testSheetName);
+    ValueRange[]|error spreadsheetRes = spreadsheetClient->getRowByDataFilter(spreadsheetId, sheet.properties.sheetId, <A1Range>{sheetName: testSheetName, startIndex: "A3", endIndex: "C3"});
+    if spreadsheetRes is ValueRange[] {
+        test:assertEquals({"rowPosition": spreadsheetRes[0]["rowPosition"], "values": spreadsheetRes[0]["values"], "startIndex": spreadsheetRes[0]["a1Range"].startIndex, "endIndex": spreadsheetRes[0]["a1Range"].endIndex},
+        {"rowPosition": 3, "values": ["Appending", "FALSE", "0.1"], startIndex: "A3", endIndex: "C3"}, msg = "Fetching of Data using A1Range filter failed");
+    } else {
+        test:assertFail(spreadsheetRes.message());
+    }
+    GridRangeFilter gridRangeFilter = {sheetId: sheet.properties.sheetId, startRowIndex: 1, endRowIndex: 2, startColumnIndex: 0, endColumnIndex: 4};
+    DeveloperMetadataLookupFilter developerMetadataLookupFilter = {locationType: "ROW", metadataKey: "metadataKey", metadataValue: "value1"};
+    spreadsheetRes = spreadsheetClient->getRowByDataFilter(spreadsheetId, sheet.properties.sheetId, gridRangeFilter);
+    if spreadsheetRes is ValueRange[] {
+        test:assertEquals({"rowPosition": spreadsheetRes[0]["rowPosition"], "values": spreadsheetRes[0]["values"], "startIndex": spreadsheetRes[0]["a1Range"].startIndex, "endIndex": spreadsheetRes[0]["a1Range"].endIndex},
+        {"rowPosition": 2, "values": ["Appending", "Some", "Values Updated With gridrange"], startIndex: "A2", endIndex: "D2"}, msg = "Fetching of Data using GridRangeFilter failed");
+    } else {
+        test:assertFail(spreadsheetRes.message());
+    }
+
+    spreadsheetRes = spreadsheetClient->getRowByDataFilter(spreadsheetId, sheet.properties.sheetId, developerMetadataLookupFilter);
+    if spreadsheetRes is ValueRange[] {
+        test:assertEquals({"rowPosition": spreadsheetRes[0]["rowPosition"], "values": spreadsheetRes[0]["values"], "startIndex": spreadsheetRes[0]["a1Range"].startIndex, "endIndex": spreadsheetRes[0]["a1Range"].endIndex},
+        {"rowPosition": 1, "values": ["Appending", "Some", "Values Updated With Metadata"], startIndex: "A1", endIndex: "AB1"}, msg = "Fetching of Data using DeveloperMetadataLookupFilter failed");
+    } else {
+        test:assertFail(spreadsheetRes.message());
+    }
+}
+@test:Config {}
+function testGetRowFromSheetWithAFaultyMetadataFilter() returns error? {
+    Sheet sheet = check spreadsheetClient->getSheetByName(spreadsheetId, testSheetName);
+    DeveloperMetadataLookupFilter developerMetadataLookupFilter = {locationType: "ROW", metadataKey: "metadataKey", metadataValue: "valueNone"};
+    ValueRange[]|error rowResp = spreadsheetClient->getRowByDataFilter(spreadsheetId, sheet.properties.sheetId, developerMetadataLookupFilter);
+    if rowResp !is error {
+        test:assertEquals(rowResp, <Row[]>[], msg = "Fetching with faulty filter failed");
+    } else {
+        test:assertFail(rowResp.message());
+    }
+}
+
+@test:Config {
+    dependsOn: [testGetRowFromSheetWithFilter],
+    enable: true
+}
+function testDeleteRowFromSheetWithFilter() returns error? {
+    Sheet sheet = check spreadsheetClient->getSheetByName(spreadsheetId, testSheetName);
+    error? response = spreadsheetClient->deleteRowByDataFilter(spreadsheetId, sheet.properties.sheetId, <A1Range>{sheetName: testSheetName, startIndex: "A3", endIndex: "C3"});
+    if response is () {
+        test:assertEquals(response, (), msg = "Delete using A1Range failed");
+    } else {
+        test:assertFail(response.message());
+    }
+
+    GridRangeFilter gridRangeFilter = {sheetId: sheet.properties.sheetId, startRowIndex: 1, endRowIndex: 2, startColumnIndex: 0, endColumnIndex: 4};
+    DeveloperMetadataLookupFilter developerMetadataLookupFilter = {locationType: "ROW", metadataKey: "metadataKey", metadataValue: "value1"};
+    response = spreadsheetClient->deleteRowByDataFilter(spreadsheetId, sheet.properties.sheetId, gridRangeFilter);
+    if response is () {
+        test:assertEquals(response, (), msg = "Delete using grid range filter failed");
+    } else {
+        test:assertFail(response.message());
+    }
+
+    response = spreadsheetClient->deleteRowByDataFilter(spreadsheetId, sheet.properties.sheetId, developerMetadataLookupFilter);
+    if response is () {
+        test:assertEquals(response, (), msg = "Delete using metadata filter failed");
+    } else {
+        test:assertFail(response.message());
+    }
+}
+
+@test:Config {
+    dependsOn: [ testDeleteRowFromSheetWithFilter ],
+    enable: true
+}
+function testGetRowFromSheetWithFilterAfterDelete() returns error? {
+    Sheet sheet = check spreadsheetClient->getSheetByName(spreadsheetId, testSheetName);
+    ValueRange[]|error rowResp = spreadsheetClient->getRowByDataFilter(spreadsheetId, sheet.properties.sheetId, <A1Range>{sheetName: testSheetName, startIndex: "A3", endIndex: "C3"});
+    if rowResp !is error {
+        test:assertEquals(rowResp, <ValueRange[]>[], msg = "Fetching of Data using A1Range filter failed");
+    } else {
+        test:assertFail(rowResp.message());
+    }
+    GridRangeFilter gridRangeFilter = {sheetId: sheet.properties.sheetId, startRowIndex: 1, endRowIndex: 2, startColumnIndex: 0, endColumnIndex: 4};
+    DeveloperMetadataLookupFilter developerMetadataLookupFilter = {locationType: "ROW", metadataKey: "metadataKey", metadataValue: "value1"};
+    rowResp = spreadsheetClient->getRowByDataFilter(spreadsheetId, sheet.properties.sheetId, gridRangeFilter);
+    if rowResp !is error {
+        test:assertEquals(rowResp, <ValueRange[]>[], msg = "Fetching of Data using GridRangeFilter failed");
+    } else {
+        test:assertFail(rowResp.message());
+    }
+    rowResp = spreadsheetClient->getRowByDataFilter(spreadsheetId, sheet.properties.sheetId, developerMetadataLookupFilter);
+    if rowResp !is error {
+        test:assertEquals(rowResp, <ValueRange[]>[], msg = "Fetching of Data using DeveloperMetadataLookupFilter failed");
+    } else {
+        test:assertFail(rowResp.message());
+    }
+}
+
+@test:Config {
     dependsOn: [ testCopyTo ],
     enable: true
 }
@@ -609,7 +797,7 @@ function testCopyToBySheetName() {
 function testClearAll() {
     string newName = "Copy of " + testSheetName;
     var openRes = spreadsheetClient->getSheetByName(spreadsheetId, newName);
-    if (openRes is Sheet) {
+    if openRes is Sheet {
         log:printInfo(openRes.toString());
         test:assertEquals(openRes.properties.title, newName, msg = "Failed to clear the sheet");
         int sheetId = openRes.properties.sheetId;
@@ -626,9 +814,72 @@ function testClearAll() {
 }
 function testClearAllBySheetName() {
     var spreadsheetRes = spreadsheetClient->clearAllBySheetName(spreadsheetId, testSheetName);
-    if (spreadsheetRes is ()) {
+    if spreadsheetRes is () {
         test:assertEquals(spreadsheetRes, (), msg = "Failed to clear the sheet");
     } else {
         test:assertFail(spreadsheetRes.message());
     }
 }
+
+@test:Config {
+    dependsOn: [ testClearCell ],
+    enable: true
+}
+function testAppendValue() {
+    string[] values = ["Appending", "Some", "Values"];
+    var spreadsheetRes = spreadsheetClient->appendValue(spreadsheetId, values, <A1Range>{sheetName: testSheetName});
+    if spreadsheetRes is ValueRange {
+        test:assertEquals({"rowPosition": spreadsheetRes["rowPosition"], "values": spreadsheetRes["values"], "startIndex": spreadsheetRes["a1Range"].startIndex, "endIndex": spreadsheetRes["a1Range"].endIndex},
+        {"rowPosition": 1, "values": ["Appending", "Some", "Values"], "startIndex": "A1", "endIndex": "C1"}, msg = "Appending a row to sheet failed");
+    } else {
+        test:assertFail(spreadsheetRes.message());
+    }
+}
+
+@test:Config {
+    dependsOn: [ testAppendValue ],
+    enable: true
+}
+function testAppendValueWithBooleanAndFloat() {
+    (string|boolean|float)[] values = ["Appending", "Some", "Values", false, 10.0f];
+    var spreadsheetRes = spreadsheetClient->appendValue(spreadsheetId, values, <A1Range>{sheetName: testSheetName, startIndex: "F1", endIndex: "I3"});
+    if spreadsheetRes is ValueRange {
+        test:assertEquals({"rowPosition": spreadsheetRes["rowPosition"], "values": spreadsheetRes["values"], "startIndex": spreadsheetRes["a1Range"].startIndex, "endIndex": spreadsheetRes["a1Range"].endIndex},
+        {"rowPosition": 1, "values": ["Appending", "Some", "Values", false, 10.0f], "startIndex": "F1", "endIndex": "J1"}, msg = "Appending a row to range failed");
+    } else {
+        test:assertFail(spreadsheetRes.message());
+    }
+}
+
+
+@test:Config {
+    dependsOn: [ testAppendValueWithBooleanAndFloat ],
+    enable: true
+}
+function testAppendValueWithAllDataTypes() {
+    decimal dec = 0.2453;
+    (string|boolean|float|decimal)[] values = ["Appending", "Some", "Values", false, 10.1f, dec];
+    var spreadsheetRes = spreadsheetClient->appendValue(spreadsheetId, values, <A1Range>{sheetName: testSheetName, startIndex: "F1", endIndex: "I3"});
+    if spreadsheetRes is ValueRange {
+        test:assertEquals({"rowPosition": spreadsheetRes["rowPosition"], "values": spreadsheetRes["values"], "startIndex": spreadsheetRes["a1Range"].startIndex, "endIndex": spreadsheetRes["a1Range"].endIndex},
+        {"rowPosition": 2, "values": ["Appending", "Some", "Values", false, 10.1f, dec], "startIndex": "F2", "endIndex": "K2"}, msg = "Appending a row to range failed");
+    } else {
+        test:assertFail(spreadsheetRes.message());
+    }
+}
+
+@test:Config {
+    dependsOn: [ testAppendValueWithBooleanAndFloat ],
+    enable: true
+}
+function testAppendCellWithAppendValue() {
+    string[] value = ["AppendingValue"];
+    var spreadsheetRes = spreadsheetClient->appendValue(spreadsheetId, value, <A1Range>{sheetName: testSheetName, startIndex: "F1", endIndex: "H3"});
+    if spreadsheetRes is ValueRange {
+        test:assertEquals({"rowPosition": spreadsheetRes["rowPosition"], "values": spreadsheetRes["values"], "startIndex": spreadsheetRes["a1Range"].startIndex},
+        {"rowPosition": 3, "values": ["AppendingValue"], startIndex: "F3"}, msg = "Appending a cell to range failed");
+    } else {
+        test:assertFail(spreadsheetRes.message());
+    }
+}
+

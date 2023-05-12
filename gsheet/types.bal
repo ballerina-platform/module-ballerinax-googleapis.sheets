@@ -155,6 +155,36 @@ public type Row record {
     (int|string|decimal)[] values;
 };
 
+# A1 Notation of a ValueRange
+#
+# + sheetName - Sheet name in A1 notation
+# + startIndex - Starting cell of the range
+# + endIndex - Ending cell of the range
+@display {label: "A1Range"}
+public type A1Range record {
+    @display {label: "Sheet Name"}
+    string sheetName;
+    @display {label: "Start Index"}
+    string startIndex?;
+    @display {label: "End Index"}
+    string endIndex?;
+};
+
+# Values related to a single row.
+#
+# + rowPosition - The row number
+# + values - Values of the given row
+# + a1Range - A1Notation of the range
+@display {label: "ValueRange"}
+public type ValueRange record {
+    @display {label: "Row Number"}
+    int rowPosition;
+    @display {label: "Values"}
+    (int|string|decimal|boolean|float)[] values;
+    @display {label: "A1 Range"}
+    A1Range a1Range;
+};
+
 # Single cell in a sheet.
 #
 # + a1Notation - The column letter followed by the row number.
@@ -211,3 +241,139 @@ public type File record {
     @display {label: "Mime Type"}
     string mimeType;
 };
+
+# The metadata visibility
+# 
+@display {label: "Metadata Visibility"}
+public enum Visibility {
+    UNSPECIFIED_VISIBILITY = "DEVELOPER_METADATA_VISIBILITY_UNSPECIFIED",
+    DOCUMENT = "DOCUMENT",
+    PROJECT = "PROJECT"
+};
+
+# The location type for filters
+# 
+@display {label: "Location Type"}
+public enum LocationType {
+    UNSPECIFIED_LOCATION = "DEVELOPER_METADATA_LOCATION_TYPE_UNSPECIFIED",
+    COLUMN = "COLUMN",
+    SPREADSHEET = "SPREADSHEET",
+    SHEET = "SHEET",
+    ROW = "ROW"
+};
+
+# Dimension
+#
+@display {label: "Dimension"}
+public enum Dimension {
+    UNSPECIFIED_DIMENSION = "DIMENSION_UNSPECIFIED",
+    COLUMNS = "COLUMNS",
+    ROWS = "ROWS"
+};
+
+# The location matching strategy for filters
+#
+@display {label: "Location Matching Strategy"}
+public enum LocationMatchingStrategy {
+    UNSPECIFIED_STRATEGY = "DEVELOPER_METADATA_LOCATION_MATCHING_STRATEGY_UNSPECIFIED",
+    EXACT_LOCATION = "EXACT_LOCATION",
+    INTERSECTING_LOCATION = "INTERSECTING_LOCATION"
+};
+
+# The DeveloperMetadataLookup filter
+#  
+# + locationType - Specified type which the metadata ara associated. 
+#                  For more information, see [LocationType](https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.developerMetadata#DeveloperMetadata.DeveloperMetadataLocationType)
+# + locationMatchingStrategy - An enumeration of strategies for matching developer metadata locations.
+#                              For more information, see [locationMatchingStrategy](https://developers.google.com/sheets/api/reference/rest/v4/DataFilter#DeveloperMetadataLocationMatchingStrategy).
+# + metadataId - The spreadsheet-scoped unique ID that identifies the metadata.
+# + metadataKey - Key used to identify metadata.
+# + metadataValue - Data associated with the metadata's key.
+# + visibility - Visibility scope of the associated metadata
+#                For more information, see [Visibility](https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.developerMetadata#DeveloperMetadata.DeveloperMetadataVisibility).
+# + metadataLocation - Location of association for metadata
+#                             
+@display {label: "DeveloperMetadataLookup Filter"}
+public type DeveloperMetadataLookupFilter record {
+    @display {label: "Location Type"}
+    LocationType locationType;
+    @display {label: "Location matching strategy"}
+    LocationMatchingStrategy locationMatchingStrategy?;
+    @display {label: "Metadata Id"}
+    int metadataId?;
+    @display {label: "Metadata Key"}
+    string metadataKey?;
+    @display {label: "Metadata Value"}
+    string metadataValue;
+    @display {label: "Metadata Visibility"}
+    Visibility visibility?;
+    @display {label: "Metadata Location"}
+    MetadataLocation metadataLocation?;
+};
+
+# The Metadata Location
+#
+#  + locationType - Specified type which the metadata ara associated. 
+#                  For more information, see [LocationType](https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.developerMetadata#DeveloperMetadata.DeveloperMetadataLocationType)
+#  + spreadsheet - Whether metadata is associated with an entire spreadsheet.
+#  + sheetId - The ID of the worksheet
+#  + dimensionRange - Dimension the when the metadata is associated with them
+#  
+@display {label: "Metadata Location"}
+public type MetadataLocation record {
+    @display {label: "Location Type"}
+    LocationType locationType;
+    @display {label: "Spreadsheet"}
+    boolean spreadsheet;
+    @display {label: "Worksheet ID"}
+    int sheetId;
+    @display {label: "Dimension Range"}
+    DimensionRange dimensionRange;
+};
+
+# The Dimension Range
+# 
+# + sheetId - The ID of the worksheet
+# + dimension - The dimension of the span
+# + startIndex - The start (inclusive) of the span, or not set if unbounded
+# + endIndex - The end (exclusive) of the span, or not set if unbounded.
+#
+@display {label: "Dimension Range"}
+public type DimensionRange record {
+    @display {label: "Worksheet ID"}
+    int sheetId;
+    @display {label: "Dimension"}
+    Dimension dimension;
+    @display {label: "Start Index"}
+    int startIndex;
+    @display {label: "End Index"}
+    int endIndex;
+};
+
+# The GridRange filters
+# 
+# + sheetId - The ID of the worksheet
+# + startRowIndex - The start row (inclusive) of the range, or not set if unbounded.
+# + endRowIndex - The end row (exclusive) of the range, or not set if unbounded.
+# + startColumnIndex - The start column (inclusive) of the range, or not set if unbounded.
+# + endColumnIndex - The end column (exclusive) of the range, or not set if unbounded.
+# 
+@display {label: "Gridrange Filter"}
+public type GridRangeFilter record {
+    @display {label: "Worksheet ID"}
+    int sheetId;
+    @display {label: "Starting Row Index"}
+    int startRowIndex?;
+    @display {label: "Ending Row Index"}
+    int endRowIndex?;
+    @display {label: "Starting Column Index"}
+    int startColumnIndex?;
+    @display {label: "Ending Column Index"}
+    int endColumnIndex?;
+};
+
+# Type of filter used to match data.
+# 
+@display {label: "Filter"}
+public type Filter A1Range|DeveloperMetadataLookupFilter|GridRangeFilter;
+
