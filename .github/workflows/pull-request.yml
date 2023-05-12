@@ -18,14 +18,14 @@ jobs:
 
             # Build the ballerina project
             - name: Ballerina Build
-              uses: ballerina-platform/ballerina-action/@nightly
+              uses: ballerina-platform/ballerina-action/@2201.4.1
               with:
                   args:
                       pack ./gsheet
 
             # Test the ballerina project
             - name: Ballerina Tests
-              uses: ballerina-platform/ballerina-action/@nightly
+              uses: ballerina-platform/ballerina-action/@2201.4.1
               with:
                   args:
                       test ./gsheet
