@@ -28,8 +28,10 @@ jobs:
               uses: ballerina-platform/ballerina-action/@nightly
               with:
                   args:
-                      test ./gsheet
+                      test --test-report --code-coverage --coverage-format=xml ./gsheet
               env:
                 CLIENT_ID: ${{ secrets.CLIENT_ID }}
                 CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
                 REFRESH_TOKEN: ${{ secrets.REFRESH_TOKEN }}
+            - name: Upload coverage reports to Codecov
+              uses: codecov/codecov-action@v3
