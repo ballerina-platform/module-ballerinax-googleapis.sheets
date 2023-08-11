@@ -1,37 +1,41 @@
-name: CI
+name: Pull Request
 
-# Controls when the action will run.
-# Triggers the workflow on pull request.
-on: [pull_request]
+on: [ pull_request ]
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-    # This workflow contains a single job called "build"
-    build:
-        # The type of runner that the job will run on
-        runs-on: ubuntu-latest
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
 
-        # Steps represent a sequence of tasks that will be executed as part of the job
-        steps:
-            # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-            - uses: actions/checkout@v2
+      # Setup Ballerina Environment
+      - name: Set Up Ballerina
+        uses: ballerina-platform/setup-ballerina@v1.1.0
+        with:
+          version: latest
 
-            # Build the ballerina project
-            - name: Ballerina Build
-              uses: ballerina-platform/ballerina-action/@nightly
-              with:
-                  args:
-                      pack ./gsheet
+      # Build Ballerina Project
+      - name: Ballerina Build
+        run: bal pack ./ballerina
+        env:
+          JAVA_HOME: /usr/lib/jvm/default-jvm
 
-            # Test the ballerina project
-            - name: Ballerina Tests
-              uses: ballerina-platform/ballerina-action/@nightly
-              with:
-                  args:
-                      test --test-report --code-coverage --coverage-format=xml ./gsheet
-              env:
-                CLIENT_ID: ${{ secrets.CLIENT_ID }}
-                CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
-                REFRESH_TOKEN: ${{ secrets.REFRESH_TOKEN }}
-            - name: Upload coverage reports to Codecov
-              uses: codecov/codecov-action@v3
+      # Build Module Examples
+      - name: Ballerina Examples Build
+        run: chmod +x ./examples/build.sh && ./examples/build.sh build
+        env:
+          JAVA_HOME: /usr/lib/jvm/default-jvm
+
+      # Test Ballerina Project
+      - name: Ballerina Test
+        # tests will be skipped if the PR is from a forked repository (as the secrets are not available)
+        if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
+        run: bal test ./ballerina --test-report --code-coverage --coverage-format=xml
+        env:
+          CLIENT_ID: ${{ secrets.CLIENT_ID }}
+          CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
+          REFRESH_TOKEN: ${{ secrets.REFRESH_TOKEN }}
+          JAVA_HOME: /usr/lib/jvm/default-jvm
+
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v3
