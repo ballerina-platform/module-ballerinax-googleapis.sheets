@@ -31,11 +31,11 @@ Execute the commands below to build from the source.
 
 - To build the package:
     ```shell
-    bal pack ./gsheet
+    bal build ./ballerina
     ```
 - To test the package: 
     ```shell
-    bal test ./gsheet
+    bal test ./ballerina
     ```
 
 ## Contributing to Ballerina
