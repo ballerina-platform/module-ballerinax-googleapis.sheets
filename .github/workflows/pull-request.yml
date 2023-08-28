@@ -30,7 +30,7 @@ jobs:
       - name: Ballerina Test
         # tests will be skipped if the PR is from a forked repository (as the secrets are not available)
         if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
-        run: bal test ./ballerina --test-report --code-coverage --coverage-format=xml
+        run: bal test --test-report --code-coverage --coverage-format=xml ./ballerina
         env:
           CLIENT_ID: ${{ secrets.CLIENT_ID }}
           CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}

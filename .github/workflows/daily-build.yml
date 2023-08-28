@@ -31,7 +31,7 @@ jobs:
 
       # Test Ballerina Project
       - name: Ballerina Test
-        run: bal test ./ballerina --test-report --code-coverage --coverage-format=xml
+        run: bal test --test-report --code-coverage --coverage-format=xml ./ballerina
         env:
           CLIENT_ID: ${{ secrets.CLIENT_ID }}
           CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
