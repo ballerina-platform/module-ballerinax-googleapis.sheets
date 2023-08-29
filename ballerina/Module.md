@@ -52,4 +52,4 @@ Create a `sheets:ConnectionConfig` with the OAuth2 tokens obtained, and initiali
 
 2. Use `bal run` command to compile and run the Ballerina program. 
 
-**[You can find a list of samples here](https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/tree/master/gsheet/samples)**
+**[You can find a list of samples here](https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/tree/main/examples)**
