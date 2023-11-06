@@ -1228,6 +1228,56 @@ public isolated client class Client {
         return rowRecord;
     }
 
+    # Adds the given values to number of rows at the bottom of the worksheet. The input range is used to search 
+    # for existing data and find a "table" within that range. Values will be appended to the next rows of 
+    # the table, starting with the first column of the table.
+    #
+    # + spreadsheetId - ID of the spreadsheet
+    # + values - Array of values of the rows to be added
+    # + a1Range - The required range in A1 notation
+    # + valueInputOption - Determines how input data should be interpreted. 
+    #                      It's either "RAW" or "USER_ENTERED". Default is "RAW" (Optional).
+    #                      For more information, see [ValueInputOption](https://developers.google.com/sheets/api/reference/rest/v4/ValueInputOption)           
+    # + return - ValueRange on success, or else an error
+    @display {label: "Append Value"}
+    remote isolated function appendValues(@display {label: "Google Sheet ID"} string spreadsheetId,
+                                         @display {label: "Row Values"} (int|string|decimal|boolean|float)[][] values,
+                                         @display {label: "Range A1 Notation"} A1Range a1Range,
+                                         @display {label: "Value Input Option"} string? valueInputOption = ())
+                                         returns error|ValuesRange {
+
+        string notation = check getA1RangeString(a1Range);
+        string setValuePath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + notation + APPEND;
+        setValuePath += (valueInputOption is () ? string `${VALUE_INPUT_OPTION}${RAW}` :
+            string `${VALUE_INPUT_OPTION}${valueInputOption}`);
+        json jsonValues = check values.ensureType();
+        json jsonPayload = {
+            "range": notation,
+            "majorDimension": "ROWS",
+            "values": jsonValues
+        };
+        json response = check sendRequestWithPayload(self.httpClient, setValuePath, jsonPayload);
+        if response.updates is error {
+            return <error>response.updates;
+        }
+        json jsonResponseValues = check response.updates.ensureType();
+        string range = check jsonResponseValues.updatedRange.ensureType();
+        regexp:Span? rowIndex = re `\d+`.find(re `:`.split(re `!`.split(range)[1])[0], 0);
+        if rowIndex is () {
+            return error(string `Error: ${range}, does not match the expected range format: A1 range. `);
+        }
+        string responseSheetName = re `!`.split(range)[0];
+        string[] responseA1Range = re `:`.split(re `!`.split(range)[1]);
+        int rowID = check int:fromString(rowIndex.substring());
+        ValuesRange rowRecord;
+        if responseA1Range.length() == 2 {
+            rowRecord = {rowStartPosition: rowID, values: values, a1Range: {sheetName: responseSheetName, startIndex: responseA1Range[0], endIndex: responseA1Range[1]}};
+        } else {
+            rowRecord = {rowStartPosition: rowID, values: values, a1Range: {sheetName: responseSheetName, startIndex: responseA1Range[0]}};
+        }
+        return rowRecord;
+    }
+
     # Copies the sheet to a given spreadsheet by worksheet ID.
     #
     # + spreadsheetId - ID of the spreadsheet

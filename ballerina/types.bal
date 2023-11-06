@@ -185,6 +185,21 @@ public type ValueRange record {
     A1Range a1Range;
 };
 
+# Values related to a multiple rows.
+#
+# + rowStartPosition - The row number
+# + values - Values of the given rows
+# + a1Range - A1Notation of the range
+@display {label: "ValuesRange"}
+public type ValuesRange record {
+    @display {label: "Starting Row Number"}
+    int rowStartPosition;
+    @display {label: "Values"}
+    (int|string|decimal|boolean|float)[][] values;
+    @display {label: "A1 Range"}
+    A1Range a1Range;
+};
+
 # Single cell in a sheet.
 #
 # + a1Notation - The column letter followed by the row number.
