@@ -883,8 +883,7 @@ function testAppendCellWithAppendValue() {
     }
 }
 @test:Config {
-    dependsOn: [ testClearCell ],
-    enable: true
+    dependsOn: [ testClearCell ]
 }
 function testAppendValues() {
     string[][] values = [["Appending", "Multiple Values", "for multiple rows"],["value1","value2","value3"],["value4","value5","value6"]];

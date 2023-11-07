@@ -191,14 +191,14 @@ public type ValueRange record {
 # + values - Values of the given rows
 # + a1Range - A1Notation of the range
 @display {label: "ValuesRange"}
-public type ValuesRange record {
+public type ValuesRange record {|
     @display {label: "Starting Row Number"}
     int rowStartPosition;
     @display {label: "Values"}
     (int|string|decimal|boolean|float)[][] values;
     @display {label: "A1 Range"}
     A1Range a1Range;
-};
+|};
 
 # Single cell in a sheet.
 #
