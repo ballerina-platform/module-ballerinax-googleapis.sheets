@@ -1247,16 +1247,16 @@ public isolated client class Client {
                                          returns error|ValuesRange {
 
         string notation = check getA1RangeString(a1Range);
-        string setValuePath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + notation + APPEND;
-        setValuePath += (valueInputOption is () ? string `${VALUE_INPUT_OPTION}${RAW}` :
-            string `${VALUE_INPUT_OPTION}${valueInputOption}`);
+        string valuePath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + notation + APPEND + VALUE_INPUT_OPTION;
+        valuePath += valueInputOption is () ? string `${RAW}` :
+            string `${valueInputOption}`;
         json jsonValues = check values.ensureType();
         json jsonPayload = {
             "range": notation,
             "majorDimension": "ROWS",
             "values": jsonValues
         };
-        json response = check sendRequestWithPayload(self.httpClient, setValuePath, jsonPayload);
+        json response = check sendRequestWithPayload(self.httpClient, valuePath, jsonPayload);
         if response.updates is error {
             return <error>response.updates;
         }
@@ -1266,14 +1266,14 @@ public isolated client class Client {
         if rowIndex is () {
             return error(string `Error: ${range}, does not match the expected range format: A1 range. `);
         }
-        string responseSheetName = re `!`.split(range)[0];
+        string sheetName = re `!`.split(range)[0];
         string[] responseA1Range = re `:`.split(re `!`.split(range)[1]);
-        int rowID = check int:fromString(rowIndex.substring());
+        int rowStartPosition = check int:fromString(rowIndex.substring());
         ValuesRange rowRecord;
         if responseA1Range.length() == 2 {
-            rowRecord = {rowStartPosition: rowID, values: values, a1Range: {sheetName: responseSheetName, startIndex: responseA1Range[0], endIndex: responseA1Range[1]}};
+            rowRecord = {rowStartPosition, values, a1Range: {sheetName, startIndex: responseA1Range[0], endIndex: responseA1Range[1]}};
         } else {
-            rowRecord = {rowStartPosition: rowID, values: values, a1Range: {sheetName: responseSheetName, startIndex: responseA1Range[0]}};
+            rowRecord = {rowStartPosition, values, a1Range: {sheetName, startIndex: responseA1Range[0]}};
         }
         return rowRecord;
     }
