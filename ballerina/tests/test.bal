@@ -882,4 +882,17 @@ function testAppendCellWithAppendValue() {
         test:assertFail(spreadsheetRes.message());
     }
 }
+@test:Config {
+    dependsOn: [ testClearCell ]
+}
+function testAppendValues() {
+    string[][] values = [["Appending", "Multiple Values", "for multiple rows"],["value1","value2","value3"],["value4","value5","value6"]];
+    var spreadsheetRes = spreadsheetClient->appendValues(spreadsheetId, values, <A1Range>{sheetName: testSheetName});
+    if spreadsheetRes !is error {
+        test:assertEquals({"rowStartPosition": spreadsheetRes["rowStartPosition"], "values": spreadsheetRes["values"], "startIndex": spreadsheetRes["a1Range"].startIndex, "endIndex": spreadsheetRes["a1Range"].endIndex},
+        {"rowStartPosition": 4, "values": [["Appending", "Multiple Values", "for multiple rows"],["value1","value2","value3"],["value4","value5","value6"]], startIndex: "F4", endIndex: "H6"}, msg = "Appending a row to sheet failed");
+    } else {
+        test:assertFail(spreadsheetRes.message());
+    }
+}
 
