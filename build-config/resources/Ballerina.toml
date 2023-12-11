@@ -1,0 +1,17 @@
+[package]
+distribution = "2201.8.0"
+org = "ballerinax"
+name = "googleapis.sheets"
+version = "@toml.version@"
+authors = ["Ballerina"]
+export = ["googleapis.sheets"]
+repository = "https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets"
+keywords = ["Cost/Free", "Vendor/Google"]
+icon = "icon.png"
+license = ["Apache-2.0"]
+
+[build-options]
+observabilityIncluded = true
+
+[platform.java17]
+graalvmCompatible = true
