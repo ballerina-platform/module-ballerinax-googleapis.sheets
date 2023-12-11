@@ -1,10 +1,17 @@
 [package]
-distribution = "2201.3.0"
+distribution = "2201.8.0"
 org = "ballerinax"
 name = "googleapis.sheets"
-version = "3.3.0"
-license= ["Apache-2.0"]
+version = "3.5.0"
 authors = ["Ballerina"]
-keywords = ["Productivity/Spreadsheets", "Cost/Free", "Vendor/Google"]
+export = ["googleapis.sheets"]
+repository = "https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets"
+keywords = ["Cost/Free", "Vendor/Google"]
 icon = "icon.png"
-repository = "https://github.com/ballerina-platform/module-googlespreadsheet"
+license = ["Apache-2.0"]
+
+[build-options]
+observabilityIncluded = true
+
+[platform.java17]
+graalvmCompatible = true
