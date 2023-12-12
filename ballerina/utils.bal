@@ -16,7 +16,7 @@
 
 import ballerina/http;
 import ballerina/jballerina.java as java;
-import ballerina/regex;
+import ballerina/lang.regexp;
 
 isolated function sendRequestWithPayload(http:Client httpClient, string path, json jsonPayload = ())
 returns @tainted json | error {
@@ -147,7 +147,7 @@ isolated function prepareDriveUrl(string? pageToken = ()) returns string {
 public function createRandomUUIDWithoutHyphens() returns string {
     string? stringUUID = java:toString(createRandomUUID());
     if (stringUUID is string) {
-        return regex:replaceAll(stringUUID, "-", "");
+        return regexp:replaceAll(re `-`, stringUUID, "");
     } else {
         return "";
     }
