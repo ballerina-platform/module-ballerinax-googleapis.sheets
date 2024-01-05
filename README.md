@@ -5,7 +5,7 @@ Ballerina Google Sheets Connector
 [![Build](https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/workflows/CI/badge.svg)](https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/actions?query=workflow%3ACI)
 [![codecov](https://codecov.io/gh/ballerina-platform/module-ballerinax-googleapis.sheets/branch/master/graph/badge.svg)](https://codecov.io/gh/ballerina-platform/module-ballerinax-googleapis.sheets)
 [![GitHub Last Commit](https://img.shields.io/github/last-commit/ballerina-platform/module-ballerinax-googleapis.sheets.svg)](https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/commits/master)
-[![GraalVM Check](https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/actions/workflows/build-with-bal-test-native.yml/badge.svg)](https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/actions/workflows/build-with-bal-test-native.yml)
+[![GraalVM Check](https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/actions/workflows/build-with-bal-test-graalvm.yml/badge.svg)](https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/actions/workflows/build-with-bal-test-native.yml)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 [Google Sheets](https://developers.google.com/sheets/api) is an online spreadsheet that allows you to create and format spreadsheets. It facilitates multiple users to work on the same spreadsheets simultaneously. It allows you to manage spreadsheets, manage worksheets, read, write, update, and clear data from worksheets. The API also allows you to perform column-wise, row-wise, and cell-wise operations.
