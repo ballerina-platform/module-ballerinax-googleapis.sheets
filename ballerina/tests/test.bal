@@ -111,12 +111,12 @@ function testRenameSpreadsheet() {
     }
 }
 
-@test:Config { 
+@test:Config {
     dependsOn: [ testRenameSpreadsheet ],
     enable: true
 }
 function testGetAllSpreadSheets() {
-    log:printInfo("testGetAllSpreadSheets");    
+    log:printInfo("testGetAllSpreadSheets");
     var response = spreadsheetClient->getAllSpreadsheets();
     if (response is stream<File,error?>) {
         record {|File value;|}|error? fileResponse = response.next();
