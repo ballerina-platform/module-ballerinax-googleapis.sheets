@@ -20,15 +20,15 @@ class SpreadsheetStream {
     private final http:Client httpClient;
     private string? pageToken;
     private File[] currentEntries = [];
-    int index = 0;   
+    int index = 0;
 
-    isolated function init(http:Client httpClient) returns @tainted error? {
+    isolated function init(http:Client httpClient) returns error? {
         self.httpClient = httpClient;
         self.pageToken = EMPTY_STRING;
         self.currentEntries = check self.fetchFiles();
     }
 
-    public isolated function next() returns @tainted record {|File value;|}|error? {
+    public isolated function next() returns record {|File value;|}|error? {
         if (self.index < self.currentEntries.length()) {
             record {|File value;|} file = {value: self.currentEntries[self.index]};
             self.index += 1;
@@ -46,8 +46,8 @@ class SpreadsheetStream {
         return;
     }
 
-    isolated function fetchFiles() returns @tainted File[]|error {
-        string drivePath = <@untainted>prepareDriveUrl(self.pageToken);
+    isolated function fetchFiles() returns File[]|error {
+        string drivePath = prepareDriveUrl(self.pageToken);
         json response = check sendRequest(self.httpClient, drivePath);
         FilesResponse|error filesResponse = response.cloneWithType(FilesResponse);
         if (filesResponse is FilesResponse) {

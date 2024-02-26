@@ -57,7 +57,7 @@ function testCreateSpreadsheet() {
     if (spreadsheetRes is Spreadsheet) {
         log:printInfo(spreadsheetRes.toString());
         test:assertNotEquals(spreadsheetRes.spreadsheetId, "", msg = "Failed to create spreadsheet");
-        spreadsheetId =  <@untainted> spreadsheetRes.spreadsheetId;
+        spreadsheetId = spreadsheetRes.spreadsheetId;
     } else {
         test:assertFail(spreadsheetRes.message());
     }
