@@ -1,10 +1,10 @@
 # Cell Operations
 
-This example demonstrates the cell operations of the Google Sheets connector.
+This example demonstrates the filter and copy operations in the Google Sheets connector.
 
 ## Prerequisites
 
-### 1. Setup Gmail API
+### 1. Setup Sheets API
 
 Refer to the [Setup Guide](https://central.ballerina.io/ballerinax/googleapis.sheets/latest#setup-guide) for necessary credentials (client ID, secret, tokens).
 

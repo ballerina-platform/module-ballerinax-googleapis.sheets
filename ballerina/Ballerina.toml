@@ -2,7 +2,7 @@
 distribution = "2201.8.0"
 org = "ballerinax"
 name = "googleapis.sheets"
-version = "3.5.1"
+version = "3.6.0"
 authors = ["Ballerina"]
 export = ["googleapis.sheets"]
 repository = "https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets"

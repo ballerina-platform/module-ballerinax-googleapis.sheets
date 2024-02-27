@@ -20,31 +20,31 @@ import ballerina/lang.array as arrlib;
 isolated function convertJSONToSpreadsheet(json spreadsheetJsonObject) returns Spreadsheet|error {
     SpreadsheetProperties spreadsheetProperties = {};
     json|error title = spreadsheetJsonObject.properties.title;
-    if (title is json) {
+    if title is json {
         spreadsheetProperties.title = title.toString();
     }
     json|error locale = spreadsheetJsonObject.properties.locale;
-    if (locale is json) {
+    if locale is json {
         spreadsheetProperties.locale = locale.toString();
-    } 
+    }
     json|error autoRecalc = spreadsheetJsonObject.properties.autoRecalc;
-    if (autoRecalc is json) {
+    if autoRecalc is json {
         spreadsheetProperties.autoRecalc = autoRecalc.toString();
-    }  
+    }
     json|error timeZone = spreadsheetJsonObject.properties.timeZone;
-    if (timeZone is json) {
+    if timeZone is json {
         spreadsheetProperties.timeZone = timeZone.toString();
     }
 
     Spreadsheet spreadsheet = {};
     json|error spreadsheetId = spreadsheetJsonObject.spreadsheetId;
-    if (spreadsheetId is json) {
+    if spreadsheetId is json {
         spreadsheet.spreadsheetId = spreadsheetId.toString();
     }
     spreadsheet.properties = spreadsheetProperties;
     spreadsheet.sheets = check convertJSONToSheetArray(spreadsheetJsonObject.sheets);
     json|error spreadsheetUrl = spreadsheetJsonObject.spreadsheetUrl;
-    if (spreadsheetUrl is json) {
+    if spreadsheetUrl is json {
         spreadsheet.spreadsheetUrl = spreadsheetUrl.toString();
     }
     // spreadsheet1.properties = check spreadsheetJsonObject.properties.cloneWithType(SpreadsheetProperties);
@@ -53,12 +53,12 @@ isolated function convertJSONToSpreadsheet(json spreadsheetJsonObject) returns S
 
 isolated function convertJSONToSheetArray(json|error sheetListJson) returns Sheet[]|error {
     Sheet[] sheets = [];
-    if (sheetListJson is json[]) { // When there are multiple sheets, it will be a json[]
+    if sheetListJson is json[] { // When there are multiple sheets, it will be a json[]
         foreach json sheetJsonObject in sheetListJson {
             Sheet sheet = check convertJSONToSheet(sheetJsonObject);
             arrlib:push(sheets, sheet);
         }
-    } else if (sheetListJson is json) { // When there is only one sheet, it will be a json
+    } else if sheetListJson is json { // When there is only one sheet, it will be a json
         Sheet sheet = check convertJSONToSheet(sheetListJson);
         arrlib:push(sheets, sheet);
     }
@@ -68,27 +68,27 @@ isolated function convertJSONToSheetArray(json|error sheetListJson) returns Shee
 isolated function convertJSONToSheet(json sheetJsonObject) returns Sheet|error {
     SheetProperties sheetProperties = {};
     json|error sheetId = sheetJsonObject.properties.sheetId;
-    if (sheetId is json) {
+    if sheetId is json {
         sheetProperties.sheetId = convertToInt(sheetId.toString());
     }
     json|error title = sheetJsonObject.properties.title;
-    if (title is json) {
+    if title is json {
         sheetProperties.title = title.toString();
     }
     json|error index = sheetJsonObject.properties.index;
-    if (index is json) {
+    if index is json {
         sheetProperties.index = convertToInt(index.toString());
     }
     json|error sheetType = sheetJsonObject.properties.sheetType;
-    if (sheetType is json) {
+    if sheetType is json {
         sheetProperties.sheetType = sheetType.toString();
     }
     json|error hidden = sheetJsonObject.properties.hidden;
-    if (hidden is json) {
+    if hidden is json {
         sheetProperties.hidden = convertToBoolean(hidden.toString());
     }
     json|error rightToLeft = sheetJsonObject.properties.rightToLeft;
-    if (rightToLeft is json) {
+    if rightToLeft is json {
         sheetProperties.rightToLeft = convertToBoolean(rightToLeft.toString());
     }
     sheetProperties.gridProperties = convertToGridProperties(check sheetJsonObject.properties.gridProperties);
@@ -102,29 +102,27 @@ isolated function convertJSONToSheet(json sheetJsonObject) returns Sheet|error {
 isolated function convertToGridProperties(json jsonProps) returns GridProperties {
     GridProperties gridProperties = {};
     json|error rowCount = jsonProps.rowCount;
-    gridProperties.rowCount = !(rowCount is error) ? convertToInt(rowCount.toString()) : 0;
+    gridProperties.rowCount = rowCount is json ? convertToInt(rowCount.toString()) : 0;
     json|error columnCount = jsonProps.columnCount;
-    gridProperties.columnCount = !(columnCount is error) ? convertToInt(columnCount.toString()) : 0;
+    gridProperties.columnCount = columnCount is json ? convertToInt(columnCount.toString()) : 0;
     json|error frozenRowCount = jsonProps.frozenRowCount;
-    gridProperties.frozenRowCount = !(frozenRowCount is error) ? convertToInt(frozenRowCount.toString()) : 0;
+    gridProperties.frozenRowCount = frozenRowCount is json ? convertToInt(frozenRowCount.toString()) : 0;
     json|error frozenColumnCount = jsonProps.frozenColumnCount;
-    gridProperties.frozenColumnCount = !(frozenColumnCount is error) ? convertToInt(frozenColumnCount.toString()) : 0;
+    gridProperties.frozenColumnCount = frozenColumnCount is json ? convertToInt(frozenColumnCount.toString()) : 0;
     json|error hideGridlines = jsonProps.hideGridlines;
-    gridProperties.hideGridlines = !(hideGridlines is error) ? convertToBoolean(hideGridlines.toString()) : false;
+    gridProperties.hideGridlines = hideGridlines is json ? convertToBoolean(hideGridlines.toString()) : false;
     return gridProperties;
 }
 
 isolated function convertToInt(string stringVal) returns int {
-    if (stringVal != "") {
-        var intVal = ints:fromString(stringVal);
-        if (intVal is int) {
+    if stringVal != "" {
+        int|error intVal = ints:fromString(stringVal);
+        if intVal is int {
             return intVal;
-        } else {
-            panic error("Error occurred when converting " + stringVal + " to int");
         }
-    } else {
-        return 0;
+        panic error("Error occurred when converting " + stringVal + " to int");
     }
+    return 0;
 }
 
 isolated function convertToBoolean(string stringVal) returns boolean {
@@ -136,8 +134,8 @@ isolated function convertToArray(json jsonResponse) returns (string|int|decimal)
     int i = 0;
     json|error jsonResponseValues = jsonResponse.values;
     json[] jsonValues = [];
-    if (jsonResponseValues is json) {
-        jsonValues = <json[]>jsonResponseValues;
+    if jsonResponseValues is json[] {
+        jsonValues = jsonResponseValues;
     }
     foreach json value in jsonValues {
         json[] jsonValArray = <json[]>value;
@@ -154,10 +152,6 @@ isolated function convertToArray(json jsonResponse) returns (string|int|decimal)
 }
 
 isolated function convertToFiles(json payload) returns File[]|error {
-    FilesResponse|error res = payload.cloneWithType(FilesResponse);
-    if (res is FilesResponse) {
-        return res.files;
-    } else {
-        return res;
-    }
+    FilesResponse res = check payload.cloneWithType(FilesResponse);
+    return res.files;
 }

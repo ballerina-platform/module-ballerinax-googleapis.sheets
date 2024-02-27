@@ -1,8 +1,8 @@
 ## Overview
 
-The Ballerina Google Sheets connector makes it convenient to implement some of the most common use cases of Google Sheets. This connector streamlines spreadsheet management by enabling users to programmatically handle spreadsheets, manipulate worksheets, execute CRUD operations on data, and conduct precise operations at the column, row, and cell levels.
+The [Google Sheets](https://developers.google.com/sheets/api), developed by Google LLC, allows users to programmatically interact with Google Sheets, facilitating tasks such as data manipulation, analysis, and automation.
 
-The Google Sheets connector supports [Google Sheets API v4](https://developers.google.com/sheets/api).
+The `ballerinax/googleapis.sheets` package offers APIs to connect and interact with [Sheets API](https://developers.google.com/sheets/api/guides) endpoints, specifically based on [Google Sheets API v4](https://developers.google.com/sheets/api).
 
 ## Setup guide
 
@@ -12,76 +12,69 @@ To use the Google Sheets connector, you must have access to the Google Sheets AP
 
 1. Open the [Google Cloud Platform Console](https://console.cloud.google.com/).
 
-2. Click on "Select a project" in the drop-down menu and then "NEW PROJECT" to create a new one. (If you already have a project, select it from existing projects and continue from step 2.)
+2. Click on **Select a project** in the drop-down menu and either select an existing project or create a new one.
 
-3. Enter a project name and click on "CREATE".
-
-    ![GCP Console Project View]((https://raw.githubusercontent.com/ballerina-platform/module-ballerinax-googleapis.sheets/main/docs/setup/resources/consent-screen.png))
+   <img src=https://raw.githubusercontent.com/ballerina-platform/module-ballerinax-googleapis.sheets/main/docs/setup/resources/gcp-console-project-view.png alt="GCP Console Project View" width="50%">
 
 ### Step 2: Enabling Google Sheets API
 
 1. Select the created project.
 
-2. Navigate to “APIs & Services” > “Library.”
+2. Navigate to **APIs & Services** > **Library**.
 
-3. Search and select “Google Sheets API.”
+3. Search and select `Google Sheets API`. Then click **ENABLE**.
 
-4. Click “ENABLE.”
-
-    ![Enable Google Sheets API]((https://raw.githubusercontent.com/ballerina-platform/module-ballerinax-googleapis.sheets/main/docs/setup/resources/enable-sheets-api.png))
+    <img src=https://raw.githubusercontent.com/ballerina-platform/module-ballerinax-googleapis.sheets/main/docs/setup/resources/enable-sheets-api.png alt="Enable Google Sheets API" width="50%">
 
 ### Step 3: Creating an OAuth consent app
 
-1. Click on “OAuth Consent Screen” in the sidebar.
+1. Click on the **OAuth Consent Screen** in the sidebar.
 
-2. Select “External” and click “CREATE.”
+2. Select `External` and click **CREATE**.
 
 3. Fill in the app information and add the necessary scopes for Google Sheets API.
 
-4. Click “SAVE AND CONTINUE” and then “SAVE AND CONTINUE” again.
-
-5. Click “BACK TO DASHBOARD".
-
-    ![OAuth Consent Screen]((https://raw.githubusercontent.com/ballerina-platform/module-ballerinax-googleapis.sheets/main/docs/setup/resources/oauth-consent.png))
+    <img src=https://raw.githubusercontent.com/ballerina-platform/module-ballerinax-googleapis.sheets/main/docs/setup/resources/oauth-consent.png alt="OAuth Consent Screen" width="50%">
 
 ### Step 4: Generating client ID & client secret
 
-1. In the left sidebar, click on “Credentials.”
+1. In the left sidebar, click on **Credentials**.
 
-2. Click on “+ CREATE CREDENTIALS” and choose “OAuth Client ID.”
+2. Click on **+ CREATE CREDENTIALS** and choose **OAuth Client ID**.
 
-    ![Create Credentials]((https://raw.githubusercontent.com/ballerina-platform/module-ballerinax-googleapis.sheets/main/docs/setup/resources/create-credentials.png))
+    <img src=https://raw.githubusercontent.com/ballerina-platform/module-ballerinax-googleapis.sheets/main/docs/setup/resources/create-credentials.png alt="Create Credentials" width="50%">
 
-3. Specify “Web Application” as the application type.
+3. You will be directed to the OAuth consent screen, in which you need to fill in the necessary information below.
 
-4. Enter a name, authorized redirect URL, and click “CREATE.”
     | Field                    | Value           |
     | -----------              | -----------     |
     | Application type         | Web Application |
     | Name                     | Sheets Client   |
-    | Authorized Redirect URIs | https://developers.google.com/oauthplayground |
+    | Authorized Redirect URIs | <https://developers.google.com/oauthplayground> |
 
-    ![Create Client]((https://raw.githubusercontent.com/ballerina-platform/module-ballerinax-googleapis.sheets/main/docs/setup/resources/create-client.png))
+    <img src=https://raw.githubusercontent.com/ballerina-platform/module-ballerinax-googleapis.sheets/main/docs/setup/resources/create-client.png alt="Create Client" width="50%">
 
 ### Step 5: Obtain the access and refresh tokens
 
-Follow these steps to generate the access and refresh tokens. It is recommended to use the [OAuth 2.0 playground](https://developers.google.com/oauthplayground) to acquire the tokens.
+Follow these steps to generate the access and refresh tokens.
+
+**Note**: It is recommended to use the [OAuth 2.0 playground](https://developers.google.com/oauthplayground) to acquire the tokens.
 
 1. Configure the [OAuth playground](https://developers.google.com/oauthplayground) with the OAuth client ID and client secret.
 
-    ![OAuth Playground]((https://raw.githubusercontent.com/ballerina-platform/module-ballerinax-googleapis.sheets/main/docs/setup/resources/oauth-playground-config.png))
+    <img src=https://raw.githubusercontent.com/ballerina-platform/module-ballerinax-googleapis.sheets/main/docs/setup/resources/oauth-playground-config.png alt="OAuth Playground" width="50%">
 
 2. Authorize the Google Sheets APIs.
 
-    ![Authorize APIs]((https://raw.githubusercontent.com/ballerina-platform/module-ballerinax-googleapis.sheets/main/docs/setup/resources/auhtorize-apis.png))
+    <img src=https://raw.githubusercontent.com/ballerina-platform/module-ballerinax-googleapis.sheets/main/docs/setup/resources/auhtorize-apis.png alt="Authorize APIs" width="50%">
 
 3. Exchange the authorization code for tokens.
 
-    ![Exchange Tokens]((https://raw.githubusercontent.com/ballerina-platform/module-ballerinax-googleapis.sheets/main/docs/setup/resources/exchange-tokens.png))
+    <img src=https://raw.githubusercontent.com/ballerina-platform/module-ballerinax-googleapis.sheets/main/docs/setup/resources/exchange-tokens.png alt="Exchange Tokens" width="50%">
 
 ## Quickstart
 
-To use the `Google Sheets` connector in your Ballerina project, modify the `.bal` file as follows:
+To use the Google Sheets connector in your Ballerina project, modify the `.bal` file as follows:
 
 ### Step 1: Import connector
 
@@ -137,7 +130,10 @@ bal run
 
 ## Examples
 
-The `Google Sheets` connector provides practical examples illustrating usage in various scenarios. Explore these [examples](https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/tree/main/examples), covering use cases like creating, reading, and appending rows.
+The `Google Sheets` connector provides practical examples illustrating usage in various scenarios. Explore these [examples](https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/tree/main/examples), covering use cases such as creating, reading, and appending rows.
 
-1. []()
-2. []()
+1. [Cell operations](https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/tree/main/examples/cell-operations) - Operations associated with a cell, such as clearing, setting, and deleting cell values.
+
+2. [Grid filtering](https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/tree/main/examples/grid-filtering) - Demonstrate filtering sheet values using a grid range.
+
+3. [Sheet modifying](https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/tree/main/examples/sheet-modifying) - Basic operations associated with sheets such as creating, reading, and appending rows.

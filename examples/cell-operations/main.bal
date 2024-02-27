@@ -14,13 +14,14 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import ballerinax/googleapis.sheets as sheets;
+import ballerinax/googleapis.sheets;
 import ballerina/log;
+import ballerina/os;
 
-configurable string & readonly refreshToken = "1//04qcB2kquSV6VCgYIARAAGAQSNwF-L9Ira1leg3IMUPKUd-e08UyXMFS0QykGP7SfI4AZY0_6BUlvtyddD7tQdZYUobRMi6_DuQo";
-configurable string & readonly clientId = "478620896216-qs9vdnsmlmse4940urocosib9j7706fk.apps.googleusercontent.com";
-configurable string & readonly clientSecret = "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";
-configurable string & readonly refreshUrl = "https://oauth2.googleapis.com/token";
+configurable string & readonly refreshToken = os:getEnv("REFRESH_TOKEN");
+configurable string & readonly clientId = os:getEnv("CLIENT_ID");
+configurable string & readonly clientSecret = os:getEnv("CLIENT_SECRET");
+configurable string & readonly refreshUrl = sheets:REFRESH_URL;
 
 sheets:Client spreadsheetClient = check new ({
     auth: {
@@ -35,7 +36,7 @@ public function main() returns error? {
     string spreadsheetId = "";
     string sheetName = "";
 
-    // Create Spreadsheet with given name
+    // Create spreadsheet with given name
     sheets:Spreadsheet response = check spreadsheetClient->createSpreadsheet("NewSpreadsheet");
     spreadsheetId = response.spreadsheetId;
 
@@ -46,10 +47,10 @@ public function main() returns error? {
 
     string a1Notation = "B2";
 
-    // Sets the value of the given cell of the Sheet
+    // Sets the value of the given cell of the sheet
     _ = check spreadsheetClient->setCell(spreadsheetId, sheetName, a1Notation, "ModifiedValue");
 
-    // Gets the value of the given cell of the Sheet
+    // Gets the value of the given cell of the sheet
     sheets:Cell getValues = check spreadsheetClient->getCell(spreadsheetId, sheetName, a1Notation);
     log:printInfo("Cell Details: " + getValues.toString());
 

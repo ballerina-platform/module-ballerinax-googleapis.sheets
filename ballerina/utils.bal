@@ -19,7 +19,7 @@ import ballerina/jballerina.java as java;
 import ballerina/lang.regexp;
 
 isolated function sendRequestWithPayload(http:Client httpClient, string path, json jsonPayload = ())
-returns json | error {
+returns json|error {
     http:Request httpRequest = new;
     if jsonPayload != () {
         httpRequest.setJsonPayload(jsonPayload);
@@ -79,13 +79,8 @@ isolated function getIdFromUrl(string url) returns string|error {
 # + response - Received response.
 # + return - Returns module error with payload and response code.
 isolated function getErrorMessage(http:Response response) returns error {
-    json|error payload = response.getTextPayload();
-    string payloadString = "";
-    if payload is json {
-        payloadString = payload.toString();
-    }
-    return error("Invalid response from Google Sheet API. statuscode: " + response.statusCode.toString() +
-        ", payload: " + payloadString, status = response.statusCode);
+    json payload = check response.getTextPayload();
+    return error(payload.toString());
 }
 
 # Get the drive url path to get a list of files.
@@ -95,11 +90,11 @@ isolated function getErrorMessage(http:Response response) returns error {
 isolated function prepareDriveUrl(string? pageToken = ()) returns string {
     string drivePath;
     if pageToken is string {
-        drivePath = DRIVE_PATH + FILES + QUESTION_MARK + Q + EQUAL + MIME_TYPE + EQUAL + APPLICATION + 
+        drivePath = DRIVE_PATH + FILES + QUESTION_MARK + Q + EQUAL + MIME_TYPE + EQUAL + APPLICATION +
             AND_SIGN + TRASH_FALSE + AND + PAGE_TOKEN + EQUAL + pageToken;
         return drivePath;
     }
-    drivePath = DRIVE_PATH + FILES + QUESTION_MARK + Q + EQUAL + MIME_TYPE + EQUAL + APPLICATION + AND_SIGN + 
+    drivePath = DRIVE_PATH + FILES + QUESTION_MARK + Q + EQUAL + MIME_TYPE + EQUAL + APPLICATION + AND_SIGN +
         TRASH_FALSE;
     return drivePath;
 }

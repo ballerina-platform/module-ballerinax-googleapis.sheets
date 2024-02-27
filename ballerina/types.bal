@@ -28,7 +28,7 @@ public type ConnectionConfig record {|
 |};
 
 # Spreadsheet information.
-# 
+#
 # + spreadsheetId - Id of the spreadsheet
 # + properties - Properties of a spreadsheet
 # + sheets - The sheets that are part of a spreadsheet
@@ -45,7 +45,7 @@ public type Spreadsheet record {
 };
 
 # Worksheet information.
-# 
+#
 # + properties - Properties of a worksheet
 @display {label: "Worksheet"}
 public type Sheet record {
@@ -53,7 +53,7 @@ public type Sheet record {
 };
 
 # Spreadsheet properties.
-# 
+#
 # + title - The title of the spreadsheet
 # + locale - The locale of the spreadsheet
 # + autoRecalc - The amount of time to wait before volatile functions are recalculated
@@ -71,7 +71,7 @@ public type SpreadsheetProperties record {
 };
 
 # Worksheet properties.
-# 
+#
 # + sheetId - The ID of the worksheet
 # + title - The name of the worksheet
 # + index - The index of the worksheet within the spreadsheet
@@ -97,7 +97,7 @@ public type SheetProperties record {
 };
 
 # Grid properties.
-# 
+#
 # + rowCount - The number of rows in the grid
 # + columnCount - The number of columns in the grid
 # + frozenRowCount - The number of rows that are frozen in the grid
@@ -120,8 +120,8 @@ public type GridProperties record {
 # Single cell or a group of adjacent cells in a sheet.
 #
 # + a1Notation - The column letter followed by the row number.
-#                For example for a single cell "A1" refers to the intersection of column "A" with row "1",
-#                and for a range of cells "A1:D5" refers to the top left cell and the bottom right cell of a range
+# For example for a single cell "A1" refers to the intersection of column "A" with row "1",
+# and for a range of cells "A1:D5" refers to the top left cell and the bottom right cell of a range
 # + values - Values of the given range
 @display {label: "Range"}
 public type Range record {
@@ -203,7 +203,7 @@ public type ValuesRange record {|
 # Single cell in a sheet.
 #
 # + a1Notation - The column letter followed by the row number.
-#                For example for a single cell "A1" refers to the intersection of column "A" with row "1"
+# For example for a single cell "A1" refers to the intersection of column "A" with row "1"
 # + value - Value of the given cell
 @display {label: "Cell"}
 public type Cell record {
@@ -213,20 +213,20 @@ public type Cell record {
     (int|string|decimal) value;
 };
 
-# Response from File search 
+# Response from File search
 #
 # + kind - Identifies what kind of resource is this. Value: the fixed string "drive#fileList".
-# + nextPageToken - The page token for the next page of files. 
-#                   This will be absent if the end of the files list has been reached.
-#                   If the token is rejected for any reason, it should be discarded, 
-#                   and pagination should be restarted from the first page of results.
-# + files - The list of files. 
-#           If nextPageToken is populated, 
-#           then this list may be incomplete and an additional page of results should be fetched. 
-# + incompleteSearch - Whether the search process was incomplete. If true, then some search results may be missing, 
-#                      Since all documents were not searched. This may occur when searching multiple drives with the 
-#                      "allDrives" corpora, but all corpora could not be searched. When this happens, it is suggested 
-#                      that clients narrow their query by choosing a different corpus such as "user" or "drive".  
+# + nextPageToken - The page token for the next page of files.
+# This will be absent if the end of the files list has been reached.
+# If the token is rejected for any reason, it should be discarded,
+# and pagination should be restarted from the first page of results.
+# + files - The list of files.
+# If nextPageToken is populated,
+# then this list may be incomplete and an additional page of results should be fetched.
+# + incompleteSearch - Whether the search process was incomplete. If true, then some search results may be missing,
+# Since all documents were not searched. This may occur when searching multiple drives with the
+# "allDrives" corpora, but all corpora could not be searched. When this happens, it is suggested
+# that clients narrow their query by choosing a different corpus such as "user" or "drive".
 @display {label: "Files Response"}
 public type FilesResponse record {
     @display {label: "Kind"}
@@ -241,7 +241,7 @@ public type FilesResponse record {
 
 # File information
 #
-# + kind - Identifies what kind of resource is this. Value: the fixed string "drive#file".   
+# + kind - Identifies what kind of resource is this. Value: the fixed string "drive#file".
 # + id - The Id of the file
 # + name - The name of the file
 # + mimeType - The MIME type of the file
@@ -258,7 +258,7 @@ public type File record {
 };
 
 # The metadata visibility
-# 
+#
 @display {label: "Metadata Visibility"}
 public enum Visibility {
     UNSPECIFIED_VISIBILITY = "DEVELOPER_METADATA_VISIBILITY_UNSPECIFIED",
@@ -267,7 +267,7 @@ public enum Visibility {
 };
 
 # The location type for filters
-# 
+#
 @display {label: "Location Type"}
 public enum LocationType {
     UNSPECIFIED_LOCATION = "DEVELOPER_METADATA_LOCATION_TYPE_UNSPECIFIED",
@@ -296,18 +296,18 @@ public enum LocationMatchingStrategy {
 };
 
 # The DeveloperMetadataLookup filter
-#  
-# + locationType - Specified type which the metadata ara associated. 
-#                  For more information, see [LocationType](https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.developerMetadata#DeveloperMetadata.DeveloperMetadataLocationType)
+#
+# + locationType - Specified type which the metadata ara associated.
+# For more information, see [LocationType](https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.developerMetadata#DeveloperMetadata.DeveloperMetadataLocationType)
 # + locationMatchingStrategy - An enumeration of strategies for matching developer metadata locations.
-#                              For more information, see [locationMatchingStrategy](https://developers.google.com/sheets/api/reference/rest/v4/DataFilter#DeveloperMetadataLocationMatchingStrategy).
+# For more information, see [locationMatchingStrategy](https://developers.google.com/sheets/api/reference/rest/v4/DataFilter#DeveloperMetadataLocationMatchingStrategy).
 # + metadataId - The spreadsheet-scoped unique ID that identifies the metadata.
 # + metadataKey - Key used to identify metadata.
 # + metadataValue - Data associated with the metadata's key.
 # + visibility - Visibility scope of the associated metadata
-#                For more information, see [Visibility](https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.developerMetadata#DeveloperMetadata.DeveloperMetadataVisibility).
+# For more information, see [Visibility](https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.developerMetadata#DeveloperMetadata.DeveloperMetadataVisibility).
 # + metadataLocation - Location of association for metadata
-#                             
+#
 @display {label: "DeveloperMetadataLookup Filter"}
 public type DeveloperMetadataLookupFilter record {
     @display {label: "Location Type"}
@@ -328,12 +328,12 @@ public type DeveloperMetadataLookupFilter record {
 
 # The Metadata Location
 #
-#  + locationType - Specified type which the metadata ara associated. 
-#                  For more information, see [LocationType](https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.developerMetadata#DeveloperMetadata.DeveloperMetadataLocationType)
-#  + spreadsheet - Whether metadata is associated with an entire spreadsheet.
-#  + sheetId - The ID of the worksheet
-#  + dimensionRange - Dimension the when the metadata is associated with them
-#  
+# + locationType - Specified type which the metadata ara associated.
+# For more information, see [LocationType](https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.developerMetadata#DeveloperMetadata.DeveloperMetadataLocationType)
+# + spreadsheet - Whether metadata is associated with an entire spreadsheet.
+# + sheetId - The ID of the worksheet
+# + dimensionRange - Dimension when the metadata is associated with them
+#
 @display {label: "Metadata Location"}
 public type MetadataLocation record {
     @display {label: "Location Type"}
@@ -347,7 +347,7 @@ public type MetadataLocation record {
 };
 
 # The Dimension Range
-# 
+#
 # + sheetId - The ID of the worksheet
 # + dimension - The dimension of the span
 # + startIndex - The start (inclusive) of the span, or not set if unbounded
@@ -366,13 +366,13 @@ public type DimensionRange record {
 };
 
 # The GridRange filters
-# 
+#
 # + sheetId - The ID of the worksheet
 # + startRowIndex - The start row (inclusive) of the range, or not set if unbounded.
 # + endRowIndex - The end row (exclusive) of the range, or not set if unbounded.
 # + startColumnIndex - The start column (inclusive) of the range, or not set if unbounded.
 # + endColumnIndex - The end column (exclusive) of the range, or not set if unbounded.
-# 
+#
 @display {label: "Gridrange Filter"}
 public type GridRangeFilter record {
     @display {label: "Worksheet ID"}
@@ -388,7 +388,6 @@ public type GridRangeFilter record {
 };
 
 # Type of filter used to match data.
-# 
+#
 @display {label: "Filter"}
 public type Filter A1Range|DeveloperMetadataLookupFilter|GridRangeFilter;
-

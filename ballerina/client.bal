@@ -132,7 +132,7 @@ public isolated client class Client {
         json response = check sendRequest(self.httpClient, spreadsheetPath);
         Spreadsheet spreadsheet = check convertJSONToSpreadsheet(response);
         Sheet[] sheets = spreadsheet.sheets;
-        foreach var sheet in sheets {
+        foreach Sheet sheet in sheets {
             if equalsIgnoreCase(sheet.properties.title, sheetName) {
                 return sheet;
             }
@@ -267,7 +267,7 @@ public isolated client class Client {
     # + sheetName - The name of the Worksheet
     # + range - The Range record to be set
     # + valueInputOption - Determines how input data should be interpreted.
-    # It's either "RAW" or "USER_ENTERED". Default is "RAW" (Optional).
+    # It's either `RAW` or `USER_ENTERED`. Default is `RAW` (Optional).
     # For more information, see [ValueInputOption](https://developers.google.com/sheets/api/reference/rest/v4/ValueInputOption)
     # + return - Nil on success, or else an error
     @display {label: "Set Range"}
@@ -314,8 +314,8 @@ public isolated client class Client {
     # + sheetName - The name of the worksheet
     # + a1Notation - The required range in A1 notation
     # + valueRenderOption - Determines how values should be rendered in the output.
-    # It's either "FORMATTED_VALUE","UNFORMATTED_VALUE" or "FORMULA".
-    # Default is "FORMATTED_VALUE" (Optional).
+    # It's either `FORMATTED_VALUE`, `UNFORMATTED_VALUE` or `FORMULA`.
+    # Default is `FORMATTED_VALUE` (Optional).
     # For more information, see [ValueRenderOption](https://developers.google.com/sheets/api/reference/rest/v4/ValueRenderOption)
     # + return - `sheets:Range` record on success, or else an error
     @display {label: "Get Range"}
@@ -501,7 +501,7 @@ public isolated client class Client {
     # + column - Position of column (string notation) to set the data
     # + values - Array of values of the column to be added
     # + valueInputOption - Determines how input data should be interpreted.
-    # It's either "RAW" or "USER_ENTERED". Default is "RAW" (Optional).
+    # It's either `RAW` or `USER_ENTERED`. Default is `RAW` (Optional).
     # For more information, see [ValueInputOption](https://developers.google.com/sheets/api/reference/rest/v4/ValueInputOption)
     # + return - Nil on success, or else an error
     @display {label: "Set Column"}
@@ -532,7 +532,6 @@ public isolated client class Client {
         request.setJsonPayload(jsonPayload);
         http:Response httpResponse = check self.httpClient->put(requestPath, request);
         if httpResponse.statusCode == http:STATUS_OK {
-            _ = check httpResponse.getJsonPayload();
             return;
         }
         return getErrorMessage(httpResponse);
@@ -544,8 +543,8 @@ public isolated client class Client {
     # + sheetName - The name of the worksheet
     # + column - Position of Column (string notation) to retrieve the data
     # + valueRenderOption - Determines how values should be rendered in the output.
-    # It's either "FORMATTED_VALUE","UNFORMATTED_VALUE" or "FORMULA".
-    # Default is "FORMATTED_VALUE" (Optional).
+    # It's either `FORMATTED_VALUE`, `UNFORMATTED_VALUE` or `FORMULA`.
+    # Default is `FORMATTED_VALUE` (Optional).
     # For more information, see [ValueRenderOption](https://developers.google.com/sheets/api/reference/rest/v4/ValueRenderOption)
     # + return - `sheets:Column` record on success, or else an error
     @display {label: "Get Column"}
@@ -792,7 +791,7 @@ public isolated client class Client {
     # + row - Position of row (integer notation) to set the data
     # + values - Array of values of the row to be added
     # + valueInputOption - Determines how input data should be interpreted.
-    # It's either "RAW" or "USER_ENTERED". Default is "RAW" (Optional).
+    # It's either `RAW` or `USER_ENTERED`. Default is `RAW` (Optional).
     # For more information, see [ValueInputOption](https://developers.google.com/sheets/api/reference/rest/v4/ValueInputOption)
     # + return - Nil on success, or else an error
     @display {label: "Set Row"}
@@ -821,9 +820,8 @@ public isolated client class Client {
         };
         http:Request request = new ();
         request.setJsonPayload(jsonPayload);
-        http:Response httpResponse = <http:Response>check self.httpClient->put(requestPath, request);
+        http:Response httpResponse = check self.httpClient->put(requestPath, request);
         if httpResponse.statusCode == http:STATUS_OK {
-            _ = check httpResponse.getJsonPayload();
             return;
         }
         return getErrorMessage(httpResponse);
@@ -835,8 +833,8 @@ public isolated client class Client {
     # + sheetName - The name of the worksheet
     # + row - Row number to retrieve the data
     # + valueRenderOption - Determines how values should be rendered in the output.
-    # It's either "FORMATTED_VALUE","UNFORMATTED_VALUE" or "FORMULA". 
-    # Default is "FORMATTED_VALUE" (Optional).
+    # It's either `FORMATTED_VALUE`, `UNFORMATTED_VALUE` or `FORMULA`.
+    # Default is `FORMATTED_VALUE` (Optional).
     # For more information, see [ValueRenderOption](https://developers.google.com/sheets/api/reference/rest/v4/ValueRenderOption)
     # + return - `sheets:Row` record on success, or else an error
     @display {label: "Get Row"}
@@ -943,7 +941,7 @@ public isolated client class Client {
     # + a1Notation - The required cell in A1 notation
     # + value - Value of the cell to be set
     # + valueInputOption - Determines how input data should be interpreted.
-    # It's either "RAW" or "USER_ENTERED". Default is "RAW" (Optional).
+    # It's either `RAW` or `USER_ENTERED`. Default is `RAW` (Optional).
     # For more information, see [ValueInputOption](https://developers.google.com/sheets/api/reference/rest/v4/ValueInputOption)
     # + return - Nil on success, or else an error
     @display {label: "Set Cell"}
@@ -962,7 +960,7 @@ public isolated client class Client {
         request.setJsonPayload(jsonPayload);
         http:Response httpResponse = check self.httpClient->put(setCellDataPath, request);
         int statusCode = httpResponse.statusCode;
-        var jsonResponse = httpResponse.getJsonPayload();
+        json|error jsonResponse = httpResponse.getJsonPayload();
         if jsonResponse is json {
             return setResponse(jsonResponse, statusCode);
         }
@@ -975,8 +973,8 @@ public isolated client class Client {
     # + sheetName - The name of the worksheet
     # + a1Notation - The required cell in A1 notation
     # + valueRenderOption - Determines how values should be rendered in the output.
-    # It's either "FORMATTED_VALUE","UNFORMATTED_VALUE" or "FORMULA".
-    # Default is "FORMATTED_VALUE" (Optional).
+    # It's either `FORMATTED_VALUE`, `UNFORMATTED_VALUE` or `FORMULA`.
+    # Default is `FORMATTED_VALUE` (Optional).
     # For more information, see [ValueRenderOption](https://developers.google.com/sheets/api/reference/rest/v4/ValueRenderOption)
     # + return - `sheets:Cell` record on success, or else an error
     @display {label: "Get Cell"}
@@ -1027,7 +1025,7 @@ public isolated client class Client {
     # + values - Array of values of the row to be added
     # + a1Notation - The required range in A1 notation (Optional)
     # + valueInputOption - Determines how input data should be interpreted.
-    # It's either "RAW" or "USER_ENTERED". Default is "RAW" (Optional).
+    # It's either `RAW` or `USER_ENTERED`. Default is `RAW` (Optional).
     # For more information, see [ValueInputOption](https://developers.google.com/sheets/api/reference/rest/v4/ValueInputOption)
     # + return - Nil on success, or else an error
     #
@@ -1061,11 +1059,7 @@ public isolated client class Client {
                 jsonValues
             ]
         };
-        json|error response = sendRequestWithPayload(self.httpClient, setValuePath,
-            jsonPayload);
-        if (response is error) {
-            return response;
-        }
+        _ = check sendRequestWithPayload(self.httpClient, setValuePath, jsonPayload);
     }
 
     # Adds the given values to a row at the bottom of the worksheet. The input range is used to search
@@ -1076,7 +1070,7 @@ public isolated client class Client {
     # + values - Array of values of the row to be added
     # + a1Range - The required range in A1 notation
     # + valueInputOption - Determines how input data should be interpreted.
-    # It's either "RAW" or "USER_ENTERED". Default is "RAW" (Optional).
+    # It's either `RAW` or `USER_ENTERED`. Default is `RAW` (Optional).
     # For more information, see [ValueInputOption](https://developers.google.com/sheets/api/reference/rest/v4/ValueInputOption)
     # + return - ValueRange on success, or else an error
     @display {label: "Append Value"}
@@ -1120,15 +1114,15 @@ public isolated client class Client {
         return rowRecord;
     }
 
-    # Adds the given values to number of rows at the bottom of the worksheet. The input range is used to search 
-    # for existing data and find a "table" within that range. Values will be appended to the next rows of 
+    # Adds the given values to number of rows at the bottom of the worksheet. The input range is used to search
+    # for existing data and find a "table" within that range. Values will be appended to the next rows of
     # the table, starting with the first column of the table.
     #
     # + spreadsheetId - ID of the spreadsheet
     # + values - Array of values of the rows to be added
     # + a1Range - The required range in A1 notation
     # + valueInputOption - Determines how input data should be interpreted.
-    # It's either "RAW" or "USER_ENTERED". Default is "RAW" (Optional).
+    # It's either `RAW` or `USER_ENTERED`. Default is `RAW` (Optional).
     # For more information, see [ValueInputOption](https://developers.google.com/sheets/api/reference/rest/v4/ValueInputOption)
     # + return - ValueRange on success, or else an error
     @display {label: "Append Value"}
@@ -1267,7 +1261,7 @@ public isolated client class Client {
     # + spreadsheetId - ID of the spreadsheet
     # + sheetId - The ID of the worksheet
     # + rowIndex - ID of the target row
-    # + visibility - Visibility parameter for the developer metadata. It's either "UNSPECIFIED", "DOCUMENT or "PROJECT".
+    # + visibility - Visibility parameter for the developer metadata. It's either `UNSPECIFIED`, `DOCUMENT` or `PROJECT`.
     # + key - Metadata key asigned to the row
     # + value - Value assigned with the key. This should be unique.
     # + return - Nil on success, or else an error
@@ -1363,7 +1357,7 @@ public isolated client class Client {
             string range = check value.valueRange.range.ensureType();
             regexp:Span? rowIndex = re `\d+`.find(re `:`.split(re `!`.split(range)[1])[0], 0);
             if rowIndex is () {
-                return error(string `Error: ${range}, does not match the expected range format: A1 range. `);
+                return error(string `Error: ${range}, does not match the expected range format: A1 range.`);
             }
             string responseSheetName = re `!`.split(range)[0];
             string[] a1Range = re `:`.split(re `!`.split(range)[1]);
@@ -1372,7 +1366,8 @@ public isolated client class Client {
             foreach json item in valueJsonArray {
                 valueArray.push(item.toString());
             }
-            output.push({rowPosition: rowID, values: valueArray, a1Range: {sheetName: responseSheetName, startIndex: a1Range[0], endIndex: a1Range[1]}});
+            output.push({rowPosition: rowID, values: valueArray,
+                         a1Range: {sheetName: responseSheetName, startIndex: a1Range[0], endIndex: a1Range[1]}});
         }
         return output;
     }
@@ -1385,7 +1380,7 @@ public isolated client class Client {
     # + filter - A record defining the filter used for the data filtering
     # + values - Values to assign.
     # + valueInputOption - Determines how input data should be interpreted.
-    # It's either "RAW" or "USER_ENTERED". Default is "RAW" (Optional).
+    # It's either `RAW` or `USER_ENTERED`. Default is `RAW` (Optional).
     # For more information, see [ValueInputOption](https://developers.google.com/sheets/api/reference/rest/v4/ValueInputOption)
     # + return - Nil on success, or else an error
     @display {label: "Update Row Using Data Filters"}
@@ -1455,7 +1450,7 @@ public isolated client class Client {
                 "responseDateTimeRenderOption": "SERIAL_NUMBER"
             };
         }
-        json _ = check sendRequestWithPayload(self.httpClient, setValuePath, jsonPayload);
+        _ = check sendRequestWithPayload(self.httpClient, setValuePath, jsonPayload);
     }
 
     # Delete rows matching the user provided data filter
@@ -1502,55 +1497,47 @@ public isolated client class Client {
                 "majorDimension": "ROWS"
             };
         }
-
-        json|error response = sendRequestWithPayload(self.httpClient, getValuePath, jsonPayload);
-        if response is error {
-            return response;
-        } else {
-            ValueRange[] output = [];
-            if (response.valueRanges is error) {
-                return <error>error(string `Error: Value does not exist matching the defined filter. `);
+        json response = check sendRequestWithPayload(self.httpClient, getValuePath, jsonPayload);
+        ValueRange[] output = [];
+        if response.valueRanges is error {
+            return error(string `Error: Value does not exist matching the defined filter.`);
+        }
+        json[] valueRanges = check response.valueRanges.ensureType();
+        foreach json value in valueRanges {
+            string[] valueArray = [];
+            json jsonValues = check value.valueRange.values;
+            json[] values = check jsonValues.ensureType();
+            string range = check value.valueRange.range.ensureType();
+            regexp:Span? rowIndex = re `\d+`.find(re `:`.split(re `!`.split(range)[1])[0], 0);
+            if rowIndex is () {
+                return error(string `Error: ${range}, does not match the expected range format: A1 range.`);
             }
-            json[] valueRanges = check response.valueRanges.ensureType();
-            foreach json value in valueRanges {
-                string[] valueArray = [];
-                json|error jsonValues = value.valueRange.values;
-                if jsonValues is error {
-                    return jsonValues;
-                }
-                json[] values = check jsonValues.ensureType();
-                string range = check value.valueRange.range.ensureType();
-                regexp:Span? rowIndex = re `\d+`.find(re `:`.split(re `!`.split(range)[1])[0], 0);
-                if rowIndex is () {
-                    return <error>error(string `Error: ${range}, does not match the expected range format: A1 range. `);
-                }
-                string responseSheetName = re `!`.split(range)[0];
-                string[] a1Range = re `:`.split(re `!`.split(range)[1]);
-                int rowID = check int:fromString(rowIndex.substring());
-                json[] valueJsonArray = check values[0].ensureType();
-                foreach json item in valueJsonArray {
-                    valueArray.push(item.toString());
-                }
-                output.push({rowPosition: rowID, values: valueArray, a1Range: {sheetName: responseSheetName, startIndex: a1Range[0], endIndex: a1Range[1]}});
+            string responseSheetName = re `!`.split(range)[0];
+            string[] a1Range = re `:`.split(re `!`.split(range)[1]);
+            int rowID = check int:fromString(rowIndex.substring());
+            json[] valueJsonArray = check values[0].ensureType();
+            foreach json item in valueJsonArray {
+                valueArray.push(item.toString());
             }
-            foreach ValueRange row in output {
-                jsonPayload = {
-                    "requests": [
-                        {
-                            "deleteDimension": {
-                                "range": {
-                                    "sheetId": sheetId,
-                                    "dimension": "ROWS",
-                                    "startIndex": row.rowPosition - 1,
-                                    "endIndex": row.rowPosition
-                                }
+            output.push({rowPosition: rowID, values: valueArray,
+                        a1Range: {sheetName: responseSheetName, startIndex: a1Range[0], endIndex: a1Range[1]}});
+        }
+        foreach ValueRange row in output {
+            jsonPayload = {
+                "requests": [
+                    {
+                        "deleteDimension": {
+                            "range": {
+                                "sheetId": sheetId,
+                                "dimension": "ROWS",
+                                "startIndex": row.rowPosition - 1,
+                                "endIndex": row.rowPosition
                             }
                         }
-                    ]
-                };
-                json _ = check sendRequestWithPayload(self.httpClient, setValuePath,
-                    jsonPayload);
-            }
+                    }
+                ]
+            };
+            _ = check sendRequestWithPayload(self.httpClient, setValuePath, jsonPayload);
         }
     }
 }

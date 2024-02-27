@@ -62,6 +62,7 @@ def moduleVersion = project.version.replace("-SNAPSHOT", "")
 
 task build {
     dependsOn(':googleapis.sheets-ballerina:build')
+    dependsOn(':googleapis.sheets-examples:build')
 }
 
 release {

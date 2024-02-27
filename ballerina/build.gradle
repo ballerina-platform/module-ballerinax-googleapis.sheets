@@ -22,7 +22,7 @@ plugins {
     id 'io.ballerina.plugin'
 }
 
-description = 'Google Sheets - Ballerina'
+description = 'Sheets - Ballerina'
 
 def packageName = "googleapis.sheets"
 def packageOrg = "ballerinax"
@@ -49,7 +49,7 @@ ballerina {
     module = packageName
     testCoverageParam = "--code-coverage --coverage-format=xml"
     isConnector = true
-    platform = "java17"
+    platform = "any"
 }
 
 task updateTomlFiles {

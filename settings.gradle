@@ -33,8 +33,10 @@ plugins {
 rootProject.name = 'module-ballerinax-googleapis.sheets'
 
 include ':googleapis.sheets-ballerina'
+include ':googleapis.sheets-examples'
 
 project(':googleapis.sheets-ballerina').projectDir = file("ballerina")
+project(':googleapis.sheets-examples').projectDir = file("examples")
 
 gradleEnterprise {
     buildScan {

@@ -29,20 +29,18 @@ class SpreadsheetStream {
     }
 
     public isolated function next() returns record {|File value;|}|error? {
-        if (self.index < self.currentEntries.length()) {
+        if self.index < self.currentEntries.length() {
             record {|File value;|} file = {value: self.currentEntries[self.index]};
             self.index += 1;
             return file;
         }
-
-        if (self.pageToken is string) {
+        if self.pageToken is string {
             self.index = 0;
             self.currentEntries = check self.fetchFiles();
             record {|File value;|} file = {value: self.currentEntries[self.index]};
             self.index += 1;
             return file;
         }
-
         return;
     }
 
@@ -50,7 +48,7 @@ class SpreadsheetStream {
         string drivePath = prepareDriveUrl(self.pageToken);
         json response = check sendRequest(self.httpClient, drivePath);
         FilesResponse|error filesResponse = response.cloneWithType(FilesResponse);
-        if (filesResponse is FilesResponse) {
+        if filesResponse is FilesResponse {
             self.pageToken = filesResponse?.nextPageToken;
             return filesResponse.files;
         } else {

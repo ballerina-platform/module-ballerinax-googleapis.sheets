@@ -14,12 +14,14 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import ballerinax/googleapis.sheets as sheets;
+import ballerinax/googleapis.sheets;
+import ballerina/log;
+import ballerina/os;
 
-configurable string refreshToken = ?;
-configurable string clientId = ?;
-configurable string clientSecret = ?;
-configurable string refreshUrl = ?;
+configurable string & readonly refreshToken = os:getEnv("REFRESH_TOKEN");
+configurable string & readonly clientId = os:getEnv("CLIENT_ID");
+configurable string & readonly clientSecret = os:getEnv("CLIENT_SECRET");
+configurable string & readonly refreshUrl = sheets:REFRESH_URL;
 
 sheets:ConnectionConfig spreadsheetConfig = {
     auth: {
@@ -38,8 +40,9 @@ public function main() returns error? {
     int sheetId = 0;
     string a1Notation = "A1:D5";
 
-    // Create Spreadsheet with given name
-    _ = check spreadsheetClient->createSpreadsheet("NewSpreadsheet");
+    // Create spreadsheet with given name
+    sheets:Spreadsheet response = check spreadsheetClient->createSpreadsheet("NewSpreadsheet");
+    spreadsheetId = response.spreadsheetId;
 
     // Add a new worksheet with given name
     sheets:Sheet sheet = check spreadsheetClient->addSheet(spreadsheetId, "NewWorksheet");
@@ -56,7 +59,7 @@ public function main() returns error? {
 
     sheets:Range range = {a1Notation: a1Notation, values: entries};
 
-    // Sets the values of the given range of cells of the Sheet
+    // Sets the values of the given range of cells of the sheet
     _ = check spreadsheetClient->setRange(spreadsheetId, sheetName, range);
 
     // Inserts the given number of columns before the given column position with given sheet id
@@ -78,11 +81,18 @@ public function main() returns error? {
     // Inserts the given number of rows after the given row position with given sheet name.
     _ = check spreadsheetClient->addRowsAfterBySheetName(spreadsheetId, sheetName, 7, 1);
 
-    // Create or Update a Row with the given array of values with given sheet name.
+    // Create or update a row with the given array of values with given sheet name.
     values = ["Update", "Row", "Values"];
     _ = check spreadsheetClient->createOrUpdateRow(spreadsheetId, sheetName, 10, values);
+
+    // Get row from a given sheet
+    sheets:Row row = check spreadsheetClient->getRow(spreadsheetId, sheetName, 10);
+    log:printInfo("Row : " + row.values.toString());
 
     // Deletes the given number of rows starting at the given row position
     _ = check spreadsheetClient->deleteRowsBySheetName(spreadsheetId, sheetName, 4, 2);
 
+    // Get row from a given sheet
+    row = check spreadsheetClient->getRow(spreadsheetId, sheetName, 2);
+    log:printInfo("Row : " + row.values.toString());
 }

@@ -241,6 +241,9 @@ dependencies = [
 	{org = "ballerina", name = "io"},
 	{org = "ballerina", name = "jballerina.java"}
 ]
+modules = [
+	{org = "ballerina", packageName = "os", moduleName = "os"}
+]
 
 [[package]]
 org = "ballerina"
@@ -291,7 +294,7 @@ dependencies = [
 [[package]]
 org = "ballerinax"
 name = "googleapis.sheets"
-version = "3.5.0"
+version = "3.6.0"
 dependencies = [
 	{org = "ballerina", name = "http"},
 	{org = "ballerina", name = "jballerina.java"},
@@ -313,6 +316,7 @@ name = "cell_operations"
 version = "0.1.0"
 dependencies = [
 	{org = "ballerina", name = "log"},
+	{org = "ballerina", name = "os"},
 	{org = "ballerinai", name = "observe"},
 	{org = "ballerinax", name = "googleapis.sheets"}
 ]

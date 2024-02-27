@@ -1,6 +1,6 @@
 [package]
 org = "wso2"
-name = "modify_sheets"
+name = "grid_filtering"
 version = "0.1.0"
 distribution = "2201.8.5"
 
