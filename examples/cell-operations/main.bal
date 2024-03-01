@@ -14,16 +14,16 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import ballerinax/googleapis.sheets;
+import ballerinax/googleapis.gsheets;
 import ballerina/log;
 import ballerina/os;
 
 configurable string & readonly refreshToken = os:getEnv("REFRESH_TOKEN");
 configurable string & readonly clientId = os:getEnv("CLIENT_ID");
 configurable string & readonly clientSecret = os:getEnv("CLIENT_SECRET");
-configurable string & readonly refreshUrl = sheets:REFRESH_URL;
+configurable string & readonly refreshUrl = gsheets:REFRESH_URL;
 
-sheets:Client spreadsheetClient = check new ({
+gsheets:Client spreadsheetClient = check new ({
     auth: {
         clientId,
         clientSecret,
@@ -37,12 +37,12 @@ public function main() returns error? {
     string sheetName = "";
 
     // Create spreadsheet with given name
-    sheets:Spreadsheet response = check spreadsheetClient->createSpreadsheet("NewSpreadsheet");
+    gsheets:Spreadsheet response = check spreadsheetClient->createSpreadsheet("NewSpreadsheet");
     spreadsheetId = response.spreadsheetId;
 
 
     // Add a new worksheet with given name
-    sheets:Sheet sheet = check spreadsheetClient->addSheet(spreadsheetId, "NewWorksheet");
+    gsheets:Sheet sheet = check spreadsheetClient->addSheet(spreadsheetId, "NewWorksheet");
     sheetName = sheet.properties.title;
 
     string a1Notation = "B2";
@@ -51,7 +51,7 @@ public function main() returns error? {
     _ = check spreadsheetClient->setCell(spreadsheetId, sheetName, a1Notation, "ModifiedValue");
 
     // Gets the value of the given cell of the sheet
-    sheets:Cell getValues = check spreadsheetClient->getCell(spreadsheetId, sheetName, a1Notation);
+    gsheets:Cell getValues = check spreadsheetClient->getCell(spreadsheetId, sheetName, a1Notation);
     log:printInfo("Cell Details: " + getValues.toString());
 
     // Clears the given cell of contents, formats, and data validation rules.

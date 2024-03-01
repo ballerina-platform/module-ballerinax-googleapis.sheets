@@ -14,16 +14,16 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import ballerinax/googleapis.sheets;
+import ballerinax/googleapis.gsheets;
 import ballerina/log;
 import ballerina/os;
 
 configurable string & readonly refreshToken = os:getEnv("REFRESH_TOKEN");
 configurable string & readonly clientId = os:getEnv("CLIENT_ID");
 configurable string & readonly clientSecret = os:getEnv("CLIENT_SECRET");
-configurable string & readonly refreshUrl = sheets:REFRESH_URL;
+configurable string & readonly refreshUrl = gsheets:REFRESH_URL;
 
-sheets:Client spreadsheetClient = check new ({
+gsheets:Client spreadsheetClient = check new ({
     auth: {
         clientId,
         clientSecret,
@@ -39,14 +39,14 @@ public function main() returns error? {
     int sheetId = 0;
 
     // Create spreadsheet with given name
-    sheets:Spreadsheet response = check spreadsheetClient->createSpreadsheet("NewSpreadsheet1");
+    gsheets:Spreadsheet response = check spreadsheetClient->createSpreadsheet("NewSpreadsheet1");
     spreadsheetId1 = response.spreadsheetId;
 
     response = check spreadsheetClient->createSpreadsheet("NewSpreadsheet2");
     spreadsheetId2 = response.spreadsheetId;
 
     // Add a new Worksheet with given name to the spreadsheet with the given spreadsheet ID
-    sheets:Sheet sheet = check spreadsheetClient->addSheet(spreadsheetId1, "NewWorksheet");
+    gsheets:Sheet sheet = check spreadsheetClient->addSheet(spreadsheetId1, "NewWorksheet");
     log:printInfo("Sheet Details: " + sheet.toString());
     sheetName = sheet.properties.title;
     sheetId = sheet.properties.sheetId;
@@ -59,7 +59,7 @@ public function main() returns error? {
         ["Nisha", "98"],
         ["Kana", "86"]
     ];
-    sheets:Range range = {a1Notation: a1Notation, values: entries};
+    gsheets:Range range = {a1Notation: a1Notation, values: entries};
 
     // Set the values of the given range of cells of the Sheet
     _ = check spreadsheetClient->setRange(spreadsheetId1, sheetName, range);
@@ -75,7 +75,7 @@ public function main() returns error? {
     _ = check spreadsheetClient->createOrUpdateRow(spreadsheetId1, sheetName, 6, values);
 
     // Define grid filter to filter by range
-    sheets:GridRangeFilter gridRangeFilter = {
+    gsheets:GridRangeFilter gridRangeFilter = {
         sheetId: sheetId,
         startRowIndex: 5,
         endRowIndex: 7,
@@ -84,14 +84,14 @@ public function main() returns error? {
     };
 
     // Filter rows in given worksheets
-    sheets:ValueRange[] filteredRows = check spreadsheetClient->getRowByDataFilter(spreadsheetId2, sheetId, gridRangeFilter);
-    filteredRows.forEach(function(sheets:ValueRange filteredRow) {
+    gsheets:ValueRange[] filteredRows = check spreadsheetClient->getRowByDataFilter(spreadsheetId2, sheetId, gridRangeFilter);
+    filteredRows.forEach(function(gsheets:ValueRange filteredRow) {
         log:printInfo("Filtered Sheet: " + filteredRow.toString());
     });
 
     // Get all worksheets in the spreadsheet with the given spreadsheet ID
-    sheets:Sheet[] sheetsRes = check spreadsheetClient->getSheets(spreadsheetId2);
-    sheetsRes.forEach(function(sheets:Sheet worksheet) {
+    gsheets:Sheet[] sheetsRes = check spreadsheetClient->getSheets(spreadsheetId2);
+    sheetsRes.forEach(function(gsheets:Sheet worksheet) {
         log:printInfo("Worksheet Name: " + worksheet.properties.title.toString() + " | Worksheet ID: "
             + worksheet.properties.sheetId.toString());
     });

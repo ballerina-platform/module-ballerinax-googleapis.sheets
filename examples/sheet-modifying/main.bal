@@ -14,16 +14,16 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import ballerinax/googleapis.sheets;
+import ballerinax/googleapis.gsheets;
 import ballerina/log;
 import ballerina/os;
 
 configurable string & readonly refreshToken = os:getEnv("REFRESH_TOKEN");
 configurable string & readonly clientId = os:getEnv("CLIENT_ID");
 configurable string & readonly clientSecret = os:getEnv("CLIENT_SECRET");
-configurable string & readonly refreshUrl = sheets:REFRESH_URL;
+configurable string & readonly refreshUrl = gsheets:REFRESH_URL;
 
-sheets:ConnectionConfig spreadsheetConfig = {
+gsheets:ConnectionConfig spreadsheetConfig = {
     auth: {
         clientId,
         clientSecret,
@@ -32,7 +32,7 @@ sheets:ConnectionConfig spreadsheetConfig = {
     }
 };
 
-sheets:Client spreadsheetClient = check new (spreadsheetConfig);
+gsheets:Client spreadsheetClient = check new (spreadsheetConfig);
 
 public function main() returns error? {
     string spreadsheetId = "";
@@ -41,11 +41,11 @@ public function main() returns error? {
     string a1Notation = "A1:D5";
 
     // Create spreadsheet with given name
-    sheets:Spreadsheet response = check spreadsheetClient->createSpreadsheet("NewSpreadsheet");
+    gsheets:Spreadsheet response = check spreadsheetClient->createSpreadsheet("NewSpreadsheet");
     spreadsheetId = response.spreadsheetId;
 
     // Add a new worksheet with given name
-    sheets:Sheet sheet = check spreadsheetClient->addSheet(spreadsheetId, "NewWorksheet");
+    gsheets:Sheet sheet = check spreadsheetClient->addSheet(spreadsheetId, "NewWorksheet");
     sheetName = sheet.properties.title;
     sheetId = sheet.properties.sheetId;
 
@@ -57,7 +57,7 @@ public function main() returns error? {
         ["Kana", "86"]
     ];
 
-    sheets:Range range = {a1Notation: a1Notation, values: entries};
+    gsheets:Range range = {a1Notation: a1Notation, values: entries};
 
     // Sets the values of the given range of cells of the sheet
     _ = check spreadsheetClient->setRange(spreadsheetId, sheetName, range);
@@ -86,7 +86,7 @@ public function main() returns error? {
     _ = check spreadsheetClient->createOrUpdateRow(spreadsheetId, sheetName, 10, values);
 
     // Get row from a given sheet
-    sheets:Row row = check spreadsheetClient->getRow(spreadsheetId, sheetName, 10);
+    gsheets:Row row = check spreadsheetClient->getRow(spreadsheetId, sheetName, 10);
     log:printInfo("Row : " + row.values.toString());
 
     // Deletes the given number of rows starting at the given row position

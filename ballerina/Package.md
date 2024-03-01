@@ -2,7 +2,7 @@
 
 The [Google Sheets](https://developers.google.com/sheets/api), developed by Google LLC, allows users to programmatically interact with Google Sheets, facilitating tasks such as data manipulation, analysis, and automation.
 
-The `ballerinax/googleapis.sheets` package offers APIs to connect and interact with [Sheets API](https://developers.google.com/sheets/api/guides) endpoints, specifically based on [Google Sheets API v4](https://developers.google.com/sheets/api).
+The `ballerinax/googleapis.gsheets` package offers APIs to connect and interact with [Sheets API](https://developers.google.com/sheets/api/guides) endpoints, specifically based on [Google Sheets API v4](https://developers.google.com/sheets/api).
 
 ## Setup guide
 
@@ -78,10 +78,10 @@ To use the Google Sheets connector in your Ballerina project, modify the `.bal` 
 
 ### Step 1: Import connector
 
-Import the `ballerinax/googleapis.sheets` module.
+Import the `ballerinax/googleapis.gsheets` module.
 
 ```ballerina
-import ballerinax/googleapis.sheets as sheets;
+import ballerinax/googleapis.gsheets as sheets;
 ```
 
 ### Step 2: Create a new connector instance

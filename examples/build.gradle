@@ -46,7 +46,7 @@ task testExamples {
 
 task buildExamples {
     gradle.taskGraph.whenReady { graph ->
-        if (graph.hasTask(":googleapis.sheets-examples:test")) {
+        if (graph.hasTask(":googleapis.gsheets-examples:test")) {
             buildExamples.enabled = false
         } else {
             testExamples.enabled = false
@@ -70,7 +70,7 @@ task buildExamples {
     }
 }
 
-buildExamples.dependsOn ":googleapis.sheets-ballerina:build"
-testExamples.dependsOn ":googleapis.sheets-ballerina:build"
+buildExamples.dependsOn ":googleapis.gsheets-ballerina:build"
+testExamples.dependsOn ":googleapis.gsheets-ballerina:build"
 
 build.dependsOn buildExamples

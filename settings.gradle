@@ -30,13 +30,13 @@ plugins {
     id "com.gradle.enterprise" version "3.2"
 }
 
-rootProject.name = 'module-ballerinax-googleapis.sheets'
+rootProject.name = 'module-ballerinax-googleapis.gsheets'
 
-include ':googleapis.sheets-ballerina'
-include ':googleapis.sheets-examples'
+include ':googleapis.gsheets-ballerina'
+include ':googleapis.gsheets-examples'
 
-project(':googleapis.sheets-ballerina').projectDir = file("ballerina")
-project(':googleapis.sheets-examples').projectDir = file("examples")
+project(':googleapis.gsheets-ballerina').projectDir = file("ballerina")
+project(':googleapis.gsheets-examples').projectDir = file("examples")
 
 gradleEnterprise {
     buildScan {
