@@ -150,8 +150,3 @@ isolated function convertToArray(json jsonResponse) returns (string|int|decimal)
     }
     return values;
 }
-
-isolated function convertToFiles(json payload) returns File[]|error {
-    FilesResponse res = check payload.cloneWithType(FilesResponse);
-    return res.files;
-}

@@ -213,50 +213,6 @@ public type Cell record {
     (int|string|decimal) value;
 };
 
-# Response from File search
-#
-# + kind - Identifies what kind of resource is this. Value: the fixed string "drive#fileList".
-# + nextPageToken - The page token for the next page of files.
-# This will be absent if the end of the files list has been reached.
-# If the token is rejected for any reason, it should be discarded,
-# and pagination should be restarted from the first page of results.
-# + files - The list of files.
-# If nextPageToken is populated,
-# then this list may be incomplete and an additional page of results should be fetched.
-# + incompleteSearch - Whether the search process was incomplete. If true, then some search results may be missing,
-# Since all documents were not searched. This may occur when searching multiple drives with the
-# "allDrives" corpora, but all corpora could not be searched. When this happens, it is suggested
-# that clients narrow their query by choosing a different corpus such as "user" or "drive".
-@display {label: "Files Response"}
-public type FilesResponse record {
-    @display {label: "Kind"}
-    string kind;
-    @display {label: "Next Page Token"}
-    string nextPageToken?;
-    @display {label: "Incomplete Search"}
-    boolean incompleteSearch;
-    @display {label: "Array of Files"}
-    File[] files;
-};
-
-# File information
-#
-# + kind - Identifies what kind of resource is this. Value: the fixed string "drive#file".
-# + id - The Id of the file
-# + name - The name of the file
-# + mimeType - The MIME type of the file
-@display {label: "File"}
-public type File record {
-    @display {label: "Kind"}
-    string kind;
-    @display {label: "Id"}
-    string id;
-    @display {label: "Name"}
-    string name;
-    @display {label: "Mime Type"}
-    string mimeType;
-};
-
 # The metadata visibility
 #
 @display {label: "Metadata Visibility"}

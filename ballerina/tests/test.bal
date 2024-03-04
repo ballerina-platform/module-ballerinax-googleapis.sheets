@@ -103,26 +103,9 @@ function testRenameSpreadsheet() {
     }
 }
 
-@test:Config {
-    dependsOn: [testRenameSpreadsheet]
-}
-function testGetAllSpreadSheets() {
-    stream<File,error?>|error response = spreadsheetClient->getAllSpreadsheets();
-    if response is stream<File,error?> {
-        record {|File value;|}|error? fileResponse = response.next();
-        if fileResponse is record {|File value;|} {
-            test:assertNotEquals(fileResponse.value["id"], "", msg = "Found 0 records");
-        } else if fileResponse is error {
-            test:assertFail(fileResponse.message());
-        }
-    } else {
-        test:assertFail(response.message());
-    }
-}
-
 // Sheet management operations tests
 @test:Config {
-    dependsOn: [testGetAllSpreadSheets]
+    dependsOn: [testRenameSpreadsheet]
 }
 function testAddSheet() {
     Sheet|error spreadsheetRes = spreadsheetClient->addSheet(spreadsheetId, testSheetName);

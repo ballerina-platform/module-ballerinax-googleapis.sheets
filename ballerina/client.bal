@@ -24,7 +24,6 @@ import ballerinax/'client.config;
 @display {label: "Google Sheets", iconPath: "icon.png"}
 public isolated client class Client {
     final http:Client httpClient;
-    final http:Client driveClient;
 
     # Gets invoked to initialize the `connector`.
     #
@@ -33,7 +32,6 @@ public isolated client class Client {
     public isolated function init(ConnectionConfig config) returns error? {
         http:ClientConfiguration httpClientConfig = check config:constructHTTPClientConfig(config);
         self.httpClient = check new (BASE_URL, httpClientConfig);
-        self.driveClient = check new (DRIVE_URL, httpClientConfig);
     }
 
     // Spreadsheet Management Operations
@@ -71,15 +69,6 @@ public isolated client class Client {
                                                   returns Spreadsheet|error {
         string spreadsheetId = check getIdFromUrl(url);
         return self->openSpreadsheetById(spreadsheetId);
-    }
-
-    # Get all spreadsheet files.
-    #
-    # + return - Stream of `sheets:File` records on success, or else an error
-    @display {label: "Get All Spreadsheets"}
-    remote isolated function getAllSpreadsheets() returns @display {label: "Stream of Files"} stream<File, error?>|error {
-        SpreadsheetStream spreadsheetStream = check new SpreadsheetStream(self.driveClient);
-        return new stream<File, error?>(spreadsheetStream);
     }
 
     # Renames the spreadsheet with the given name.
