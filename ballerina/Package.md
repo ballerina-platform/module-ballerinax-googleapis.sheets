@@ -81,12 +81,12 @@ To use the Google Sheets connector in your Ballerina project, modify the `.bal` 
 Import the `ballerinax/googleapis.gsheets` module.
 
 ```ballerina
-import ballerinax/googleapis.gsheets as sheets;
+import ballerinax/googleapis.gsheets;
 ```
 
 ### Step 2: Create a new connector instance
 
-Create a `sheets:ConnectionConfig` with the obtained OAuth2.0 tokens and initialize the connector with it.
+Create a `gsheets:ConnectionConfig` with the obtained OAuth2.0 tokens and initialize the connector with it.
 
 ```ballerina
 configurable string clientId = ?;
@@ -94,7 +94,7 @@ configurable string clientSecret = ?;
 configurable string refreshToken = ?;
 configurable string refreshUrl = ?;
 
-sheets:Client spreadsheetClient = check new ({
+gsheets:Client spreadsheetClient = check new ({
     auth: {
         clientId,
         clientSecret,
@@ -114,11 +114,11 @@ Now, utilize the available connector operations.
 public function main() returns error? {
 
     // create a spreadsheet
-    sheets:Spreadsheet response = check spreadsheetClient->createSpreadsheet("NewSpreadsheet");
+    gsheets:Spreadsheet response = check spreadsheetClient->createSpreadsheet("NewSpreadsheet");
 
     // Add a new worksheet with given name to the Spreadsheet
     string spreadsheetId = response.spreadsheetId;
-    sheets:Sheet sheet = check spreadsheetClient->addSheet(spreadsheetId, "NewWorksheet");
+    gsheets:Sheet sheet = check spreadsheetClient->addSheet(spreadsheetId, "NewWorksheet");
 }
 ```
 

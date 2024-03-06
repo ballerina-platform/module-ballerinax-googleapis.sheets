@@ -6,7 +6,7 @@ This example demonstrates how to modify a Google sheet using the Google Sheets c
 
 ### 1. Setup Sheets API
 
-Refer to the [Setup Guide](https://central.ballerina.io/ballerinax/googleapis.sheets/latest#setup-guide) for necessary credentials (client ID, secret, tokens).
+Refer to the [Setup Guide](https://central.ballerina.io/ballerinax/googleapis.gsheets/latest#setup-guide) for necessary credentials (client ID, secret, tokens).
 
 ### 2. Configuration
 
