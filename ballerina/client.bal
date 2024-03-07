@@ -16,7 +16,6 @@
 
 import ballerina/http;
 import ballerina/lang.regexp;
-import ballerinax/'client.config;
 
 # Ballerina Google Sheets connector provides the capability to access Google Sheets API.
 # The connector let you perform spreadsheet management operations, worksheet management operations and
@@ -29,9 +28,9 @@ public isolated client class Client {
     #
     # + spreadsheetConfig - Configuration for the connector
     # + return - `http:Error` in case of failure to initialize or `null` if successfully initialized
-    public isolated function init(ConnectionConfig config) returns error? {
-        http:ClientConfiguration httpClientConfig = check config:constructHTTPClientConfig(config);
-        self.httpClient = check new (BASE_URL, httpClientConfig);
+    public isolated function init(ConnectionConfig config, string serviceUrl = BASE_URL) returns error? {
+        http:ClientConfiguration httpClientConfig = {...config};
+        self.httpClient = check new (serviceUrl, httpClientConfig);
     }
 
     // Spreadsheet Management Operations
