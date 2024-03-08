@@ -83,13 +83,13 @@ isolated function getErrorMessage(http:Response response) returns error {
     return error(payload.toString());
 }
 
-# Create a random UUID removing the unnecessary hyphens which will interrupt querying opearations.
+# Create a random Uuid removing the unnecessary hyphens which will interrupt querying opearations.
 #
-# + return - A string UUID without hyphens
-public function createRandomUUIDWithoutHyphens() returns string {
-    string? stringUUID = java:toString(createRandomUUID());
-    if stringUUID is string {
-        return regexp:replaceAll(re `-`, stringUUID, "");
+# + return - A string Uuid without hyphens
+public function createRandomUuidWithoutHyphens() returns string {
+    string? stringUuid = java:toString(createRandomUuid());
+    if stringUuid is string {
+        return regexp:replaceAll(re `-`, stringUuid, "");
     }
     return "";
 }
@@ -112,7 +112,7 @@ public isolated function getA1RangeString(A1Range a1Range) returns string|error 
     return filter;
 }
 
-function createRandomUUID() returns handle = @java:Method {
+function createRandomUuid() returns handle = @java:Method {
     name: "randomUUID",
     'class: "java.util.UUID"
 } external;

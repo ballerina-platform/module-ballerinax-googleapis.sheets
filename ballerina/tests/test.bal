@@ -33,7 +33,7 @@ ConnectionConfig spreadsheetConfig = {
 
 Client spreadsheetClient = check new (spreadsheetConfig);
 
-string randomString = createRandomUUIDWithoutHyphens();
+string randomString = createRandomUuidWithoutHyphens();
 
 string spreadsheetId = "";
 string createSpreadsheetName = "Ballerina Connector New";

@@ -22,7 +22,7 @@ plugins {
     id 'io.ballerina.plugin'
 }
 
-description = 'Sheets - Ballerina'
+description = 'GSheets - Ballerina'
 
 def packageName = "googleapis.gsheets"
 def packageOrg = "ballerinax"
