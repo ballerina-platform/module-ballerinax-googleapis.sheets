@@ -939,8 +939,8 @@ public isolated client class Client {
                                      @display {label: "Cell Value"} int|string|decimal value,
                                      @display {label: "Value Input Option"} string? valueInputOption = ())
                                      returns error? {
-        string notatiob = sheetName + EXCLAMATION_MARK + a1Notation;
-        string setCellDataPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + notatiob;
+        string notation = sheetName + EXCLAMATION_MARK + a1Notation;
+        string setCellDataPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + notation;
         setCellDataPath = setCellDataPath + ((valueInputOption is ()) ? string `${VALUE_INPUT_OPTION}${RAW}` :
             string `${VALUE_INPUT_OPTION}${valueInputOption}`);
         http:Request request = new;
