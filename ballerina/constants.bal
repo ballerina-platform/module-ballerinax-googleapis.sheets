@@ -16,7 +16,7 @@
 
 //API URLs
 const string BASE_URL = "https://sheets.googleapis.com";
-public const string REFRESH_URL = "https://www.googleapis.com/oauth2/v3/token";
+public const string REFRESH_URL = "https://accounts.google.com/o/oauth2/token";
 const string SPREADSHEET_PATH = "/v4/spreadsheets";
 const string SHEETS_PATH = "/sheets/";
 const string VALUES_PATH = "/values/";
@@ -48,18 +48,6 @@ const string EQUAL = "=";
 const string URL_START = "https://docs.google.com/spreadsheets/d/";
 const string URL_END = "/edit";
 const int ID_START_INDEX = 39;
-
-//Drive
-const string DRIVE_URL = "https://www.googleapis.com";
-const string DRIVE_PATH = "/drive/v3";
-const string FILES = "/files";
-const string Q = "q";
-const string MIME_TYPE = "mimeType";
-const string APPLICATION = "'application/vnd.google-apps.spreadsheet'";
-const string AND = "&";
-const string AND_SIGN = "and";
-const string TRASH_FALSE ="trashed=false";
-const string PAGE_TOKEN = "pageToken";
 
 // Error
 const string ERR_FILE_RESPONSE =  "Error occurred while constructing FileResponse record.";

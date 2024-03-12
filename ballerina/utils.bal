@@ -19,144 +19,85 @@ import ballerina/jballerina.java as java;
 import ballerina/lang.regexp;
 
 isolated function sendRequestWithPayload(http:Client httpClient, string path, json jsonPayload = ())
-returns @tainted json | error {
+returns json|error {
     http:Request httpRequest = new;
-    if (jsonPayload != ()) {
-        httpRequest.setJsonPayload(<@untainted>jsonPayload);
+    if jsonPayload != () {
+        httpRequest.setJsonPayload(jsonPayload);
     }
-    http:Response|error httpResponse = httpClient->post(<@untainted>path, httpRequest);
-    if (httpResponse is http:Response) {
-        int statusCode = httpResponse.statusCode;
-        json | http:ClientError jsonResponse = httpResponse.getJsonPayload();
-        if (jsonResponse is json) {
-            error? validateStatusCodeRes = validateStatusCode(jsonResponse, statusCode);
-            if (validateStatusCodeRes is error) {
-                return validateStatusCodeRes;
-            }
-            return jsonResponse;
-        } else {
-            return getSpreadsheetError(jsonResponse);
-        }
-    } else {
-        return getSpreadsheetError(<json|error>httpResponse);
+    http:Response httpResponse = check httpClient->post(path, httpRequest);
+    int statusCode = httpResponse.statusCode;
+    json jsonResponse = check httpResponse.getJsonPayload();
+    error? validateStatusCodeRes = validateStatusCode(jsonResponse, statusCode);
+    if validateStatusCodeRes is error {
+        return validateStatusCodeRes;
     }
+    return jsonResponse;
 }
 
-isolated function sendRequest(http:Client httpClient, string path) returns @tainted json | error {
-    http:Response|error httpResponse = httpClient->get(<@untainted>path);
-    if (httpResponse is http:Response) {
-        int statusCode = httpResponse.statusCode;
-        json | error jsonResponse = httpResponse.getJsonPayload();
-        if (jsonResponse is json) {
-            error? validateStatusCodeRes = validateStatusCode(jsonResponse, statusCode);
-            if (validateStatusCodeRes is error) {
-                return validateStatusCodeRes;
-            }
-            return jsonResponse;
-        } else {
-            return getSpreadsheetError(jsonResponse);
-        }
-    } else {
-        return getSpreadsheetError(<json|error>httpResponse);
-    }
+isolated function sendRequest(http:Client httpClient, string path) returns json | error {
+    http:Response httpResponse = check httpClient->get(path);
+    int statusCode = httpResponse.statusCode;
+    json jsonResponse = check httpResponse.getJsonPayload();
+    _ = check validateStatusCode(jsonResponse, statusCode);
+    return jsonResponse;
 }
 
 isolated function getConvertedValue(json value) returns string|int|decimal {
-    if (value is int) {
+    if value is int {
         return value;
-    } else if (value is decimal) {
+    } else if value is decimal {
         return value;
-    } else {
-        return value.toString();
     }
+    return value.toString();
 }
 
 isolated function validateStatusCode(json response, int statusCode) returns error? {
-    if (!(statusCode == http:STATUS_OK)) {
-        return getSpreadsheetError(response);
-    }
+    return statusCode != http:STATUS_OK ? error(response.toString()): ();
 }
 
 isolated function setResponse(json jsonResponse, int statusCode) returns error? {
-    if (!(statusCode == http:STATUS_OK)) {
-        return getSpreadsheetError(jsonResponse);
-    }
+    return statusCode != http:STATUS_OK ? error(jsonResponse.toString()): ();
 }
 
 isolated function equalsIgnoreCase(string stringOne, string stringTwo) returns boolean {
-    if (stringOne.toLowerAscii() == stringTwo.toLowerAscii()) {
-        return true;
-    }
-    return false;
-}
-
-isolated function getSpreadsheetError(json|error errorResponse) returns error {
-  if (errorResponse is json) {
-        return error(errorResponse.toString());
-  } else {
-        return errorResponse;
-  }
+    return stringOne.toLowerAscii() == stringTwo.toLowerAscii();
 }
 
 isolated function getIdFromUrl(string url) returns string|error {
-    if (!url.startsWith(URL_START)) {
+    if !url.startsWith(URL_START) {
         return error("Invalid url: " + url);
-    } else {
-        int? endIndex = url.indexOf(URL_END);
-        if (endIndex is ()) {
-            return error("Invalid url: " + url);
-        } else {
-            return url.substring(ID_START_INDEX, endIndex);
-        }
     }
+    int? endIndex = url.indexOf(URL_END);
+    if endIndex is () {
+        return error("Invalid url: " + url);
+    }
+    return url.substring(ID_START_INDEX, endIndex);
 }
 
 # Get the error message from the response.
 #
 # + response - Received response.
 # + return - Returns module error with payload and response code.
-isolated function getErrorMessage(http:Response response) returns @tainted error {
-    json|error payload = response.getTextPayload();
-    string payloadString = "";
-    if (payload is json) {
-        payloadString = payload.toString();
-    }
-    return error("Invalid response from Google Sheet API. statuscode: " + response.statusCode.toString() + 
-        ", payload: " + payloadString, status = response.statusCode);
+isolated function getErrorMessage(http:Response response) returns error {
+    json payload = check response.getTextPayload();
+    return error(payload.toString());
 }
 
-# Get the drive url path to get a list of files.
-# 
-# + pageToken - Token for retrieving next page (Optional)
-# + return - drive url on success, else an error
-isolated function prepareDriveUrl(string? pageToken = ()) returns string {
-    string drivePath;
-    if (pageToken is string) {
-        drivePath = DRIVE_PATH + FILES + QUESTION_MARK + Q + EQUAL + MIME_TYPE + EQUAL + APPLICATION + 
-            AND_SIGN + TRASH_FALSE + AND + PAGE_TOKEN + EQUAL + pageToken;
-        return drivePath;
+# Create a random Uuid removing the unnecessary hyphens which will interrupt querying opearations.
+#
+# + return - A string Uuid without hyphens
+public function createRandomUuidWithoutHyphens() returns string {
+    string? stringUuid = java:toString(createRandomUuid());
+    if stringUuid is string {
+        return regexp:replaceAll(re `-`, stringUuid, "");
     }
-    drivePath = DRIVE_PATH + FILES + QUESTION_MARK + Q + EQUAL + MIME_TYPE + EQUAL + APPLICATION + AND_SIGN + 
-        TRASH_FALSE;
-    return drivePath;
-}
-
-# Create a random UUID removing the unnecessary hyphens which will interrupt querying opearations.
-# 
-# + return - A string UUID without hyphens
-public function createRandomUUIDWithoutHyphens() returns string {
-    string? stringUUID = java:toString(createRandomUUID());
-    if (stringUUID is string) {
-        return regexp:replaceAll(re `-`, stringUUID, "");
-    } else {
-        return "";
-    }
+    return "";
 }
 
 # Get a string containing the A1 Annotation from A1Range.
-# 
+#
 # + a1Range - A1Range filter.
-# + return - A string with A1 Annotation. 
+# + return - A string with A1 Annotation.
 public isolated function getA1RangeString(A1Range a1Range) returns string|error {
     string filter = a1Range.sheetName;
     if a1Range.startIndex == () && a1Range.endIndex != () {
@@ -171,7 +112,7 @@ public isolated function getA1RangeString(A1Range a1Range) returns string|error 
     return filter;
 }
 
-function createRandomUUID() returns handle = @java:Method {
+function createRandomUuid() returns handle = @java:Method {
     name: "randomUUID",
     'class: "java.util.UUID"
 } external;

@@ -1,10 +1,10 @@
 [package]
 distribution = "2201.8.0"
 org = "ballerinax"
-name = "googleapis.sheets"
+name = "googleapis.gsheets"
 version = "@toml.version@"
 authors = ["Ballerina"]
-export = ["googleapis.sheets"]
+export = ["googleapis.gsheets"]
 repository = "https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets"
 keywords = ["Cost/Free", "Vendor/Google"]
 icon = "icon.png"

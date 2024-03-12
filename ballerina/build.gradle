@@ -22,9 +22,9 @@ plugins {
     id 'io.ballerina.plugin'
 }
 
-description = 'Google Sheets - Ballerina'
+description = 'GSheets - Ballerina'
 
-def packageName = "googleapis.sheets"
+def packageName = "googleapis.gsheets"
 def packageOrg = "ballerinax"
 def tomlVersion = stripBallerinaExtensionVersion("${project.version}")
 def ballerinaTomlFilePlaceHolder = new File("${project.rootDir}/build-config/resources/Ballerina.toml")
@@ -47,8 +47,9 @@ def stripBallerinaExtensionVersion(String extVersion) {
 ballerina {
     packageOrganization = packageOrg
     module = packageName
+    testCoverageParam = "--code-coverage --coverage-format=xml"
     isConnector = true
-    platform = "java17"
+    platform = "any"
 }
 
 task updateTomlFiles {
