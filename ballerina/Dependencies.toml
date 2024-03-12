@@ -61,7 +61,7 @@ dependencies = [
 [[package]]
 org = "ballerina"
 name = "http"
-version = "2.10.8"
+version = "2.10.10"
 dependencies = [
 	{org = "ballerina", name = "auth"},
 	{org = "ballerina", name = "cache"},
@@ -322,18 +322,6 @@ modules = [
 
 [[package]]
 org = "ballerinax"
-name = "client.config"
-version = "1.0.1"
-dependencies = [
-	{org = "ballerina", name = "http"},
-	{org = "ballerina", name = "oauth2"}
-]
-modules = [
-	{org = "ballerinax", packageName = "client.config", moduleName = "client.config"}
-]
-
-[[package]]
-org = "ballerinax"
 name = "googleapis.gsheets"
 version = "4.0.0"
 dependencies = [
@@ -345,8 +333,7 @@ dependencies = [
 	{org = "ballerina", name = "log"},
 	{org = "ballerina", name = "os"},
 	{org = "ballerina", name = "test"},
-	{org = "ballerinai", name = "observe"},
-	{org = "ballerinax", name = "client.config"}
+	{org = "ballerinai", name = "observe"}
 ]
 modules = [
 	{org = "ballerinax", packageName = "googleapis.gsheets", moduleName = "googleapis.gsheets"}
