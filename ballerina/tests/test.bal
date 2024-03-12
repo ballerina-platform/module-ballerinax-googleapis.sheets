@@ -1,4 +1,3 @@
-import ballerina/log;
 // Copyright (c) 2021 WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 //
 // WSO2 Inc. licenses this file to you under the Apache License,
@@ -14,6 +13,7 @@ import ballerina/log;
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
+
 import ballerina/os;
 import ballerina/test;
 
@@ -356,7 +356,6 @@ function testDeleteColumnsBySheetName() {
 function testAddRowsBefore() {
     Sheet|error openRes = spreadsheetClient->getSheetByName(spreadsheetId, testSheetName);
     if (openRes is Sheet) {
-        log:printInfo(openRes.toString());
         test:assertEquals(openRes.properties.title, testSheetName, msg = "Failed to add rows before the given index");
         int sheetId = openRes.properties.sheetId;
         error? spreadsheetRes = spreadsheetClient->addRowsBefore(spreadsheetId, sheetId, 4, 2);
@@ -431,7 +430,6 @@ function testGetRow() {
 function testDeleteRows() {
     Sheet|error openRes = spreadsheetClient->getSheetByName(spreadsheetId, testSheetName);
     if openRes is Sheet {
-        log:printInfo(openRes.toString());
         test:assertEquals(openRes.properties.title, testSheetName, msg = "Failed to delete rows");
         int sheetId = openRes.properties.sheetId;
         error? spreadsheetRes = spreadsheetClient->deleteRows(spreadsheetId, sheetId, 4, 2);
@@ -468,7 +466,6 @@ function testSetCell() {
 function testGetCell() {
     Cell|error spreadsheetRes = spreadsheetClient->getCell(spreadsheetId, testSheetName, "H1", "FORMULA");
     if (spreadsheetRes is Cell) {
-        log:printInfo(spreadsheetRes.toString());
         test:assertEquals(spreadsheetRes.value, "ModifiedValue", msg = "Failed to get the cell value");
     } else {
         test:assertFail(spreadsheetRes.message());
@@ -737,7 +734,6 @@ function testClearAll() {
     string newName = "Copy of " + testSheetName;
     Sheet|error openRes = spreadsheetClient->getSheetByName(spreadsheetId, newName);
     if openRes is Sheet {
-        log:printInfo(openRes.toString());
         test:assertEquals(openRes.properties.title, newName, msg = "Failed to clear the sheet");
         int sheetId = openRes.properties.sheetId;
         error? spreadsheetRes = spreadsheetClient->clearAll(spreadsheetId, sheetId);
