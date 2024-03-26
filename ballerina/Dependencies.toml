@@ -5,7 +5,7 @@
 
 [ballerina]
 dependencies-toml-version = "2"
-distribution-version = "2201.8.6"
+distribution-version = "2201.8.4"
 
 [[package]]
 org = "ballerina"
@@ -138,9 +138,6 @@ dependencies = [
 	{org = "ballerina", name = "jballerina.java"},
 	{org = "ballerina", name = "lang.__internal"}
 ]
-modules = [
-	{org = "ballerina", packageName = "lang.array", moduleName = "lang.array"}
-]
 
 [[package]]
 org = "ballerina"
@@ -167,9 +164,6 @@ dependencies = [
 	{org = "ballerina", name = "jballerina.java"},
 	{org = "ballerina", name = "lang.__internal"},
 	{org = "ballerina", name = "lang.object"}
-]
-modules = [
-	{org = "ballerina", packageName = "lang.int", moduleName = "lang.int"}
 ]
 
 [[package]]
@@ -327,8 +321,6 @@ version = "4.0.0"
 dependencies = [
 	{org = "ballerina", name = "http"},
 	{org = "ballerina", name = "jballerina.java"},
-	{org = "ballerina", name = "lang.array"},
-	{org = "ballerina", name = "lang.int"},
 	{org = "ballerina", name = "lang.regexp"},
 	{org = "ballerina", name = "log"},
 	{org = "ballerina", name = "os"},

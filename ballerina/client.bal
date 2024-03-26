@@ -44,7 +44,7 @@ public isolated client class Client {
                                                returns Spreadsheet|error {
         json jsonPayload = {"properties": {"title": name}};
         json response = check sendRequestWithPayload(self.httpClient, SPREADSHEET_PATH, jsonPayload);
-        return convertJSONToSpreadsheet(response);
+        return response.fromJsonWithType();
     }
 
     # Opens a spreadsheet by the given ID.
@@ -56,7 +56,7 @@ public isolated client class Client {
                                                  returns Spreadsheet|error {
         string spreadsheetPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId;
         json response = check sendRequest(self.httpClient, spreadsheetPath);
-        return convertJSONToSpreadsheet(response);
+        return response.fromJsonWithType();
     }
 
     # Opens a spreadsheet by the given Url.
@@ -104,7 +104,7 @@ public isolated client class Client {
                                         returns @display {label: "Array of Worksheets"} Sheet[]|error {
         string spreadsheetPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId;
         json response = check sendRequest(self.httpClient, spreadsheetPath);
-        Spreadsheet spreadsheet = check convertJSONToSpreadsheet(response);
+        Spreadsheet spreadsheet = check response.fromJsonWithType();
         return spreadsheet.sheets;
     }
 
@@ -118,7 +118,7 @@ public isolated client class Client {
                                             @display {label: "Worksheet Name"} string sheetName) returns Sheet|error {
         string spreadsheetPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId;
         json response = check sendRequest(self.httpClient, spreadsheetPath);
-        Spreadsheet spreadsheet = check convertJSONToSpreadsheet(response);
+        Spreadsheet spreadsheet = check response.fromJsonWithType();
         Sheet[] sheets = spreadsheet.sheets;
         foreach Sheet sheet in sheets {
             if equalsIgnoreCase(sheet.properties.title, sheetName) {
@@ -186,7 +186,8 @@ public isolated client class Client {
             if rightToLeft is json {
                 sheetProperties.rightToLeft = convertToBoolean(rightToLeft.toString());
             }
-            sheetProperties.gridProperties = convertToGridProperties(check addSheet.properties.gridProperties);
+            json jsonProps = check addSheet.properties.gridProperties;
+            sheetProperties.gridProperties = check jsonProps.fromJsonWithType();
             sheet.properties = sheetProperties;
         }
         return sheet;

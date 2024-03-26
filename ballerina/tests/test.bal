@@ -44,8 +44,16 @@ string[][] entries = [
 
 @test:BeforeSuite
 function initializeClientsForCalendarServer() returns error? {
-    if !isTestOnLiveServer {
-        spreadsheetClient = check new (
+    if isTestOnLiveServer {
+        spreadsheetClient = check new (auth = {
+                refreshUrl: REFRESH_URL,
+                refreshToken: refreshToken,
+                clientId: clientId,
+                clientSecret: clientSecret
+            }
+        );
+    } else {
+        spreadsheetClient = check new ("http://localhost:9092/spreadsheets",
             {
                 timeout: 100,
                 auth: {
@@ -53,17 +61,6 @@ function initializeClientsForCalendarServer() returns error? {
                     clientId: mockClientId,
                     clientSecret: mockClientSecret,
                     refreshUrl: mockRefreshUrl
-                }
-            },
-            serviceUrl = "http://localhost:9092/spreadsheets"
-        );
-    } else {
-         spreadsheetClient = check new ({
-                auth: {
-                    refreshUrl: REFRESH_URL,
-                    refreshToken: refreshToken,
-                    clientId: clientId,
-                    clientSecret: clientSecret
                 }
             }
         );
@@ -248,7 +245,6 @@ function testClearRange() {
 }
 
 @test:Config {
-    // dependsOn: [testClearRange]
     dependsOn: [testGetRange]
 }
 function testAddColumnsBefore() {
@@ -487,7 +483,6 @@ function testClearCell() {
 }
 
 @test:Config {
-    // dependsOn: [testClearCell]
     dependsOn: [testGetCell]
 }
 function testAppendRowToSheet() {
@@ -760,7 +755,6 @@ function testClearAllBySheetName() {
 }
 
 @test:Config {
-    // dependsOn: [testClearCell]
     dependsOn: [testGetCell]
 
 }
@@ -822,7 +816,6 @@ function testAppendCellWithAppendValue() {
 }
 
 @test:Config {
-    // dependsOn: [testClearCell]
     dependsOn: [testGetCell],
     enable: isTestOnLiveServer
 }
