@@ -1,4 +1,3 @@
-import ballerina/log;
 // Copyright (c) 2021 WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 //
 // WSO2 Inc. licenses this file to you under the Apache License,
@@ -14,6 +13,7 @@ import ballerina/log;
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
+
 import ballerina/os;
 import ballerina/test;
 
@@ -27,16 +27,7 @@ configurable string mockRefreshToken = ?;
 configurable string mockRefreshUrl = ?;
 configurable boolean isTestOnLiveServer = ?;
 
-ConnectionConfig spreadsheetConfig = {
-    auth: {
-        refreshUrl: REFRESH_URL,
-        refreshToken: refreshToken,
-        clientId: clientId,
-        clientSecret: clientSecret
-    }
-};
-
-Client spreadsheetClient = check new (spreadsheetConfig);
+Client spreadsheetClient = test:mock(Client);
 
 string randomString = createRandomUuidWithoutHyphens();
 
@@ -65,6 +56,16 @@ function initializeClientsForCalendarServer() returns error? {
                 }
             },
             serviceUrl = "http://localhost:9092/spreadsheets"
+        );
+    } else {
+         spreadsheetClient = check new ({
+                auth: {
+                    refreshUrl: REFRESH_URL,
+                    refreshToken: refreshToken,
+                    clientId: clientId,
+                    clientSecret: clientSecret
+                }
+            }
         );
     }
 }
@@ -234,17 +235,17 @@ function testGetRange() {
     }
 }
 
-// @test:Config {
-//     dependsOn: [testGetRange],
-//     enable: false
-// }
-// function testClearRange() {
-//     Range range = {a1Notation: "F1:I5", values: entries};
-//     error? openRes = spreadsheetClient->setRange(spreadsheetId, testSheetName, range);
-//     test:assertEquals(openRes, (), msg = "Failed to set the values of the range");
-//     error? spreadsheetRes = spreadsheetClient->clearRange(spreadsheetId, testSheetName, "F1:I5");
-//     test:assertEquals(spreadsheetRes, (), msg = "Failed to clear the range");
-// }
+@test:Config {
+    dependsOn: [testGetRange],
+    enable: isTestOnLiveServer
+}
+function testClearRange() {
+    Range range = {a1Notation: "F1:I5", values: entries};
+    error? openRes = spreadsheetClient->setRange(spreadsheetId, testSheetName, range);
+    test:assertEquals(openRes, (), msg = "Failed to set the values of the range");
+    error? spreadsheetRes = spreadsheetClient->clearRange(spreadsheetId, testSheetName, "F1:I5");
+    test:assertEquals(spreadsheetRes, (), msg = "Failed to clear the range");
+}
 
 @test:Config {
     // dependsOn: [testClearRange]
@@ -356,7 +357,6 @@ function testDeleteColumnsBySheetName() {
 function testAddRowsBefore() {
     Sheet|error openRes = spreadsheetClient->getSheetByName(spreadsheetId, testSheetName);
     if (openRes is Sheet) {
-        log:printInfo(openRes.toString());
         test:assertEquals(openRes.properties.title, testSheetName, msg = "Failed to add rows before the given index");
         int sheetId = openRes.properties.sheetId;
         error? spreadsheetRes = spreadsheetClient->addRowsBefore(spreadsheetId, sheetId, 4, 2);
@@ -431,7 +431,6 @@ function testGetRow() {
 function testDeleteRows() {
     Sheet|error openRes = spreadsheetClient->getSheetByName(spreadsheetId, testSheetName);
     if openRes is Sheet {
-        log:printInfo(openRes.toString());
         test:assertEquals(openRes.properties.title, testSheetName, msg = "Failed to delete rows");
         int sheetId = openRes.properties.sheetId;
         error? spreadsheetRes = spreadsheetClient->deleteRows(spreadsheetId, sheetId, 4, 2);
@@ -468,24 +467,24 @@ function testSetCell() {
 function testGetCell() {
     Cell|error spreadsheetRes = spreadsheetClient->getCell(spreadsheetId, testSheetName, "H1", "FORMULA");
     if (spreadsheetRes is Cell) {
-        log:printInfo(spreadsheetRes.toString());
         test:assertEquals(spreadsheetRes.value, "ModifiedValue", msg = "Failed to get the cell value");
     } else {
         test:assertFail(spreadsheetRes.message());
     }
 }
 
-// @test:Config {
-//     dependsOn: [testGetCell]
-// }
-// function testClearCell() {
-//     error? spreadsheetRes = spreadsheetClient->clearCell(spreadsheetId, testSheetName, "H1");
-//     if spreadsheetRes is () {
-//         test:assertEquals(spreadsheetRes, (), msg = "Failed to clear the cell");
-//     } else {
-//         test:assertFail(spreadsheetRes.message());
-//     }
-// }
+@test:Config {
+    dependsOn: [testGetCell],
+    enable: isTestOnLiveServer
+}
+function testClearCell() {
+    error? spreadsheetRes = spreadsheetClient->clearCell(spreadsheetId, testSheetName, "H1");
+    if spreadsheetRes is () {
+        test:assertEquals(spreadsheetRes, (), msg = "Failed to clear the cell");
+    } else {
+        test:assertFail(spreadsheetRes.message());
+    }
+}
 
 @test:Config {
     // dependsOn: [testClearCell]
@@ -696,7 +695,8 @@ function testDeleteRowFromSheetWithFilter() returns error? {
 }
 
 @test:Config {
-    dependsOn: [testDeleteRowFromSheetWithFilter]
+    dependsOn: [testDeleteRowFromSheetWithFilter],
+    enable: isTestOnLiveServer
 }
 function testGetRowFromSheetWithFilterAfterDelete() returns error? {
     Sheet sheet = check spreadsheetClient->getSheetByName(spreadsheetId, testSheetName);
@@ -731,13 +731,13 @@ function testCopyToBySheetName() {
 }
 
 @test:Config {
-    dependsOn: [testCopyToBySheetName]
+    dependsOn: [testCopyToBySheetName],
+    enable: isTestOnLiveServer
 }
 function testClearAll() {
     string newName = "Copy of " + testSheetName;
     Sheet|error openRes = spreadsheetClient->getSheetByName(spreadsheetId, newName);
     if openRes is Sheet {
-        log:printInfo(openRes.toString());
         test:assertEquals(openRes.properties.title, newName, msg = "Failed to clear the sheet");
         int sheetId = openRes.properties.sheetId;
         error? spreadsheetRes = spreadsheetClient->clearAll(spreadsheetId, sheetId);
@@ -748,7 +748,7 @@ function testClearAll() {
 }
 
 @test:Config {
-    dependsOn: [testClearAll]
+    dependsOn: [testCopyToBySheetName]
 }
 function testClearAllBySheetName() {
     error? spreadsheetRes = spreadsheetClient->clearAllBySheetName(spreadsheetId, testSheetName);
@@ -776,7 +776,8 @@ function testAppendValue() {
 }
 
 @test:Config {
-    dependsOn: [testAppendValue]
+    dependsOn: [testAppendValue],
+    enable: isTestOnLiveServer
 }
 function testAppendValueWithBooleanAndFloat() {
     (string|boolean|float)[] values = ["Appending", "Some", "Values", false, 10.0f];
@@ -790,7 +791,8 @@ function testAppendValueWithBooleanAndFloat() {
 }
 
 @test:Config {
-    dependsOn: [testAppendValueWithBooleanAndFloat]
+    dependsOn: [testAppendValueWithBooleanAndFloat],
+    enable: isTestOnLiveServer
 }
 function testAppendValueWithAllDataTypes() {
     decimal dec = 0.2453;
@@ -805,7 +807,8 @@ function testAppendValueWithAllDataTypes() {
 }
 
 @test:Config {
-    dependsOn: [testAppendValueWithBooleanAndFloat]
+    dependsOn: [testAppendValueWithBooleanAndFloat],
+    enable: isTestOnLiveServer
 }
 function testAppendCellWithAppendValue() {
     string[] value = ["AppendingValue"];
@@ -820,7 +823,8 @@ function testAppendCellWithAppendValue() {
 
 @test:Config {
     // dependsOn: [testClearCell]
-    dependsOn: [testGetCell]
+    dependsOn: [testGetCell],
+    enable: isTestOnLiveServer
 }
 function testAppendValues() {
     string[][] values = [["Appending", "Multiple Values", "for multiple rows"], ["value1", "value2", "value3"], ["value4", "value5", "value6"]];

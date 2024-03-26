@@ -28,7 +28,7 @@ public isolated client class Client {
     #
     # + spreadsheetConfig - Configuration for the connector
     # + return - `http:Error` in case of failure to initialize or `null` if successfully initialized
-    public isolated function init(ConnectionConfig config, string serviceUrl = BASE_URL) returns error? {
+    public isolated function init(string serviceUrl = BASE_URL, *ConnectionConfig config) returns error? {
         http:ClientConfiguration httpClientConfig = {...config};
         self.httpClient = check new (serviceUrl, httpClientConfig);
     }

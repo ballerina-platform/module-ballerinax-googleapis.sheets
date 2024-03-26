@@ -14,7 +14,7 @@ To use the Google Sheets connector, you must have access to the Google Sheets AP
 
 2. Click on **Select a project** in the drop-down menu and either select an existing project or create a new one.
 
-   <img src=https://raw.githubusercontent.com/ballerina-platform/module-ballerinax-googleapis.sheets/main/docs/setup/resources/gcp-console-project-view.png alt="GCP Console Project View" width="50%">
+   ![Enable Google Sheets API](https://raw.githubusercontent.com/ballerina-platform/module-ballerinax-googleapis.sheets/main/docs/setup/resources/gcp-console-project-view.png)
 
 ### Step 2: Enabling Google Sheets API
 
@@ -24,7 +24,7 @@ To use the Google Sheets connector, you must have access to the Google Sheets AP
 
 3. Search and select `Google Sheets API`. Then click **ENABLE**.
 
-    <img src=https://raw.githubusercontent.com/ballerina-platform/module-ballerinax-googleapis.sheets/main/docs/setup/resources/enable-sheets-api.png alt="Enable Google Sheets API" width="50%">
+    ![Enable Sheets Api](https://raw.githubusercontent.com/ballerina-platform/module-ballerinax-googleapis.sheets/main/docs/setup/resources/enable-sheets-api.png)
 
 ### Step 3: Creating an OAuth consent app
 
@@ -34,7 +34,7 @@ To use the Google Sheets connector, you must have access to the Google Sheets AP
 
 3. Fill in the app information and add the necessary scopes for Google Sheets API.
 
-    <img src=https://raw.githubusercontent.com/ballerina-platform/module-ballerinax-googleapis.sheets/main/docs/setup/resources/oauth-consent.png alt="OAuth Consent Screen" width="50%">
+    ![OAuth Consent Screen](https://raw.githubusercontent.com/ballerina-platform/module-ballerinax-googleapis.sheets/main/docs/setup/resources/oauth-consent.png)
 
 ### Step 4: Generating client ID & client secret
 
@@ -42,7 +42,7 @@ To use the Google Sheets connector, you must have access to the Google Sheets AP
 
 2. Click on **+ CREATE CREDENTIALS** and choose **OAuth Client ID**.
 
-    <img src=https://raw.githubusercontent.com/ballerina-platform/module-ballerinax-googleapis.sheets/main/docs/setup/resources/create-credentials.png alt="Create Credentials" width="50%">
+    ![Create Credentials](https://raw.githubusercontent.com/ballerina-platform/module-ballerinax-googleapis.sheets/main/docs/setup/resources/create-credentials.png)
 
 3. You will be directed to the OAuth consent screen, in which you need to fill in the necessary information below.
 
@@ -52,7 +52,7 @@ To use the Google Sheets connector, you must have access to the Google Sheets AP
     | Name                     | Sheets Client   |
     | Authorized Redirect URIs | <https://developers.google.com/oauthplayground> |
 
-    <img src=https://raw.githubusercontent.com/ballerina-platform/module-ballerinax-googleapis.sheets/main/docs/setup/resources/create-client.png alt="Create Client" width="50%">
+    ![Create Client](https://raw.githubusercontent.com/ballerina-platform/module-ballerinax-googleapis.sheets/main/docs/setup/resources/create-client.png)
 
 ### Step 5: Obtain the access and refresh tokens
 
@@ -62,15 +62,15 @@ Follow these steps to generate the access and refresh tokens.
 
 1. Configure the [OAuth playground](https://developers.google.com/oauthplayground) with the OAuth client ID and client secret.
 
-    <img src=https://raw.githubusercontent.com/ballerina-platform/module-ballerinax-googleapis.sheets/main/docs/setup/resources/oauth-playground-config.png alt="OAuth Playground" width="50%">
+    ![OAuth Playground](https://raw.githubusercontent.com/ballerina-platform/module-ballerinax-googleapis.sheets/main/docs/setup/resources/oauth-playground-config.png)
 
 2. Authorize the Google Sheets APIs.
 
-    <img src=https://raw.githubusercontent.com/ballerina-platform/module-ballerinax-googleapis.sheets/main/docs/setup/resources/auhtorize-apis.png alt="Authorize APIs" width="50%">
+    ![Authorize APIs](https://raw.githubusercontent.com/ballerina-platform/module-ballerinax-googleapis.sheets/main/docs/setup/resources/auhtorize-apis.png)
 
 3. Exchange the authorization code for tokens.
 
-    <img src=https://raw.githubusercontent.com/ballerina-platform/module-ballerinax-googleapis.sheets/main/docs/setup/resources/exchange-tokens.png alt="Exchange Tokens" width="50%">
+    ![Exchange Tokens](https://raw.githubusercontent.com/ballerina-platform/module-ballerinax-googleapis.sheets/main/docs/setup/resources/exchange-tokens.png)
 
 ## Quickstart
 

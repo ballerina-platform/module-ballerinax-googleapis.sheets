@@ -224,7 +224,7 @@ type BatchGetValuesByDataFilterResponse record {
     # The ID of the spreadsheetType the data was retrieved from.
     string spreadsheetId?;
     # The requested values with the list of data filters that matched them.
-    MatchedValueRangeType[] valueRangeTypes?;
+    MatchedValueRangeType[] valueRanges?;
 };
 
 # A filter view.
@@ -1816,7 +1816,7 @@ type MatchedValueRangeType record {
     # The DataFilters from the request that matched the range of values.
     DataFilter[] dataFilters?;
     # Data within a range of the spreadsheet.
-    ValueRangeType valueRangeType?;
+    ValueRangeType valueRange?;
 };
 
 # Adds a new conditional format rule at the given index. All subsequent rules' indexes are incremented.
