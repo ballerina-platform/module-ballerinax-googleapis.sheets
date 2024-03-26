@@ -157,40 +157,8 @@ public isolated client class Client {
         if jsonResponseValues is json[] {
             replies = jsonResponseValues;
         }
-        json|error addSheet = replies[0].addSheet;
-
-        Sheet sheet = {};
-        if addSheet !is error {
-            SheetProperties sheetProperties = {};
-            json|error sheetId = addSheet.properties.sheetId;
-            if sheetId is json {
-                sheetProperties.sheetId = convertToInt(sheetId.toString());
-            }
-            json|error title = addSheet.properties.title;
-            if title is json {
-                sheetProperties.title = title.toString();
-            }
-            json|error index = addSheet.properties.index;
-            if index is json {
-                sheetProperties.index = convertToInt(index.toString());
-            }
-            json|error sheetType = addSheet.properties.sheetType;
-            if sheetType is json {
-                sheetProperties.sheetType = sheetType.toString();
-            }
-            json|error hidden = addSheet.properties.hidden;
-            if hidden is json {
-                sheetProperties.hidden = convertToBoolean(hidden.toString());
-            }
-            json|error rightToLeft = addSheet.properties.rightToLeft;
-            if rightToLeft is json {
-                sheetProperties.rightToLeft = convertToBoolean(rightToLeft.toString());
-            }
-            json jsonProps = check addSheet.properties.gridProperties;
-            sheetProperties.gridProperties = check jsonProps.fromJsonWithType();
-            sheet.properties = sheetProperties;
-        }
-        return sheet;
+        json addSheet = check replies[0].addSheet;
+        return addSheet.fromJsonWithType();
     }
 
     # Delete specified worksheet by worksheet ID.
