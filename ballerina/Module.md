@@ -6,7 +6,7 @@ The `ballerinax/googleapis.gsheets` package offers APIs to connect and interact 
 
 ## Setup guide
 
-To use the Google Sheets connector, you must have access to the Google Sheets API through a Google Cloud Platform (GCP)(https://console.cloud.google.com/) account and a project under it. If you do not have a GCP account, you can sign up for one [here](https://cloud.google.com/).
+To use the Google Sheets connector, you must have access to the Google Sheets API through a [Google Cloud Platform (GCP)](https://console.cloud.google.com/) account and a project under it. If you do not have a GCP account, you can sign up for one [here](https://cloud.google.com/).
 
 ### Step 1: Create a Google Cloud Platform project
 
@@ -14,7 +14,7 @@ To use the Google Sheets connector, you must have access to the Google Sheets AP
 
 2. Click on **Select a project** in the drop-down menu and either select an existing project or create a new one.
 
-   ![Enable Google Sheets API](https://raw.githubusercontent.com/ballerina-platform/module-ballerinax-googleapis.sheets/main/docs/setup/resources/gcp-console-project-view.png)
+   ![Enable Google Sheets API](https://raw.githubusercontent.com/ballerina-platform/module-ballerinax-googleapis.sheets/master/docs/setup/resources/gcp-console-project-view.png)
 
 ### Step 2: Enabling Google Sheets API
 
@@ -24,7 +24,7 @@ To use the Google Sheets connector, you must have access to the Google Sheets AP
 
 3. Search and select `Google Sheets API`. Then click **ENABLE**.
 
-    ![Enable Sheets Api](https://raw.githubusercontent.com/ballerina-platform/module-ballerinax-googleapis.sheets/main/docs/setup/resources/enable-sheets-api.png)
+    ![Enable Sheets Api](https://raw.githubusercontent.com/ballerina-platform/module-ballerinax-googleapis.sheets/master/docs/setup/resources/enable-sheets-api.png)
 
 ### Step 3: Creating an OAuth consent app
 
@@ -34,7 +34,7 @@ To use the Google Sheets connector, you must have access to the Google Sheets AP
 
 3. Fill in the app information and add the necessary scopes for Google Sheets API.
 
-    ![OAuth Consent Screen](https://raw.githubusercontent.com/ballerina-platform/module-ballerinax-googleapis.sheets/main/docs/setup/resources/oauth-consent.png)
+    ![OAuth Consent Screen](https://raw.githubusercontent.com/ballerina-platform/module-ballerinax-googleapis.sheets/master/docs/setup/resources/oauth-consent.png)
 
 ### Step 4: Generating client ID & client secret
 
@@ -42,7 +42,7 @@ To use the Google Sheets connector, you must have access to the Google Sheets AP
 
 2. Click on **+ CREATE CREDENTIALS** and choose **OAuth Client ID**.
 
-    ![Create Credentials](https://raw.githubusercontent.com/ballerina-platform/module-ballerinax-googleapis.sheets/main/docs/setup/resources/create-credentials.png)
+    ![Create Credentials](https://raw.githubusercontent.com/ballerina-platform/module-ballerinax-googleapis.sheets/master/docs/setup/resources/create-credentials.png)
 
 3. You will be directed to the OAuth consent screen, in which you need to fill in the necessary information below.
 
@@ -52,7 +52,7 @@ To use the Google Sheets connector, you must have access to the Google Sheets AP
     | Name                     | Sheets Client   |
     | Authorized Redirect URIs | <https://developers.google.com/oauthplayground> |
 
-    ![Create Client](https://raw.githubusercontent.com/ballerina-platform/module-ballerinax-googleapis.sheets/main/docs/setup/resources/create-client.png)
+    ![Create Client](https://raw.githubusercontent.com/ballerina-platform/module-ballerinax-googleapis.sheets/master/docs/setup/resources/create-client.png)
 
 ### Step 5: Obtain the access and refresh tokens
 
@@ -62,15 +62,15 @@ Follow these steps to generate the access and refresh tokens.
 
 1. Configure the [OAuth playground](https://developers.google.com/oauthplayground) with the OAuth client ID and client secret.
 
-    ![OAuth Playground](https://raw.githubusercontent.com/ballerina-platform/module-ballerinax-googleapis.sheets/main/docs/setup/resources/oauth-playground-config.png)
+    ![OAuth Playground](https://raw.githubusercontent.com/ballerina-platform/module-ballerinax-googleapis.sheets/master/docs/setup/resources/oauth-playground-config.png)
 
 2. Authorize the Google Sheets APIs.
 
-    ![Authorize APIs](https://raw.githubusercontent.com/ballerina-platform/module-ballerinax-googleapis.sheets/main/docs/setup/resources/auhtorize-apis.png)
+    ![Authorize APIs](https://raw.githubusercontent.com/ballerina-platform/module-ballerinax-googleapis.sheets/master/docs/setup/resources/auhtorize-apis.png)
 
 3. Exchange the authorization code for tokens.
 
-    ![Exchange Tokens](https://raw.githubusercontent.com/ballerina-platform/module-ballerinax-googleapis.sheets/main/docs/setup/resources/exchange-tokens.png)
+    ![Exchange Tokens](https://raw.githubusercontent.com/ballerina-platform/module-ballerinax-googleapis.sheets/master/docs/setup/resources/exchange-tokens.png)
 
 ## Quickstart
 
@@ -130,10 +130,10 @@ bal run
 
 ## Examples
 
-The `Google Sheets` connector provides practical examples illustrating usage in various scenarios. Explore these [examples](https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/tree/main/examples), covering use cases such as creating, reading, and appending rows.
+The `Google Sheets` connector provides practical examples illustrating usage in various scenarios. Explore these [examples](https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/tree/master/examples), covering use cases such as creating, reading, and appending rows.
 
-1. [Cell operations](https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/tree/main/examples/cell-operations) - Operations associated with a cell, such as clearing, setting, and deleting cell values.
+1. [Cell operations](https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/tree/master/examples/cell-operations) - Operations associated with a cell, such as clearing, setting, and deleting cell values.
 
-2. [Grid filtering](https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/tree/main/examples/grid-filtering) - Demonstrate filtering sheet values using a grid range.
+2. [Grid filtering](https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/tree/master/examples/grid-filtering) - Demonstrate filtering sheet values using a grid range.
 
-3. [Sheet modifying](https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/tree/main/examples/sheet-modifying) - Basic operations associated with sheets such as creating, reading, and appending rows.
+3. [Sheet modifying](https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/tree/master/examples/sheet-modifying) - Basic operations associated with sheets such as creating, reading, and appending rows.

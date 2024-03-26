@@ -26,7 +26,6 @@ hs_err_pid*
 
 #Ballerina configuartion file
 ballerina.conf
-Config.toml
 docker.env
 
 # .DS_Store

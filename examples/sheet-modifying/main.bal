@@ -32,7 +32,7 @@ gsheets:ConnectionConfig spreadsheetConfig = {
     }
 };
 
-gsheets:Client spreadsheetClient = check new (spreadsheetConfig);
+gsheets:Client spreadsheetClient = check new (config = spreadsheetConfig);
 
 public function main() returns error? {
     string spreadsheetId = "";
