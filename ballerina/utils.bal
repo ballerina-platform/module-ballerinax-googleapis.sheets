@@ -86,7 +86,7 @@ isolated function getErrorMessage(http:Response response) returns error {
 # Create a random Uuid removing the unnecessary hyphens which will interrupt querying opearations.
 #
 # + return - A string Uuid without hyphens
-public function createRandomUuidWithoutHyphens() returns string {
+function createRandomUuidWithoutHyphens() returns string {
     string? stringUuid = java:toString(createRandomUuid());
     if stringUuid is string {
         return regexp:replaceAll(re `-`, stringUuid, "");
@@ -98,7 +98,7 @@ public function createRandomUuidWithoutHyphens() returns string {
 #
 # + a1Range - A1Range filter.
 # + return - A string with A1 Annotation.
-public isolated function getA1RangeString(A1Range a1Range) returns string|error {
+isolated function getA1RangeString(A1Range a1Range) returns string|error {
     string filter = a1Range.sheetName;
     if a1Range.startIndex == () && a1Range.endIndex != () {
         return error("Error: The provided A1 range is not supported. ");
