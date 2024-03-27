@@ -23,7 +23,7 @@ configurable string & readonly clientId = os:getEnv("CLIENT_ID");
 configurable string & readonly clientSecret = os:getEnv("CLIENT_SECRET");
 configurable string & readonly refreshUrl = gsheets:REFRESH_URL;
 
-gsheets:Client spreadsheetClient = check new (config = {
+gsheets:Client spreadsheetClient = check new ({
     auth: {
         clientId,
         clientSecret,

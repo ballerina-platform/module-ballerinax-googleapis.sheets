@@ -26,6 +26,8 @@ hs_err_pid*
 
 #Ballerina configuartion file
 ballerina.conf
+Config.toml
+!/ballerina/tests/Config.toml
 docker.env
 
 # .DS_Store
@@ -48,7 +50,8 @@ accessToken.bal
 temp.bal.ballerina/
 target/
 .DS_Store
-docker.env
+*.deb
+examples/**/Dependencies.toml
 
 #json files created inside resources folder
 **/resources/*.json
