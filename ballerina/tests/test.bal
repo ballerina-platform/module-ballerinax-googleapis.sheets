@@ -45,15 +45,16 @@ string[][] entries = [
 @test:BeforeSuite
 function initializeClientsForCalendarServer() returns error? {
     if isTestOnLiveServer {
-        spreadsheetClient = check new (auth = {
+        spreadsheetClient = check new ({
+            auth :{
                 refreshUrl: REFRESH_URL,
                 refreshToken: refreshToken,
                 clientId: clientId,
                 clientSecret: clientSecret
             }
-        );
+        });
     } else {
-        spreadsheetClient = check new ("http://localhost:9092/spreadsheets",
+        spreadsheetClient = check new (
             {
                 timeout: 100,
                 auth: {
@@ -62,7 +63,8 @@ function initializeClientsForCalendarServer() returns error? {
                     clientSecret: mockClientSecret,
                     refreshUrl: mockRefreshUrl
                 }
-            }
+            },
+            "http://localhost:9092/spreadsheets"
         );
     }
 }
