@@ -15,8 +15,6 @@
 // under the License.
 
 import ballerina/http;
-import ballerina/jballerina.java as java;
-import ballerina/lang.regexp;
 
 isolated function sendRequestWithPayload(http:Client httpClient, string path, json jsonPayload = ())
 returns json|error {
@@ -83,22 +81,11 @@ isolated function getErrorMessage(http:Response response) returns error {
     return error(payload.toString());
 }
 
-# Create a random Uuid removing the unnecessary hyphens which will interrupt querying opearations.
-#
-# + return - A string Uuid without hyphens
-public function createRandomUuidWithoutHyphens() returns string {
-    string? stringUuid = java:toString(createRandomUuid());
-    if stringUuid is string {
-        return regexp:replaceAll(re `-`, stringUuid, "");
-    }
-    return "";
-}
-
 # Get a string containing the A1 Annotation from A1Range.
 #
 # + a1Range - A1Range filter.
 # + return - A string with A1 Annotation.
-public isolated function getA1RangeString(A1Range a1Range) returns string|error {
+isolated function getA1RangeString(A1Range a1Range) returns string|error {
     string filter = a1Range.sheetName;
     if a1Range.startIndex == () && a1Range.endIndex != () {
         return error("Error: The provided A1 range is not supported. ");
@@ -112,7 +99,3 @@ public isolated function getA1RangeString(A1Range a1Range) returns string|error 
     return filter;
 }
 
-function createRandomUuid() returns handle = @java:Method {
-    name: "randomUUID",
-    'class: "java.util.UUID"
-} external;

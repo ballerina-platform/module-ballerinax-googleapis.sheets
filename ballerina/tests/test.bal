@@ -16,22 +16,18 @@
 
 import ballerina/os;
 import ballerina/test;
-import ballerina/log;
 
 configurable string & readonly refreshToken = os:getEnv("REFRESH_TOKEN");
 configurable string & readonly clientId = os:getEnv("CLIENT_ID");
 configurable string & readonly clientSecret = os:getEnv("CLIENT_SECRET");
 
-ConnectionConfig spreadsheetConfig = {
-    auth: {
-        refreshUrl: REFRESH_URL,
-        refreshToken: refreshToken,
-        clientId: clientId,
-        clientSecret: clientSecret
-    }
-};
+configurable string mockClientId = ?;
+configurable string mockClientSecret = ?;
+configurable string mockRefreshToken = ?;
+configurable string mockRefreshUrl = ?;
+configurable boolean isTestOnLiveServer = ?;
 
-Client spreadsheetClient = check new (spreadsheetConfig);
+Client spreadsheetClient = test:mock(Client);
 
 string randomString = createRandomUuidWithoutHyphens();
 
@@ -45,6 +41,33 @@ string[][] entries = [
     ["Nisha", "98"],
     ["Kana", "84"]
 ];
+
+@test:BeforeSuite
+function initializeClientsForCalendarServer() returns error? {
+    if isTestOnLiveServer {
+        spreadsheetClient = check new ({
+            auth :{
+                refreshUrl: REFRESH_URL,
+                refreshToken: refreshToken,
+                clientId: clientId,
+                clientSecret: clientSecret
+            }
+        });
+    } else {
+        spreadsheetClient = check new (
+            {
+                timeout: 100,
+                auth: {
+                    refreshToken: mockRefreshToken,
+                    clientId: mockClientId,
+                    clientSecret: mockClientSecret,
+                    refreshUrl: mockRefreshUrl
+                }
+            },
+            "http://localhost:9092/spreadsheets"
+        );
+    }
+}
 
 // Spreadsheet management operations tests
 @test:Config {
@@ -212,7 +235,8 @@ function testGetRange() {
 }
 
 @test:Config {
-    dependsOn: [testGetRange]
+    dependsOn: [testGetRange],
+    enable: isTestOnLiveServer
 }
 function testClearRange() {
     Range range = {a1Notation: "F1:I5", values: entries};
@@ -223,7 +247,7 @@ function testClearRange() {
 }
 
 @test:Config {
-    dependsOn: [testClearRange]
+    dependsOn: [testGetRange]
 }
 function testAddColumnsBefore() {
     Sheet|error openRes = spreadsheetClient->getSheetByName(spreadsheetId, testSheetName);
@@ -331,7 +355,6 @@ function testDeleteColumnsBySheetName() {
 function testAddRowsBefore() {
     Sheet|error openRes = spreadsheetClient->getSheetByName(spreadsheetId, testSheetName);
     if (openRes is Sheet) {
-        log:printInfo(openRes.toString());
         test:assertEquals(openRes.properties.title, testSheetName, msg = "Failed to add rows before the given index");
         int sheetId = openRes.properties.sheetId;
         error? spreadsheetRes = spreadsheetClient->addRowsBefore(spreadsheetId, sheetId, 4, 2);
@@ -387,7 +410,6 @@ function testCreateOrUpdateRow() {
     }
 }
 
-
 @test:Config {
     dependsOn: [testCreateOrUpdateRow]
 }
@@ -407,7 +429,6 @@ function testGetRow() {
 function testDeleteRows() {
     Sheet|error openRes = spreadsheetClient->getSheetByName(spreadsheetId, testSheetName);
     if openRes is Sheet {
-        log:printInfo(openRes.toString());
         test:assertEquals(openRes.properties.title, testSheetName, msg = "Failed to delete rows");
         int sheetId = openRes.properties.sheetId;
         error? spreadsheetRes = spreadsheetClient->deleteRows(spreadsheetId, sheetId, 4, 2);
@@ -444,7 +465,6 @@ function testSetCell() {
 function testGetCell() {
     Cell|error spreadsheetRes = spreadsheetClient->getCell(spreadsheetId, testSheetName, "H1", "FORMULA");
     if (spreadsheetRes is Cell) {
-        log:printInfo(spreadsheetRes.toString());
         test:assertEquals(spreadsheetRes.value, "ModifiedValue", msg = "Failed to get the cell value");
     } else {
         test:assertFail(spreadsheetRes.message());
@@ -452,7 +472,8 @@ function testGetCell() {
 }
 
 @test:Config {
-    dependsOn: [testGetCell]
+    dependsOn: [testGetCell],
+    enable: isTestOnLiveServer
 }
 function testClearCell() {
     error? spreadsheetRes = spreadsheetClient->clearCell(spreadsheetId, testSheetName, "H1");
@@ -464,7 +485,7 @@ function testClearCell() {
 }
 
 @test:Config {
-    dependsOn: [testClearCell]
+    dependsOn: [testGetCell]
 }
 function testAppendRowToSheet() {
     string[] values = ["Appending", "Some", "Values"];
@@ -598,7 +619,6 @@ function testUpdateRowFromSheetWithFilter() returns error? {
     }
 }
 
-
 @test:Config {
     dependsOn: [testUpdateRowFromSheetWithFilter]
 }
@@ -629,6 +649,7 @@ function testGetRowFromSheetWithFilter() returns error? {
         test:assertFail(spreadsheetRes.message());
     }
 }
+
 @test:Config {}
 function testGetRowFromSheetWithAFaultyMetadataFilter() returns error? {
     Sheet sheet = check spreadsheetClient->getSheetByName(spreadsheetId, testSheetName);
@@ -671,7 +692,8 @@ function testDeleteRowFromSheetWithFilter() returns error? {
 }
 
 @test:Config {
-    dependsOn: [testDeleteRowFromSheetWithFilter]
+    dependsOn: [testDeleteRowFromSheetWithFilter],
+    enable: isTestOnLiveServer
 }
 function testGetRowFromSheetWithFilterAfterDelete() returns error? {
     Sheet sheet = check spreadsheetClient->getSheetByName(spreadsheetId, testSheetName);
@@ -706,13 +728,13 @@ function testCopyToBySheetName() {
 }
 
 @test:Config {
-    dependsOn: [testCopyToBySheetName]
+    dependsOn: [testCopyToBySheetName],
+    enable: isTestOnLiveServer
 }
 function testClearAll() {
     string newName = "Copy of " + testSheetName;
     Sheet|error openRes = spreadsheetClient->getSheetByName(spreadsheetId, newName);
     if openRes is Sheet {
-        log:printInfo(openRes.toString());
         test:assertEquals(openRes.properties.title, newName, msg = "Failed to clear the sheet");
         int sheetId = openRes.properties.sheetId;
         error? spreadsheetRes = spreadsheetClient->clearAll(spreadsheetId, sheetId);
@@ -723,7 +745,7 @@ function testClearAll() {
 }
 
 @test:Config {
-    dependsOn: [testClearAll]
+    dependsOn: [testCopyToBySheetName]
 }
 function testClearAllBySheetName() {
     error? spreadsheetRes = spreadsheetClient->clearAllBySheetName(spreadsheetId, testSheetName);
@@ -735,7 +757,8 @@ function testClearAllBySheetName() {
 }
 
 @test:Config {
-    dependsOn: [testClearCell]
+    dependsOn: [testGetCell]
+
 }
 function testAppendValue() {
     string[] values = ["Appending", "Some", "Values"];
@@ -749,7 +772,8 @@ function testAppendValue() {
 }
 
 @test:Config {
-    dependsOn: [testAppendValue]
+    dependsOn: [testAppendValue],
+    enable: isTestOnLiveServer
 }
 function testAppendValueWithBooleanAndFloat() {
     (string|boolean|float)[] values = ["Appending", "Some", "Values", false, 10.0f];
@@ -762,9 +786,9 @@ function testAppendValueWithBooleanAndFloat() {
     }
 }
 
-
 @test:Config {
-    dependsOn: [testAppendValueWithBooleanAndFloat]
+    dependsOn: [testAppendValueWithBooleanAndFloat],
+    enable: isTestOnLiveServer
 }
 function testAppendValueWithAllDataTypes() {
     decimal dec = 0.2453;
@@ -779,7 +803,8 @@ function testAppendValueWithAllDataTypes() {
 }
 
 @test:Config {
-    dependsOn: [testAppendValueWithBooleanAndFloat]
+    dependsOn: [testAppendValueWithBooleanAndFloat],
+    enable: isTestOnLiveServer
 }
 function testAppendCellWithAppendValue() {
     string[] value = ["AppendingValue"];
@@ -791,15 +816,17 @@ function testAppendCellWithAppendValue() {
         test:assertFail(spreadsheetRes.message());
     }
 }
+
 @test:Config {
-    dependsOn: [testClearCell]
+    dependsOn: [testGetCell],
+    enable: isTestOnLiveServer
 }
 function testAppendValues() {
-    string[][] values = [["Appending", "Multiple Values", "for multiple rows"],["value1","value2","value3"],["value4","value5","value6"]];
+    string[][] values = [["Appending", "Multiple Values", "for multiple rows"], ["value1", "value2", "value3"], ["value4", "value5", "value6"]];
     ValuesRange|error spreadsheetRes = spreadsheetClient->appendValues(spreadsheetId, values, <A1Range>{sheetName: testSheetName});
     if spreadsheetRes is ValuesRange {
         test:assertEquals({"rowStartPosition": spreadsheetRes["rowStartPosition"], "values": spreadsheetRes["values"], "startIndex": spreadsheetRes["a1Range"].startIndex, "endIndex": spreadsheetRes["a1Range"].endIndex},
-        {"rowStartPosition": 4, "values": [["Appending", "Multiple Values", "for multiple rows"],["value1","value2","value3"],["value4","value5","value6"]], startIndex: "F4", endIndex: "H6"}, msg = "Appending a row to sheet failed");
+        {"rowStartPosition": 4, "values": [["Appending", "Multiple Values", "for multiple rows"], ["value1", "value2", "value3"], ["value4", "value5", "value6"]], startIndex: "F4", endIndex: "H6"}, msg = "Appending a row to sheet failed");
     } else {
         test:assertFail(spreadsheetRes.message());
     }
