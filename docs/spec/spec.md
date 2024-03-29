@@ -21,7 +21,6 @@ The conforming implementation of the specification is released and included in t
 - [1 Overview](#1-overview)
 - [2 Client](#2-client)
   - [2.1 Configurations](#21-configurations)
-    - [2.1.1 Connection Configurations](#211-connection-configurations)
   - [2.2 Initialization](#22-initialization)
   - [2.3 Supported Operations](#23-supported-operations)
     - [2.3.1 Spreadsheet Operations](#231-spreadsheet-operations)
@@ -92,9 +91,7 @@ The Google Sheets client facilitates connectivity with the Sheets API endpoint, 
 
 ### 2.1 Configurations
 
-#### 2.1.1. Connection configurations
-
-The connection config can be used to provide configurations related to the Sheets client. Specifically, this can be used to provide the necessary auth tokens to connect to the Google Sheets API.
+The connection configs can be used to provide configurations related to the Sheets client. Specifically, this can be used to provide the necessary auth tokens to connect to the Google Sheets API.
 
 ##### Example
 
