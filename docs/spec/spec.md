@@ -111,10 +111,10 @@ ConnectionConfig config = {
 
 ### 2.2 Initialization
 
-The client init method requires a parameter `configs` of type `ConnectionConfigs` to initialize the client.
+The client init method accepts a parameter `configs` of type `ConnectionConfigs`, and a default parameter `serviceUrl` of type string to initialize the client.
 
 ```ballerina
-public isolated function init(ConnectionConfig config) returns error?;
+public isolated function init(ConnectionConfig config, service url = BASE_URL) returns error?;
 ```
 
 ##### Example

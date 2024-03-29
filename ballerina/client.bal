@@ -16,7 +16,6 @@
 
 import ballerina/http;
 import ballerina/lang.regexp;
-import ballerinax/'client.config;
 
 # Ballerina Google Sheets connector provides the capability to access Google Sheets API.
 # The connector let you perform spreadsheet management operations, worksheet management operations and
@@ -29,9 +28,9 @@ public isolated client class Client {
     #
     # + spreadsheetConfig - Configuration for the connector
     # + return - `http:Error` in case of failure to initialize or `null` if successfully initialized
-    public isolated function init(ConnectionConfig config) returns error? {
-        http:ClientConfiguration httpClientConfig = check config:constructHTTPClientConfig(config);
-        self.httpClient = check new (BASE_URL, httpClientConfig);
+    public isolated function init(ConnectionConfig config, string serviceUrl = BASE_URL) returns error? {
+        http:ClientConfiguration httpClientConfig = {...config};
+        self.httpClient = check new (serviceUrl, httpClientConfig);
     }
 
     // Spreadsheet Management Operations
@@ -45,7 +44,7 @@ public isolated client class Client {
                                                returns Spreadsheet|error {
         json jsonPayload = {"properties": {"title": name}};
         json response = check sendRequestWithPayload(self.httpClient, SPREADSHEET_PATH, jsonPayload);
-        return convertJSONToSpreadsheet(response);
+        return response.fromJsonWithType();
     }
 
     # Opens a spreadsheet by the given ID.
@@ -57,7 +56,7 @@ public isolated client class Client {
                                                  returns Spreadsheet|error {
         string spreadsheetPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId;
         json response = check sendRequest(self.httpClient, spreadsheetPath);
-        return convertJSONToSpreadsheet(response);
+        return response.fromJsonWithType();
     }
 
     # Opens a spreadsheet by the given Url.
@@ -105,7 +104,7 @@ public isolated client class Client {
                                         returns @display {label: "Array of Worksheets"} Sheet[]|error {
         string spreadsheetPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId;
         json response = check sendRequest(self.httpClient, spreadsheetPath);
-        Spreadsheet spreadsheet = check convertJSONToSpreadsheet(response);
+        Spreadsheet spreadsheet = check response.fromJsonWithType();
         return spreadsheet.sheets;
     }
 
@@ -119,7 +118,7 @@ public isolated client class Client {
                                             @display {label: "Worksheet Name"} string sheetName) returns Sheet|error {
         string spreadsheetPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId;
         json response = check sendRequest(self.httpClient, spreadsheetPath);
-        Spreadsheet spreadsheet = check convertJSONToSpreadsheet(response);
+        Spreadsheet spreadsheet = check response.fromJsonWithType();
         Sheet[] sheets = spreadsheet.sheets;
         foreach Sheet sheet in sheets {
             if equalsIgnoreCase(sheet.properties.title, sheetName) {
@@ -158,39 +157,8 @@ public isolated client class Client {
         if jsonResponseValues is json[] {
             replies = jsonResponseValues;
         }
-        json|error addSheet = replies[0].addSheet;
-
-        Sheet sheet = {};
-        if addSheet !is error {
-            SheetProperties sheetProperties = {};
-            json|error sheetId = addSheet.properties.sheetId;
-            if sheetId is json {
-                sheetProperties.sheetId = convertToInt(sheetId.toString());
-            }
-            json|error title = addSheet.properties.title;
-            if title is json {
-                sheetProperties.title = title.toString();
-            }
-            json|error index = addSheet.properties.index;
-            if index is json {
-                sheetProperties.index = convertToInt(index.toString());
-            }
-            json|error sheetType = addSheet.properties.sheetType;
-            if sheetType is json {
-                sheetProperties.sheetType = sheetType.toString();
-            }
-            json|error hidden = addSheet.properties.hidden;
-            if hidden is json {
-                sheetProperties.hidden = convertToBoolean(hidden.toString());
-            }
-            json|error rightToLeft = addSheet.properties.rightToLeft;
-            if rightToLeft is json {
-                sheetProperties.rightToLeft = convertToBoolean(rightToLeft.toString());
-            }
-            sheetProperties.gridProperties = convertToGridProperties(check addSheet.properties.gridProperties);
-            sheet.properties = sheetProperties;
-        }
-        return sheet;
+        json addSheet = check replies[0].addSheet;
+        return addSheet.fromJsonWithType();
     }
 
     # Delete specified worksheet by worksheet ID.
@@ -940,8 +908,8 @@ public isolated client class Client {
                                      @display {label: "Cell Value"} int|string|decimal value,
                                      @display {label: "Value Input Option"} string? valueInputOption = ())
                                      returns error? {
-        string notatiob = sheetName + EXCLAMATION_MARK + a1Notation;
-        string setCellDataPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + notatiob;
+        string notation = sheetName + EXCLAMATION_MARK + a1Notation;
+        string setCellDataPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + notation;
         setCellDataPath = setCellDataPath + ((valueInputOption is ()) ? string `${VALUE_INPUT_OPTION}${RAW}` :
             string `${VALUE_INPUT_OPTION}${valueInputOption}`);
         http:Request request = new;
