@@ -16,13 +16,16 @@ Before using this connector in your Ballerina application, complete the followin
 To use the Google Sheets connector in your Ballerina application, update the .bal file as follows:
 
 ### Step 1: Import connector
+
 Import the `ballerinax/googleapis.sheets` module into the Ballerina project.
+
 ```ballerina
     import ballerinax/googleapis.sheets as sheets;
 ```
 
 ### Step 2: Create a new connector instance
-Create a `sheets:ConnectionConfig` with the OAuth2 tokens obtained, and initialize the connector with it. 
+
+Create a `sheets:ConnectionConfig` with the OAuth2 tokens obtained, and initialize the connector with it.
 ```ballerina
     sheets:ConnectionConfig spreadsheetConfig = {
         auth: {
@@ -37,6 +40,7 @@ Create a `sheets:ConnectionConfig` with the OAuth2 tokens obtained, and initiali
 ```
 
 ### Step 3: Invoke connector operation
+
 1. Now you can use the operations available within the connector. Note that they are in the form of remote operations.
 
     Following is an example on how to create a spreadsheet using the connector.
@@ -50,6 +54,6 @@ Create a `sheets:ConnectionConfig` with the OAuth2 tokens obtained, and initiali
         }
     ```
 
-2. Use `bal run` command to compile and run the Ballerina program. 
+2. Use `bal run` command to compile and run the Ballerina program.
 
-**[You can find a list of samples here](https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/tree/main/examples)**
+**[You can find a list of samples here](https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/tree/2201.8.x/examples)**
