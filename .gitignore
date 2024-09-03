@@ -1,10 +1,12 @@
 # Compiled class file
 *.class
+*.balx
 
 # Log file
 *.log
 
 # BlueJ files
+ballerina.conf
 *.ctxt
 
 # Mobile Tools for Java (J2ME)
@@ -25,12 +27,30 @@ hs_err_pid*
 #Ballerina configuartion file
 ballerina.conf
 Config.toml
+!/ballerina/tests/Config.toml
+docker.env
 
 # .DS_Store
 .DS_Store
 
 #Target folder of ballerina project
-/target
+target
+.classpath
+.settings
+.project
+*.iml
+*.iws
+*.ipr
+.idea
+.m2
+.vscode/
+
+# Ignore ballerina files
+temp.bal.ballerina/
+target/
+.DS_Store
+*.deb
+examples/**/Dependencies.toml
 
 #json files created inside resources folder
 **/resources/*.json
