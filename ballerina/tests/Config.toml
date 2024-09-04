@@ -3,4 +3,3 @@ mockClientId = "mock-client-id"
 mockClientSecret = "mock-client-secret"
 mockRefreshToken =  "mock-refresh-token"
 mockRefreshUrl = "http://localhost:9444/oauth2/token"
-isTestOnLiveServer = false

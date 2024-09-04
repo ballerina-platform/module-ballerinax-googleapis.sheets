@@ -62,7 +62,8 @@ def moduleVersion = project.version.replace("-SNAPSHOT", "")
 
 task build {
     dependsOn(':googleapis.gsheets-ballerina:build')
-    dependsOn(':googleapis.gsheets-examples:build')
+    // TODO: Enable the examples build once https://github.com/ballerina-platform/ballerina-library/issues/6135 is fixed
+    // dependsOn(':googleapis.gsheets-examples:build')
 }
 
 release {
