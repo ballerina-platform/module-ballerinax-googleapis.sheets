@@ -17,15 +17,11 @@
 import ballerina/os;
 import ballerina/test;
 
-configurable string & readonly refreshToken = os:getEnv("REFRESH_TOKEN");
-configurable string & readonly clientId = os:getEnv("CLIENT_ID");
-configurable string & readonly clientSecret = os:getEnv("CLIENT_SECRET");
-
 configurable string mockClientId = ?;
 configurable string mockClientSecret = ?;
 configurable string mockRefreshToken = ?;
 configurable string mockRefreshUrl = ?;
-configurable boolean isTestOnLiveServer = ?;
+configurable boolean isTestOnLiveServer = false;
 
 Client spreadsheetClient = test:mock(Client);
 
@@ -43,14 +39,14 @@ string[][] entries = [
 ];
 
 @test:BeforeSuite
-function initializeClientsForCalendarServer() returns error? {
+function initializeSheetClient() returns error? {
     if isTestOnLiveServer {
         spreadsheetClient = check new ({
             auth :{
                 refreshUrl: REFRESH_URL,
-                refreshToken: refreshToken,
-                clientId: clientId,
-                clientSecret: clientSecret
+                refreshToken: os:getEnv("REFRESH_TOKEN"),
+                clientId: os:getEnv("CLIENT_ID"),
+                clientSecret: os:getEnv("CLIENT_SECRET")
             }
         });
     } else {
