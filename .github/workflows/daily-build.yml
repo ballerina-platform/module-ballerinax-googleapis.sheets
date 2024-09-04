@@ -12,5 +12,3 @@ jobs:
     secrets: inherit
     with:
       repo-name: module-ballerinax-googleapis.sheets
-      additional-build-flags: "-x :googleapis.gsheets-examples:build"
-      additional-test-flags: "-x :googleapis.gsheets-examples:build"

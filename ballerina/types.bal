@@ -16,7 +16,7 @@
 
 import ballerina/http;
 
-// Update the config fields with default values due to lang issue https://github.com/ballerina-platform/ballerina-lang/issues/43359
+// TODO: revert the changes once the lang issue https://github.com/ballerina-platform/ballerina-lang/issues/43359 is fixed in a 2201.10.x patch release
 # Provides a set of configurations for controlling the behaviours when communicating with a remote HTTP endpoint.
 @display {label: "Connection Config"}
 public type ConnectionConfig record {|

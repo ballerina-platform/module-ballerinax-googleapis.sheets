@@ -21,7 +21,7 @@ configurable string mockClientId = ?;
 configurable string mockClientSecret = ?;
 configurable string mockRefreshToken = ?;
 configurable string mockRefreshUrl = ?;
-configurable boolean isTestOnLiveServer = false;
+configurable boolean isTestOnLiveServer = os:getEnv("IS_TEST_ON_LIVE_SERVER") == "true";
 
 Client spreadsheetClient = test:mock(Client);
 
