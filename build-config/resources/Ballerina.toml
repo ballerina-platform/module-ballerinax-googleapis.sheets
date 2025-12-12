@@ -6,7 +6,7 @@ version = "@toml.version@"
 authors = ["Ballerina"]
 export = ["googleapis.gsheets"]
 repository = "https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets"
-keywords = ["Cost/Free", "Vendor/Google"]
+keywords = ["Cost/Free", "Vendor/Google", "Area/Documents", "Type/Connector"]
 icon = "icon.png"
 license = ["Apache-2.0"]
 
