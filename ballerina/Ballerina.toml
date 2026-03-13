@@ -6,7 +6,7 @@ version = "4.0.0"
 authors = ["Ballerina"]
 export = ["googleapis.gsheets"]
 repository = "https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets"
-keywords = ["Cost/Free", "Vendor/Google"]
+keywords = ["Productivity/Spreadsheets", "Cost/Freemium", "Vendor/Google", "Area/Productivity & Collaboration", "Type/Connector"]
 icon = "icon.png"
 license = ["Apache-2.0"]
 
