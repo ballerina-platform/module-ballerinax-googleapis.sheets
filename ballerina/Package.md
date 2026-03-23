@@ -1,10 +1,13 @@
-Connects to [Google Sheets](https://developers.google.com/sheets/api) from Ballerina.
+## Overview
 
-## Package overview
+The [Google Sheets](https://developers.google.com/sheets/api) connector allows you to programmatically interact with Google Sheets, facilitating tasks such as data manipulation, analysis, and automation. It is compatible with [Google Sheets API v4](https://developers.google.com/sheets/api).
 
-The `ballerinax/googleapis.sheets` is a [Ballerina](https://ballerina.io/) connector for Google Sheets. It is comprised of the following capabilities. 
+### Key Features
 
-* Perform Google Sheets related operations programatically using [Ballerina](https://ballerina.io/). The `ballerinax/googleapis.sheets` module provides this capability. 
+- Read and write data to Google Sheets spreadsheets
+- Create, update, and manage spreadsheets programmatically
+- Support for batch operations on cell ranges
+- Access spreadsheet metadata and properties
 
 ### Compatibility
 |                                                   | Version                         |

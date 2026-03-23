@@ -1,8 +1,15 @@
 ## Overview
 
-The [Ballerina](https://ballerina.io/) connector for Google Sheets makes it convenient to implement some of the most common use cases of Google Sheets. With this connector, you can programmatically manage spreadsheets, manage worksheets, perform CRUD operations on worksheets, and perform column-level, row-level, and cell-level operations.
+The Google Sheets connector makes it convenient to implement some of the most common use cases of Google Sheets. With this connector, you can programmatically manage spreadsheets, manage worksheets, perform CRUD operations on worksheets, and perform column-level, row-level, and cell-level operations.
 
 This module supports [Google Sheets API v4](https://developers.google.com/sheets/api).
+
+### Key Features
+
+- Read and write data to Google Sheets spreadsheets
+- Create, update, and manage spreadsheets programmatically
+- Support for batch operations on cell ranges
+- Access spreadsheet metadata and properties
 
 ## Prerequisites
 
