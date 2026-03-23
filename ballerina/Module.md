@@ -4,6 +4,13 @@ The [Google Sheets](https://developers.google.com/sheets/api), developed by Goog
 
 The `ballerinax/googleapis.gsheets` package offers APIs to connect and interact with [Sheets API](https://developers.google.com/sheets/api/guides) endpoints, specifically based on [Google Sheets API v4](https://developers.google.com/sheets/api).
 
+### Key Features
+
+- Programmatically interact with Google Sheets
+- Support for data manipulation and analysis
+- Automate tasks related to spreadsheets
+- Compatible with Google Sheets API v4
+
 ## Setup guide
 
 To use the Google Sheets connector, you must have access to the Google Sheets API through a [Google Cloud Platform (GCP)](https://console.cloud.google.com/) account and a project under it. If you do not have a GCP account, you can sign up for one [here](https://cloud.google.com/).
