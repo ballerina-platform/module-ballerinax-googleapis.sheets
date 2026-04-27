@@ -481,46 +481,7 @@ function testClearCell() {
 }
 
 @test:Config {
-    dependsOn: [testGetCell]
-}
-function testAppendRowToSheet() {
-    string[] values = ["Appending", "Some", "Values"];
-    error? spreadsheetRes = spreadsheetClient->appendRowToSheet(spreadsheetId, testSheetName, values);
-    if spreadsheetRes is () {
-        test:assertEquals(spreadsheetRes, (), msg = "Appending a row to sheet failed");
-    } else {
-        test:assertFail(spreadsheetRes.message());
-    }
-}
-
-@test:Config {
-    dependsOn: [testAppendRowToSheet]
-}
-function testAppendRow() {
-    string[] values = ["Appending", "Some", "Values"];
-    error? spreadsheetRes = spreadsheetClient->appendRowToSheet(spreadsheetId, testSheetName, values, "F1:H3");
-    if spreadsheetRes is () {
-        test:assertEquals(spreadsheetRes, (), msg = "Appending a row to range failed");
-    } else {
-        test:assertFail(spreadsheetRes.message());
-    }
-}
-
-@test:Config {
-    dependsOn: [testAppendRow]
-}
-function testAppendCell() {
-    string[] value = ["AppendingValue"];
-    error? spreadsheetRes = spreadsheetClient->appendRowToSheet(spreadsheetId, testSheetName, value, "F1");
-    if spreadsheetRes is () {
-        test:assertEquals(spreadsheetRes, (), msg = "Appending a cell to range failed");
-    } else {
-        test:assertFail(spreadsheetRes.message());
-    }
-}
-
-@test:Config {
-    dependsOn: [testAppendCell]
+    dependsOn: [testAppendValue]
 }
 function testCopyTo() {
     Sheet|error openRes = spreadsheetClient->getSheetByName(spreadsheetId, testSheetName);
@@ -535,7 +496,7 @@ function testCopyTo() {
 }
 
 @test:Config {
-    dependsOn: [testAppendRow]
+    dependsOn: [testAppendValue]
 }
 function testAppendValueToTestSetMetadata() returns error? {
     string[] values = ["Appending", "Some", "Values for Metadata"];
@@ -754,7 +715,14 @@ function testClearAllBySheetName() {
 
 @test:Config {
     dependsOn: [testGetCell]
+}
+function testClearSheetBeforeAppend() {
+    error? spreadsheetRes = spreadsheetClient->clearAllBySheetName(spreadsheetId, testSheetName);
+    test:assertEquals(spreadsheetRes, (), msg = "Failed to clear the sheet before append tests");
+}
 
+@test:Config {
+    dependsOn: [testClearSheetBeforeAppend]
 }
 function testAppendValue() {
     string[] values = ["Appending", "Some", "Values"];
@@ -814,7 +782,7 @@ function testAppendCellWithAppendValue() {
 }
 
 @test:Config {
-    dependsOn: [testGetCell],
+    dependsOn: [testAppendValue],
     enable: isTestOnLiveServer
 }
 function testAppendValues() {
@@ -825,5 +793,16 @@ function testAppendValues() {
         {"rowStartPosition": 4, "values": [["Appending", "Multiple Values", "for multiple rows"], ["value1", "value2", "value3"], ["value4", "value5", "value6"]], startIndex: "F4", endIndex: "H6"}, msg = "Appending a row to sheet failed");
     } else {
         test:assertFail(spreadsheetRes.message());
+    }
+}
+
+@test:AfterSuite
+function cleanupTestSheets() returns error? {
+    if !isTestOnLiveServer {
+        return;
+    }
+    Sheet[] sheets = check spreadsheetClient->getSheets(spreadsheetId);
+    foreach int i in 1 ..< sheets.length() {
+        _ = check spreadsheetClient->removeSheet(spreadsheetId, sheets[i].properties.sheetId);
     }
 }

@@ -31,7 +31,7 @@ To use the Google Sheets connector, you must have access to the Google Sheets AP
 
 3. Search and select `Google Sheets API`. Then click **ENABLE**.
 
-    ![Enable Sheets Api](https://raw.githubusercontent.com/ballerina-platform/module-ballerinax-googleapis.sheets/master/docs/setup/resources/enable-sheets-api.png)
+   ![Enable Sheets Api](https://raw.githubusercontent.com/ballerina-platform/module-ballerinax-googleapis.sheets/master/docs/setup/resources/enable-sheets-api.png)
 
 ### Step 3: Creating an OAuth consent app
 
@@ -41,7 +41,7 @@ To use the Google Sheets connector, you must have access to the Google Sheets AP
 
 3. Fill in the app information and add the necessary scopes for Google Sheets API.
 
-    ![OAuth Consent Screen](https://raw.githubusercontent.com/ballerina-platform/module-ballerinax-googleapis.sheets/master/docs/setup/resources/oauth-consent.png)
+   ![OAuth Consent Screen](https://raw.githubusercontent.com/ballerina-platform/module-ballerinax-googleapis.sheets/master/docs/setup/resources/oauth-consent.png)
 
 ### Step 4: Generating client ID & client secret
 
@@ -49,17 +49,17 @@ To use the Google Sheets connector, you must have access to the Google Sheets AP
 
 2. Click on **+ CREATE CREDENTIALS** and choose **OAuth Client ID**.
 
-    ![Create Credentials](https://raw.githubusercontent.com/ballerina-platform/module-ballerinax-googleapis.sheets/master/docs/setup/resources/create-credentials.png)
+   ![Create Credentials](https://raw.githubusercontent.com/ballerina-platform/module-ballerinax-googleapis.sheets/master/docs/setup/resources/create-credentials.png)
 
 3. You will be directed to the OAuth consent screen, in which you need to fill in the necessary information below.
 
-    | Field                    | Value           |
-    | -----------              | -----------     |
-    | Application type         | Web Application |
-    | Name                     | Sheets Client   |
-    | Authorized Redirect URIs | <https://developers.google.com/oauthplayground> |
+   | Field                    | Value                                           |
+   | ------------------------ | ----------------------------------------------- |
+   | Application type         | Web Application                                 |
+   | Name                     | Sheets Client                                   |
+   | Authorized Redirect URIs | <https://developers.google.com/oauthplayground> |
 
-    ![Create Client](https://raw.githubusercontent.com/ballerina-platform/module-ballerinax-googleapis.sheets/master/docs/setup/resources/create-client.png)
+   ![Create Client](https://raw.githubusercontent.com/ballerina-platform/module-ballerinax-googleapis.sheets/master/docs/setup/resources/create-client.png)
 
 ### Step 5: Obtain the access and refresh tokens
 
@@ -69,15 +69,15 @@ Follow these steps to generate the access and refresh tokens.
 
 1. Configure the [OAuth playground](https://developers.google.com/oauthplayground) with the OAuth client ID and client secret.
 
-    ![OAuth Playground](https://raw.githubusercontent.com/ballerina-platform/module-ballerinax-googleapis.sheets/master/docs/setup/resources/oauth-playground-config.png)
+   ![OAuth Playground](https://raw.githubusercontent.com/ballerina-platform/module-ballerinax-googleapis.sheets/master/docs/setup/resources/oauth-playground-config.png)
 
 2. Authorize the Google Sheets APIs.
 
-    ![Authorize APIs](https://raw.githubusercontent.com/ballerina-platform/module-ballerinax-googleapis.sheets/master/docs/setup/resources/auhtorize-apis.png)
+   ![Authorize APIs](https://raw.githubusercontent.com/ballerina-platform/module-ballerinax-googleapis.sheets/master/docs/setup/resources/auhtorize-apis.png)
 
 3. Exchange the authorization code for tokens.
 
-    ![Exchange Tokens](https://raw.githubusercontent.com/ballerina-platform/module-ballerinax-googleapis.sheets/master/docs/setup/resources/exchange-tokens.png)
+   ![Exchange Tokens](https://raw.githubusercontent.com/ballerina-platform/module-ballerinax-googleapis.sheets/master/docs/setup/resources/exchange-tokens.png)
 
 ## Quickstart
 
@@ -85,15 +85,15 @@ To use the Google Sheets connector in your Ballerina project, modify the `.bal` 
 
 ### Step 1: Import connector
 
-Import the `ballerinax/googleapis.gsheets` module.
+Import the `ballerinax/googleapis.sheets` module.
 
 ```ballerina
-import ballerinax/googleapis.gsheets;
+import ballerinax/googleapis.sheets;
 ```
 
 ### Step 2: Create a new connector instance
 
-Create a `gsheets:ConnectionConfig` with the obtained OAuth2.0 tokens and initialize the connector with it.
+Create a `sheets:ConnectionConfig` with the obtained OAuth2.0 tokens and initialize the connector with it.
 
 ```ballerina
 configurable string clientId = ?;
@@ -101,7 +101,7 @@ configurable string clientSecret = ?;
 configurable string refreshToken = ?;
 configurable string refreshUrl = ?;
 
-gsheets:Client spreadsheetClient = check new ({
+sheets:Client spreadsheetClient = check new ({
     auth: {
         clientId,
         clientSecret,
@@ -121,11 +121,11 @@ Now, utilize the available connector operations.
 public function main() returns error? {
 
     // create a spreadsheet
-    gsheets:Spreadsheet response = check spreadsheetClient->createSpreadsheet("NewSpreadsheet");
+    sheets:Spreadsheet response = check spreadsheetClient->createSpreadsheet("NewSpreadsheet");
 
     // Add a new worksheet with given name to the Spreadsheet
     string spreadsheetId = response.spreadsheetId;
-    gsheets:Sheet sheet = check spreadsheetClient->addSheet(spreadsheetId, "NewWorksheet");
+    sheets:Sheet sheet = check spreadsheetClient->addSheet(spreadsheetId, "NewWorksheet");
 }
 ```
 
@@ -153,3 +153,4 @@ To report bugs, request new features, start new discussions, view project boards
 
 - Chat live with us via our [Discord server](https://discord.gg/ballerinalang).
 - Post all technical questions on Stack Overflow with the [#ballerina](https://stackoverflow.com/questions/tagged/ballerina) tag.
+

@@ -117,14 +117,14 @@ public isolated function init(ConnectionConfig config, service url = BASE_URL) r
 ##### Example
 
 ```ballerina
-import ballerinax/googleapis.gsheets;
+import ballerinax/googleapis.sheets;
 
 configurable string clientId = ?;
 configurable string clientSecret = ?;
 configurable string refreshToken = ?;
 configurable string refreshUrl = ?;
 
-gsheets:Client spreadsheetClient = check new ({
+sheets:Client spreadsheetClient = check new ({
     auth: {
         clientId,
         clientSecret,

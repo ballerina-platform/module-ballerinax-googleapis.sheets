@@ -973,52 +973,6 @@ public isolated client class Client {
         return self->clearRange(spreadsheetId, sheetName, a1Notation);
     }
 
-    # Adds a new row with the given values to the bottom of the worksheet. The input range is used to search
-    # for existing data and find a "table" within that range. Values will be appended to the next row of
-    # the table, starting with the first column of the table.
-    #
-    # + spreadsheetId - ID of the spreadsheet
-    # + sheetName - The name of the worksheet
-    # + values - Array of values of the row to be added
-    # + a1Notation - The required range in A1 notation (Optional)
-    # + valueInputOption - Determines how input data should be interpreted.
-    # It's either `RAW` or `USER_ENTERED`. Default is `RAW` (Optional).
-    # For more information, see [ValueInputOption](https://developers.google.com/sheets/api/reference/rest/v4/ValueInputOption)
-    # + return - Nil on success, or else an error
-    #
-    # # Deprecated
-    # This function is deprecated due to the introduction of new more resourceful API `appendValue`.
-    # This API will be removed with 4.0.0 release.
-    #
-    @display {label: "Append Row To Sheet"}
-    @deprecated
-    remote isolated function appendRowToSheet(@display {label: "Google Sheet ID"} string spreadsheetId,
-            @display {label: "Worksheet Name"} string sheetName,
-            @display {label: "Row Values"} (int|string|decimal)[] values,
-            @display {label: "Range A1 Notation"} string? a1Notation = (),
-            @display {label: "Value Input Option"} string? valueInputOption = ())
-                                            returns error? {
-        string notation = (a1Notation is ()) ? string `${sheetName}` :
-            string `${sheetName}${EXCLAMATION_MARK}${a1Notation}`;
-        string setValuePath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + notation + APPEND;
-        setValuePath = setValuePath + ((valueInputOption is ()) ? string `${VALUE_INPUT_OPTION}${RAW}` :
-            string `${VALUE_INPUT_OPTION}${valueInputOption}`);
-        json[] jsonValues = [];
-        int i = 0;
-        foreach (string|int|decimal) value in values {
-            jsonValues[i] = value;
-            i = i + 1;
-        }
-        json jsonPayload = {
-            "range": notation,
-            "majorDimension": "ROWS",
-            "values": [
-                jsonValues
-            ]
-        };
-        _ = check sendRequestWithPayload(self.httpClient, setValuePath, jsonPayload);
-    }
-
     # Adds the given values to a row at the bottom of the worksheet. The input range is used to search
     # for existing data and find a "table" within that range. Values will be appended to the next row of
     # the table, starting with the first column of the table.

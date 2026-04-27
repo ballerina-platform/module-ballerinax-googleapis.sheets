@@ -1,1 +1,0 @@
-../grid-filtering.md
