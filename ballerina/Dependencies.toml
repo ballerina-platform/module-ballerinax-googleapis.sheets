@@ -269,6 +269,9 @@ dependencies = [
 	{org = "ballerina", name = "io"},
 	{org = "ballerina", name = "jballerina.java"}
 ]
+modules = [
+	{org = "ballerina", packageName = "os", moduleName = "os"}
+]
 
 [[package]]
 org = "ballerina"
@@ -338,17 +341,18 @@ modules = [
 
 [[package]]
 org = "ballerinax"
-name = "googleapis.gsheets"
+name = "googleapis.sheets"
 version = "4.0.0"
 dependencies = [
 	{org = "ballerina", name = "http"},
 	{org = "ballerina", name = "lang.regexp"},
 	{org = "ballerina", name = "log"},
+	{org = "ballerina", name = "os"},
 	{org = "ballerina", name = "test"},
 	{org = "ballerina", name = "uuid"},
 	{org = "ballerinai", name = "observe"}
 ]
 modules = [
-	{org = "ballerinax", packageName = "googleapis.gsheets", moduleName = "googleapis.gsheets"}
+	{org = "ballerinax", packageName = "googleapis.sheets", moduleName = "googleapis.sheets"}
 ]
 
