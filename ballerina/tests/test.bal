@@ -503,7 +503,7 @@ function testAppendValueToTestSetMetadata() returns error? {
     ValueRange|error spreadsheetRes = spreadsheetClient->appendValue(spreadsheetId, values, <A1Range>{sheetName: testSheetName});
     if spreadsheetRes is ValueRange {
         test:assertEquals({"rowPosition": spreadsheetRes["rowPosition"], "values": spreadsheetRes["values"], "startIndex": spreadsheetRes["a1Range"].startIndex, "endIndex": spreadsheetRes["a1Range"].endIndex},
-        {"rowPosition": 1, "values": ["Appending", "Some", "Values for Metadata"], startIndex: "A1", endIndex: "C1"}, msg = "Appending a row to sheet failed");
+        {"rowPosition": 2, "values": ["Appending", "Some", "Values for Metadata"], startIndex: "A2", endIndex: "C2"}, msg = "Appending a row to sheet failed");
     } else {
         test:assertFail(spreadsheetRes.message());
     }
