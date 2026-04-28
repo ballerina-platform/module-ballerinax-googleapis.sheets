@@ -3,7 +3,7 @@ name: Publish Release
 on:
   workflow_dispatch:
   repository_dispatch:
-    types: [ stdlib-release-pipeline ]
+    types: [stdlib-release-pipeline]
 
 jobs:
   call_workflow:
@@ -12,5 +12,5 @@ jobs:
     uses: ballerina-platform/ballerina-library/.github/workflows/release-package-connector-template.yml@main
     secrets: inherit
     with:
-      package-name: googleapis.gsheets
+      package-name: googleapis.sheets
       package-org: ballerinax

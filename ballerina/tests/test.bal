@@ -28,6 +28,7 @@ Client spreadsheetClient = test:mock(Client);
 string randomString = createRandomUuidWithoutHyphens();
 
 string spreadsheetId = "";
+string deleteTestSpreadsheetId = "";
 string createSpreadsheetName = "Ballerina Connector New";
 string testSheetName = string `Dance_${randomString}`;
 string[][] entries = [
@@ -42,7 +43,7 @@ string[][] entries = [
 function initializeSheetClient() returns error? {
     if isTestOnLiveServer {
         spreadsheetClient = check new ({
-            auth :{
+            auth: {
                 refreshUrl: REFRESH_URL,
                 refreshToken: os:getEnv("REFRESH_TOKEN"),
                 clientId: os:getEnv("CLIENT_ID"),
@@ -60,9 +61,12 @@ function initializeSheetClient() returns error? {
                     refreshUrl: mockRefreshUrl
                 }
             },
-            "http://localhost:9092/spreadsheets"
+            "http://localhost:9092/spreadsheets",
+            "http://localhost:9093"
         );
     }
+    Spreadsheet spreadsheet = check spreadsheetClient->createSpreadsheet(createSpreadsheetName);
+    spreadsheetId = spreadsheet.spreadsheetId;
 }
 
 // Spreadsheet management operations tests
@@ -73,10 +77,18 @@ function testCreateSpreadsheet() {
     Spreadsheet|error spreadsheetRes = spreadsheetClient->createSpreadsheet(createSpreadsheetName);
     if spreadsheetRes is Spreadsheet {
         test:assertNotEquals(spreadsheetRes.spreadsheetId, "", msg = "Failed to create spreadsheet");
-        spreadsheetId = spreadsheetRes.spreadsheetId;
+        deleteTestSpreadsheetId = spreadsheetRes.spreadsheetId;
     } else {
         test:assertFail(spreadsheetRes.message());
     }
+}
+
+@test:Config {
+    dependsOn: [testCreateSpreadsheet]
+}
+function testDeleteSpreadsheet() returns error? {
+    error? response = spreadsheetClient->deleteSpreadsheet(deleteTestSpreadsheetId);
+    test:assertEquals(response, (), msg = "Failed to delete spreadsheet");
 }
 
 @test:Config {
@@ -481,46 +493,7 @@ function testClearCell() {
 }
 
 @test:Config {
-    dependsOn: [testGetCell]
-}
-function testAppendRowToSheet() {
-    string[] values = ["Appending", "Some", "Values"];
-    error? spreadsheetRes = spreadsheetClient->appendRowToSheet(spreadsheetId, testSheetName, values);
-    if spreadsheetRes is () {
-        test:assertEquals(spreadsheetRes, (), msg = "Appending a row to sheet failed");
-    } else {
-        test:assertFail(spreadsheetRes.message());
-    }
-}
-
-@test:Config {
-    dependsOn: [testAppendRowToSheet]
-}
-function testAppendRow() {
-    string[] values = ["Appending", "Some", "Values"];
-    error? spreadsheetRes = spreadsheetClient->appendRowToSheet(spreadsheetId, testSheetName, values, "F1:H3");
-    if spreadsheetRes is () {
-        test:assertEquals(spreadsheetRes, (), msg = "Appending a row to range failed");
-    } else {
-        test:assertFail(spreadsheetRes.message());
-    }
-}
-
-@test:Config {
-    dependsOn: [testAppendRow]
-}
-function testAppendCell() {
-    string[] value = ["AppendingValue"];
-    error? spreadsheetRes = spreadsheetClient->appendRowToSheet(spreadsheetId, testSheetName, value, "F1");
-    if spreadsheetRes is () {
-        test:assertEquals(spreadsheetRes, (), msg = "Appending a cell to range failed");
-    } else {
-        test:assertFail(spreadsheetRes.message());
-    }
-}
-
-@test:Config {
-    dependsOn: [testAppendCell]
+    dependsOn: [testAppendValue]
 }
 function testCopyTo() {
     Sheet|error openRes = spreadsheetClient->getSheetByName(spreadsheetId, testSheetName);
@@ -535,7 +508,15 @@ function testCopyTo() {
 }
 
 @test:Config {
-    dependsOn: [testAppendRow]
+    dependsOn: [testCopyTo]
+}
+function testClearSheetBeforeMetadataTests() {
+    error? spreadsheetRes = spreadsheetClient->clearAllBySheetName(spreadsheetId, testSheetName);
+    test:assertEquals(spreadsheetRes, (), msg = "Failed to clear the sheet before metadata tests");
+}
+
+@test:Config {
+    dependsOn: [testClearSheetBeforeMetadataTests]
 }
 function testAppendValueToTestSetMetadata() returns error? {
     string[] values = ["Appending", "Some", "Values for Metadata"];
@@ -754,7 +735,14 @@ function testClearAllBySheetName() {
 
 @test:Config {
     dependsOn: [testGetCell]
+}
+function testClearSheetBeforeAppend() {
+    error? spreadsheetRes = spreadsheetClient->clearAllBySheetName(spreadsheetId, testSheetName);
+    test:assertEquals(spreadsheetRes, (), msg = "Failed to clear the sheet before append tests");
+}
 
+@test:Config {
+    dependsOn: [testClearSheetBeforeAppend]
 }
 function testAppendValue() {
     string[] values = ["Appending", "Some", "Values"];
@@ -814,7 +802,7 @@ function testAppendCellWithAppendValue() {
 }
 
 @test:Config {
-    dependsOn: [testGetCell],
+    dependsOn: [testAppendValue],
     enable: isTestOnLiveServer
 }
 function testAppendValues() {
@@ -826,4 +814,13 @@ function testAppendValues() {
     } else {
         test:assertFail(spreadsheetRes.message());
     }
+}
+
+@test:AfterSuite
+function cleanupTestSpreadsheet() returns error? {
+    if !isTestOnLiveServer {
+        return;
+    }
+    error? response = spreadsheetClient->deleteSpreadsheet(spreadsheetId);
+    test:assertEquals(response, (), msg = "Failed to delete the test spreadsheet in cleanup");
 }

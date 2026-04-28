@@ -25,10 +25,7 @@ returns json|error {
     http:Response httpResponse = check httpClient->post(path, httpRequest);
     int statusCode = httpResponse.statusCode;
     json jsonResponse = check httpResponse.getJsonPayload();
-    error? validateStatusCodeRes = validateStatusCode(jsonResponse, statusCode);
-    if validateStatusCodeRes is error {
-        return validateStatusCodeRes;
-    }
+    check validateStatusCode(jsonResponse, statusCode);
     return jsonResponse;
 }
 
@@ -36,7 +33,7 @@ isolated function sendRequest(http:Client httpClient, string path) returns json 
     http:Response httpResponse = check httpClient->get(path);
     int statusCode = httpResponse.statusCode;
     json jsonResponse = check httpResponse.getJsonPayload();
-    _ = check validateStatusCode(jsonResponse, statusCode);
+    check validateStatusCode(jsonResponse, statusCode);
     return jsonResponse;
 }
 

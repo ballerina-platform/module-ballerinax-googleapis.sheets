@@ -168,7 +168,9 @@ service /spreadsheets/v4 on new http:Listener(9092) {
         string sheetId = "";
         if payload.requests is Request[] {
             Request request = (<Request[]>payload.requests)[0];
-            if request.deleteSheet is DeleteSheetRequest {
+            if request.updateCells is UpdateCellsRequest {
+                self.appendCount = 1;
+            } else if request.deleteSheet is DeleteSheetRequest {
                 _ = self.sheetList.pop();
             } else if request.updateSheetProperties is UpdateSheetPropertiesRequest {
                 SheetPropertiesType properties = <SheetPropertiesType>(<UpdateSheetPropertiesRequest>request.updateSheetProperties).properties;
@@ -215,5 +217,11 @@ service /spreadsheets/v4 on new http:Listener(9092) {
             }
         };
         return okBatchUpdateSpreadsheetResponse;
+    }
+}
+
+service /drive/v3/files on new http:Listener(9093) {
+    resource function delete [string spreadsheetId]() returns http:NoContent {
+        return {};
     }
 }

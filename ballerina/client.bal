@@ -23,14 +23,19 @@ import ballerina/lang.regexp;
 @display {label: "Google Sheets", iconPath: "icon.png"}
 public isolated client class Client {
     final http:Client httpClient;
+    final http:Client driveClient;
 
     # Gets invoked to initialize the `connector`.
     #
-    # + spreadsheetConfig - Configuration for the connector
+    # + config - Configuration for the connector
+    # + serviceUrl - URL of the Google Sheets API
+    # + driveServiceUrl - URL of the Google Drive API
     # + return - `http:Error` in case of failure to initialize or `null` if successfully initialized
-    public isolated function init(ConnectionConfig config, string serviceUrl = BASE_URL) returns error? {
+    public isolated function init(ConnectionConfig config, string serviceUrl = BASE_URL,
+                                  string driveServiceUrl = DRIVE_BASE_URL) returns error? {
         http:ClientConfiguration httpClientConfig = {...config};
         self.httpClient = check new (serviceUrl, httpClientConfig);
+        self.driveClient = check new (driveServiceUrl, httpClientConfig);
     }
 
     // Spreadsheet Management Operations
@@ -45,6 +50,24 @@ public isolated client class Client {
         json jsonPayload = {"properties": {"title": name}};
         json response = check sendRequestWithPayload(self.httpClient, SPREADSHEET_PATH, jsonPayload);
         return response.fromJsonWithType();
+    }
+
+    # Deletes a spreadsheet by the given ID.
+    #
+    # **Note**: This operation uses the Google Drive API and requires the Google Drive API to be enabled in
+    # your Google Cloud project. The OAuth token must include the
+    # `https://www.googleapis.com/auth/drive.file` scope (or broader Drive scope).
+    #
+    # + spreadsheetId - ID of the spreadsheet to delete
+    # + return - Nil on success, or else an error
+    @display {label: "Delete Google Sheet"}
+    remote isolated function deleteSpreadsheet(@display {label: "Google Sheet ID"} string spreadsheetId)
+                                               returns error? {
+        http:Response response = check self.driveClient->delete(DRIVE_FILES_PATH + spreadsheetId);
+        if response.statusCode != http:STATUS_NO_CONTENT {
+            json jsonResponse = check response.getJsonPayload();
+            return error(jsonResponse.toString());
+        }
     }
 
     # Opens a spreadsheet by the given ID.
@@ -971,52 +994,6 @@ public isolated client class Client {
                                        @display {label: "Required Cell A1 Notation"} string a1Notation)
                                        returns error? {
         return self->clearRange(spreadsheetId, sheetName, a1Notation);
-    }
-
-    # Adds a new row with the given values to the bottom of the worksheet. The input range is used to search
-    # for existing data and find a "table" within that range. Values will be appended to the next row of
-    # the table, starting with the first column of the table.
-    #
-    # + spreadsheetId - ID of the spreadsheet
-    # + sheetName - The name of the worksheet
-    # + values - Array of values of the row to be added
-    # + a1Notation - The required range in A1 notation (Optional)
-    # + valueInputOption - Determines how input data should be interpreted.
-    # It's either `RAW` or `USER_ENTERED`. Default is `RAW` (Optional).
-    # For more information, see [ValueInputOption](https://developers.google.com/sheets/api/reference/rest/v4/ValueInputOption)
-    # + return - Nil on success, or else an error
-    #
-    # # Deprecated
-    # This function is deprecated due to the introduction of new more resourceful API `appendValue`.
-    # This API will be removed with 4.0.0 release.
-    #
-    @display {label: "Append Row To Sheet"}
-    @deprecated
-    remote isolated function appendRowToSheet(@display {label: "Google Sheet ID"} string spreadsheetId,
-            @display {label: "Worksheet Name"} string sheetName,
-            @display {label: "Row Values"} (int|string|decimal)[] values,
-            @display {label: "Range A1 Notation"} string? a1Notation = (),
-            @display {label: "Value Input Option"} string? valueInputOption = ())
-                                            returns error? {
-        string notation = (a1Notation is ()) ? string `${sheetName}` :
-            string `${sheetName}${EXCLAMATION_MARK}${a1Notation}`;
-        string setValuePath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + VALUES_PATH + notation + APPEND;
-        setValuePath = setValuePath + ((valueInputOption is ()) ? string `${VALUE_INPUT_OPTION}${RAW}` :
-            string `${VALUE_INPUT_OPTION}${valueInputOption}`);
-        json[] jsonValues = [];
-        int i = 0;
-        foreach (string|int|decimal) value in values {
-            jsonValues[i] = value;
-            i = i + 1;
-        }
-        json jsonPayload = {
-            "range": notation,
-            "majorDimension": "ROWS",
-            "values": [
-                jsonValues
-            ]
-        };
-        _ = check sendRequestWithPayload(self.httpClient, setValuePath, jsonPayload);
     }
 
     # Adds the given values to a row at the bottom of the worksheet. The input range is used to search

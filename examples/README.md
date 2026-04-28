@@ -1,18 +1,20 @@
 # Examples
 
-The `Google Sheets` connector provides practical examples illustrating usage in various scenarios. Explore these [examples](https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/tree/main/examples), covering use cases like creating, reading, and appending rows.
+The `Google Sheets` connector provides practical examples illustrating usage in various scenarios. Explore these [examples](https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/tree/main/examples), covering real-world use cases like expense tracking, grade reporting, sales aggregation, and inventory management.
 
-1. [Cell Operations](https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/tree/main/examples/cell-operations) - Operations associated with a cell, such as clearing, setting, and deleting cell values.
+1. [Expense Tracker](https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/tree/main/examples/expense-tracker) - Append monthly expense records to a sheet, aggregate totals by category, and write a summary report.
 
-2. [Grid Filtering](https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/tree/main/examples/grid-filtering) - Demonstrate filtering sheet values using a grid range.
+2. [Student Grade Report](https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/tree/main/examples/student-grade-report) - Read student scores, compute averages and letter grades, and generate a formatted grade report sheet.
 
-3. [Sheet Modifying](https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/tree/main/examples/sheet-modifying) - Basic operations associated with sheets such as creating, reading, and appending rows.
+3. [Sales Data Aggregation](https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/tree/main/examples/sales-data-aggregation) - Write regional sales data across multiple sheets, aggregate totals by product, and produce a consolidated summary.
+
+4. [Inventory Stock Update](https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets/tree/main/examples/inventory-stock-update) - Load current inventory levels, apply stock changes in place, and flag items that fall below their reorder threshold.
 
 ## Prerequisites
 
 1. Follow the [instructions](https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets#setup-guide) to set up the Sheets API.
 
-2. For each example, create a `config.toml` file with your OAuth2 tokens, client ID, and client secret. Here's an example of how your `config.toml` file should look:
+2. For each example, create a `Config.toml` file in the example directory with your OAuth2 credentials:
 
     ```toml
     refreshToken="<Refresh Token>"
