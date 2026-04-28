@@ -2,6 +2,8 @@
 
 Before running the tests, ensure you have a Google account with access to Google Sheets and the necessary OAuth2 credentials. You can set up these credentials either in a `Config.toml` file within the tests directory or as environment variables.
 
+> **Note**: Live server tests include the `deleteSpreadsheet` operation, which uses the Google Drive API. Ensure the **Google Drive API** is enabled in your Google Cloud project and that your OAuth token includes the `https://www.googleapis.com/auth/drive.file` scope.
+
 ## Using a Config.toml File
 
 Create a `Config.toml` file in the tests directory and include your authentication credentials:

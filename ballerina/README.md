@@ -33,6 +33,8 @@ To use the Google Sheets connector, you must have access to the Google Sheets AP
 
    ![Enable Sheets Api](https://raw.githubusercontent.com/ballerina-platform/module-ballerinax-googleapis.sheets/master/docs/setup/resources/enable-sheets-api.png)
 
+> **Note**: If you intend to use the `deleteSpreadsheet` operation, you must also enable the **Google Drive API** in the same project. Search for `Google Drive API` in the library and click **ENABLE**.
+
 ### Step 3: Creating an OAuth consent app
 
 1. Click on the **OAuth Consent Screen** in the sidebar.
@@ -71,7 +73,7 @@ Follow these steps to generate the access and refresh tokens.
 
    ![OAuth Playground](https://raw.githubusercontent.com/ballerina-platform/module-ballerinax-googleapis.sheets/master/docs/setup/resources/oauth-playground-config.png)
 
-2. Authorize the Google Sheets APIs.
+2. Authorize the Google Sheets APIs. If you intend to use the `deleteSpreadsheet` operation, also add the `https://www.googleapis.com/auth/drive.file` scope.
 
    ![Authorize APIs](https://raw.githubusercontent.com/ballerina-platform/module-ballerinax-googleapis.sheets/master/docs/setup/resources/auhtorize-apis.png)
 

@@ -16,6 +16,8 @@
 
 //API URLs
 const string BASE_URL = "https://sheets.googleapis.com";
+const string DRIVE_BASE_URL = "https://www.googleapis.com";
+const string DRIVE_FILES_PATH = "/drive/v3/files/";
 public const string REFRESH_URL = "https://accounts.google.com/o/oauth2/token";
 const string SPREADSHEET_PATH = "/v4/spreadsheets";
 const string SHEETS_PATH = "/sheets/";
