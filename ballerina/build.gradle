@@ -17,10 +17,20 @@
  */
 
 import org.apache.tools.ant.taskdefs.condition.Os
+import org.gradle.process.ExecOperations
+
+import javax.inject.Inject
 
 plugins {
     id 'io.ballerina.plugin'
 }
+
+interface ExecHelper {
+    @Inject
+    ExecOperations getExecOperations()
+}
+
+def execHelper = project.objects.newInstance(ExecHelper)
 
 description = 'Google Sheets - Ballerina'
 
@@ -48,7 +58,7 @@ ballerina {
     packageOrganization = packageOrg
     module = packageName
     testCoverageParam = "--code-coverage --coverage-format=xml"
-    isConnector = true
+    connector = true
     platform = "any"
 }
 
@@ -62,7 +72,7 @@ task updateTomlFiles {
 
 task commitTomlFiles {
     doLast {
-        project.exec {
+        execHelper.execOperations.exec {
             ignoreExitValue true
             if (Os.isFamily(Os.FAMILY_WINDOWS)) {
                 commandLine 'cmd', '/c', "git commit -m \"[Automated] Update the toml files\" Ballerina.toml Dependencies.toml"

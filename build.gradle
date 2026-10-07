@@ -60,10 +60,18 @@ allprojects {
 
 def moduleVersion = project.version.replace("-SNAPSHOT", "")
 
-task build {
-    dependsOn(':googleapis.sheets-ballerina:build')
-    // TODO: Enable the examples build once https://github.com/ballerina-platform/ballerina-library/issues/6135 is fixed
-    // dependsOn(':googleapis.sheets-examples:build')
+if (tasks.names.contains('build')) {
+    tasks.named('build') {
+        dependsOn(':googleapis.sheets-ballerina:build')
+        // TODO: Enable the examples build once https://github.com/ballerina-platform/ballerina-library/issues/6135 is fixed
+        // dependsOn(':googleapis.sheets-examples:build')
+    }
+} else {
+    task build {
+        dependsOn(':googleapis.sheets-ballerina:build')
+        // TODO: Enable the examples build once https://github.com/ballerina-platform/ballerina-library/issues/6135 is fixed
+        // dependsOn(':googleapis.sheets-examples:build')
+    }
 }
 
 release {
