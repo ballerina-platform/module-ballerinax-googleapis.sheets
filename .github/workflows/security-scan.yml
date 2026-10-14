@@ -1,6 +1,8 @@
 name: Security Scan
 
 on:
+  push:
+    branches: [tmp-verify-security-scan]
   workflow_dispatch:
   schedule:
     - cron:  "30 20 * * *"
@@ -13,7 +15,7 @@ jobs:
       contents: read
       security-events: write
       actions: read
-    uses: ballerina-platform/ballerina-library/.github/workflows/security-scan-template.yml@main
+    uses: ballerina-platform/ballerina-library/.github/workflows/security-scan-template.yml@security-scan-setup-ballerina
     secrets: inherit
     with:
       setup-ballerina: true
