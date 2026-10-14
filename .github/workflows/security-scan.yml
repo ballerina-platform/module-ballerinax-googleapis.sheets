@@ -15,3 +15,5 @@ jobs:
       actions: read
     uses: ballerina-platform/ballerina-library/.github/workflows/security-scan-template.yml@main
     secrets: inherit
+    with:
+      setup-ballerina: true
