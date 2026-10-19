@@ -16,4 +16,6 @@ jobs:
       security-events: write
       actions: read
     uses: ballerina-platform/ballerina-library/.github/workflows/security-scan-template.yml@main
+    with:
+      additional-build-flags: "-x :googleapis.sheets-examples:build"
     secrets: inherit
